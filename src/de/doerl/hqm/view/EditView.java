@@ -1,5 +1,6 @@
 package de.doerl.hqm.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
@@ -11,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.controller.EditController;
@@ -24,11 +26,11 @@ public class EditView extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -15489231166915296L;
 	private static final Logger LOGGER = Logger.getLogger( EditView.class.getName());
 	private static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
-	private static final BufferedImage FRONT = ResourceManager.getImage( "front.png"); //.getSubimage( 20, 20, 260, 340);
 	protected HashMap<ABase, AEntity<?>> mContent = new HashMap<ABase, AEntity<?>>();
 	private EditController mCtrl;
 
 	public EditView( EditController ctrl) {
+		setLayout( new BorderLayout());
 		mCtrl = ctrl;
 		ctrl.getModel().addListener( this);
 	}
@@ -37,61 +39,29 @@ public class EditView extends JPanel implements IModelListener {
 		mCtrl = ctrl;
 	}
 
-	void addBase( ABase base, AEntity<?> ent) {
-		mContent.put( base, ent);
-		ent.update();
+	static void drawBackground( Graphics2D g2, JPanel unit) {
+		g2.setColor( unit.getBackground());
+		g2.fillRect( 0, 0, unit.getWidth(), unit.getHeight());
+		drawImage( g2, unit, BACKGROUND, 0.5, 1, false);
+		drawImage( g2, unit, BACKGROUND, 0.5, 1, true);
 	}
 
-	@Override
-	public void baseAdded( ModelEvent event) {
-		ABase base = event.getBase();
-		if (base != null && !mContent.containsKey( base)) {
-			EntityFactory.get( base, this);
-		}
-	}
-
-	@Override
-	public void baseChanged( ModelEvent event) {
-	}
-
-	@Override
-	public void baseRemoved( ModelEvent event) {
-	}
-
-	@Override
-	public void baseUpdate( ModelEvent event) {
-		ABase base = event.getBase();
-		AEntity<?> ent = EntityFactory.get( base, this);
-		if (ent != null) {
-			addBase( base, ent);
-//			SwingUtilities.invokeLater( new Runnable() {
-//			@Override
-//			public void run() {
-//			}
-//		});
-		}
-		else {
-			Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
-		}
-	}
-
-	protected void drawImage( Graphics2D g2, JPanel unit, BufferedImage img) {
+	static void drawImage( Graphics2D g2, JPanel unit, BufferedImage img) {
 		if (img != null) {
-			float sx = (float) unit.getWidth() / img.getWidth();
-			float sy = (float) unit.getHeight() / img.getHeight();
+			double sx = (double) unit.getWidth() / img.getWidth();
+			double sy = (double) unit.getHeight() / img.getHeight();
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
 			g2.drawImage( img, xform, null);
 		}
 	}
 
-	protected void drawImage( Graphics2D g2, JPanel unit, BufferedImage img, float dw, float dh, boolean flip) {
+	static void drawImage( Graphics2D g2, JPanel unit, BufferedImage img, boolean flip) {
 		if (img != null) {
-			float sx = dw * ((float) unit.getWidth() / img.getWidth());
-			float sy = dh * ((float) unit.getHeight() / img.getHeight());
-//			AffineTransform xform = new AffineTransform( m00, 0, 0, m11, 0, 0);
+			double sx = (double) unit.getWidth() / img.getWidth();
+			double sy = (double) unit.getHeight() / img.getHeight();
 			if (flip) {
 				AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
-				xform.translate( -2 * img.getWidth( null), 0);
+				xform.translate( -2 * img.getWidth(), 0);
 				g2.drawImage( img, xform, null);
 			}
 			else {
@@ -101,29 +71,35 @@ public class EditView extends JPanel implements IModelListener {
 		}
 	}
 
-	protected void drawImage( Graphics2D g2, JPanel unit, BufferedImage img, int width, int height) {
+	static void drawImage( Graphics2D g2, JPanel unit, BufferedImage img, double zoomX, double zoomY, boolean flip) {
 		if (img != null) {
-			float m00 = (float) width / img.getWidth();
-			float m11 = (float) height / img.getHeight();
-			float m02 = (float) (unit.getWidth() - width) / 2;
-			float m12 = (float) (unit.getHeight() - height) / 2;
-			AffineTransform xform = new AffineTransform( m00, 0, 0, m11, m02, m12);
+			double sx = zoomX * ((double) unit.getWidth() / img.getWidth());
+			double sy = zoomY * ((double) unit.getHeight() / img.getHeight());
+			if (flip) {
+				AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
+				xform.translate( -2 * img.getWidth(), 0);
+				g2.drawImage( img, xform, null);
+			}
+			else {
+				AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+				g2.drawImage( img, xform, null);
+			}
+		}
+	}
+
+	static void drawImage( Graphics2D g2, JPanel unit, BufferedImage img, int width, int height) {
+		if (img != null) {
+			double sx = (double) width / img.getWidth();
+			double sy = (double) height / img.getHeight();
+			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			double tx = (double) (unit.getWidth() - width) / 2;
+			double ty = (double) (unit.getHeight() - height) / 2;
+			xform.translate( tx, ty);
 			g2.drawImage( img, xform, null);
 		}
 	}
 
-	protected void drawImage1( Graphics2D g2, JPanel unit, BufferedImage img, int dw, int dh) {
-		if (img != null) {
-			int width = unit.getWidth() - 5 * dw;
-			int height = unit.getHeight() - 3 * dh;
-			float m00 = (float) width / img.getWidth();
-			float m11 = (float) height / img.getHeight();
-			AffineTransform xform = new AffineTransform( m00, 0, 0, m11, dw, dh);
-			g2.drawImage( img, xform, null);
-		}
-	}
-
-	protected void drawZOrder( Graphics2D g2, JPanel unit) {
+	static void drawZOrder( Graphics2D g2, JPanel unit) {
 		Container view = unit.getParent();
 		if (view != null) {
 			int pos = view.getComponentZOrder( unit);
@@ -132,25 +108,85 @@ public class EditView extends JPanel implements IModelListener {
 		}
 	}
 
+	@Override
+	public void baseAdded( ModelEvent event) {
+	}
+
+	@Override
+	public void baseChanged( ModelEvent event) {
+	}
+
+	@Override
+	public void baseRemoved( ModelEvent event) {
+		ABase base = event.getBase();
+		if (base != null) {
+			AEntity<?> ent = mContent.remove( base);
+			if (ent != null) {
+				SwingUtilities.invokeLater( new EntityRemove( ent));
+			}
+		}
+	}
+
+	@Override
+	public void baseUpdate( ModelEvent event) {
+		AEntity<?> ent = null;
+		ABase base = event.getBase();
+		if (base != null && !mContent.containsKey( base)) {
+			ent = EntityFactory.get( base, this);
+			if (ent == null) {
+				mContent.put( base, ent);
+			}
+		}
+		if (ent != null) {
+			SwingUtilities.invokeLater( new EntityAdd( ent));
+		}
+		else {
+			Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
+		}
+	}
+
 	public ABase getBase() {
 		return null;
 	}
 
-	public EditController getCtrl() {
+	public EditController getController() {
 		return mCtrl;
 	}
 
 	@Override
 	protected void paintComponent( Graphics g) {
-		if (ui != null) {
-//			drawImage( (Graphics2D) g, this, BACKGROUND, 0.5F, 1.0F); // 170, 234
-			drawImage( (Graphics2D) g, this, BACKGROUND, 0.5F, 1F, false);
-			drawImage( (Graphics2D) g, this, BACKGROUND, 0.5F, 1F, true);
-//			drawImage( (Graphics2D) g, this, FRONT, 1F, 1F, false);
-			drawImage1( (Graphics2D) g, this, FRONT, 20, 20);
+		drawBackground( (Graphics2D) g, this);
+	}
+
+	private class EntityAdd implements Runnable {
+		private AEntity<?> mEnt;
+
+		public EntityAdd( AEntity<?> ent) {
+			mEnt = ent;
+		}
+
+		@Override
+		public void run() {
+			removeAll();
+			mEnt.update();
+			validate();
+			repaint();
 		}
 	}
 
-	public void showBase( ABase base) {
+	private class EntityRemove implements Runnable {
+		private AEntity<?> mEnt;
+
+		public EntityRemove( AEntity<?> ent) {
+			mEnt = ent;
+		}
+
+		@Override
+		public void run() {
+			mEnt.remove();
+			removeAll();
+			validate();
+			repaint();
+		}
 	}
 }

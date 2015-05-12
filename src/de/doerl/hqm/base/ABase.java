@@ -14,7 +14,6 @@ public abstract class ABase implements IBase {
 
 	@Override
 	public String toString() {
-		ToString sb = new ToString( this);
-		return sb.toString();
+		return ToString.clsName( this);
 	}
 }
