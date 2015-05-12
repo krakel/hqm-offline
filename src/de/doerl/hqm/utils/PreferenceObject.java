@@ -179,7 +179,7 @@ class PreferenceObject {
 			return mValue != null ? (String[]) mValue : DUMMY_ARRAY;
 		}
 		catch (ClassCastException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		try {
 			return new String[] {
@@ -187,7 +187,7 @@ class PreferenceObject {
 			};
 		}
 		catch (ClassCastException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		return DUMMY_ARRAY;
 	}
@@ -197,7 +197,7 @@ class PreferenceObject {
 			return mValue != null ? (String[]) mValue : def;
 		}
 		catch (ClassCastException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 			return def;
 		}
 	}

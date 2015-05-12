@@ -31,7 +31,7 @@ public class EditModel {
 				l.baseAdded( event);
 			}
 			catch (Exception ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "EditModel.event.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 	}
@@ -43,7 +43,7 @@ public class EditModel {
 				l.baseChanged( event);
 			}
 			catch (Exception ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "EditModel.event.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 	}
@@ -55,7 +55,7 @@ public class EditModel {
 				l.baseRemoved( event);
 			}
 			catch (Exception ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "EditModel.event.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 	}
@@ -67,7 +67,7 @@ public class EditModel {
 				l.baseUpdate( event);
 			}
 			catch (Exception ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "EditModel.event.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 	}
@@ -83,7 +83,7 @@ public class EditModel {
 				}
 			}
 			catch (RuntimeException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 		return null;

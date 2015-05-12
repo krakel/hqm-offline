@@ -219,7 +219,7 @@ class PreferenceHash extends HashMap<String, Object> {
 				}
 			}
 			catch (ClassCastException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 	}
@@ -433,7 +433,7 @@ class PreferenceHash extends HashMap<String, Object> {
 				}
 			}
 			catch (ClassCastException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 		return set;

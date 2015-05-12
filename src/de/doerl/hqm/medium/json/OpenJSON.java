@@ -33,7 +33,7 @@ class OpenJSON extends AOpenFile {
 			setLastHQM( file);
 			return true;
 		}
-		Utils.log( LOGGER, Level.FINER, "Common.error", file);
+		Utils.log( LOGGER, Level.FINER, "Common.error {0}", file);
 		return false;
 	}
 
@@ -55,7 +55,7 @@ class OpenJSON extends AOpenFile {
 				}
 			}
 			catch (IOException ex) {
-				Utils.logThrows( LOGGER, Level.FINER, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.FINER, ex);
 			}
 		}
 	}

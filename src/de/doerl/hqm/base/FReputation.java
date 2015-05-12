@@ -41,7 +41,7 @@ public final class FReputation extends AMember<FReputation> {
 				}
 			}
 			catch (RuntimeException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 		return null;

@@ -257,7 +257,7 @@ public class ResourceManager {
 				}
 			}
 			catch (IOException ex) {
-				Utils.log( LOGGER, Level.WARNING, "io.read", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 			finally {
 				if (in != null) {
@@ -266,7 +266,7 @@ public class ResourceManager {
 						in = null;
 					}
 					catch (IOException ex) {
-						Utils.log( LOGGER, Level.WARNING, "io.close", ex);
+						Utils.logThrows( LOGGER, Level.WARNING, ex);
 					}
 				}
 				if (res != null) {
@@ -275,7 +275,7 @@ public class ResourceManager {
 						res = null;
 					}
 					catch (IOException ex) {
-						Utils.log( LOGGER, Level.WARNING, "io.close", ex);
+						Utils.logThrows( LOGGER, Level.WARNING, ex);
 					}
 				}
 			}

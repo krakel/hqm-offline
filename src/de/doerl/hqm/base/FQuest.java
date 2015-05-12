@@ -92,7 +92,7 @@ public final class FQuest extends ANamed {
 				}
 			}
 			catch (RuntimeException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 		return null;
@@ -109,7 +109,7 @@ public final class FQuest extends ANamed {
 				}
 			}
 			catch (RuntimeException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 		return null;

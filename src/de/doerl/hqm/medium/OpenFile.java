@@ -24,7 +24,7 @@ public class OpenFile extends AOpenFile {
 			setLastOpen( file);
 			return true;
 		}
-		Utils.log( LOGGER, Level.FINER, "Common.error", file);
+		Utils.log( LOGGER, Level.FINER, "Common.error {0}", file);
 		return false;
 	}
 

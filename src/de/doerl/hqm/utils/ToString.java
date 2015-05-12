@@ -23,6 +23,11 @@ public final class ToString {
 		}
 	}
 
+	public static String clsName( Object obj) {
+		ToString sb = new ToString( obj);
+		return sb.toString();
+	}
+
 	private void addCloseGroup() {
 		if (mGroup > 0) {
 			--mGroup;

@@ -1,18 +1,18 @@
 package de.doerl.hqm.view;
 
-import de.doerl.hqm.base.FQuestSets;
+import de.doerl.hqm.base.FQuestSet;
 
-class QuestSetEntity extends AEntity<FQuestSets> {
-	private FQuestSets mSet;
+public class QuestSetEntity extends AEntity<FQuestSet> {
+	private FQuestSet mQS;
 
-	public QuestSetEntity( EditView view, FQuestSets set) {
+	public QuestSetEntity( EditView view, FQuestSet qs) {
 		super( view);
-		mSet = set;
+		mQS = qs;
 	}
 
 	@Override
-	public FQuestSets getBase() {
-		return mSet;
+	public FQuestSet getBase() {
+		return mQS;
 	}
 
 	@Override

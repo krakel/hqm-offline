@@ -38,7 +38,7 @@ public abstract class AQuestTaskItems extends AQuestTask {
 				}
 			}
 			catch (RuntimeException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 		return null;

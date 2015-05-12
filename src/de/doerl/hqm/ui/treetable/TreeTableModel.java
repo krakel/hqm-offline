@@ -52,7 +52,7 @@ public class TreeTableModel extends AbstractTableModel implements TreeModel, IMo
 			}
 		}
 		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class TreeTableModel extends AbstractTableModel implements TreeModel, IMo
 					((TreeModelListener) listeners[i + 1]).treeNodesChanged( event);
 				}
 				catch (ClassCastException ex) {
-					Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
 				}
 			}
 		}
@@ -113,7 +113,7 @@ public class TreeTableModel extends AbstractTableModel implements TreeModel, IMo
 					((TreeModelListener) listeners[i + 1]).treeNodesInserted( event);
 				}
 				catch (ClassCastException ex) {
-					Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
 				}
 			}
 		}
@@ -128,7 +128,7 @@ public class TreeTableModel extends AbstractTableModel implements TreeModel, IMo
 					((TreeModelListener) listeners[i + 1]).treeNodesRemoved( event);
 				}
 				catch (ClassCastException ex) {
-					Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public class TreeTableModel extends AbstractTableModel implements TreeModel, IMo
 					((TreeModelListener) listeners[i + 1]).treeStructureChanged( event);
 				}
 				catch (ClassCastException ex) {
-					Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
 				}
 			}
 		}
@@ -248,7 +248,7 @@ public class TreeTableModel extends AbstractTableModel implements TreeModel, IMo
 			}
 		}
 		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		return null;
 	}
@@ -288,7 +288,7 @@ public class TreeTableModel extends AbstractTableModel implements TreeModel, IMo
 			}
 		}
 		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 

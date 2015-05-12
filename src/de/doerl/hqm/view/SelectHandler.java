@@ -56,7 +56,7 @@ public class SelectHandler implements MouseListener {
 				}
 			}
 			catch (ClassCastException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 	}

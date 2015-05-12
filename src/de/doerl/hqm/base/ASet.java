@@ -33,7 +33,7 @@ public abstract class ASet<E extends ANamed> extends ABase {
 				}
 			}
 			catch (RuntimeException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 		return null;

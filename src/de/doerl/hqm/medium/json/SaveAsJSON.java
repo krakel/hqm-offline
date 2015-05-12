@@ -46,7 +46,7 @@ class SaveAsJSON extends ASaveAsFile {
 						mCallback.savedHQMAction();
 					}
 					catch (Exception ex) {
-						Utils.logThrows( LOGGER, Level.WARNING, "Can not save " + file, ex);
+						Utils.logThrows( LOGGER, Level.WARNING, ex);
 					}
 				}
 			}

@@ -42,7 +42,7 @@ public class Medium implements IMedium {
 			}
 		}
 		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		return false;
 	}
@@ -60,7 +60,7 @@ public class Medium implements IMedium {
 			}
 		}
 		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		return false;
 	}
@@ -98,7 +98,7 @@ public class Medium implements IMedium {
 			return def;
 		}
 		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		return null;
 	}
@@ -109,7 +109,7 @@ public class Medium implements IMedium {
 			writeHQM( hqm, os, cb);
 		}
 		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 }

@@ -68,7 +68,7 @@ public class PreferenceManager {
 						((IPreferenceChangeListener) listeners[i + 1]).preferenceChanged( event);
 					}
 					catch (ClassCastException ex) {
-						Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+						Utils.logThrows( LOGGER, Level.WARNING, ex);
 					}
 				}
 			}
@@ -252,7 +252,7 @@ public class PreferenceManager {
 						initAll( false);
 					}
 					catch (IOException ex) {
-						Utils.log( LOGGER, Level.WARNING, "read", ex);
+						Utils.logThrows( LOGGER, Level.WARNING, ex);
 						initAll( true);
 					}
 				}
@@ -310,7 +310,7 @@ public class PreferenceManager {
 		if (SOURCE.exists()) {
 			oldFile = new File( SOURCE.getAbsolutePath() + ".old");
 			if (!SOURCE.renameTo( oldFile)) {
-				Utils.log( LOGGER, Level.SEVERE, "error.preference.rename", SOURCE.getName());
+				Utils.log( LOGGER, Level.SEVERE, "error.preference.rename {0}", SOURCE.getName());
 				return;
 			}
 		}
@@ -334,7 +334,7 @@ public class PreferenceManager {
 			if (oldFile != null) {
 				oldFile.renameTo( SOURCE);
 			}
-			Utils.log( LOGGER, Level.WARNING, "error.preference.save", SOURCE.getName(), ex.getMessage());
+			Utils.log( LOGGER, Level.WARNING, "error.preference.save {0} {1}", SOURCE.getName(), ex.getMessage());
 		}
 	}
 

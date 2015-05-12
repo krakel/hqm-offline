@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
@@ -15,11 +17,12 @@ import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.utils.Utils;
 
 @SuppressWarnings( "nls")
 public class EditView extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -15489231166915296L;
-//	private static final Logger LOGGER = Logger.getLogger( EditView.class.getName());
+	private static final Logger LOGGER = Logger.getLogger( EditView.class.getName());
 	private static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
 	private static final BufferedImage FRONT = ResourceManager.getImage( "front.png"); //.getSubimage( 20, 20, 260, 340);
 	protected HashMap<ABase, AEntity<?>> mContent = new HashMap<ABase, AEntity<?>>();
@@ -57,6 +60,19 @@ public class EditView extends JPanel implements IModelListener {
 
 	@Override
 	public void baseUpdate( ModelEvent event) {
+		ABase base = event.getBase();
+		AEntity<?> ent = EntityFactory.get( base, this);
+		if (ent != null) {
+			addBase( base, ent);
+//			SwingUtilities.invokeLater( new Runnable() {
+//			@Override
+//			public void run() {
+//			}
+//		});
+		}
+		else {
+			Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
+		}
 	}
 
 	protected void drawImage( Graphics2D g2, JPanel unit, BufferedImage img) {

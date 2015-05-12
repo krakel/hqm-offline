@@ -67,7 +67,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			}
 		}
 		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, "Common.error", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 

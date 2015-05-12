@@ -59,7 +59,7 @@ public class BaseDefaults {
 		if (SOURCE.exists()) {
 			oldFile = new File( SOURCE.getAbsolutePath() + ".old");
 			if (!SOURCE.renameTo( oldFile)) {
-				Utils.log( LOGGER, Level.WARNING, "error.preference.rename", SOURCE.getName());
+				Utils.log( LOGGER, Level.WARNING, "error.preference.rename {0}", SOURCE.getName());
 				return;
 			}
 		}
@@ -73,7 +73,7 @@ public class BaseDefaults {
 			if (oldFile != null) {
 				oldFile.renameTo( SOURCE);
 			}
-			Utils.log( LOGGER, Level.WARNING, "error.preference.save", SOURCE.getName(), ex.getMessage());
+			Utils.log( LOGGER, Level.WARNING, "error.preference.save {0}", SOURCE.getName(), ex.getMessage());
 		}
 	}
 
@@ -104,7 +104,7 @@ public class BaseDefaults {
 			}
 		}
 		catch (IOException ex) {
-			Utils.log( LOGGER, Level.WARNING, "APreferenceHandler.read", ex);
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 

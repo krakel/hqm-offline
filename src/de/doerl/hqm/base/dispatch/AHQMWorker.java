@@ -46,13 +46,14 @@ import de.doerl.hqm.base.FReputationMarker;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FReputationSetting;
 import de.doerl.hqm.base.FReputations;
+import de.doerl.hqm.utils.ToString;
 import de.doerl.hqm.utils.Utils;
 
 public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	private static final Logger LOGGER = Logger.getLogger( AHQMWorker.class.getName());
 
 	protected T doBase( ABase base, U p) {
-		Utils.log( LOGGER, Level.WARNING, "AHQMWorker.missing");
+		Utils.log( LOGGER, Level.WARNING, "{0} missing handler for {1}", ToString.clsName( this), base);
 		return null;
 	}
 

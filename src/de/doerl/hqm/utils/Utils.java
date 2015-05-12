@@ -44,43 +44,43 @@ public class Utils {
 
 	public static void assertEquals( Logger logger, String msg, boolean expected, boolean actual) {
 		if (expected != actual) {
-			log( logger, Level.WARNING, "Utils.assertEquals", msg, new Boolean( expected), new Boolean( actual));
+			log( logger, Level.WARNING, "Utils.assertEquals {0} {1} {2}", msg, new Boolean( expected), new Boolean( actual));
 		}
 	}
 
 	public static void assertEquals( Logger logger, String msg, int expected, int actual) {
 		if (expected != actual) {
-			log( logger, Level.WARNING, "Utils.assertEquals", msg, new Integer( expected), new Integer( actual));
+			log( logger, Level.WARNING, "Utils.assertEquals {0} {1} {2}", msg, new Integer( expected), new Integer( actual));
 		}
 	}
 
 	public static void assertEquals( Logger logger, String msg, long expected, long actual) {
 		if (expected != actual) {
-			log( logger, Level.WARNING, "Utils.assertEquals", msg, new Long( expected), new Long( actual));
+			log( logger, Level.WARNING, "Utils.assertEquals {0} {1} {2}", msg, new Long( expected), new Long( actual));
 		}
 	}
 
 	public static void assertEquals( Logger logger, String msg, Object expected, Object actual) {
 		if (different( expected, actual)) {
-			log( logger, Level.WARNING, "Utils.assertEquals", msg, expected, actual);
+			log( logger, Level.WARNING, "Utils.assertEquals {0} {1} {2}", msg, expected, actual);
 		}
 	}
 
 	public static void assertEquals( Logger logger, String msg, short expected, short actual) {
 		if (expected != actual) {
-			log( logger, Level.WARNING, "Utils.assertEquals", msg, new Short( expected), new Short( actual));
+			log( logger, Level.WARNING, "Utils.assertEquals {0} {1} {2}", msg, new Short( expected), new Short( actual));
 		}
 	}
 
 	public static void assertNotNull( Logger logger, String msg, Object actual) {
 		if (actual == null) {
-			log( logger, Level.WARNING, "Utils.assertNotNull", msg);
+			log( logger, Level.WARNING, "Utils.assertNotNull {0}", msg);
 		}
 	}
 
 	public static void assertNull( Logger logger, String msg, Object actual) {
 		if (actual != null) {
-			log( logger, Level.WARNING, "Utils.assertNull", msg, actual);
+			log( logger, Level.WARNING, "Utils.assertNull {0} {1}", msg, actual);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class Utils {
 		}
 		catch (Exception ex) {
 		}
-		log( SELF_LOGGER, Level.WARNING, "Utils.resource", path);
+		log( SELF_LOGGER, Level.WARNING, "Utils.resource {0}", path);
 		return ".";
 	}
 
@@ -249,7 +249,7 @@ public class Utils {
 		}
 		catch (Exception ex) {
 		}
-		log( SELF_LOGGER, Level.WARNING, "Utils.resource", path);
+		log( SELF_LOGGER, Level.WARNING, "Utils.resource {0}", path);
 		return ".";
 	}
 
@@ -293,7 +293,7 @@ public class Utils {
 				SwingUtilities.invokeAndWait( r);
 			}
 			catch (Exception ex) {
-				Utils.logThrows( SELF_LOGGER, Level.WARNING, "Common.error", ex);
+				Utils.logThrows( SELF_LOGGER, Level.WARNING, ex);
 			}
 		}
 	}
@@ -337,7 +337,7 @@ public class Utils {
 	}
 
 	public static void logDispatchThread() {
-		Utils.log( SELF_LOGGER, Level.FINEST, "SwingUtilities.isEventDispatchThread() " + SwingUtilities.isEventDispatchThread());
+		Utils.log( SELF_LOGGER, Level.FINEST, "SwingUtilities.isEventDispatchThread()  {0}", SwingUtilities.isEventDispatchThread());
 	}
 
 	public static void logProperty( Logger l, Level lvl, String property) {
@@ -348,8 +348,9 @@ public class Utils {
 		}
 	}
 
-	public static void logThrows( Logger l, Level lvl, String msg, Throwable ex) {
+	public static void logThrows( Logger l, Level lvl, Throwable ex) {
 		if (l.isLoggable( lvl)) {
+			String msg = "Common.error {0}";
 			if (sTraceStack) {
 				doLogThrows( l, lvl, msg, ex);
 //				ex.printStackTrace();

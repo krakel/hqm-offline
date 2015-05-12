@@ -1,9 +1,8 @@
 package de.doerl.hqm.view;
 
-import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FHqm;
 
-class HQMEntity extends AEntity<ABase> {
+class HQMEntity extends AEntity<FHqm> {
 	private FHqm mBase;
 
 	public HQMEntity( EditView view, FHqm base) {
