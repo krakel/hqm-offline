@@ -13,7 +13,6 @@ public final class FHqm extends ABase {
 	public final FParameterString mDesc = new FParameterString( this, "Description");
 	public final FQuestSets mQuestSets = new FQuestSets( this);
 	public final FReputations mRepSets = new FReputations( this);
-	public final FQuests mQuests = new FQuests( this);
 	public final FGroupTiers mGroupTiers = new FGroupTiers( this);
 	public final FGroups mGroups = new FGroups( this);
 	private URI mURI;

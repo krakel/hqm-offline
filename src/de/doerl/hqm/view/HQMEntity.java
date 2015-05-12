@@ -1,17 +1,18 @@
 package de.doerl.hqm.view;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.FHqm;
 
-public class HQMEntity extends AEntity<ABase> {
-	private ABase mBase;
+class HQMEntity extends AEntity<ABase> {
+	private FHqm mBase;
 
-	public HQMEntity( EditView view, ABase base) {
+	public HQMEntity( EditView view, FHqm base) {
 		super( view);
 		mBase = base;
 	}
 
 	@Override
-	public ABase getBase() {
+	public FHqm getBase() {
 		return mBase;
 	}
 

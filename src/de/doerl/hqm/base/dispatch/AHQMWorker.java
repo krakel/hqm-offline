@@ -40,7 +40,6 @@ import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
-import de.doerl.hqm.base.FQuests;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationMarker;
@@ -170,12 +169,7 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 
 	@Override
 	public T forQuest( FQuest quest, U p) {
-		return doMember( quest, p);
-	}
-
-	@Override
-	public T forQuests( FQuests set, U p) {
-		return doSet( set, p);
+		return doNamed( quest, p);
 	}
 
 	@Override

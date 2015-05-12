@@ -91,7 +91,7 @@ public class EditModel {
 
 	public void loadHQM( FHqm hqm) {
 		mHQMs.add( hqm);
-		LoaderFactory.create( hqm, this);
+		fireBaseAdded( hqm);
 		setActive( hqm);
 	}
 

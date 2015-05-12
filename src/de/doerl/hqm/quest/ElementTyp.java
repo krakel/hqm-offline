@@ -10,7 +10,6 @@ import de.doerl.hqm.utils.ResourceManager;
 public enum ElementTyp {
 	HQM( "HQM", "hqm"),
 	QUEST( "Quest", "quest"),
-	QUESTS( "Quests", "quests"),
 	QUEST_SET( "QuestSet", "questSet"),
 	QUEST_SETS( "QuestSets", "questSets"),
 	QUEST_TASK_DEATH( "TaskDeath", "taskDeath"),

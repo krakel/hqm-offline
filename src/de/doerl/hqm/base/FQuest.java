@@ -9,28 +9,29 @@ import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.utils.Utils;
 
-public final class FQuest extends AMember<FQuest> {
+public final class FQuest extends ANamed {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
+	public final FQuestSet mParentSet;
 	public final FParameterString mDesc = new FParameterString( this, "Description");
 	public final FParameterInt mX = new FParameterInt( this, "X");
 	public final FParameterInt mY = new FParameterInt( this, "Y");
 	public final FParameterBoolean mBig = new FParameterBoolean( this, "Big");
-	public final FParameterInt mSetID = new FParameterInt( this, "SetID");
 	public final FParameterStack mIcon = new FParameterStack( this, "Icon");
 	public final FParameterIntegerArr mRequirements = new FParameterIntegerArr( this, "Requirements");
 	public final FParameterIntegerArr mOptionLinks = new FParameterIntegerArr( this, "OptionLinks");
-	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	public final FParameterInt mTriggerTasks = new FParameterInt( this, "Trigger");
 	public final FParameterEnum<TriggerType> mTriggerType = new FParameterEnum<TriggerType>( this, "TriggerType");
 	public final FParameterBoolean mReqUseModified = new FParameterBoolean( this, "RequirementUseModified");
 	public final FParameterInt mReqCount = new FParameterInt( this, "RequirementCount");
-	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();
+	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private AStack[] mReward;
 	private AStack[] mRewardChoice;
+	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();
 	private Vector<FReputationReward> mRewards = new Vector<FReputationReward>();
 
-	public FQuest( FQuests parent, String name) {
-		super( parent, name);
+	public FQuest( FQuestSet parent, String name) {
+		super( name);
+		mParentSet = parent;
 		mTriggerType.mValue = TriggerType.NONE;
 	}
 
@@ -117,6 +118,11 @@ public final class FQuest extends AMember<FQuest> {
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST;
+	}
+
+	@Override
+	public FQuestSet getParent() {
+		return mParentSet;
 	}
 
 	public FRepeatInfo getRepeatInfo() {

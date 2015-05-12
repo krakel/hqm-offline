@@ -31,7 +31,6 @@ import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
-import de.doerl.hqm.base.FQuests;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationMarker;
@@ -40,6 +39,7 @@ import de.doerl.hqm.base.FReputationSetting;
 import de.doerl.hqm.base.FReputations;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IStackWorker;
+import de.doerl.hqm.base.dispatch.QuestSetIndex;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.quest.TriggerType;
@@ -123,7 +123,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( "decription", hqm.mDesc);
 		writeSets( hqm.mQuestSets);
 		writeReputations( hqm.mRepSets);
-		writeQuests( hqm.mQuests);
 		writeGroupTiers( hqm.mGroupTiers);
 		writeGroups( hqm.mGroups);
 		mDst.endObject();
@@ -186,7 +185,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( "x", quest.mX);
 		mDst.print( "y", quest.mY);
 		mDst.print( "big", quest.mBig);
-		mDst.print( "setID", quest.mSetID);
+		mDst.print( "setID", QuestSetIndex.get( quest.mParentSet));
 		mDst.print( "icon", quest.mIcon);
 		if (quest.mRequirements != null) {
 			mDst.print( "requirements", quest.mRequirements);
@@ -224,6 +223,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.beginObject();
 		mDst.print( "name", qs.getName());
 		mDst.print( "decription", qs.mDesc);
+		qs.forEachQuest( this, mDst);
 		mDst.endObject();
 		return null;
 	}
@@ -375,13 +375,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.beginArray( "markers");
 		rep.forEachMarker( this, mDst);
 		mDst.endArray();
-	}
-
-	private void writeQuests( FQuests set) {
-		mDst.beginArray( "quests");
-		set.forEachMember( this, mDst);
-		mDst.endArray();
-		mDst.println();
 	}
 
 	private void writeReputations( FReputations set) {

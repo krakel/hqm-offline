@@ -1,6 +1,7 @@
 package de.doerl.hqm.ui.treetable;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.ASet;
 import de.doerl.hqm.base.FFluidRequirement;
@@ -39,8 +40,15 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 	}
 
 	@Override
+	protected Object doMember( AMember<? extends ANamed> member, TreeTableModel model) {
+		RowFactory.get( member, model);
+		return null;
+	}
+
+	@Override
 	protected Object doSet( ASet<? extends ANamed> set, TreeTableModel model) {
 		RowFactory.get( set, model);
+		set.forEachMember( this, model);
 		return null;
 	}
 
@@ -75,6 +83,10 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 	@Override
 	public Object forHQM( FHqm hqm, TreeTableModel model) {
 		RowFactory.get( hqm, model);
+		hqm.mQuestSets.accept( this, model);
+		hqm.mRepSets.accept( this, model);
+		hqm.mGroupTiers.accept( this, model);
+		hqm.mGroups.accept( this, model);
 		return null;
 	}
 
@@ -117,7 +129,7 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 		RowFactory.get( quest.mX, model);
 		RowFactory.get( quest.mY, model);
 		RowFactory.get( quest.mBig, model);
-		RowFactory.get( quest.mSetID, model);
+//		RowFactory.get( quest.mSetID, model);
 		RowFactory.get( quest.mIcon, model);
 		RowFactory.get( quest.mRequirements, model);
 		RowFactory.get( quest.mOptionLinks, model);
@@ -137,6 +149,7 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 	public Object forQuestSet( FQuestSet qs, TreeTableModel model) {
 		RowFactory.get( qs, model);
 		RowFactory.get( qs.mDesc, model);
+		qs.forEachQuest( this, model);
 		return null;
 	}
 

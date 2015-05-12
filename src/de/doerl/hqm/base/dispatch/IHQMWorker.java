@@ -28,7 +28,6 @@ import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
-import de.doerl.hqm.base.FQuests;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationMarker;
@@ -70,8 +69,6 @@ public interface IHQMWorker<T, U> extends IWorker {
 	T forParameterString( FParameterString par, U p);
 
 	T forQuest( FQuest quest, U p);
-
-	T forQuests( FQuests set, U p);
 
 	T forQuestSet( FQuestSet qs, U p);
 
