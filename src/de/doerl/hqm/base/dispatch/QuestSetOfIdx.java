@@ -7,6 +7,7 @@ public class QuestSetOfIdx extends AHQMWorker<FQuestSet, Object> {
 	private int mIndex;
 
 	private QuestSetOfIdx( int index) {
+		mIndex = index;
 	}
 
 	public static FQuestSet get( FQuestSets set, int idx) {

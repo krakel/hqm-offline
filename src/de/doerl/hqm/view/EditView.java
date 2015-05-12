@@ -1,10 +1,10 @@
 package de.doerl.hqm.view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class EditView extends JPanel implements IModelListener {
 	private EditController mCtrl;
 
 	public EditView( EditController ctrl) {
-		setLayout( new BorderLayout());
+		setLayout( new GridLayout( 1, 1));
 		mCtrl = ctrl;
 		ctrl.getModel().addListener( this);
 	}
