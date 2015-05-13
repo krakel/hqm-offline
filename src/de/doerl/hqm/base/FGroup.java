@@ -20,10 +20,6 @@ public final class FGroup extends AMember<FGroup> {
 		return w.forGroup( this, p);
 	}
 
-	public void addItemStk( AStack stk) {
-		mStacks.add( new FParameterStack( this, "stack", stk));
-	}
-
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.GROUP;

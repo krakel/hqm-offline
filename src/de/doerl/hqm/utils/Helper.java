@@ -7,7 +7,6 @@
  */
 package de.doerl.hqm.utils;
 
-
 public final class Helper {
 	private static final boolean CUT_OUTPUT = true;
 	private static final int CUT_LENGTH = 32;

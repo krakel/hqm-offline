@@ -1,5 +1,7 @@
 package de.doerl.hqm.ui.treetable;
 
+import java.util.Vector;
+
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
@@ -45,6 +47,12 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 		return null;
 	}
 
+	private void doParameterStacks( Vector<FParameterStack> arr, TreeTableModel model) {
+		for (FParameterStack stack : arr) {
+			RowFactory.get( stack, model);
+		}
+	}
+
 	@Override
 	protected Object doSet( ASet<? extends ANamed> set, TreeTableModel model) {
 		RowFactory.get( set, model);
@@ -66,9 +74,7 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 		RowFactory.get( grp.mID, model);
 		RowFactory.get( grp.mTierID, model);
 		RowFactory.get( grp.mLimit, model);
-		for (FParameterStack stack : grp.mStacks) {
-			RowFactory.get( stack, model);
-		}
+		doParameterStacks( grp.mStacks, model);
 		return null;
 	}
 
@@ -139,8 +145,8 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 		RowFactory.get( quest.mReqUseModified, model);
 		RowFactory.get( quest.mReqCount, model);
 		quest.forEachQuestTask( this, model);
-//		createNodeParameterStackArr( quest.getReward());
-//		createNodeParameterStackArr( quest.getRewardChoice());
+		doParameterStacks( quest.mRewards, model);
+		doParameterStacks( quest.mChoices, model);
 		quest.forEachReputationReward( this, model);
 		return null;
 	}

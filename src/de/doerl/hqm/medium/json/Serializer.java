@@ -2,11 +2,11 @@ package de.doerl.hqm.medium.json;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Vector;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AQuestTaskReputation;
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
@@ -100,7 +100,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( "id", grp.mID);
 		mDst.print( "name", grp.getName());
 		mDst.print( "tierID", grp.mTierID);
-		writeStacks( grp);
+		writeStacks( grp.mStacks, "stacks");
 		mDst.endObject();
 		return null;
 	}
@@ -208,11 +208,8 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 			mDst.print( "parentRequirementCount", quest.mReqCount);
 		}
 		writeTasks( quest);
-		mDst.println();
-		writeStkArr( "reward", quest.getReward());
-		mDst.println();
-		writeStkArr( "rewardChoice", quest.getRewardChoice());
-		mDst.println();
+		writeStacks( quest.mRewards, "reward");
+		writeStacks( quest.mChoices, "choice");
 		quest.forEachReputationReward( this, mDst);
 		mDst.endObject();
 		return null;
@@ -391,32 +388,19 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.println();
 	}
 
-	private void writeStacks( FGroup grp) {
-		mDst.beginArray( "stacks");
-		for (FParameterStack stk : grp.mStacks) {
+	private void writeStacks( Vector<FParameterStack> stacks, String key) {
+		mDst.beginArray( key);
+		for (FParameterStack stk : stacks) {
 			stk.mValue.accept( this, null);
 		}
 		mDst.endArray();
-	}
-
-	private void writeStkArr( String key, AStack[] arr) {
-		if (arr != null) {
-			mDst.beginArray( key);
-			for (AStack stk : arr) {
-				if (stk != null) {
-					stk.accept( this, null);
-				}
-				else {
-					mDst.println( "null");
-				}
-			}
-			mDst.endArray();
-		}
+		mDst.println();
 	}
 
 	private void writeTasks( FQuest quest) {
 		mDst.beginArray( "tasks");
 		quest.forEachQuestTask( this, mDst);
 		mDst.endArray();
+		mDst.println();
 	}
 }

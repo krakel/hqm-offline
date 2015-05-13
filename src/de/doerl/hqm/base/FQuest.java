@@ -23,11 +23,11 @@ public final class FQuest extends ANamed {
 	public final FParameterEnum<TriggerType> mTriggerType = new FParameterEnum<TriggerType>( this, "TriggerType");
 	public final FParameterBoolean mReqUseModified = new FParameterBoolean( this, "RequirementUseModified");
 	public final FParameterInt mReqCount = new FParameterInt( this, "RequirementCount");
+	public final Vector<FParameterStack> mRewards = new Vector<FParameterStack>();
+	public final Vector<FParameterStack> mChoices = new Vector<FParameterStack>();
 	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
-	private AStack[] mReward;
-	private AStack[] mRewardChoice;
 	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();
-	private Vector<FReputationReward> mRewards = new Vector<FReputationReward>();
+	private Vector<FReputationReward> Reputation = new Vector<FReputationReward>();
 
 	public FQuest( FQuestSet parent, String name) {
 		super( name);
@@ -77,7 +77,7 @@ public final class FQuest extends ANamed {
 
 	public FReputationReward createReputationReward() {
 		FReputationReward reward = new FReputationReward( this);
-		mRewards.add( reward);
+		Reputation.add( reward);
 		return reward;
 	}
 
@@ -99,7 +99,7 @@ public final class FQuest extends ANamed {
 	}
 
 	public <T, U> T forEachReputationReward( IHQMWorker<T, U> worker, U p) {
-		for (FReputationReward disp : mRewards) {
+		for (FReputationReward disp : Reputation) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);
@@ -127,21 +127,5 @@ public final class FQuest extends ANamed {
 
 	public FRepeatInfo getRepeatInfo() {
 		return mRepeatInfo;
-	}
-
-	public AStack[] getReward() {
-		return mReward;
-	}
-
-	public AStack[] getRewardChoice() {
-		return mRewardChoice;
-	}
-
-	public void setReward( AStack[] reward) {
-		mReward = reward;
-	}
-
-	public void setRewardChoice( AStack[] rewardChoice) {
-		mRewardChoice = rewardChoice;
 	}
 }

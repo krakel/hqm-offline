@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.medium.FNbt;
@@ -143,20 +142,6 @@ class BitInputStream extends InputStream {
 		}
 		else {
 			return Integer.toString( readData( DataBitHelper.SHORT));
-		}
-	}
-
-	public AStack[] readRewardData() {
-		if (readBoolean()) {
-			int count = readData( DataBitHelper.REWARDS);
-			AStack[] result = new AStack[count];
-			for (int i = 0; i < result.length; i++) {
-				result[i] = readFixedItemStack( true);
-			}
-			return result;
-		}
-		else {
-			return null;
 		}
 	}
 

@@ -2,8 +2,6 @@ package de.doerl.hqm.view;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,6 +15,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
@@ -28,23 +28,56 @@ import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSets;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetIndex;
+import de.doerl.hqm.base.dispatch.QuestSetSizeOf;
+import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.utils.Utils;
 
 class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	private static final long serialVersionUID = -5930552368392528379L;
 	private static final Logger LOGGER = Logger.getLogger( QuestSetsEntity.class.getName());
 	private FQuestSets mSet;
-	private ListLeaf<FQuestSet> mListLeaf = new ListLeaf<FQuestSet>();
-	private QuestSetLeaf mSetLeaf = new QuestSetLeaf();
+	private DefaultListModel<FQuestSet> mListModel = new DefaultListModel<FQuestSet>();
+	private JList<FQuestSet> mList;
+	private JPanel mLeafLeft = createLeaf( true);
+	private JPanel mLeafRight = createLeaf( false);
+	private JTextArea mDesc = createText();
+	private JLabel mTotal = createLabel( GuiColor.BLACK.getColor(), "");
+	private JLabel mLocked = createLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
+	private JLabel mCompleted = createLabel( GuiColor.GREEN.getColor(), "0 completed quests");
+	private JLabel mAvailible = createLabel( GuiColor.LIGHT_BLUE.getColor(), "0 quests available for completion");
+	private JLabel mUnclaimed = createLabel( GuiColor.PURPLE.getColor(), "0 quests with unclaimed rewards");
+	private JLabel mInvisible = createLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
+	private JScrollPane mScroll;
 
 	public QuestSetsEntity( EditView view, FQuestSets set) {
 		super( view, new GridLayout( 1, 2));
 		mSet = set;
-		add( mListLeaf);
-		add( mSetLeaf);
-		mListLeaf.setCellRenderer( new ListLeafCellRenderer());
-		mListLeaf.addMouseListener( this);
-		QuestSetFactory.get( set, mListLeaf.getModel());
+		createLeft( mLeafLeft);
+		createRight( mLeafRight);
+		add( mLeafLeft);
+		add( mLeafRight);
+		QuestSetFactory.get( set, mListModel);
+	}
+
+	private void createLeft( JPanel leaf) {
+		mList = createList( mListModel);
+		mList.setCellRenderer( new CellRenderer());
+		mList.addMouseListener( this);
+		leaf.add( createScoll( mList, 10000));
+	}
+
+	private void createRight( JPanel leaf) {
+//		top.add( Box.createVerticalStrut( 100));
+		mScroll = createScoll( mDesc, 160);
+		mScroll.setVisible( false);
+		leaf.add( mScroll);
+		leaf.add( mTotal);
+		leaf.add( mLocked);
+		leaf.add( mCompleted);
+		leaf.add( mAvailible);
+		leaf.add( mUnclaimed);
+		leaf.add( mInvisible);
+		leaf.add( Box.createVerticalGlue());
 	}
 
 	@Override
@@ -92,34 +125,26 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	public void mouseReleased( MouseEvent evt) {
 	}
 
-	@Override
-	protected void paintComponent( Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		EditView.drawBackground( g2, this);
+	public void setSet( FQuestSet qs) {
+		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( qs)));
+		mDesc.setText( qs.mDesc.mValue);
+		mScroll.setVisible( true);
 	}
 
-	private static class ListLeafCellRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
-		private static final long serialVersionUID = 9081558438188872705L;
-		private static final Color SELECTED = new Color( 0xAAAAAA);
-		private static final Color UNSELECTED = new Color( 0x404040);
-		private JLabel mTitle;
-		private JLabel mComplete;
+	public void setSets( ASet<FQuestSet> set) {
+		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( set)));
+		mDesc.setText( null);
+		mScroll.setVisible( false);
+	}
 
-		ListLeafCellRenderer() {
+	private static class CellRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
+		private static final long serialVersionUID = 9081558438188872705L;
+		private JLabel mTitle = createTitle( UNSELECTED, "");
+		private JLabel mComplete = createLabel( Color.BLACK, "");
+
+		public CellRenderer() {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			mTitle = new JLabel();
-			mTitle.setOpaque( false);
-			mTitle.setFont( AEntity.FONT_TITLE);
-			mTitle.setBorder( null);
-			mTitle.setAlignmentX( LEFT_ALIGNMENT);
-			mComplete = new JLabel();
-			mComplete.setOpaque( false);
-			mComplete.setFont( AEntity.FONT_NORMAL);
-			mComplete.setBorder( null);
-			JPanel hori = new JPanel();
-			hori.setLayout( new BoxLayout( hori, BoxLayout.X_AXIS));
-			hori.setOpaque( false);
-			hori.setAlignmentX( LEFT_ALIGNMENT);
+			JPanel hori = createBox( BoxLayout.X_AXIS);
 			hori.add( Box.createHorizontalStrut( 24));
 			hori.add( mComplete);
 			add( mTitle);
@@ -135,7 +160,6 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 			boolean enabled = QuestFactory.isEnabled( qs);
 			mComplete.setText( enabled ? "0% Completed" : "Locked");
 			mComplete.setEnabled( enabled);
-			setEnabled( list.isEnabled());
 			return this;
 		}
 	}
@@ -158,8 +182,8 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	}
 
 	private static class QuestSetAction implements Runnable {
-		private FQuestSet mQS;
 		private QuestSetsEntity mEntity;
+		private FQuestSet mQS;
 
 		public QuestSetAction( QuestSetsEntity entity, FQuestSet qs) {
 			mEntity = entity;
@@ -168,7 +192,7 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 
 		@Override
 		public void run() {
-			mEntity.mSetLeaf.setSet( mQS);
+			mEntity.setSet( mQS);
 		}
 	}
 
@@ -196,8 +220,8 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	}
 
 	private static class QuestSetsAction implements Runnable {
-		private ASet<FQuestSet> mSet;
 		private QuestSetsEntity mEntity;
+		private ASet<FQuestSet> mSet;
 
 		public QuestSetsAction( QuestSetsEntity entity, ASet<FQuestSet> set) {
 			mEntity = entity;
@@ -206,8 +230,8 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 
 		@Override
 		public void run() {
-			mEntity.mSetLeaf.setSets( mSet);
-			mEntity.mListLeaf.unselect();
+			mEntity.setSets( mSet);
+			mEntity.mList.clearSelection();
 		}
 	}
 }

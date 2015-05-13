@@ -2,6 +2,7 @@ package de.doerl.hqm.medium.bits;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +21,7 @@ import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMob;
+import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSets;
@@ -187,19 +189,19 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			FGroup grp = set.createMember( name);
 			grp.mID.mValue = id;
 			grp.mTierID.mValue = mSrc.readData( DataBitHelper.TIER_COUNT);
-			readGroupItems( grp);
+			readGroupItems( grp, grp.mStacks);
 			if (mSrc.contains( FileVersion.BAG_LIMITS) && mSrc.readBoolean()) {
 				grp.mLimit.mValue = mSrc.readData( DataBitHelper.LIMIT);
 			}
 		}
 	}
 
-	private void readGroupItems( FGroup grp) {
+	private void readGroupItems( FGroup grp, Vector<FParameterStack> param) {
 		int count = mSrc.readData( DataBitHelper.GROUP_ITEMS);
 		for (int i = 0; i < count; ++i) {
 			AStack itemStack = mSrc.readFixedItemStack( true);
 			if (itemStack != null) {
-				grp.addItemStk( itemStack);
+				param.add( new FParameterStack( grp, "stack", itemStack));
 			}
 		}
 	}
@@ -226,6 +228,18 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			marker.mValue.mValue = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
 		}
 		rep.sort();
+	}
+
+	private void readQuestItems( FQuest quest, Vector<FParameterStack> param, String name) {
+		if (mSrc.readBoolean()) {
+			int count = mSrc.readData( DataBitHelper.REWARDS);
+			for (int i = 0; i < count; i++) {
+				AStack itemStack = mSrc.readFixedItemStack( true);
+				if (itemStack != null) {
+					param.add( new FParameterStack( quest, name, itemStack));
+				}
+			}
+		}
 	}
 
 	private void readQuests( FQuestSets set) {
@@ -284,8 +298,8 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 					member.mReqUseModified.mValue = false;
 				}
 				readTasks( member);
-				member.setReward( mSrc.readRewardData());
-				member.setRewardChoice( mSrc.readRewardData());
+				readQuestItems( member, member.mRewards, "Reward");
+				readQuestItems( member, member.mChoices, "Choice");
 				readReputationReward( member);
 			}
 		}

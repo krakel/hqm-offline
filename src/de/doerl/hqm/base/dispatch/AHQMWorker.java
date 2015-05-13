@@ -77,16 +77,16 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 		return doBase( set, p);
 	}
 
-	protected T doTask( AQuestTask set, U p) {
-		return doNamed( set, p);
+	protected T doTask( AQuestTask task, U p) {
+		return doNamed( task, p);
 	}
 
-	protected T doTaskItems( AQuestTaskItems set, U p) {
-		return doNamed( set, p);
+	protected T doTaskItems( AQuestTaskItems task, U p) {
+		return doTask( task, p);
 	}
 
-	protected T doTaskReputation( AQuestTaskReputation set, U p) {
-		return doNamed( set, p);
+	protected T doTaskReputation( AQuestTaskReputation task, U p) {
+		return doTask( task, p);
 	}
 
 	@Override
