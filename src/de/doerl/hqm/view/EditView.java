@@ -1,7 +1,9 @@
 package de.doerl.hqm.view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -33,32 +35,48 @@ public class EditView extends JPanel implements IModelListener {
 		setLayout( new GridLayout( 1, 1));
 		mCtrl = ctrl;
 		ctrl.getModel().addListener( this);
+//		setPreferredSize( new Dimension( 2 * 170, 234));
+//		setMaximumSize( new Dimension( 2 * 170, 234));
 	}
 
 	public EditView( EditController ctrl, ABase base) {
 		mCtrl = ctrl;
 	}
 
-	static void drawBackground( Graphics2D g2, JPanel unit) {
+	static void drawBackground( Graphics2D g2, Component unit) {
 		g2.setColor( unit.getBackground());
 		g2.fillRect( 0, 0, unit.getWidth(), unit.getHeight());
 		drawImage( g2, unit, BACKGROUND, 0.5, 1, false);
 		drawImage( g2, unit, BACKGROUND, 0.5, 1, true);
 	}
 
-	static void drawImage( Graphics2D g2, JPanel unit, BufferedImage img) {
+	static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
+		FontMetrics fm = g2.getFontMetrics();
+		int x = c.getWidth() - fm.stringWidth( text);
+		int y = c.getHeight() - fm.getDescent();
+		g2.drawString( text, x, y);
+	}
+
+	static void drawCenteredString( Graphics2D g2, Component c, String text) {
+		FontMetrics fm = g2.getFontMetrics();
+		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
+		int y = (c.getHeight() + fm.getAscent() - fm.getDescent()) / 2;
+		g2.drawString( text, x, y);
+	}
+
+	static void drawImage( Graphics2D g2, Component c, BufferedImage img) {
 		if (img != null) {
-			double sx = (double) unit.getWidth() / img.getWidth();
-			double sy = (double) unit.getHeight() / img.getHeight();
+			double sx = (double) c.getWidth() / img.getWidth();
+			double sy = (double) c.getHeight() / img.getHeight();
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
 			g2.drawImage( img, xform, null);
 		}
 	}
 
-	static void drawImage( Graphics2D g2, JPanel unit, BufferedImage img, boolean flip) {
+	static void drawImage( Graphics2D g2, Component c, BufferedImage img, boolean flip) {
 		if (img != null) {
-			double sx = (double) unit.getWidth() / img.getWidth();
-			double sy = (double) unit.getHeight() / img.getHeight();
+			double sx = (double) c.getWidth() / img.getWidth();
+			double sy = (double) c.getHeight() / img.getHeight();
 			if (flip) {
 				AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
 				xform.translate( -2 * img.getWidth(), 0);
@@ -71,10 +89,10 @@ public class EditView extends JPanel implements IModelListener {
 		}
 	}
 
-	static void drawImage( Graphics2D g2, JPanel unit, BufferedImage img, double zoomX, double zoomY, boolean flip) {
+	static void drawImage( Graphics2D g2, Component c, BufferedImage img, double zoomX, double zoomY, boolean flip) {
 		if (img != null) {
-			double sx = zoomX * ((double) unit.getWidth() / img.getWidth());
-			double sy = zoomY * ((double) unit.getHeight() / img.getHeight());
+			double sx = zoomX * ((double) c.getWidth() / img.getWidth());
+			double sy = zoomY * ((double) c.getHeight() / img.getHeight());
 			if (flip) {
 				AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
 				xform.translate( -2 * img.getWidth(), 0);
@@ -87,13 +105,13 @@ public class EditView extends JPanel implements IModelListener {
 		}
 	}
 
-	static void drawImage( Graphics2D g2, JPanel unit, BufferedImage img, int width, int height) {
+	static void drawImage( Graphics2D g2, Component c, BufferedImage img, int width, int height) {
 		if (img != null) {
 			double sx = (double) width / img.getWidth();
 			double sy = (double) height / img.getHeight();
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			double tx = (double) (unit.getWidth() - width) / 2;
-			double ty = (double) (unit.getHeight() - height) / 2;
+			double tx = (double) (c.getWidth() - width) / 2;
+			double ty = (double) (c.getHeight() - height) / 2;
 			xform.translate( tx, ty);
 			g2.drawImage( img, xform, null);
 		}

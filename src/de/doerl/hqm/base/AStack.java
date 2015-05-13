@@ -9,5 +9,7 @@ public abstract class AStack {
 
 	public abstract <T, U> T accept( IStackWorker<T, U> w, U p);
 
+	public abstract int getAmount();
+
 	public abstract FNbt getNBT();
 }

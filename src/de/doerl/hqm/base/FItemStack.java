@@ -6,23 +6,28 @@ import de.doerl.hqm.medium.FNbt;
 public final class FItemStack extends AStack {
 	private FNbt mNBT;
 	private String mItem;
-	private int mDmg;
 	private int mSize;
+	private int mDmg;
 
 	public FItemStack( FNbt nbt) {
 		mNBT = nbt;
 	}
 
-	public FItemStack( FNbt nbt, String item, int dmg, int size) {
+	public FItemStack( FNbt nbt, String item, int size, int dmg) {
 		mNBT = nbt;
 		mItem = item;
-		mDmg = dmg;
 		mSize = size;
+		mDmg = dmg;
 	}
 
 	@Override
 	public <T, U> T accept( IStackWorker<T, U> w, U p) {
 		return w.forItemStack( this, p);
+	}
+
+	@Override
+	public int getAmount() {
+		return mSize;
 	}
 
 	public int getDmg() {
@@ -38,12 +43,8 @@ public final class FItemStack extends AStack {
 		return mNBT;
 	}
 
-	public int getSize() {
-		return mSize;
-	}
-
 	@Override
 	public String toString() {
-		return String.format( "%s dmg(%d) size(%d)", mItem, mDmg, mSize);
+		return String.format( "%s size(%d) dmg(%d)", mItem, mSize, mDmg);
 	}
 }

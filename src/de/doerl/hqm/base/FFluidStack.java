@@ -15,6 +15,7 @@ public final class FFluidStack extends AStack {
 		return w.forFluidStack( this, p);
 	}
 
+	@Override
 	public int getAmount() {
 		return Integer.parseInt( mNBT.getValue( "Amount"));
 	}

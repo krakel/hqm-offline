@@ -38,15 +38,15 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	private FQuestSets mSet;
 	private DefaultListModel<FQuestSet> mListModel = new DefaultListModel<FQuestSet>();
 	private JList<FQuestSet> mList;
-	private JPanel mLeafLeft = createLeaf( true);
-	private JPanel mLeafRight = createLeaf( false);
-	private JTextArea mDesc = createText();
-	private JLabel mTotal = createLabel( GuiColor.BLACK.getColor(), "");
-	private JLabel mLocked = createLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
-	private JLabel mCompleted = createLabel( GuiColor.GREEN.getColor(), "0 completed quests");
-	private JLabel mAvailible = createLabel( GuiColor.LIGHT_BLUE.getColor(), "0 quests available for completion");
-	private JLabel mUnclaimed = createLabel( GuiColor.PURPLE.getColor(), "0 quests with unclaimed rewards");
-	private JLabel mInvisible = createLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
+	private JPanel mLeafLeft = leafPanel( true);
+	private JPanel mLeafRight = leafPanel( false);
+	private JTextArea mDesc = leafTextArea();
+	private JLabel mTotal = leafLabel( GuiColor.BLACK.getColor(), "");
+	private JLabel mLocked = leafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
+	private JLabel mCompleted = leafLabel( GuiColor.GREEN.getColor(), "0 completed quests");
+	private JLabel mAvailible = leafLabel( GuiColor.LIGHT_BLUE.getColor(), "0 quests available for completion");
+	private JLabel mUnclaimed = leafLabel( GuiColor.PURPLE.getColor(), "0 quests with unclaimed rewards");
+	private JLabel mInvisible = leafLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
 	private JScrollPane mScroll;
 
 	public QuestSetsEntity( EditView view, FQuestSets set) {
@@ -60,15 +60,15 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	}
 
 	private void createLeft( JPanel leaf) {
-		mList = createList( mListModel);
+		mList = leafList( mListModel);
 		mList.setCellRenderer( new CellRenderer());
 		mList.addMouseListener( this);
-		leaf.add( createScoll( mList, 10000));
+		leaf.add( leafScoll( mList, 10000));
 	}
 
 	private void createRight( JPanel leaf) {
 //		top.add( Box.createVerticalStrut( 100));
-		mScroll = createScoll( mDesc, 160);
+		mScroll = leafScoll( mDesc, 160);
 		mScroll.setVisible( false);
 		leaf.add( mScroll);
 		leaf.add( mTotal);
@@ -139,12 +139,12 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 
 	private static class CellRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
 		private static final long serialVersionUID = 9081558438188872705L;
-		private JLabel mTitle = createTitle( UNSELECTED, "");
-		private JLabel mComplete = createLabel( Color.BLACK, "");
+		private JLabel mTitle = leafTitle( UNSELECTED, "");
+		private JLabel mComplete = leafLabel( Color.BLACK, "");
 
 		public CellRenderer() {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			JPanel hori = createBox( BoxLayout.X_AXIS);
+			JPanel hori = leafBox( BoxLayout.X_AXIS);
 			hori.add( Box.createHorizontalStrut( 24));
 			hori.add( mComplete);
 			add( mTitle);
