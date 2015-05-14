@@ -35,12 +35,14 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputationMarker;
-import de.doerl.hqm.base.FReputationReward;
-import de.doerl.hqm.base.FReputationSetting;
+import de.doerl.hqm.base.FMarker;
+import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.FReputations;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
+import de.doerl.hqm.base.dispatch.MarkerOfIdx;
+import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.BagTier;
@@ -166,10 +168,10 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
 		for (int i = 0; i < count; i++) {
-			FReputationSetting res = task.createSetting();
-			res.mRepID.mValue = mSrc.readData( DataBitHelper.REPUTATION);
-			res.mLowerID.mValue = mSrc.readBoolean() ? mSrc.readData( DataBitHelper.REPUTATION_MARKER) : null;
-			res.mUpperID.mValue = mSrc.readBoolean() ? mSrc.readData( DataBitHelper.REPUTATION_MARKER) : null;
+			FSetting res = task.createSetting();
+			res.mRep = ReputationOfIdx.get( task, mSrc.readData( DataBitHelper.REPUTATION));
+			res.mLower = mSrc.readBoolean() ? MarkerOfIdx.get( res.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
+			res.mUpper = mSrc.readBoolean() ? MarkerOfIdx.get( res.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
 			res.mInverted.mValue = mSrc.readBoolean();
 		}
 		return null;
@@ -218,8 +220,8 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_MARKER);
 		for (int i = 0; i < count; ++i) {
 			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-			FReputationMarker marker = rep.createMarker( name);
-			marker.mValue.mValue = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
+			FMarker marker = rep.createMarker( name);
+			marker.mMark.mValue = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
 		}
 		rep.sort();
 	}
@@ -318,7 +320,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			int count = mSrc.readData( DataBitHelper.REPUTATION_REWARD);
 			if (count > 0) {
 				for (int i = 0; i < count; i++) {
-					FReputationReward reward = quest.createReputationReward();
+					FReward reward = quest.createReputationReward();
 					reward.mRepID.mValue = mSrc.readData( DataBitHelper.REPUTATION);
 					reward.mValue.mValue = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
 				}

@@ -8,6 +8,7 @@ import de.doerl.hqm.base.FGroups;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FLocation;
+import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FParameterBoolean;
 import de.doerl.hqm.base.FParameterEnum;
@@ -30,10 +31,9 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputationMarker;
-import de.doerl.hqm.base.FReputationReward;
-import de.doerl.hqm.base.FReputationSetting;
 import de.doerl.hqm.base.FReputations;
+import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FSetting;
 
 public interface IHQMWorker<T, U> extends IWorker {
 	T forFluidRequirement( FFluidRequirement fluid, U p);
@@ -51,6 +51,8 @@ public interface IHQMWorker<T, U> extends IWorker {
 	T forItemRequirement( FItemRequirement item, U p);
 
 	T forLocation( FLocation loc, U p);
+
+	T forMarker( FMarker mark, U p);
 
 	T forMob( FMob mob, U p);
 
@@ -78,13 +80,11 @@ public interface IHQMWorker<T, U> extends IWorker {
 
 	T forReputation( FReputation rep, U p);
 
-	T forReputationMarker( FReputationMarker mark, U p);
-
-	T forReputationReward( FReputationReward rr, U p);
-
 	T forReputations( FReputations set, U p);
 
-	T forSetting( FReputationSetting rs, U p);
+	T forReward( FReward rr, U p);
+
+	T forSetting( FSetting rs, U p);
 
 	T forTaskDeath( FQuestTaskDeath task, U p);
 

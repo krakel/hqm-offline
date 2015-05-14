@@ -10,7 +10,7 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuestTaskReputationTarget extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( FQuestTaskReputationTarget.class.getName());
-	private Vector<FReputationSetting> mSettings = new Vector<FReputationSetting>();
+	private Vector<FSetting> mSettings = new Vector<FSetting>();
 
 	public FQuestTaskReputationTarget( FQuest parent, String name) {
 		super( parent, name);
@@ -21,14 +21,14 @@ public final class FQuestTaskReputationTarget extends AQuestTask {
 		return w.forTaskReputationTarget( this, p);
 	}
 
-	public FReputationSetting createSetting() {
-		FReputationSetting res = new FReputationSetting( this);
+	public FSetting createSetting() {
+		FSetting res = new FSetting( this);
 		mSettings.add( res);
 		return res;
 	}
 
 	public <T, U> T forEachSetting( IHQMWorker<T, U> worker, U p) {
-		for (FReputationSetting disp : mSettings) {
+		for (FSetting disp : mSettings) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);

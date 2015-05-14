@@ -13,7 +13,7 @@ public class QuestSetIndex extends AHQMWorker<Boolean, Object> {
 
 	public static int get( FQuestSet set) {
 		QuestSetIndex worker = new QuestSetIndex( set);
-		set.getParent().forEachMember( worker, null);
+		set.mParentSet.forEachMember( worker, null);
 		return worker.mResult;
 	}
 

@@ -32,13 +32,15 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputationMarker;
-import de.doerl.hqm.base.FReputationReward;
-import de.doerl.hqm.base.FReputationSetting;
+import de.doerl.hqm.base.FMarker;
+import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.FReputations;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.base.dispatch.QuestSetIndex;
+import de.doerl.hqm.base.dispatch.ReputationIndex;
+import de.doerl.hqm.base.dispatch.MarkerIndex;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.quest.TriggerType;
@@ -241,16 +243,16 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	}
 
 	@Override
-	public Object forReputationMarker( FReputationMarker mark, Object p) {
+	public Object forMarker( FMarker mark, Object p) {
 		mDst.beginObject();
 		mDst.print( "name", mark.getName());
-		mDst.print( "value", mark.mValue);
+		mDst.print( "value", mark.mMark);
 		mDst.endObject();
 		return null;
 	}
 
 	@Override
-	public Object forReputationReward( FReputationReward rr, Object p) {
+	public Object forReward( FReward rr, Object p) {
 		mDst.beginObject();
 		mDst.print( "reputation", rr.mRepID);
 		mDst.print( "value", rr.mValue);
@@ -259,11 +261,11 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	}
 
 	@Override
-	public Object forSetting( FReputationSetting rs, Object p) {
+	public Object forSetting( FSetting rs, Object p) {
 		mDst.beginObject();
-		mDst.print( "reputationID", rs.mRepID);
-		mDst.printIf( "lowerID", rs.mLowerID);
-		mDst.printIf( "upperID", rs.mUpperID);
+		mDst.print( "reputationID", ReputationIndex.get( rs.mRep));
+		mDst.printIf( "lowerID", MarkerIndex.get( rs.mLower));
+		mDst.printIf( "upperID", MarkerIndex.get( rs.mUpper));
 		mDst.print( "inverted", rs.mInverted);
 		mDst.endObject();
 		return null;

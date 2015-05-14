@@ -10,11 +10,13 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuestSet extends AMember<FQuestSet> {
 	private static final Logger LOGGER = Logger.getLogger( FQuestSet.class.getName());
+	public final FQuestSets mParentSet;
 	public final FParameterString mDesc = new FParameterString( this, "Description");
 	private Vector<FQuest> mMember = new Vector<FQuest>();
 
-	public FQuestSet( ASet<FQuestSet> parent, String name) {
-		super( parent, name);
+	public FQuestSet( FQuestSets parent, String name) {
+		super( name);
+		mParentSet = parent;
 	}
 
 	@Override
@@ -52,5 +54,10 @@ public final class FQuestSet extends AMember<FQuestSet> {
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST_SET;
+	}
+
+	@Override
+	public ASet<FQuestSet> getParent() {
+		return mParentSet;
 	}
 }

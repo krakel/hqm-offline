@@ -26,6 +26,8 @@ class HQMEntity extends AEntity<FHqm> {
 	protected void paintComponent( Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		EditView.drawBackground( g2, this);
-		EditView.drawImage( g2, this, FRONT, false);
+		double sx = (double) getWidth() / FRONT.getWidth();
+		double sy = (double) getHeight() / FRONT.getHeight();
+		EditView.drawImage( g2, FRONT, sx, sy, false);
 	}
 }

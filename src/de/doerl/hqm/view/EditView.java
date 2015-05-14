@@ -28,7 +28,10 @@ import de.doerl.hqm.utils.Utils;
 public class EditView extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -15489231166915296L;
 	private static final Logger LOGGER = Logger.getLogger( EditView.class.getName());
-	private static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
+	private static int BG_WIDTH = 170;
+	private static int BG_HEIGHT = 234;
+	private static double ZOOM = 2.0;
+	private static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, BG_WIDTH, BG_HEIGHT);
 	protected HashMap<ABase, AEntity<?>> mContent = new HashMap<ABase, AEntity<?>>();
 	private EditController mCtrl;
 
@@ -36,9 +39,7 @@ public class EditView extends JPanel implements IModelListener {
 		setLayout( new GridLayout( 1, 1));
 		mCtrl = ctrl;
 		ctrl.getModel().addListener( this);
-		setPreferredSize( new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight()));
-//		setMaximumSize( new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight()));
-//		setSize( new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight()));
+		setPreferredSize( new Dimension( 4 * BG_WIDTH, 2 * BG_HEIGHT));
 	}
 
 	public EditView( EditController ctrl, ABase base) {
@@ -48,8 +49,8 @@ public class EditView extends JPanel implements IModelListener {
 	static void drawBackground( Graphics2D g2, Component unit) {
 		g2.setColor( unit.getBackground());
 		g2.fillRect( 0, 0, unit.getWidth(), unit.getHeight());
-		drawImage( g2, unit, BACKGROUND, 0.5, 1, false);
-		drawImage( g2, unit, BACKGROUND, 0.5, 1, true);
+		drawImage( g2, BACKGROUND, ZOOM, ZOOM, false);
+		drawImage( g2, BACKGROUND, ZOOM, ZOOM, true);
 	}
 
 	static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
@@ -66,54 +67,30 @@ public class EditView extends JPanel implements IModelListener {
 		g2.drawString( text, x, y);
 	}
 
+	static void drawImage( Graphics2D g2, BufferedImage img, double sx, double sy, boolean flip) {
+		if (img != null) {
+			if (flip) {
+				AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
+				xform.translate( -2 * img.getWidth(), 0);
+				g2.drawImage( img, xform, null);
+			}
+			else {
+				AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+				g2.drawImage( img, xform, null);
+			}
+		}
+	}
+
 	static void drawImage( Graphics2D g2, Component c, BufferedImage img) {
 		if (img != null) {
-			double sx = (double) c.getWidth() / img.getWidth();
-			double sy = (double) c.getHeight() / img.getHeight();
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			AffineTransform xform = AffineTransform.getScaleInstance( ZOOM, ZOOM);
 			g2.drawImage( img, xform, null);
 		}
 	}
 
-	static void drawImage( Graphics2D g2, Component c, BufferedImage img, boolean flip) {
+	static void drawImage( Graphics2D g2, Component c, BufferedImage img, double tx, double ty) {
 		if (img != null) {
-			double sx = (double) c.getWidth() / img.getWidth();
-			double sy = (double) c.getHeight() / img.getHeight();
-			if (flip) {
-				AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
-				xform.translate( -2 * img.getWidth(), 0);
-				g2.drawImage( img, xform, null);
-			}
-			else {
-				AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-				g2.drawImage( img, xform, null);
-			}
-		}
-	}
-
-	static void drawImage( Graphics2D g2, Component c, BufferedImage img, double zoomX, double zoomY, boolean flip) {
-		if (img != null) {
-			double sx = zoomX * ((double) c.getWidth() / img.getWidth());
-			double sy = zoomY * ((double) c.getHeight() / img.getHeight());
-			if (flip) {
-				AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
-				xform.translate( -2 * img.getWidth(), 0);
-				g2.drawImage( img, xform, null);
-			}
-			else {
-				AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-				g2.drawImage( img, xform, null);
-			}
-		}
-	}
-
-	static void drawImage( Graphics2D g2, Component c, BufferedImage img, int width, int height) {
-		if (img != null) {
-			double sx = (double) width / img.getWidth();
-			double sy = (double) height / img.getHeight();
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			double tx = (double) (c.getWidth() - width) / 2;
-			double ty = (double) (c.getHeight() - height) / 2;
+			AffineTransform xform = AffineTransform.getScaleInstance( ZOOM, ZOOM);
 			xform.translate( tx, ty);
 			g2.drawImage( img, xform, null);
 		}

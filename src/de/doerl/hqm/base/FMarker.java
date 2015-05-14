@@ -3,22 +3,22 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FReputationMarker extends ANamed implements Comparable<FReputationMarker> {
+public final class FMarker extends ANamed implements Comparable<FMarker> {
 	public final FReputation mParentRep;
-	public final FParameterInt mValue = new FParameterInt( this, "Value");
+	public final FParameterInt mMark = new FParameterInt( this, "Value");
 
-	public FReputationMarker( FReputation parent, String name) {
+	public FMarker( FReputation parent, String name) {
 		super( name);
 		mParentRep = parent;
 	}
 
 	@Override
 	public <T, U> T accept( IHQMWorker<T, U> w, U p) {
-		return w.forReputationMarker( this, p);
+		return w.forMarker( this, p);
 	}
 
-	public int compareTo( FReputationMarker other) {
-		return mValue.compareTo( other.mValue);
+	public int compareTo( FMarker other) {
+		return mMark.compareTo( other.mMark);
 	}
 
 	@Override

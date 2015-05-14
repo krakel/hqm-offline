@@ -39,8 +39,8 @@ import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
-import de.doerl.hqm.base.FReputationReward;
-import de.doerl.hqm.base.FReputationSetting;
+import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
@@ -277,16 +277,19 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 		}
 
 		@Override
-		public Object forSetting( FReputationSetting rs, JComponent comp) {
-			JComponent mobBox = leafBox( BoxLayout.X_AXIS);
-//			mobBox.add( leafStack( rs.mIcon.mValue));
-//			mobBox.add( Box.createHorizontalStrut( GAP));
-//			JPanel dataBox = leafBox( BoxLayout.Y_AXIS);
+		public Object forSetting( FSetting rs, JComponent comp) {
+			JComponent repBox = leafBoxHorizontal( 54);
+//			repBox.add( Box.createHorizontalStrut( GAP));
+			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
 //			dataBox.add( leafTitle( rs.mMob.mValue));
 //			dataBox.add( leafLabel( "0[0%] killed"));
 //			dataBox.add( leafLabel( String.format( "Kill a total of %d", mob.mKills.mValue)));
 //			mobBox.add( dataBox);
-			comp.add( mobBox);
+			dataBox.add( leafRepImage( rs));
+			dataBox.add( leafLabel( String.format( "    %s: %s (%d)", rs.mRep.getName(), rs.mRep.mNeutral.mValue, 0)));
+			repBox.add( dataBox);
+			comp.add( repBox);
+			comp.add( Box.createVerticalStrut( GAP));
 			return null;
 		}
 
@@ -373,7 +376,7 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 		}
 
 		@Override
-		public Object forReputationReward( FReputationReward rr, Object p) {
+		public Object forReward( FReward rr, Object p) {
 			if (rr.mValue.mValue < 0) {
 				negative = true;
 			}

@@ -4,11 +4,13 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FGroupTier extends AMember<FGroupTier> {
+	public final FGroupTiers mParentSet;
 	public final FParameterInt mColorID = new FParameterInt( this, "Color");
 	public final FParameterIntegerArr mWeights = new FParameterIntegerArr( this, "Weights");
 
 	public FGroupTier( FGroupTiers parent, String name) {
-		super( parent, name);
+		super( name);
+		mParentSet = parent;
 	}
 
 	@Override
@@ -19,5 +21,10 @@ public final class FGroupTier extends AMember<FGroupTier> {
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.GROUP_TIER;
+	}
+
+	@Override
+	public ASet<FGroupTier> getParent() {
+		return mParentSet;
 	}
 }

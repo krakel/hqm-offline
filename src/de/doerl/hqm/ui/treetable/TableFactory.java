@@ -27,8 +27,9 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputationMarker;
-import de.doerl.hqm.base.FReputationReward;
+import de.doerl.hqm.base.FMarker;
+import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 
 class TableFactory extends AHQMWorker<Object, TreeTableModel> {
@@ -176,17 +177,31 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 	}
 
 	@Override
-	public Object forReputationMarker( FReputationMarker mark, TreeTableModel model) {
+	public Object forMarker( FMarker mark, TreeTableModel model) {
 		RowFactory.get( mark, model);
-		RowFactory.get( mark.mValue, model);
+		RowFactory.get( mark.mMark, model);
 		return null;
 	}
 
 	@Override
-	public Object forReputationReward( FReputationReward rr, TreeTableModel model) {
+	public Object forReward( FReward rr, TreeTableModel model) {
 		RowFactory.get( rr, model);
 		RowFactory.get( rr.mRepID, model);
 		RowFactory.get( rr.mValue, model);
+		return null;
+	}
+
+	@Override
+	public Object forSetting( FSetting rs, TreeTableModel model) {
+		RowFactory.get( rs, model);
+		RowFactory.get( rs.mRep.mID, model);
+//		if (rs.mLower != null) {
+//			RowFactory.get( rs.mLower, model);
+//		}
+//		if (rs.mUpper != null) {
+//			RowFactory.get( rs.mUpper, model);
+//		}
+		RowFactory.get( rs.mInverted, model);
 		return null;
 	}
 

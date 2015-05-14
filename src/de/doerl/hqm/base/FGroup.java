@@ -6,13 +6,15 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FGroup extends AMember<FGroup> {
+	public final FGroups mParentSet;
 	public final FParameterInt mID = new FParameterInt( this, "ID");
 	public final FParameterInt mTierID = new FParameterInt( this, "GroupTier");
 	public final FParameterInt mLimit = new FParameterInt( this, "Limit");;
 	public final Vector<FParameterStack> mStacks = new Vector<FParameterStack>();
 
 	public FGroup( FGroups parent, String name) {
-		super( parent, name);
+		super( name);
+		mParentSet = parent;
 	}
 
 	@Override
@@ -23,5 +25,10 @@ public final class FGroup extends AMember<FGroup> {
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.GROUP;
+	}
+
+	@Override
+	public ASet<FGroup> getParent() {
+		return mParentSet;
 	}
 }

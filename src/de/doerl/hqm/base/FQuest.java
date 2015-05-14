@@ -27,7 +27,7 @@ public final class FQuest extends ANamed {
 	public final Vector<FParameterStack> mChoices = new Vector<FParameterStack>();
 	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();
-	private Vector<FReputationReward> Reputation = new Vector<FReputationReward>();
+	private Vector<FReward> Reputation = new Vector<FReward>();
 
 	public FQuest( FQuestSet parent, String name) {
 		super( name);
@@ -75,8 +75,8 @@ public final class FQuest extends ANamed {
 		return task;
 	}
 
-	public FReputationReward createReputationReward() {
-		FReputationReward reward = new FReputationReward( this);
+	public FReward createReputationReward() {
+		FReward reward = new FReward( this);
 		Reputation.add( reward);
 		return reward;
 	}
@@ -99,7 +99,7 @@ public final class FQuest extends ANamed {
 	}
 
 	public <T, U> T forEachReputationReward( IHQMWorker<T, U> worker, U p) {
-		for (FReputationReward disp : Reputation) {
+		for (FReward disp : Reputation) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);

@@ -19,6 +19,7 @@ import de.doerl.hqm.base.FGroups;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FLocation;
+import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FParameterBoolean;
 import de.doerl.hqm.base.FParameterEnum;
@@ -41,10 +42,9 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputationMarker;
-import de.doerl.hqm.base.FReputationReward;
-import de.doerl.hqm.base.FReputationSetting;
 import de.doerl.hqm.base.FReputations;
+import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.utils.ToString;
 import de.doerl.hqm.utils.Utils;
 
@@ -125,6 +125,11 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	@Override
+	public T forMarker( FMarker mark, U p) {
+		return doNamed( mark, p);
+	}
+
+	@Override
 	public T forMob( FMob mob, U p) {
 		return doNamed( mob, p);
 	}
@@ -189,22 +194,17 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	@Override
-	public T forReputationMarker( FReputationMarker mark, U p) {
-		return doNamed( mark, p);
-	}
-
-	@Override
-	public T forReputationReward( FReputationReward rr, U p) {
-		return doBase( rr, p);
-	}
-
-	@Override
 	public T forReputations( FReputations set, U p) {
 		return doSet( set, p);
 	}
 
 	@Override
-	public T forSetting( FReputationSetting rs, U p) {
+	public T forReward( FReward rr, U p) {
+		return doBase( rr, p);
+	}
+
+	@Override
+	public T forSetting( FSetting rs, U p) {
 		return doBase( rs, p);
 	}
 

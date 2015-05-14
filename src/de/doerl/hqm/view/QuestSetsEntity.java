@@ -99,7 +99,7 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 						SwingUtilities.invokeLater( new QuestSetAction( this, qs));
 						break;
 					case MouseEvent.BUTTON3:
-						SwingUtilities.invokeLater( new QuestSetsAction( this, qs.mParentGroup));
+						SwingUtilities.invokeLater( new QuestSetsAction( this, qs.mParentSet));
 						break;
 					default:
 				}

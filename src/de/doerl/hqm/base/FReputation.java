@@ -11,12 +11,14 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FReputation extends AMember<FReputation> {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
+	public final FReputations mParentSet;
 	public final FParameterInteger mID = new FParameterInteger( this, "ID");
 	public final FParameterString mNeutral = new FParameterString( this, "Neutral");
-	private Vector<FReputationMarker> mMarker = new Vector<FReputationMarker>();
+	private Vector<FMarker> mMarker = new Vector<FMarker>();
 
 	public FReputation( FReputations parent, String name) {
-		super( parent, name);
+		super( name);
+		mParentSet = parent;
 	}
 
 	@Override
@@ -24,14 +26,14 @@ public final class FReputation extends AMember<FReputation> {
 		return w.forReputation( this, p);
 	}
 
-	public FReputationMarker createMarker( String name) {
-		FReputationMarker marker = new FReputationMarker( this, name);
+	public FMarker createMarker( String name) {
+		FMarker marker = new FMarker( this, name);
 		mMarker.add( marker);
 		return marker;
 	}
 
 	public <T, U> T forEachMarker( IHQMWorker<T, U> worker, U p) {
-		for (FReputationMarker disp : mMarker) {
+		for (FMarker disp : mMarker) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);
@@ -50,6 +52,11 @@ public final class FReputation extends AMember<FReputation> {
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.REPUTATION;
+	}
+
+	@Override
+	public ASet<FReputation> getParent() {
+		return mParentSet;
 	}
 
 	public void sort() {

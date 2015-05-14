@@ -27,13 +27,19 @@ import javax.swing.ScrollPaneConstants;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AStack;
+import de.doerl.hqm.base.FMarker;
+import de.doerl.hqm.base.FSetting;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.utils.Utils;
 
 abstract class AEntity<T extends ABase> extends JPanel {
 	private static final long serialVersionUID = -3039298434411863516L;
 	protected static final BufferedImage MAP = ResourceManager.getImage( "questmap.png");
 	protected static final BufferedImage ICON_BACK = MAP.getSubimage( 18, 235, 18, 18);
 	protected static final BufferedImage LARGE_BTN = MAP.getSubimage( 54, 235, 57, 18);
+	protected static final BufferedImage REPUATION = MAP.getSubimage( 0, 101, 125, 3);
 	protected static final int FONT_NORMAL_HIGH = 14;
 	protected static final int FONT_TITLE_HIGH = 18;
 	protected static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, FONT_NORMAL_HIGH);
@@ -42,6 +48,8 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static final Color UNSELECTED = new Color( 0x404040);
 	protected static final int GAP = 8;
 	protected static final int ICON_SIZE = 36;
+	protected static final int REP_WIDTH = 250;
+	protected static final int REP_HEIGHT = 6;
 	protected EditView mView;
 
 	AEntity( EditView view) {
@@ -110,14 +118,10 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static JComponent leafButtons( JComponent... btns) {
 		JComponent result = leafBoxHorizontal( ICON_SIZE);
 		for (int i = 0; i < btns.length; ++i) {
-			if (i > 0) {
-				result.add( Box.createHorizontalGlue());
-			}
 			result.add( btns[i]);
+			result.add( Box.createHorizontalStrut( GAP));
 		}
-		if (btns.length < 2) {
-			result.add( Box.createHorizontalGlue());
-		}
+		result.add( Box.createHorizontalGlue());
 		return result;
 	}
 
@@ -164,6 +168,15 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		else {
 			result.setBorder( BorderFactory.createEmptyBorder( 40, 10, 40, 40));
 		}
+		return result;
+	}
+
+	protected static JLabel leafRepImage( FSetting rs) {
+		JLabel result = new JLabel( new ReputationIcon( rs));
+		result.setAlignmentX( LEFT_ALIGNMENT);
+//		result.setBackground( Color.BLUE);
+		result.setOpaque( false);
+		result.setBorder( null);
 		return result;
 	}
 
@@ -333,6 +346,72 @@ abstract class AEntity<T extends ABase> extends JPanel {
 					EditView.drawImage( g2, c, img);
 				}
 			}
+		}
+	}
+
+	static class ReputationIcon extends AHQMWorker<Object, Object> implements Icon {
+		private FSetting mSetting;
+
+		public ReputationIcon( FSetting rs) {
+			mSetting = rs;
+			FMarker lower = rs.mLower;
+			int size = 0; // DOTO
+			FMarker first = MarkerOfIdx.get( rs.mRep, 0);
+			FMarker last = MarkerOfIdx.get( rs.mRep, size - 1);
+			int lowerValue;
+			boolean lowerOnMarker;
+			if (lower == null) {
+				lowerValue = Math.min( first.mMark.mValue, 0);
+				lowerOnMarker = false;
+			}
+			else {
+				lowerValue = lower.mMark.mValue;
+				lowerOnMarker = Utils.equals( lower, first) && lower.mMark.mValue > 0;
+//				if (Utils.equals( lower.getName(), rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
+//					lowerValue = last.mMark.mValue;
+//					lowerOnMarker = true;
+////					lowerMovedInner = true;
+////					lowerMoved = true;
+//				}
+//				else if (Utils.equals( lower, last)) {
+//					lowerOnMarker = true;
+//				}
+//				else if (lowerValue <= 0) {
+//					for (int i = 0; i < size; ++i) {
+//						if (ReputationMarkerOfIdx.get( rs.mRep, i).mMark.mValue >= lowerValue) {
+//							if (i > 0) {
+//								lowerValue = ReputationMarkerOfIdx.get( rs.mRep, i - 1).mMark.mValue;
+//								if (i - 1 != 0) {
+////									lowerMovedInner = true;
+//								}
+////								lowerMoved = true;
+//							}
+//							break;
+//						}
+//					}
+//				}
+			}
+//			FReputationMarker upper = rs.mUpper;
+//			FReputation rep = rs.mRep;
+		}
+
+		@Override
+		public Object forMarker( FMarker mark, Object p) {
+			return null;
+		}
+
+		public int getIconHeight() {
+			return ICON_SIZE;
+		}
+
+		public int getIconWidth() {
+			return REP_WIDTH;
+		}
+
+		public void paintIcon( Component c, Graphics g, int x, int y) {
+			Graphics2D g2 = (Graphics2D) g;
+			EditView.drawImage( g2, c, REPUATION, 0, 10);
+			mSetting.mRep.forEachMarker( this, null);
 		}
 	}
 }
