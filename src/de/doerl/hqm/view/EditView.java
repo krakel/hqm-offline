@@ -3,6 +3,7 @@ package de.doerl.hqm.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,8 +36,9 @@ public class EditView extends JPanel implements IModelListener {
 		setLayout( new GridLayout( 1, 1));
 		mCtrl = ctrl;
 		ctrl.getModel().addListener( this);
-//		setPreferredSize( new Dimension( 2 * 170, 234));
-//		setMaximumSize( new Dimension( 2 * 170, 234));
+		setPreferredSize( new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight()));
+//		setMaximumSize( new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight()));
+//		setSize( new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight()));
 	}
 
 	public EditView( EditController ctrl, ABase base) {

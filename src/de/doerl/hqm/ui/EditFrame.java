@@ -2,6 +2,8 @@ package de.doerl.hqm.ui;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
@@ -16,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -105,6 +108,17 @@ public class EditFrame extends JFrame implements ChangeListener {
 		return popup;
 	}
 
+	private JPanel createCentered( Container cp) {
+		JPanel result = new JPanel();
+		GridBagLayout layout = new GridBagLayout();
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.CENTER;
+		layout.setConstraints( result, gbc);
+		result.setLayout( layout);
+		result.add( cp);
+		return result;
+	}
+
 	private void createContent( Container cp) {
 		createPopupMenu();
 		GroupLayout lm = new GroupLayout( cp);
@@ -112,9 +126,9 @@ public class EditFrame extends JFrame implements ChangeListener {
 		lm.setAutoCreateContainerGaps( false);
 		cp.setLayout( lm);
 		JToolBar tool = createToolBar();
-		JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, new JScrollPane( mTable), mView);
+		JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, new JScrollPane( mTable), createCentered( mView));
 		split.setDividerSize( 5);
-		split.setDividerLocation( 350);
+		split.setDividerLocation( 320);
 		JLabel bar = createStatusBar();
 		ParallelGroup mainHori = lm.createParallelGroup();
 		mainHori.addComponent( tool);

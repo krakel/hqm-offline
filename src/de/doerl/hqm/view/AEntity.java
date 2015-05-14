@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -25,6 +26,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.utils.ResourceManager;
 
 abstract class AEntity<T extends ABase> extends JPanel {
@@ -32,12 +34,14 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static final BufferedImage MAP = ResourceManager.getImage( "questmap.png");
 	protected static final BufferedImage ICON_BACK = MAP.getSubimage( 18, 235, 18, 18);
 	protected static final BufferedImage LARGE_BTN = MAP.getSubimage( 54, 235, 57, 18);
-	protected static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, 14);
-	protected static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, 20);
+	protected static final int FONT_NORMAL_HIGH = 14;
+	protected static final int FONT_TITLE_HIGH = 18;
+	protected static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, FONT_NORMAL_HIGH);
+	protected static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, FONT_TITLE_HIGH);
 	protected static final Color SELECTED = new Color( 0xAAAAAA);
 	protected static final Color UNSELECTED = new Color( 0x404040);
-	protected static final int GAP = 10;
-	protected static final int ICON_SIZE = 32;
+	protected static final int GAP = 8;
+	protected static final int ICON_SIZE = 36;
 	protected EditView mView;
 
 	AEntity( EditView view) {
@@ -56,27 +60,71 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		comp.getActionMap().put( o, action);
 	}
 
-	protected static JPanel leafBox( int axis) {
+	protected static JComponent leafBox( int axis) {
 		JPanel result = new JPanel();
 		result.setLayout( new BoxLayout( result, axis));
+		if (axis == BoxLayout.X_AXIS) {
+			result.setBackground( Color.RED);
+//			result.setPreferredSize( new Dimension( Short.MAX_VALUE, 36));
+		}
+		else {
+			result.setBackground( Color.BLUE);
+			result.setAlignmentX( LEFT_ALIGNMENT);
+		}
+//		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+//		result.setOpaque( false);
+		result.setBorder( null);
+		return result;
+	}
+
+	protected static JComponent leafBoxHorizontal( int heigh) {
+		JComponent result = (JComponent) Box.createVerticalStrut( heigh);
+		result.setLayout( new BoxLayout( result, BoxLayout.X_AXIS));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setOpaque( false);
+		result.setBackground( Color.GREEN);
+		result.setOpaque( true);
+		result.setBorder( null);
+		return result;
+	}
+
+	protected static JComponent leafBoxVertical( int heigh) {
+		JComponent result = (JComponent) Box.createVerticalStrut( heigh);
+		result.setLayout( new BoxLayout( result, BoxLayout.Y_AXIS));
+		result.setAlignmentY( CENTER_ALIGNMENT);
+		result.setBackground( Color.ORANGE);
+		result.setOpaque( true);
 		result.setBorder( null);
 		return result;
 	}
 
 	protected static JLabel leafButton( String text) {
-		JLabel result = new JLabel( new CenterIcon( LARGE_BTN, text, 100, 32));
-		result.setPreferredSize( new Dimension( 100, 32));
+		JLabel result = new JLabel( new CenterIcon( LARGE_BTN, text, 114, 36));
+		result.setMinimumSize( new Dimension( 114, 36));
+		result.setPreferredSize( new Dimension( 114, 36));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
 		result.setBorder( null);
 		return result;
 	}
 
-	protected static JLabel leafImage( BufferedImage[] arr) {
+	protected static JComponent leafButtons( JComponent... btns) {
+		JComponent result = leafBoxHorizontal( ICON_SIZE);
+		for (int i = 0; i < btns.length; ++i) {
+			if (i > 0) {
+				result.add( Box.createHorizontalGlue());
+			}
+			result.add( btns[i]);
+		}
+		if (btns.length < 2) {
+			result.add( Box.createHorizontalGlue());
+		}
+		return result;
+	}
+
+	protected static JLabel leafImage( BufferedImage... arr) {
 		JLabel result = new JLabel( new MultiIcon( arr));
 		result.setAlignmentX( LEFT_ALIGNMENT);
+//		result.setBackground( Color.BLUE);
 		result.setOpaque( false);
 		result.setBorder( null);
 		return result;
@@ -85,11 +133,17 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static JLabel leafLabel( Color color, String text) {
 		JLabel result = new JLabel( text);
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setOpaque( false);
+		result.setBackground( Color.DARK_GRAY);
+		result.setOpaque( true);
 		result.setFont( AEntity.FONT_NORMAL);
 		result.setForeground( color);
 		result.setBorder( null);
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_NORMAL_HIGH));
 		return result;
+	}
+
+	protected static JLabel leafLabel( String text) {
+		return leafLabel( Color.BLACK, text);
 	}
 
 	protected static <E> JList<E> leafList( ListModel<E> model) {
@@ -119,8 +173,22 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setOpaque( false);
 		result.getViewport().setOpaque( false);
 		result.setBorder( null);
-		result.setPreferredSize( new Dimension( Integer.MAX_VALUE, height));
-		result.setMaximumSize( new Dimension( Integer.MAX_VALUE, height));
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, height));
+//		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		return result;
+	}
+
+	protected static JLabel leafStack( AStack stk) {
+		int amount = stk != null ? stk.getAmount() : 0;
+		BufferedImage[] arr = new BufferedImage[] {
+			ICON_BACK
+		};
+		JLabel result = new JLabel( new CountIcon( arr, amount > 1 ? Integer.toString( amount) : null));
+		result.setMaximumSize( new Dimension( ICON_SIZE, ICON_SIZE));
+		result.setAlignmentX( LEFT_ALIGNMENT);
+//		result.setBackground( Color.BLUE);
+		result.setOpaque( false);
+		result.setBorder( null);
 		return result;
 	}
 
@@ -132,31 +200,24 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setOpaque( false);
 		result.setFont( AEntity.FONT_NORMAL);
 		result.setBorder( null);
-//		result.setPreferredSize( new Dimension( 200, 80));
-//		result.setMaximumSize( new Dimension( Integer.MAX_VALUE, 50));
 		return result;
 	}
 
 	protected static JLabel leafTitle( Color color, String text) {
 		JLabel result = new JLabel();
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setOpaque( false);
+		result.setBackground( Color.YELLOW);
+		result.setOpaque( true);
 		result.setFont( AEntity.FONT_TITLE);
 		result.setForeground( color);
 		result.setBorder( null);
 		result.setText( text);
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_TITLE_HIGH + 3));
 		return result;
 	}
 
 	protected static JLabel leafTitle( String text) {
-		JLabel result = new JLabel();
-		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setOpaque( false);
-		result.setFont( AEntity.FONT_TITLE);
-		result.setForeground( Color.BLACK);
-		result.setBorder( null);
-		result.setText( text);
-		return result;
+		return leafTitle( Color.BLACK, text);
 	}
 
 	public abstract T getBase();
@@ -211,11 +272,11 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	}
 
 	static class CountIcon implements Icon {
-		private BufferedImage mImage;
+		private BufferedImage[] mArr;
 		private String mText;
 
-		public CountIcon( BufferedImage img, String text) {
-			mImage = img;
+		public CountIcon( BufferedImage[] arr, String text) {
+			mArr = arr;
 			mText = text;
 		}
 
@@ -229,7 +290,11 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
-			EditView.drawImage( g2, c, mImage);
+			for (BufferedImage img : mArr) {
+				if (img != null) {
+					EditView.drawImage( g2, c, img);
+				}
+			}
 			if (mText != null) {
 				g2.setFont( FONT_TITLE);
 				g2.setColor( Color.BLACK);
@@ -264,7 +329,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
 			for (BufferedImage img : mArr) {
-				EditView.drawImage( g2, c, img);
+				if (img != null) {
+					EditView.drawImage( g2, c, img);
+				}
 			}
 		}
 	}

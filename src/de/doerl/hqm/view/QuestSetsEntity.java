@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -144,7 +145,7 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 
 		public CellRenderer() {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			JPanel hori = leafBox( BoxLayout.X_AXIS);
+			JComponent hori = leafBoxHorizontal( FONT_NORMAL_HIGH);
 			hori.add( Box.createHorizontalStrut( 24));
 			hori.add( mComplete);
 			add( mTitle);

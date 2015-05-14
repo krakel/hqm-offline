@@ -57,13 +57,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.close();
 	}
 
-	private void doReputation( AQuestTaskReputation task, String type) {
-		doTask( task, type);
-		mDst.beginArray( "settings");
-		task.forEachSetting( this, mDst);
-		mDst.endArray();
-	}
-
 	private void doTask( AQuestTask task, String type) {
 		mDst.print( "type", type);
 		mDst.print( "name", task.getName());
@@ -335,7 +328,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forTaskReputationKill( FQuestTaskReputationKill task, Object p) {
 		mDst.beginObject();
-		doReputation( task, "reputationKill");
 		mDst.print( "kills", task.mKills);
 		mDst.endObject();
 		return null;
@@ -344,7 +336,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
 		mDst.beginObject();
-		doReputation( task, "reputationTarget");
+		doTask( task, "reputationTarget");
+		mDst.beginArray( "settings");
+		task.forEachSetting( this, mDst);
+		mDst.endArray();
 		mDst.endObject();
 		return null;
 	}

@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
@@ -78,17 +77,6 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		for (int i = 0; i < count; ++i) {
 			ARequirement req = task.createRequirement( mSrc.readBoolean());
 			req.accept( this, null);
-		}
-	}
-
-	private void doReputation( AQuestTaskReputation task) {
-		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
-		for (int i = 0; i < count; i++) {
-			FReputationSetting res = task.createSetting();
-			res.mRepID.mValue = mSrc.readData( DataBitHelper.REPUTATION);
-			res.mLowerID.mValue = mSrc.readBoolean() ? mSrc.readData( DataBitHelper.REPUTATION_MARKER) : null;
-			res.mUpperID.mValue = mSrc.readBoolean() ? mSrc.readData( DataBitHelper.REPUTATION_MARKER) : null;
-			res.mInverted.mValue = mSrc.readBoolean();
 		}
 	}
 
@@ -170,14 +158,20 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 
 	@Override
 	public Object forTaskReputationKill( FQuestTaskReputationKill task, Object p) {
-		doReputation( task);
 		task.mKills.mValue = mSrc.readData( DataBitHelper.DEATHS);
 		return null;
 	}
 
 	@Override
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
-		doReputation( task);
+		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
+		for (int i = 0; i < count; i++) {
+			FReputationSetting res = task.createSetting();
+			res.mRepID.mValue = mSrc.readData( DataBitHelper.REPUTATION);
+			res.mLowerID.mValue = mSrc.readBoolean() ? mSrc.readData( DataBitHelper.REPUTATION_MARKER) : null;
+			res.mUpperID.mValue = mSrc.readBoolean() ? mSrc.readData( DataBitHelper.REPUTATION_MARKER) : null;
+			res.mInverted.mValue = mSrc.readBoolean();
+		}
 		return null;
 	}
 

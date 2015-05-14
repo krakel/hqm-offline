@@ -258,6 +258,7 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, TreeTableModel model) {
 		RowFactory.get( task, model);
 		RowFactory.get( task.mDesc, model);
+		task.forEachSetting( this, model);
 		return null;
 	}
 }
