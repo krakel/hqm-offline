@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.image.BufferedImage;
+import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -29,8 +30,6 @@ import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FSetting;
-import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
@@ -40,6 +39,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static final BufferedImage ICON_BACK = MAP.getSubimage( 18, 235, 18, 18);
 	protected static final BufferedImage LARGE_BTN = MAP.getSubimage( 54, 235, 57, 18);
 	protected static final BufferedImage REPUATION = MAP.getSubimage( 0, 101, 125, 3);
+	protected static final BufferedImage REP_MARKER = MAP.getSubimage( 10, 93, 5, 5);
 	protected static final int FONT_NORMAL_HIGH = 14;
 	protected static final int FONT_TITLE_HIGH = 18;
 	protected static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, FONT_NORMAL_HIGH);
@@ -349,15 +349,16 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		}
 	}
 
-	static class ReputationIcon extends AHQMWorker<Object, Object> implements Icon {
+	static class ReputationIcon implements Icon {
 		private FSetting mSetting;
 
 		public ReputationIcon( FSetting rs) {
 			mSetting = rs;
 			FMarker lower = rs.mLower;
-			int size = 0; // DOTO
-			FMarker first = MarkerOfIdx.get( rs.mRep, 0);
-			FMarker last = MarkerOfIdx.get( rs.mRep, size - 1);
+			Vector<FMarker> marker = rs.mRep.mMarker;
+			int size = marker.size();
+			FMarker first = marker.get( 0);
+			FMarker last = marker.get( size - 1);
 			int lowerValue;
 			boolean lowerOnMarker;
 			if (lower == null) {
@@ -367,37 +368,32 @@ abstract class AEntity<T extends ABase> extends JPanel {
 			else {
 				lowerValue = lower.mMark.mValue;
 				lowerOnMarker = Utils.equals( lower, first) && lower.mMark.mValue > 0;
-//				if (Utils.equals( lower.getName(), rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
-//					lowerValue = last.mMark.mValue;
-//					lowerOnMarker = true;
-////					lowerMovedInner = true;
-////					lowerMoved = true;
-//				}
-//				else if (Utils.equals( lower, last)) {
-//					lowerOnMarker = true;
-//				}
-//				else if (lowerValue <= 0) {
-//					for (int i = 0; i < size; ++i) {
-//						if (ReputationMarkerOfIdx.get( rs.mRep, i).mMark.mValue >= lowerValue) {
-//							if (i > 0) {
-//								lowerValue = ReputationMarkerOfIdx.get( rs.mRep, i - 1).mMark.mValue;
-//								if (i - 1 != 0) {
-////									lowerMovedInner = true;
-//								}
-////								lowerMoved = true;
-//							}
-//							break;
-//						}
-//					}
-//				}
+				if (Utils.equals( lower.getName(), rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
+					lowerValue = last.mMark.mValue;
+					lowerOnMarker = true;
+//					lowerMovedInner = true;
+//					lowerMoved = true;
+				}
+				else if (Utils.equals( lower, last)) {
+					lowerOnMarker = true;
+				}
+				else if (lowerValue <= 0) {
+					for (int i = 0; i < size; ++i) {
+						if (marker.get( i).mMark.mValue >= lowerValue) {
+							if (i > 0) {
+								lowerValue = marker.get( i - 1).mMark.mValue;
+								if (i - 1 != 0) {
+//									lowerMovedInner = true;
+								}
+//								lowerMoved = true;
+							}
+							break;
+						}
+					}
+				}
 			}
 //			FReputationMarker upper = rs.mUpper;
 //			FReputation rep = rs.mRep;
-		}
-
-		@Override
-		public Object forMarker( FMarker mark, Object p) {
-			return null;
 		}
 
 		public int getIconHeight() {
@@ -410,8 +406,13 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
-			EditView.drawImage( g2, c, REPUATION, 0, 10);
-			mSetting.mRep.forEachMarker( this, null);
+			EditView.drawImage( g2, c, REPUATION, 0, 20);
+			Vector<FMarker> marker = mSetting.mRep.mMarker;
+			for (int i = 0; i < marker.size(); ++i) {
+//				FMarker mark = marker.get( i);
+				int pos = i * REP_WIDTH / marker.size();
+				EditView.drawImage( g2, c, REP_MARKER, pos + 5, 23);
+			}
 		}
 	}
 }

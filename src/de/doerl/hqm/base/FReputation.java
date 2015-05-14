@@ -14,7 +14,7 @@ public final class FReputation extends AMember<FReputation> {
 	public final FReputations mParentSet;
 	public final FParameterInteger mID = new FParameterInteger( this, "ID");
 	public final FParameterString mNeutral = new FParameterString( this, "Neutral");
-	private Vector<FMarker> mMarker = new Vector<FMarker>();
+	public Vector<FMarker> mMarker = new Vector<FMarker>();
 
 	public FReputation( FReputations parent, String name) {
 		super( name);

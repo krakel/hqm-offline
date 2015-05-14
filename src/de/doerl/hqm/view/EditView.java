@@ -91,7 +91,7 @@ public class EditView extends JPanel implements IModelListener {
 	static void drawImage( Graphics2D g2, Component c, BufferedImage img, double tx, double ty) {
 		if (img != null) {
 			AffineTransform xform = AffineTransform.getScaleInstance( ZOOM, ZOOM);
-			xform.translate( tx, ty);
+			xform.translate( tx / ZOOM, ty / ZOOM);
 			g2.drawImage( img, xform, null);
 		}
 	}
