@@ -4,13 +4,13 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FReputationSetting extends ABase {
-	public final AQuestTaskReputation mParentTask;
+	public final FQuestTaskReputationTarget mParentTask;
 	public final FParameterInt mRepID = new FParameterInt( this, "RepID");
 	public final FParameterInteger mLowerID = new FParameterInteger( this, "LowerID");
 	public final FParameterInteger mUpperID = new FParameterInteger( this, "UpperID");
 	public final FParameterBoolean mInverted = new FParameterBoolean( this, "Inverted");
 
-	public FReputationSetting( AQuestTaskReputation parent) {
+	public FReputationSetting( FQuestTaskReputationTarget parent) {
 		mParentTask = parent;
 	}
 
@@ -25,7 +25,7 @@ public final class FReputationSetting extends ABase {
 	}
 
 	@Override
-	public AQuestTaskReputation getParent() {
+	public FQuestTaskReputationTarget getParent() {
 		return mParentTask;
 	}
 }

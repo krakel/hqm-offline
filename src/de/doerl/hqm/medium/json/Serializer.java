@@ -6,7 +6,6 @@ import java.util.Vector;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
