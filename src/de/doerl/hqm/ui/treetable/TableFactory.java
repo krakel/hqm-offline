@@ -3,9 +3,9 @@ package de.doerl.hqm.ui.treetable;
 import java.util.Vector;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
-import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
@@ -92,6 +92,7 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 		RowFactory.get( hqm, model);
 		hqm.mQuestSets.accept( this, model);
 		hqm.mRepSets.accept( this, model);
+		hqm.forEachQuest( this, model);
 		hqm.mGroupTiers.accept( this, model);
 		hqm.mGroups.accept( this, model);
 		return null;
@@ -138,24 +139,26 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 
 	@Override
 	public Object forQuest( FQuest quest, TreeTableModel model) {
-		RowFactory.get( quest, model);
-		RowFactory.get( quest.mDesc, model);
-		RowFactory.get( quest.mX, model);
-		RowFactory.get( quest.mY, model);
-		RowFactory.get( quest.mBig, model);
+		if (!quest.isDeleted()) {
+			RowFactory.get( quest, model);
+			RowFactory.get( quest.mDesc, model);
+			RowFactory.get( quest.mX, model);
+			RowFactory.get( quest.mY, model);
+			RowFactory.get( quest.mBig, model);
 //		RowFactory.get( quest.mSetID, model);
-		RowFactory.get( quest.mIcon, model);
+			RowFactory.get( quest.mIcon, model);
 //		RowFactory.get( quest.mRequirements, model);
-		RowFactory.get( quest.mOptionLinks, model);
-		quest.getRepeatInfo().accept( this, model);
-		RowFactory.get( quest.mTriggerTasks, model);
-		RowFactory.get( quest.mTriggerType, model);
-		RowFactory.get( quest.mReqUseModified, model);
-		RowFactory.get( quest.mReqCount, model);
-		quest.forEachQuestTask( this, model);
-		doParameterStacks( quest.mRewards, model);
-		doParameterStacks( quest.mChoices, model);
-		quest.forEachReputationReward( this, model);
+			RowFactory.get( quest.mOptionLinks, model);
+			quest.getRepeatInfo().accept( this, model);
+			RowFactory.get( quest.mTriggerTasks, model);
+			RowFactory.get( quest.mTriggerType, model);
+			RowFactory.get( quest.mReqUseModified, model);
+			RowFactory.get( quest.mReqCount, model);
+			quest.forEachQuestTask( this, model);
+			doParameterStacks( quest.mRewards, model);
+			doParameterStacks( quest.mChoices, model);
+			quest.forEachReputationReward( this, model);
+		}
 		return null;
 	}
 
@@ -163,7 +166,6 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 	public Object forQuestSet( FQuestSet qs, TreeTableModel model) {
 		RowFactory.get( qs, model);
 		RowFactory.get( qs.mDesc, model);
-		qs.forEachQuest( this, model);
 		return null;
 	}
 

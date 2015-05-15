@@ -1,8 +1,7 @@
 package de.doerl.hqm.base.dispatch;
 
+import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
-import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FQuestSets;
 
 public class QuestOfIdx extends AHQMWorker<FQuest, Object> {
 	private int mIndex;
@@ -11,9 +10,9 @@ public class QuestOfIdx extends AHQMWorker<FQuest, Object> {
 		mIndex = index;
 	}
 
-	public static FQuest get( FQuestSets set, int idx) {
+	public static FQuest get( FHqm hqm, int idx) {
 		QuestOfIdx worker = new QuestOfIdx( idx);
-		return set.forEachMember( worker, null);
+		return hqm.forEachQuest( worker, null);
 	}
 
 	@Override
@@ -23,10 +22,5 @@ public class QuestOfIdx extends AHQMWorker<FQuest, Object> {
 		}
 		--mIndex;
 		return null;
-	}
-
-	@Override
-	public FQuest forQuestSet( FQuestSet qs, Object p) {
-		return qs.forEachQuest( this, p);
 	}
 }

@@ -11,7 +11,7 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuest extends ANamed {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
-	public final FQuestSet mParentSet;
+	public final FHqm mParentHQM;
 	public final FParameterString mDesc = new FParameterString( this, "Description");
 	public final FParameterInt mX = new FParameterInt( this, "X");
 	public final FParameterInt mY = new FParameterInt( this, "Y");
@@ -25,14 +25,23 @@ public final class FQuest extends ANamed {
 	public final FParameterInt mReqCount = new FParameterInt( this, "RequirementCount");
 	public final Vector<FParameterStack> mRewards = new Vector<FParameterStack>();
 	public final Vector<FParameterStack> mChoices = new Vector<FParameterStack>();
+	public FQuestSet mSet;
 	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();
 	private Vector<FReward> Reputation = new Vector<FReward>();
+	private boolean mDeleted;
 
-	public FQuest( FQuestSet parent, String name) {
+	public FQuest( FHqm parent, String name) {
 		super( name);
-		mParentSet = parent;
+		mParentHQM = parent;
 		mTriggerType.mValue = TriggerType.NONE;
+	}
+
+	public FQuest( FHqm parent, String name, boolean deleted) {
+		super( name);
+		mParentHQM = parent;
+		mTriggerType.mValue = TriggerType.NONE;
+		mDeleted = deleted;
 	}
 
 	@Override
@@ -133,8 +142,8 @@ public final class FQuest extends ANamed {
 	}
 
 	@Override
-	public FQuestSet getParent() {
-		return mParentSet;
+	public FHqm getParent() {
+		return mParentHQM;
 	}
 
 	public FRepeatInfo getRepeatInfo() {
@@ -143,5 +152,9 @@ public final class FQuest extends ANamed {
 
 	public int getW() {
 		return mBig.mValue ? 31 : 25;
+	}
+
+	public boolean isDeleted() {
+		return mDeleted;
 	}
 }

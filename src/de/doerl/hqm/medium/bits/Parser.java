@@ -43,6 +43,7 @@ import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
+import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.ICallback;
@@ -60,7 +61,6 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private BitInputStream mSrc;
 	private HashMap<FQuest, int[]> mTemp = new HashMap<FQuest, int[]>();
-	private Vector<FQuest> mQuests = new Vector<FQuest>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
@@ -242,34 +242,28 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 	}
 
-	private void readQuests( FQuestSets set) {
+	private void readQuests( FHqm hqm) {
 		int count = mSrc.readData( DataBitHelper.QUESTS);
 		for (int i = 0; i < count; ++i) {
 			if (mSrc.readBoolean()) {
-				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-				String desc = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
-				int x = mSrc.readData( DataBitHelper.QUEST_POS_X);
-				int y = mSrc.readData( DataBitHelper.QUEST_POS_Y);
-				boolean big = mSrc.readBoolean();
-				FQuest member;
+				FQuest member = hqm.createQuest( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
+				member.mDesc.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+				member.mX.mValue = mSrc.readData( DataBitHelper.QUEST_POS_X);
+				member.mY.mValue = mSrc.readData( DataBitHelper.QUEST_POS_Y);
+				member.mBig.mValue = mSrc.readBoolean();
 				if (mSrc.contains( FileVersion.SETS)) {
 					int setID = mSrc.readData( DataBitHelper.QUEST_SETS);
-					FQuestSet qs = QuestSetOfIdx.get( set, setID);
+					FQuestSet qs = QuestSetOfIdx.get( hqm.mQuestSets, setID);
 					if (qs == null) {
-						qs = set.createMember( "--Missing--");
+						qs = hqm.mQuestSets.createMember( "--Missing--");
 					}
-					member = qs.createQuest( name);
 					member.mIcon.mValue = mSrc.readIconIf();
+					member.mSet = qs;
 				}
 				else {
-					FQuestSet qs = set.createMember( "--Default--");
-					member = qs.createQuest( name);
+					FQuestSet qs = hqm.mQuestSets.createMember( "--Default--");
+					member.mSet = qs;
 				}
-				mQuests.add( member);
-				member.mDesc.mValue = desc;
-				member.mX.mValue = x;
-				member.mY.mValue = y;
-				member.mBig.mValue = big;
 				if (mSrc.readBoolean()) {
 					mTemp.put( member, mSrc.readIds( DataBitHelper.QUESTS));
 				}
@@ -304,7 +298,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 				readReputationReward( member);
 			}
 			else {
-				mQuests.add( null);
+				hqm.addDeletedQuest();
 			}
 		}
 	}
@@ -363,12 +357,12 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 		readQuestSets( hqm.mQuestSets);
 		readReputations( hqm.mRepSets);
-		readQuests( hqm.mQuestSets);
+		readQuests( hqm);
 		if (mSrc.contains( FileVersion.BAGS)) {
 			readGroupTiers( hqm.mGroupTiers);
 			readGroup( hqm.mGroups);
 		}
-		updateRequirements();
+		updateRequirements( hqm);
 	}
 
 	private void readTasks( FQuest quest) {
@@ -385,14 +379,14 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 	}
 
-	private void updateRequirements() {
+	private void updateRequirements( FHqm hqm) {
 		for (Map.Entry<FQuest, int[]> e : mTemp.entrySet()) {
 			FQuest quest = e.getKey();
 			int[] ids = e.getValue();
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
-				FQuest req = mQuests.get( id);
-				if (req != null) {
+				FQuest req = QuestOfIdx.get( hqm, id);
+				if (req != null && !req.isDeleted()) {
 					quest.mRequirements.add( req);
 				}
 				else {

@@ -32,34 +32,43 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 		return mQS;
 	}
 
-	private static class LineFactory extends AHQMWorker<Object, JPanel> {
-		private static final LineFactory WORKER = new LineFactory();
+	private static class LineFactory extends AHQMWorker<Object, Object> {
 		private static final Color LINE_COLOR = new Color( 0xff404040);
+		private FQuestSet mSet;
+		private JPanel mLeaf;
 
-		private LineFactory() {
+		private LineFactory( FQuestSet qs, JPanel leaf) {
+			mSet = qs;
+			mLeaf = leaf;
 		}
 
 		public static void set( FQuestSet qs, JPanel leaf) {
-			qs.forEachQuest( WORKER, leaf);
+			LineFactory worker = new LineFactory( qs, leaf);
+			qs.mParentCategory.mParentHQM.forEachQuest( worker, leaf);
 		}
 
 		@Override
-		public Object forQuest( FQuest quest, JPanel leaf) {
-			for (FQuest req : quest.mRequirements) {
-				if (req != null && Utils.equals( quest.mParentSet, req.mParentSet)) {
-					leaf.add( leafLine( 2 * quest.getCenterX(), 2 * quest.getCenterY(), 2 * req.getCenterX(), 2 * req.getCenterY(), 5, LINE_COLOR));
+		public Object forQuest( FQuest quest, Object p) {
+			if (Utils.equals( quest.mSet, mSet)) {
+				for (FQuest req : quest.mRequirements) {
+					if (req != null && Utils.equals( quest.mSet, req.mSet)) {
+						mLeaf.add( leafLine( 2 * quest.getCenterX(), 2 * quest.getCenterY(), 2 * req.getCenterX(), 2 * req.getCenterY(), 5, LINE_COLOR));
+					}
 				}
 			}
 			return null;
 		}
 	}
 
-	private static class QuestFactory extends AHQMWorker<Object, JPanel> {
-		private static final QuestFactory WORKER = new QuestFactory();
+	private static class QuestFactory extends AHQMWorker<Object, Object> {
 		private static BufferedImage DARK_BIG = darker( QUEST_BIG, 0.6F);
 		private static BufferedImage DARK_NORM = darker( QUEST_NORM, 0.6F);
+		private FQuestSet mSet;
+		private JPanel mLeaf;
 
-		private QuestFactory() {
+		private QuestFactory( FQuestSet qs, JPanel leaf) {
+			mSet = qs;
+			mLeaf = leaf;
 		}
 
 		private static BufferedImage darker( BufferedImage src, float factor) {
@@ -72,21 +81,24 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 		}
 
 		public static void set( FQuestSet qs, JPanel leaf) {
-			qs.forEachQuest( WORKER, leaf);
+			QuestFactory worker = new QuestFactory( qs, leaf);
+			qs.mParentCategory.mParentHQM.forEachQuest( worker, leaf);
 		}
 
 		@Override
-		public Object forQuest( FQuest quest, JPanel leaf) {
-			boolean big = quest.mBig.mValue;
-			int x = quest.mX.mValue;
-			int y = quest.mY.mValue;
-			if (big) {
-				++x;
-				++y;
+		public Object forQuest( FQuest quest, Object p) {
+			if (Utils.equals( quest.mSet, mSet)) {
+				boolean big = quest.mBig.mValue;
+				int x = quest.mX.mValue;
+				int y = quest.mY.mValue;
+				if (big) {
+					++x;
+					++y;
+				}
+				int w = quest.getW();
+				int h = quest.getH();
+				mLeaf.add( leafImage( 2 * x, 2 * y, 2 * w, 2 * h, big ? DARK_BIG : DARK_NORM));
 			}
-			int w = quest.getW();
-			int h = quest.getH();
-			leaf.add( leafImage( 2 * x, 2 * y, 2 * w, 2 * h, big ? DARK_BIG : DARK_NORM));
 			return null;
 		}
 	}

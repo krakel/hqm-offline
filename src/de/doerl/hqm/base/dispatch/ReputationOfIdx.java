@@ -17,7 +17,7 @@ public class ReputationOfIdx extends AHQMWorker<FReputation, Object> {
 	}
 
 	public static FReputation get( FQuestTaskReputationTarget task, int idx) {
-		return get( task.mParentQuest.mParentSet.mParentCategory.mParentHQM.mRepSets, idx);
+		return get( task.mParentQuest.mParentHQM.mRepSets, idx);
 	}
 
 	public static FReputation get( FReputations set, int idx) {

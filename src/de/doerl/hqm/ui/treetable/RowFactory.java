@@ -1,8 +1,8 @@
 package de.doerl.hqm.ui.treetable;
 
 import de.doerl.hqm.base.ABase;
-import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.ACategory;
+import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FParameterBoolean;
 import de.doerl.hqm.base.FParameterEnum;
@@ -11,6 +11,7 @@ import de.doerl.hqm.base.FParameterInteger;
 import de.doerl.hqm.base.FParameterIntegerArr;
 import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FParameterString;
+import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 
 class RowFactory extends AHQMWorker<ATreeTableRow, TreeTableModel> {
@@ -120,6 +121,17 @@ class RowFactory extends AHQMWorker<ATreeTableRow, TreeTableModel> {
 		ATreeTableRow parent = par.getParent().accept( this, model);
 		ParameterStringRow node = new ParameterStringRow( parent, par);
 		model.addNewNode( parent, par, node);
+		return node;
+	}
+
+	@Override
+	public ATreeTableRow forQuest( FQuest quest, TreeTableModel model) {
+		ATreeTableRow parent = quest.mSet.accept( this, model);
+		ATreeTableRow node = model.getNode( quest);
+		if (node == null) {
+			node = new NamedRow( parent, quest);
+			model.addNewNode( parent, quest, node);
+		}
 		return node;
 	}
 }

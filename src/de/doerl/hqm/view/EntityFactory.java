@@ -1,8 +1,8 @@
 package de.doerl.hqm.view;
 
 import de.doerl.hqm.base.ABase;
-import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.ACategory;
+import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
@@ -32,6 +32,9 @@ class EntityFactory extends AHQMWorker<AEntity<? extends ABase>, EditView> {
 
 	@Override
 	public AEntity<? extends ABase> forQuest( FQuest quest, EditView view) {
+		if (quest.isDeleted()) {
+			return null;
+		}
 		return new QuestEntity( view, quest);
 	}
 

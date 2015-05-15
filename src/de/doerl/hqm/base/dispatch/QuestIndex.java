@@ -1,7 +1,6 @@
 package de.doerl.hqm.base.dispatch;
 
 import de.doerl.hqm.base.FQuest;
-import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.utils.Utils;
 
 public class QuestIndex extends AHQMWorker<Boolean, Object> {
@@ -17,7 +16,7 @@ public class QuestIndex extends AHQMWorker<Boolean, Object> {
 			return -1;
 		}
 		QuestIndex worker = new QuestIndex( quest);
-		quest.mParentSet.mParentCategory.forEachMember( worker, null);
+		quest.mParentHQM.forEachQuest( worker, null);
 		return worker.mResult;
 	}
 
@@ -25,10 +24,5 @@ public class QuestIndex extends AHQMWorker<Boolean, Object> {
 	public Boolean forQuest( FQuest quest, Object p) {
 		++mResult;
 		return Utils.equals( quest, mQuest) ? Boolean.TRUE : null;
-	}
-
-	@Override
-	public Boolean forQuestSet( FQuestSet qs, Object p) {
-		return qs.forEachQuest( this, p);
 	}
 }

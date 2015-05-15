@@ -3,8 +3,9 @@ package de.doerl.hqm.base.dispatch;
 import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
+import de.doerl.hqm.utils.Utils;
 
-public class QuestSetSizeOf extends AHQMWorker<Object, Object> {
+public class QuestSetSizeOf extends AHQMWorker<Object, FQuestSet> {
 	private int mResult;
 
 	private QuestSetSizeOf() {
@@ -12,25 +13,21 @@ public class QuestSetSizeOf extends AHQMWorker<Object, Object> {
 
 	public static int get( ACategory<FQuestSet> set) {
 		QuestSetSizeOf size = new QuestSetSizeOf();
-		set.forEachMember( size, null);
+		set.mParentHQM.forEachQuest( size, null);
 		return size.mResult;
 	}
 
 	public static int get( FQuestSet qs) {
 		QuestSetSizeOf size = new QuestSetSizeOf();
-		qs.forEachQuest( size, null);
+		qs.mParentCategory.mParentHQM.forEachQuest( size, qs);
 		return size.mResult;
 	}
 
 	@Override
-	public Object forQuest( FQuest quest, Object p) {
-		++mResult;
-		return null;
-	}
-
-	@Override
-	public Object forQuestSet( FQuestSet qs, Object p) {
-		qs.forEachQuest( this, null);
+	public Object forQuest( FQuest quest, FQuestSet qs) {
+		if (qs == null || Utils.equals( quest.mSet, qs) && !quest.isDeleted()) {
+			++mResult;
+		}
 		return null;
 	}
 }
