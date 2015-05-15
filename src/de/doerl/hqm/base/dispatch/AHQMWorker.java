@@ -10,7 +10,7 @@ import de.doerl.hqm.base.AParameter;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
-import de.doerl.hqm.base.ASet;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
@@ -72,7 +72,7 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 		return doBase( req, p);
 	}
 
-	protected T doSet( ASet<? extends ANamed> set, U p) {
+	protected T doSet( ACategory<? extends ANamed> set, U p) {
 		return doBase( set, p);
 	}
 

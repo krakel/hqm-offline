@@ -3,7 +3,7 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FGroups extends ASet<FGroup> {
+public final class FGroups extends ACategory<FGroup> {
 	FGroups( FHqm parent) {
 		super( parent);
 	}

@@ -11,14 +11,14 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FReputation extends AMember<FReputation> {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
-	public final FReputations mParentSet;
+	public final FReputations mParentCategory;
 	public final FParameterInteger mID = new FParameterInteger( this, "ID");
 	public final FParameterString mNeutral = new FParameterString( this, "Neutral");
 	public Vector<FMarker> mMarker = new Vector<FMarker>();
 
 	public FReputation( FReputations parent, String name) {
 		super( name);
-		mParentSet = parent;
+		mParentCategory = parent;
 	}
 
 	@Override
@@ -55,8 +55,8 @@ public final class FReputation extends AMember<FReputation> {
 	}
 
 	@Override
-	public ASet<FReputation> getParent() {
-		return mParentSet;
+	public ACategory<FReputation> getParent() {
+		return mParentCategory;
 	}
 
 	public void sort() {

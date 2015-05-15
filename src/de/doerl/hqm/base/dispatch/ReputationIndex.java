@@ -13,7 +13,7 @@ public class ReputationIndex extends AHQMWorker<Boolean, Object> {
 
 	public static int get( FReputation rep) {
 		ReputationIndex worker = new ReputationIndex( rep);
-		rep.mParentSet.forEachMember( worker, null);
+		rep.mParentCategory.forEachMember( worker, null);
 		return worker.mResult;
 	}
 

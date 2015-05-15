@@ -5,7 +5,7 @@ import java.util.Vector;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
-import de.doerl.hqm.base.ASet;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
@@ -55,7 +55,7 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 	}
 
 	@Override
-	protected Object doSet( ASet<? extends ANamed> set, TreeTableModel model) {
+	protected Object doSet( ACategory<? extends ANamed> set, TreeTableModel model) {
 		RowFactory.get( set, model);
 		set.forEachMember( this, model);
 		return null;

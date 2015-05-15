@@ -1,12 +1,12 @@
 package de.doerl.hqm.ui.treetable;
 
-import de.doerl.hqm.base.ASet;
+import de.doerl.hqm.base.ACategory;
 
 public class SetRow extends AParentRow {
 	private ATreeTableRow mParent;
-	private ASet<?> mBase;
+	private ACategory<?> mBase;
 
-	public SetRow( ATreeTableRow parent, ASet<?> base) {
+	public SetRow( ATreeTableRow parent, ACategory<?> base) {
 		mParent = parent;
 		mBase = base;
 	}
@@ -16,7 +16,7 @@ public class SetRow extends AParentRow {
 	}
 
 	@Override
-	public ASet<?> getElementObject() {
+	public ACategory<?> getElementObject() {
 		return mBase;
 	}
 

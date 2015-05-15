@@ -2,7 +2,7 @@ package de.doerl.hqm.ui.treetable;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ANamed;
-import de.doerl.hqm.base.ASet;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FParameterBoolean;
 import de.doerl.hqm.base.FParameterEnum;
@@ -46,7 +46,7 @@ class RowFactory extends AHQMWorker<ATreeTableRow, TreeTableModel> {
 	}
 
 	@Override
-	protected ATreeTableRow doSet( ASet<? extends ANamed> set, TreeTableModel model) {
+	protected ATreeTableRow doSet( ACategory<? extends ANamed> set, TreeTableModel model) {
 		ATreeTableRow parent = set.getParent().accept( this, model);
 		ATreeTableRow node = model.getNode( set);
 		if (node == null) {

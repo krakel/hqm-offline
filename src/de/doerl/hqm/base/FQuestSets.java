@@ -4,7 +4,7 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FQuestSets extends ASet<FQuestSet> {
+public final class FQuestSets extends ACategory<FQuestSet> {
 	FQuestSets( FHqm parent) {
 		super( parent);
 	}

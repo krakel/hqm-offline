@@ -346,7 +346,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		if (mSrc.readBoolean()) {
 			int count = mSrc.readData( DataBitHelper.QUESTS);
 			for (int i = 0; i < count; ++i) {
-				quest.mRequirements.add( QuestOfIdx.get( quest.mParentSet.mParentSet, mSrc.readData( DataBitHelper.QUESTS)));
+				quest.mRequirements.add( QuestOfIdx.get( quest.mParentSet.mParentCategory, mSrc.readData( DataBitHelper.QUESTS)));
 			}
 		}
 	}

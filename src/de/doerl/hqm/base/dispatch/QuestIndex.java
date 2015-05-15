@@ -17,7 +17,7 @@ public class QuestIndex extends AHQMWorker<Boolean, Object> {
 			return -1;
 		}
 		QuestIndex worker = new QuestIndex( quest);
-		quest.mParentSet.mParentSet.forEachMember( worker, null);
+		quest.mParentSet.mParentCategory.forEachMember( worker, null);
 		return worker.mResult;
 	}
 

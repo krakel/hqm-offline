@@ -7,12 +7,12 @@ import java.util.logging.Logger;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
-public abstract class ASet<E extends ANamed> extends ABase {
-	private static final Logger LOGGER = Logger.getLogger( ASet.class.getName());
+public abstract class ACategory<E extends ANamed> extends ABase {
+	private static final Logger LOGGER = Logger.getLogger( ACategory.class.getName());
 	public final FHqm mParentHQM;
 	private Vector<E> mMember = new Vector<E>();
 
-	ASet( FHqm parent) {
+	ACategory( FHqm parent) {
 		mParentHQM = parent;
 	}
 

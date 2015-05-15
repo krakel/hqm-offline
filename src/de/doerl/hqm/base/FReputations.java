@@ -3,7 +3,7 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FReputations extends ASet<FReputation> {
+public final class FReputations extends ACategory<FReputation> {
 	FReputations( FHqm parent) {
 		super( parent);
 	}

@@ -23,7 +23,7 @@ import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
-import de.doerl.hqm.base.ASet;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSets;
@@ -99,7 +99,7 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 						SwingUtilities.invokeLater( new QuestSetAction( this, qs));
 						break;
 					case MouseEvent.BUTTON3:
-						SwingUtilities.invokeLater( new QuestSetsAction( this, qs.mParentSet));
+						SwingUtilities.invokeLater( new QuestSetsAction( this, qs.mParentCategory));
 						break;
 					default:
 				}
@@ -132,7 +132,7 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 		mScroll.setVisible( true);
 	}
 
-	public void setSets( ASet<FQuestSet> set) {
+	public void setSets( ACategory<FQuestSet> set) {
 		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( set)));
 		mDesc.setText( null);
 		mScroll.setVisible( false);
@@ -222,9 +222,9 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 
 	private static class QuestSetsAction implements Runnable {
 		private QuestSetsEntity mEntity;
-		private ASet<FQuestSet> mSet;
+		private ACategory<FQuestSet> mSet;
 
-		public QuestSetsAction( QuestSetsEntity entity, ASet<FQuestSet> set) {
+		public QuestSetsAction( QuestSetsEntity entity, ACategory<FQuestSet> set) {
 			mEntity = entity;
 			mSet = set;
 		}

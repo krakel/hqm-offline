@@ -1,6 +1,6 @@
 package de.doerl.hqm.base.dispatch;
 
-import de.doerl.hqm.base.ASet;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 
@@ -10,7 +10,7 @@ public class QuestSetSizeOf extends AHQMWorker<Object, Object> {
 	private QuestSetSizeOf() {
 	}
 
-	public static int get( ASet<FQuestSet> set) {
+	public static int get( ACategory<FQuestSet> set) {
 		QuestSetSizeOf size = new QuestSetSizeOf();
 		set.forEachMember( size, null);
 		return size.mResult;

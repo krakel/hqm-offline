@@ -2,7 +2,7 @@ package de.doerl.hqm.view;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ANamed;
-import de.doerl.hqm.base.ASet;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
@@ -21,7 +21,7 @@ class EntityFactory extends AHQMWorker<AEntity<? extends ABase>, EditView> {
 	}
 
 	@Override
-	protected AEntity<? extends ABase> doSet( ASet<? extends ANamed> set, EditView view) {
+	protected AEntity<? extends ABase> doSet( ACategory<? extends ANamed> set, EditView view) {
 		return null;
 	}
 

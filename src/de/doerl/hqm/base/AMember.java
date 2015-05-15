@@ -6,5 +6,5 @@ public abstract class AMember<E extends ANamed> extends ANamed {
 	}
 
 	@Override
-	public abstract ASet<E> getParent();
+	public abstract ACategory<E> getParent();
 }
