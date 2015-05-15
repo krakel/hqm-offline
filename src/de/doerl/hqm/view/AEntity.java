@@ -1,5 +1,6 @@
 package de.doerl.hqm.view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -158,7 +159,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static JLabel leafImage( int x, int y, int w, int h, BufferedImage... arr) {
 		JLabel result = new JLabel( new MultiIcon( w, h, arr));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setOpaque( false);
+//		result.setOpaque( false);
 		result.setBorder( null);
 //		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		result.setBounds( x, y, w, h);
@@ -181,13 +182,15 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return leafLabel( Color.BLACK, text);
 	}
 
-	protected static JLabel leafLine( int x1, int y1, int x2, int y2, int width, Color color) {
-		JLabel result = new JLabel( new LineIcon( x1, y1, x2, y2, width, color));
+	protected static JComponent leafLine( int x1, int y1, int x2, int y2, int width, Color color) {
+		int dx = x1 - x2;
+		int dy = y1 - y2;
+		JComponent result = new JLine( dx, dy, width, color);
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
 		result.setBorder( null);
 //		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
-		result.setBounds( x1, y1, x2 - x1, y2 - y1);
+		result.setBounds( Math.min( x1, x2), Math.min( y1, y2), Math.max( Math.abs( dx), width), Math.max( Math.abs( dy), width));
 		return result;
 	}
 
@@ -331,7 +334,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 				EditView.drawCenteredString( g2, c, mText);
 			}
 		}
-	};
+	}
 
 	static class CountIcon implements Icon {
 		private BufferedImage[] mArr;
@@ -363,6 +366,55 @@ abstract class AEntity<T extends ABase> extends JPanel {
 				EditView.drawBottomLeftString( g2, c, mText);
 			}
 		}
+	};
+
+	private static class JLine extends JPanel {
+		private static final long serialVersionUID = -5876257198033732175L;
+		private int mDX, mDY;
+		private int mWidth;
+		private Color mColor;
+
+		public JLine( int dx, int dy, int width, Color color) {
+			mDX = dx;
+			mDY = dy;
+			mWidth = width;
+			mColor = color;
+		}
+
+		@Override
+		protected void paintComponent( Graphics g) {
+			if (ui != null) {
+				Graphics2D g2 = (Graphics2D) g;
+				g2.setColor( mColor);
+				g2.setStroke( new BasicStroke( mWidth));
+				int dw = mWidth / 2;
+				if (mDX >= mWidth) {
+					if (mDY >= mWidth) {
+						g2.drawLine( 0, 0, mDX, mDY);
+					}
+					else if (mDY < -mWidth) {
+						g2.drawLine( 0, -mDY, mDX, 0);
+					}
+					else {
+						g2.drawLine( 0, dw, mDX, dw);
+					}
+				}
+				else if (mDX < -mWidth) {
+					if (mDY >= 0) {
+						g2.drawLine( -mDX, 0, 0, mDY);
+					}
+					else if (mDY < -mWidth) {
+						g2.drawLine( -mDX, -mDY, 0, 0);
+					}
+					else {
+						g2.drawLine( 0, dw, -mDX, dw);
+					}
+				}
+				else {
+					g2.drawLine( dw, 0, dw, Math.abs( mDY));
+				}
+			}
+		}
 	}
 
 	private static class LeafPanel extends JPanel {
@@ -370,44 +422,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 		public LeafPanel() {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-		}
-	}
-
-	static class LineIcon implements Icon {
-		private int mX1, mY1;
-		private int mX2, mY2;
-		private int mWidth;
-		private Color mColor;
-
-		public LineIcon( int x1, int y1, int x2, int y2, int width, Color color) {
-			mX1 = x1;
-			mY1 = y1;
-			mX2 = x2;
-			mY2 = y2;
-			mWidth = width;
-			mColor = color;
-		}
-
-		@Override
-		public int getIconHeight() {
-			return mY2 - mY1;
-		}
-
-		@Override
-		public int getIconWidth() {
-			return mX2 - mX1;
-		}
-
-		@Override
-		public void paintIcon( Component c, Graphics g, int x, int y) {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setColor( mColor);
-			g2.drawLine( mX1, mY1, mX2, mY2);
-//			for (BufferedImage img : mArr) {
-//				if (img != null) {
-//					EditView.drawImage( g2, c, img);
-//				}
-//			}
 		}
 	}
 

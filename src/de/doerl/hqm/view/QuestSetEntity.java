@@ -78,17 +78,15 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 		@Override
 		public Object forQuest( FQuest quest, JPanel leaf) {
 			boolean big = quest.mBig.mValue;
-			int w = quest.getW();
-			int h = quest.getH();
-			int x = quest.getCenterX();
-			int y = quest.getCenterY();
+			int x = quest.mX.mValue;
+			int y = quest.mY.mValue;
 			if (big) {
 				++x;
 				++y;
 			}
-			w *= 2;
-			h *= 2;
-			leaf.add( leafImage( 2 * x, 2 * y, w, h, big ? DARK_BIG : DARK_NORM));
+			int w = quest.getW();
+			int h = quest.getH();
+			leaf.add( leafImage( 2 * x, 2 * y, 2 * w, 2 * h, big ? DARK_BIG : DARK_NORM));
 			return null;
 		}
 	}

@@ -116,11 +116,11 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getCenterX() {
-		return mX.mValue + getW() / 2 - 8;
+		return mX.mValue + getW() / 2;
 	}
 
 	public int getCenterY() {
-		return mY.mValue + getH() / 2 - 8;
+		return mY.mValue + getH() / 2;
 	}
 
 	@Override
