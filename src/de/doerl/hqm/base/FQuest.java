@@ -17,7 +17,7 @@ public final class FQuest extends ANamed {
 	public final FParameterInt mY = new FParameterInt( this, "Y");
 	public final FParameterBoolean mBig = new FParameterBoolean( this, "Big");
 	public final FParameterStack mIcon = new FParameterStack( this, "Icon");
-	public final FParameterIntegerArr mRequirements = new FParameterIntegerArr( this, "Requirements");
+	public final Vector<FQuest> mRequirements = new Vector<FQuest>();
 	public final FParameterIntegerArr mOptionLinks = new FParameterIntegerArr( this, "OptionLinks");
 	public final FParameterInt mTriggerTasks = new FParameterInt( this, "Trigger");
 	public final FParameterEnum<TriggerType> mTriggerType = new FParameterEnum<TriggerType>( this, "TriggerType");
@@ -115,9 +115,21 @@ public final class FQuest extends ANamed {
 		return null;
 	}
 
+	public int getCenterX() {
+		return mX.mValue + getW() / 2 - 8;
+	}
+
+	public int getCenterY() {
+		return mY.mValue + getH() / 2 - 8;
+	}
+
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST;
+	}
+
+	public int getH() {
+		return mBig.mValue ? 37 : 30;
 	}
 
 	@Override
@@ -127,5 +139,9 @@ public final class FQuest extends ANamed {
 
 	public FRepeatInfo getRepeatInfo() {
 		return mRepeatInfo;
+	}
+
+	public int getW() {
+		return mBig.mValue ? 31 : 25;
 	}
 }

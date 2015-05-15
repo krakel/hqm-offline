@@ -239,7 +239,7 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 
 		@Override
 		protected Object doTaskItems( AQuestTaskItems task, JComponent comp) {
-			JComponent itemBox = leafBoxHorizontal( ICON_SIZE);
+			JComponent itemBox = leafBoxFloat( 2 * (ICON_SIZE + GAP));
 			comp.add( itemBox);
 			task.forEachRequirement( this, itemBox);
 			comp.add( Box.createVerticalGlue());

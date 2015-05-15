@@ -99,7 +99,7 @@ class BitInputStream extends InputStream {
 	public int[] readIds( DataBitHelper size) {
 		int count = readData( size);
 		int[] result = new int[count];
-		for (int i = 0; i < result.length; ++i) {
+		for (int i = 0; i < count; ++i) {
 			result[i] = readData( size);
 		}
 		return result;

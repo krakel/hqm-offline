@@ -3,11 +3,13 @@ package de.doerl.hqm.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.util.Vector;
 
 import javax.swing.Action;
@@ -60,12 +62,22 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	AEntity( EditView view, LayoutManager layout) {
 		super( layout, true);
 		mView = view;
+		setOpaque( true);
 	}
 
 	public static void addKeyAction( JComponent comp, String key, Action action) {
 		Object o = new Object();
 		comp.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW).put( KeyStroke.getKeyStroke( key), o);
 		comp.getActionMap().put( o, action);
+	}
+
+	public static BufferedImage copy( BufferedImage src) {
+		ColorModel cm = src.getColorModel();
+		BufferedImage result = new BufferedImage( cm, src.getRaster().createCompatibleWritableRaster(), cm.isAlphaPremultiplied(), null);
+		Graphics2D g = result.createGraphics();
+		g.drawImage( src, null, null);
+		g.dispose();
+		return result;
 	}
 
 	protected static JComponent leafBox( int axis) {
@@ -81,6 +93,16 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		}
 //		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
 //		result.setOpaque( false);
+		result.setBorder( null);
+		return result;
+	}
+
+	protected static JComponent leafBoxFloat( int heigh) {
+		JComponent result = (JComponent) Box.createVerticalStrut( heigh);
+		result.setLayout( new FlowLayout( FlowLayout.LEFT, 0, GAP / 2));
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setBackground( Color.GREEN);
+		result.setOpaque( true);
 		result.setBorder( null);
 		return result;
 	}
@@ -126,11 +148,20 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	}
 
 	protected static JLabel leafImage( BufferedImage... arr) {
-		JLabel result = new JLabel( new MultiIcon( arr));
+		JLabel result = new JLabel( new MultiIcon( ICON_SIZE, ICON_SIZE, arr));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-//		result.setBackground( Color.BLUE);
 		result.setOpaque( false);
 		result.setBorder( null);
+		return result;
+	}
+
+	protected static JLabel leafImage( int x, int y, int w, int h, BufferedImage... arr) {
+		JLabel result = new JLabel( new MultiIcon( w, h, arr));
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setOpaque( false);
+		result.setBorder( null);
+//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+		result.setBounds( x, y, w, h);
 		return result;
 	}
 
@@ -148,6 +179,16 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 	protected static JLabel leafLabel( String text) {
 		return leafLabel( Color.BLACK, text);
+	}
+
+	protected static JLabel leafLine( int x1, int y1, int x2, int y2, int width, Color color) {
+		JLabel result = new JLabel( new LineIcon( x1, y1, x2, y2, width, color));
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setOpaque( false);
+		result.setBorder( null);
+//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+		result.setBounds( x1, y1, x2 - x1, y2 - y1);
+		return result;
 	}
 
 	protected static <E> JList<E> leafList( ListModel<E> model) {
@@ -168,6 +209,14 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		else {
 			result.setBorder( BorderFactory.createEmptyBorder( 40, 10, 40, 40));
 		}
+		return result;
+	}
+
+	protected static JPanel leafPanelAbsolut() {
+		JPanel result = new JPanel( null);
+//		result.setBackground( Color.GRAY);
+		result.setOpaque( false);
+		result.setBorder( BorderFactory.createEmptyBorder( 40, 40, 40, 40));
 		return result;
 	}
 
@@ -251,7 +300,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 //		mView.addMouse( this);
 		setVisible( true);
 		mView.add( this);
-	};
+	}
 
 	static class CenterIcon implements Icon {
 		private BufferedImage mImage;
@@ -282,7 +331,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 				EditView.drawCenteredString( g2, c, mText);
 			}
 		}
-	}
+	};
 
 	static class CountIcon implements Icon {
 		private BufferedImage[] mArr;
@@ -324,19 +373,60 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		}
 	}
 
+	static class LineIcon implements Icon {
+		private int mX1, mY1;
+		private int mX2, mY2;
+		private int mWidth;
+		private Color mColor;
+
+		public LineIcon( int x1, int y1, int x2, int y2, int width, Color color) {
+			mX1 = x1;
+			mY1 = y1;
+			mX2 = x2;
+			mY2 = y2;
+			mWidth = width;
+			mColor = color;
+		}
+
+		@Override
+		public int getIconHeight() {
+			return mY2 - mY1;
+		}
+
+		@Override
+		public int getIconWidth() {
+			return mX2 - mX1;
+		}
+
+		@Override
+		public void paintIcon( Component c, Graphics g, int x, int y) {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor( mColor);
+			g2.drawLine( mX1, mY1, mX2, mY2);
+//			for (BufferedImage img : mArr) {
+//				if (img != null) {
+//					EditView.drawImage( g2, c, img);
+//				}
+//			}
+		}
+	}
+
 	static class MultiIcon implements Icon {
+		private int mWidth, mHeight;
 		private BufferedImage[] mArr;
 
-		public MultiIcon( BufferedImage[] arr) {
+		public MultiIcon( int w, int h, BufferedImage[] arr) {
+			mWidth = w;
+			mHeight = h;
 			mArr = arr;
 		}
 
 		public int getIconHeight() {
-			return ICON_SIZE;
+			return mHeight;
 		}
 
 		public int getIconWidth() {
-			return ICON_SIZE;
+			return mWidth;
 		}
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {

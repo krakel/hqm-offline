@@ -12,6 +12,7 @@ import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FLocation;
+import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
@@ -27,7 +28,6 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
@@ -120,6 +120,13 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 	}
 
 	@Override
+	public Object forMarker( FMarker mark, TreeTableModel model) {
+		RowFactory.get( mark, model);
+		RowFactory.get( mark.mMark, model);
+		return null;
+	}
+
+	@Override
 	public Object forMob( FMob mob, TreeTableModel model) {
 		RowFactory.get( mob, model);
 		RowFactory.get( mob.mIcon, model);
@@ -138,7 +145,7 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 		RowFactory.get( quest.mBig, model);
 //		RowFactory.get( quest.mSetID, model);
 		RowFactory.get( quest.mIcon, model);
-		RowFactory.get( quest.mRequirements, model);
+//		RowFactory.get( quest.mRequirements, model);
 		RowFactory.get( quest.mOptionLinks, model);
 		quest.getRepeatInfo().accept( this, model);
 		RowFactory.get( quest.mTriggerTasks, model);
@@ -173,13 +180,6 @@ class TableFactory extends AHQMWorker<Object, TreeTableModel> {
 		RowFactory.get( rep, model);
 		RowFactory.get( rep.mNeutral, model);
 		rep.forEachMarker( this, model);
-		return null;
-	}
-
-	@Override
-	public Object forMarker( FMarker mark, TreeTableModel model) {
-		RowFactory.get( mark, model);
-		RowFactory.get( mark.mMark, model);
 		return null;
 	}
 

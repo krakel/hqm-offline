@@ -16,6 +16,7 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FLocation;
+import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
@@ -32,15 +33,15 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FMarker;
+import de.doerl.hqm.base.FReputations;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
-import de.doerl.hqm.base.FReputations;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IStackWorker;
+import de.doerl.hqm.base.dispatch.MarkerIndex;
+import de.doerl.hqm.base.dispatch.QuestIndex;
 import de.doerl.hqm.base.dispatch.QuestSetIndex;
 import de.doerl.hqm.base.dispatch.ReputationIndex;
-import de.doerl.hqm.base.dispatch.MarkerIndex;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.quest.TriggerType;
@@ -160,6 +161,15 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	}
 
 	@Override
+	public Object forMarker( FMarker mark, Object p) {
+		mDst.beginObject();
+		mDst.print( "name", mark.getName());
+		mDst.print( "value", mark.mMark);
+		mDst.endObject();
+		return null;
+	}
+
+	@Override
 	public Object forMob( FMob mob, Object p) {
 		mDst.beginObject();
 		mDst.print( "name", mob.getName());
@@ -182,7 +192,12 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( "setID", QuestSetIndex.get( quest.mParentSet));
 		mDst.print( "icon", quest.mIcon);
 		if (quest.mRequirements != null) {
-			mDst.print( "requirements", quest.mRequirements);
+			mDst.beginArray( "requirements");
+			for (FQuest req : quest.mRequirements) {
+				mDst.print( QuestIndex.get( req));
+			}
+			mDst.endArray();
+			mDst.println();
 		}
 		if (quest.mOptionLinks != null) {
 			mDst.print( "optionLinks", quest.mOptionLinks);
@@ -238,15 +253,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( "id", rep.mID);
 		mDst.print( "neutral", rep.mNeutral);
 		writeMarkers( rep);
-		mDst.endObject();
-		return null;
-	}
-
-	@Override
-	public Object forMarker( FMarker mark, Object p) {
-		mDst.beginObject();
-		mDst.print( "name", mark.getName());
-		mDst.print( "value", mark.mMark);
 		mDst.endObject();
 		return null;
 	}

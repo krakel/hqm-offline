@@ -19,6 +19,7 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FLocation;
+import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
@@ -35,13 +36,13 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FMarker;
+import de.doerl.hqm.base.FReputations;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
-import de.doerl.hqm.base.FReputations;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
+import de.doerl.hqm.base.dispatch.QuestOfIdx;
+import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmReader;
@@ -265,11 +266,10 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 				member.mX.mValue = x;
 				member.mY.mValue = y;
 				member.mBig.mValue = big;
-				if (mSrc.readBoolean()) {
-					member.mRequirements.mValue = mSrc.readIds( DataBitHelper.QUESTS);
-				}
+				readRequirements( member);
 				if (mSrc.contains( FileVersion.OPTION_LINKS) && mSrc.readBoolean()) {
-					member.mOptionLinks.mValue = mSrc.readIds( DataBitHelper.QUESTS);
+					int[] readIds = mSrc.readIds( DataBitHelper.QUESTS);
+					member.mOptionLinks.mValue = readIds;
 				}
 				FRepeatInfo info = member.getRepeatInfo();
 				if (mSrc.contains( FileVersion.REPEATABLE_QUESTS)) {
@@ -338,6 +338,15 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 				member.mID.mValue = id;
 				member.mNeutral.mValue = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
 				readMarker( member);
+			}
+		}
+	}
+
+	private void readRequirements( FQuest quest) {
+		if (mSrc.readBoolean()) {
+			int count = mSrc.readData( DataBitHelper.QUESTS);
+			for (int i = 0; i < count; ++i) {
+				quest.mRequirements.add( QuestOfIdx.get( quest.mParentSet.mParentSet, mSrc.readData( DataBitHelper.QUESTS)));
 			}
 		}
 	}
