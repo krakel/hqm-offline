@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.doerl.hqm.base.FQuest;
@@ -97,7 +98,9 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 				}
 				int w = quest.getW();
 				int h = quest.getH();
-				mLeaf.add( leafImage( 2 * x, 2 * y, 2 * w, 2 * h, big ? DARK_BIG : DARK_NORM));
+				JLabel img = leafImage( 2 * x, 2 * y, 2 * w, 2 * h, big ? DARK_BIG : DARK_NORM);
+				mLeaf.add( img);
+				mLeaf.setComponentZOrder( img, 0);
 			}
 			return null;
 		}

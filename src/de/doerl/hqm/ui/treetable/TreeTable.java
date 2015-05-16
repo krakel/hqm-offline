@@ -19,8 +19,9 @@ public class TreeTable extends JTable {
 		sPrefBoolean = new DefaultCellEditor( combo);
 	}
 
-	public TreeTable( TreeTableModel model) {
-		super( model);
+	public TreeTable() {
+		super( new TreeTableModel());
+		TreeTableModel model = getModel();
 		TreeTableCellRenderer tree = new TreeTableCellRenderer( model, this);
 		model.setTree( tree);
 		TreeTableSelectionModel selModel = new TreeTableSelectionModel();
@@ -40,7 +41,7 @@ public class TreeTable extends JTable {
 	public TableCellEditor getCellEditor( int row, int col) {
 		switch (col) {
 			case TreeTableModel.COL_VALUE:
-				TreeTableModel model = (TreeTableModel) getModel();
+				TreeTableModel model = getModel();
 				ATreeTableRow ttr = model.getRow( row);
 				Class<?> cls = ttr.getRowClass();
 				if (Boolean.class.equals( cls)) {
@@ -51,6 +52,11 @@ public class TreeTable extends JTable {
 			default:
 				return super.getCellEditor( row, col);
 		}
+	}
+
+	@Override
+	public TreeTableModel getModel() {
+		return (TreeTableModel) super.getModel();
 	}
 
 	private void prepareColumnParam( TableColumn col) {

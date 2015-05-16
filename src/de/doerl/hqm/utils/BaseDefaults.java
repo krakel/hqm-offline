@@ -16,11 +16,13 @@ public class BaseDefaults {
 	public static final String LAST_OPEN = "last.open";
 	public static final String LAST_OPEN_DIR = "last.open.dir";
 	public static final String STACKTRC = "stackTrace.enabled";
+	public static final String LOOK_AND_FEEL = "system.lookandfeel";
 	private static final String[] KEYS = {
-		FILE_OPEN_DIR, LAST_OPEN, LAST_OPEN_DIR, STACKTRC
+		FILE_OPEN_DIR, LAST_OPEN, LAST_OPEN_DIR, STACKTRC, LOOK_AND_FEEL
 	};
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
+		{ LOOK_AND_FEEL, "System" },
 		{ STACKTRC, Boolean.FALSE },
 		{ FILE_OPEN_DIR, System.getProperty( "user.home") },
 		{ LAST_OPEN, new String[0] },

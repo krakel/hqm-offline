@@ -102,7 +102,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		JComponent result = (JComponent) Box.createVerticalStrut( heigh);
 		result.setLayout( new FlowLayout( FlowLayout.LEFT, 0, GAP / 2));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setBackground( Color.GREEN);
+		result.setBackground( Color.YELLOW);
 		result.setOpaque( true);
 		result.setBorder( null);
 		return result;
@@ -190,7 +190,8 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setOpaque( false);
 		result.setBorder( null);
 //		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
-		result.setBounds( Math.min( x1, x2), Math.min( y1, y2), Math.max( Math.abs( dx), width), Math.max( Math.abs( dy), width));
+		int dw = width / 2;
+		result.setBounds( Math.min( x1, x2), Math.min( y1, y2) - dw, Math.max( Math.abs( dx), width), Math.max( Math.abs( dy), width));
 		return result;
 	}
 

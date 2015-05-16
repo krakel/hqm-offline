@@ -72,8 +72,8 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 		return doBase( req, p);
 	}
 
-	protected T doSet( ACategory<? extends ANamed> set, U p) {
-		return doBase( set, p);
+	protected T doSet( ACategory<? extends ANamed> cat, U p) {
+		return doBase( cat, p);
 	}
 
 	protected T doTask( AQuestTask task, U p) {

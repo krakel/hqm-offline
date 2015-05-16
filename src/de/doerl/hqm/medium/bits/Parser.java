@@ -60,7 +60,7 @@ import de.doerl.hqm.utils.Utils;
 class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private BitInputStream mSrc;
-	private HashMap<FQuest, int[]> mTemp = new HashMap<FQuest, int[]>();
+	private HashMap<FQuest, int[]> mRequirements = new HashMap<FQuest, int[]>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
@@ -265,7 +265,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 					member.mSet = qs;
 				}
 				if (mSrc.readBoolean()) {
-					mTemp.put( member, mSrc.readIds( DataBitHelper.QUESTS));
+					mRequirements.put( member, mSrc.readIds( DataBitHelper.QUESTS));
 				}
 				if (mSrc.contains( FileVersion.OPTION_LINKS) && mSrc.readBoolean()) {
 					member.mOptionLinks.mValue = mSrc.readIds( DataBitHelper.QUESTS);
@@ -380,7 +380,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	}
 
 	private void updateRequirements( FHqm hqm) {
-		for (Map.Entry<FQuest, int[]> e : mTemp.entrySet()) {
+		for (Map.Entry<FQuest, int[]> e : mRequirements.entrySet()) {
 			FQuest quest = e.getKey();
 			int[] ids = e.getValue();
 			for (int i = 0; i < ids.length; ++i) {

@@ -33,8 +33,9 @@ import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.model.EditModel;
-import de.doerl.hqm.ui.treetable.TreeTable;
-import de.doerl.hqm.ui.treetable.TreeTableModel;
+import de.doerl.hqm.ui.tree.ElementTree;
+import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.EditView;
@@ -50,8 +51,8 @@ public class EditFrame extends JFrame implements ChangeListener {
 	private static final String POPUP = "hqm.popup";
 	private EditModel mModel = new EditModel();
 	private EditView mView;
-	private TreeTableModel mTableModel = new TreeTableModel();
-	private TreeTable mTable;
+//	private TreeTable mTable = new TreeTable();
+	private ElementTree mTree = new ElementTree();
 	private Action mNewAction = new NewAction( this);
 	private JLabel mStatusBar;
 	private EditCallback mCB;
@@ -60,9 +61,10 @@ public class EditFrame extends JFrame implements ChangeListener {
 		EditManager.init();
 		EditController ctrl = new EditController( mModel);
 		mView = new EditView( ctrl);
-		mTable = new TreeTable( mTableModel);
-		mTable.addMouseListener( new SelectHandler( ctrl));
-		mModel.addListener( mTableModel);
+		mTree.addMouseListener( new SelectHandler( ctrl));
+		mModel.addListener( mTree.getModel());
+//		mTable.addMouseListener( new SelectHandler( ctrl));
+//		mModel.addListener( mTable.getModel());
 		mCB = new EditCallback( this);
 	}
 
@@ -93,6 +95,7 @@ public class EditFrame extends JFrame implements ChangeListener {
 		main.setSize( main.getSize());
 		Utils.centerFrame( main);
 		main.addWindowListener( new WindowCloser());
+		ResourceManager.setLookAndFeel( PreferenceManager.getString( BaseDefaults.LOOK_AND_FEEL));
 		main.setVisible( true);
 		return main;
 	}
@@ -126,7 +129,8 @@ public class EditFrame extends JFrame implements ChangeListener {
 		lm.setAutoCreateContainerGaps( false);
 		cp.setLayout( lm);
 		JToolBar tool = createToolBar();
-		JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, new JScrollPane( mTable), createCentered( mView));
+		JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, new JScrollPane( mTree), createCentered( mView));
+//		JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, new JScrollPane( mTable), createCentered( mView));
 		split.setDividerSize( 5);
 		split.setDividerLocation( 320);
 		JLabel bar = createStatusBar();
@@ -281,6 +285,6 @@ public class EditFrame extends JFrame implements ChangeListener {
 	@Override
 	public void stateChanged( ChangeEvent event) {
 		mCB.fireActionUpdate();
-		mTableModel.fireTableDataChanged();
+//		mTable.getModel().fireTableDataChanged();
 	}
 }

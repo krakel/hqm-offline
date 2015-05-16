@@ -26,9 +26,9 @@ class RowFactory extends AHQMWorker<ATreeTableRow, TreeTableModel> {
 
 	@Override
 	protected ATreeTableRow doBase( ABase base, TreeTableModel model) {
-		ATreeTableRow parent = base.getParent().accept( this, model);
 		ATreeTableRow node = model.getNode( base);
 		if (node == null) {
+			ATreeTableRow parent = base.getParent().accept( this, model);
 			node = new BaseRow( parent, base);
 			model.addNewNode( parent, base, node);
 		}
@@ -37,9 +37,9 @@ class RowFactory extends AHQMWorker<ATreeTableRow, TreeTableModel> {
 
 	@Override
 	protected ATreeTableRow doNamed( ANamed named, TreeTableModel model) {
-		ATreeTableRow parent = named.getParent().accept( this, model);
 		ATreeTableRow node = model.getNode( named);
 		if (node == null) {
+			ATreeTableRow parent = named.getParent().accept( this, model);
 			node = new NamedRow( parent, named);
 			model.addNewNode( parent, named, node);
 		}
@@ -48,9 +48,9 @@ class RowFactory extends AHQMWorker<ATreeTableRow, TreeTableModel> {
 
 	@Override
 	protected ATreeTableRow doSet( ACategory<? extends ANamed> set, TreeTableModel model) {
-		ATreeTableRow parent = set.getParent().accept( this, model);
 		ATreeTableRow node = model.getNode( set);
 		if (node == null) {
+			ATreeTableRow parent = set.getParent().accept( this, model);
 			node = new SetRow( parent, set);
 			model.addNewNode( parent, set, node);
 		}
@@ -59,9 +59,9 @@ class RowFactory extends AHQMWorker<ATreeTableRow, TreeTableModel> {
 
 	@Override
 	public ATreeTableRow forHQM( FHqm hqm, TreeTableModel model) {
-		ATreeTableRow root = (ATreeTableRow) model.getRoot();
 		ATreeTableRow node = model.getNode( hqm);
 		if (node == null) {
+			ATreeTableRow root = (ATreeTableRow) model.getRoot();
 			node = new MainRow( root, hqm);
 			model.addNewNode( root, hqm, node);
 		}
