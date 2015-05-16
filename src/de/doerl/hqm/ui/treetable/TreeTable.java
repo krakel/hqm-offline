@@ -9,6 +9,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import de.doerl.hqm.controller.EditController;
+
 public class TreeTable extends JTable {
 	private static final long serialVersionUID = 3375615766612013890L;
 	private static DefaultCellEditor sPrefBoolean;
@@ -19,7 +21,7 @@ public class TreeTable extends JTable {
 		sPrefBoolean = new DefaultCellEditor( combo);
 	}
 
-	public TreeTable() {
+	public TreeTable( EditController ctrl) {
 		super( new TreeTableModel());
 		TreeTableModel model = getModel();
 		TreeTableCellRenderer tree = new TreeTableCellRenderer( model, this);
@@ -35,6 +37,7 @@ public class TreeTable extends JTable {
 //		putClientProperty( "JTree.lineStyle", "None");
 		setShowGrid( false);
 		setIntercellSpacing( new Dimension( 3, 0));
+		addMouseListener( new SelectHandler( ctrl));
 	}
 
 	@Override

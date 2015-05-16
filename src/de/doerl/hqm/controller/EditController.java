@@ -1,8 +1,9 @@
 package de.doerl.hqm.controller;
 
-import java.awt.event.MouseEvent;
 import java.util.Vector;
 import java.util.logging.Logger;
+
+import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.model.EditModel;
@@ -19,22 +20,6 @@ public class EditController implements IModelListener {
 	public EditController( EditModel model) {
 		model.addListener( this);
 		mModel = model;
-	}
-
-	public void activate( Object src, MouseEvent ev) {
-//		try {
-//			TreeTable table = (TreeTable) src;
-//			int row = table.rowAtPoint( ev.getPoint());
-//			if (row >= 0) {
-//				TreeTableModel model = table.getModel();
-//				ATreeTableRow node = model.getRow( row);
-//				ABase base = node.getElementObject();
-//				SwingUtilities.invokeLater( new BaseAction( this, base));
-//			}
-//		}
-//		catch (ClassCastException ex) {
-//			Utils.logThrows( LOGGER, Level.WARNING, ex);
-//		}
 	}
 
 	public void addView( EditView view) {
@@ -107,7 +92,7 @@ public class EditController implements IModelListener {
 	}
 
 	public void setActive( ABase base) {
-		mModel.setActive( base);
+		SwingUtilities.invokeLater( new BaseAction( this, base));
 	}
 
 	private static class BaseAction implements Runnable {
@@ -121,7 +106,7 @@ public class EditController implements IModelListener {
 
 		@Override
 		public void run() {
-			mCtrl.setActive( mBase);
+			mCtrl.mModel.setActive( mBase);
 		}
 	}
 }

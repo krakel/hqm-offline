@@ -39,7 +39,6 @@ import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.EditView;
-import de.doerl.hqm.view.SelectHandler;
 
 @SuppressWarnings( "nls")
 public class EditFrame extends JFrame implements ChangeListener {
@@ -51,8 +50,8 @@ public class EditFrame extends JFrame implements ChangeListener {
 	private static final String POPUP = "hqm.popup";
 	private EditModel mModel = new EditModel();
 	private EditView mView;
-//	private TreeTable mTable = new TreeTable();
-	private ElementTree mTree = new ElementTree();
+//	private TreeTable mTable;
+	private ElementTree mTree;
 	private Action mNewAction = new NewAction( this);
 	private JLabel mStatusBar;
 	private EditCallback mCB;
@@ -61,7 +60,8 @@ public class EditFrame extends JFrame implements ChangeListener {
 		EditManager.init();
 		EditController ctrl = new EditController( mModel);
 		mView = new EditView( ctrl);
-		mTree.addMouseListener( new SelectHandler( ctrl));
+//		mTable = new TreeTable( ctrl);
+		mTree = new ElementTree( ctrl);
 		mModel.addListener( mTree.getModel());
 //		mTable.addMouseListener( new SelectHandler( ctrl));
 //		mModel.addListener( mTable.getModel());

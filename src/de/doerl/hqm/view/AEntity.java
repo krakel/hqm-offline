@@ -169,7 +169,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static JLabel leafLabel( Color color, String text) {
 		JLabel result = new JLabel( text);
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setBackground( Color.DARK_GRAY);
+		result.setBackground( Color.PINK);
 		result.setOpaque( true);
 		result.setFont( AEntity.FONT_NORMAL);
 		result.setForeground( color);

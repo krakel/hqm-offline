@@ -2,6 +2,7 @@ package de.doerl.hqm.ui.tree;
 
 import java.awt.Component;
 
+import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
@@ -13,39 +14,8 @@ public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
 
 	@Override
 	public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-		setText( tree.convertValueToText( value, sel, expanded, leaf, row, hasFocus));
-		if (sel) {
-			setForeground( getTextSelectionColor());
-		}
-		else {
-			setForeground( getTextNonSelectionColor());
-		}
-//		boolean isEnabled = tree.isEnabled();
-//		setEnabled( isEnabled);
-//		if (isEnabled) {
-//			selected = sel;
-//			if (leaf) {
-//				setIcon( getLeafIcon());
-//			}
-//			else if (expanded) {
-//				setIcon( getOpenIcon());
-//			}
-//			else {
-//				setIcon( getClosedIcon());
-//			}
-//		}
-//		else {
-//			selected = false;
-//			if (leaf) {
-//				setDisabledIcon( getLeafIcon());
-//			}
-//			else if (expanded) {
-//				setDisabledIcon( getOpenIcon());
-//			}
-//			else {
-//				setDisabledIcon( getClosedIcon());
-//			}
-//		}
-		return this;
+		JLabel lbl = (JLabel) super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus);
+		lbl.setIcon( null);
+		return lbl;
 	}
 }
