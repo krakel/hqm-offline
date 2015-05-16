@@ -103,7 +103,7 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 //		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( Box.createVerticalGlue());
 		leaf.add( mRewards);
-		mReputation = leafImage( REPUATION, ReputationFactory.get( quest));
+		mReputation = leafIcon( REPUATION, ReputationFactory.get( quest));
 		createIconList( mRewardList, quest.mRewards, mReputation);
 		leaf.add( mRewardList);
 		leaf.add( Box.createVerticalStrut( GAP));

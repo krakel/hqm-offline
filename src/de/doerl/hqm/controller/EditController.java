@@ -1,7 +1,6 @@
 package de.doerl.hqm.controller;
 
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
@@ -13,7 +12,7 @@ import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.EditView;
 
 public class EditController implements IModelListener {
-	private static final Logger LOGGER = Logger.getLogger( EditController.class.getName());
+//	private static final Logger LOGGER = Logger.getLogger( EditController.class.getName());
 	private Vector<EditView> mViews = new Vector<EditView>();
 	private EditModel mModel;
 
@@ -65,24 +64,6 @@ public class EditController implements IModelListener {
 		return null;
 	}
 
-	//	private List<IMasterListener> mListener = new ArrayList<IMasterListener>();
-//	public void addMasterListener( IMasterListener l) {
-//		if (!mListener.contains( l)) {
-//			mListener.add( l);
-//		}
-//	}
-//
-//	private void fireViewChanged( EditView view) {
-//		MasterEvent event = new MasterEvent( this, view);
-//		for (IMasterListener l : mListener) {
-//			l.viewChanged( event);
-//		}
-//	}
-//
-//	public void removeMasterManagerListener( IMasterListener l) {
-//		mListener.remove( l);
-//	}
-//
 	public void removeView( ABase base) {
 		EditView view = getView( base);
 		if (view != null) {
@@ -92,21 +73,19 @@ public class EditController implements IModelListener {
 	}
 
 	public void setActive( ABase base) {
-		SwingUtilities.invokeLater( new BaseAction( this, base));
+		SwingUtilities.invokeLater( new BaseAction( base));
 	}
 
-	private static class BaseAction implements Runnable {
-		private EditController mCtrl;
+	private class BaseAction implements Runnable {
 		private ABase mBase;
 
-		public BaseAction( EditController ctrl, ABase base) {
-			mCtrl = ctrl;
+		public BaseAction( ABase base) {
 			mBase = base;
 		}
 
 		@Override
 		public void run() {
-			mCtrl.mModel.setActive( mBase);
+			mModel.setActive( mBase);
 		}
 	}
 }

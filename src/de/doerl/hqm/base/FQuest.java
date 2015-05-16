@@ -124,21 +124,9 @@ public final class FQuest extends ANamed {
 		return null;
 	}
 
-	public int getCenterX() {
-		return mX.mValue + getW() / 2;
-	}
-
-	public int getCenterY() {
-		return mY.mValue + getH() / 2;
-	}
-
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST;
-	}
-
-	public int getH() {
-		return mBig.mValue ? 37 : 30;
 	}
 
 	@Override
@@ -148,10 +136,6 @@ public final class FQuest extends ANamed {
 
 	public FRepeatInfo getRepeatInfo() {
 		return mRepeatInfo;
-	}
-
-	public int getW() {
-		return mBig.mValue ? 31 : 25;
 	}
 
 	public boolean isDeleted() {

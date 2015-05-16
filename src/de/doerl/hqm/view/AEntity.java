@@ -51,8 +51,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static final Color UNSELECTED = new Color( 0x404040);
 	protected static final int GAP = 8;
 	protected static final int ICON_SIZE = 36;
-	protected static final int REP_WIDTH = 250;
-	protected static final int REP_HEIGHT = 6;
 	protected EditView mView;
 
 	AEntity( EditView view) {
@@ -129,7 +127,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	}
 
 	protected static JLabel leafButton( String text) {
-		JLabel result = new JLabel( new CenterIcon( LARGE_BTN, text, 114, 36));
+		JLabel result = new JLabel( new CenterIcon( LARGE_BTN, text));
 		result.setMinimumSize( new Dimension( 114, 36));
 		result.setPreferredSize( new Dimension( 114, 36));
 		result.setAlignmentX( LEFT_ALIGNMENT);
@@ -148,18 +146,31 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return result;
 	}
 
-	protected static JLabel leafImage( BufferedImage... arr) {
+	protected static JLabel leafIcon( BufferedImage... arr) {
 		JLabel result = new JLabel( new MultiIcon( ICON_SIZE, ICON_SIZE, arr));
+		result.setPreferredSize( new Dimension( ICON_SIZE, ICON_SIZE));
+		result.setMaximumSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
 		result.setBorder( null);
 		return result;
 	}
 
+	protected static JLabel leafImage( int w, int h, BufferedImage img) {
+		JLabel result = new JLabel( new CenterIcon( img));
+		result.setPreferredSize( new Dimension( w, h));
+		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setOpaque( false);
+		result.setBorder( null);
+//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+		return result;
+	}
+
 	protected static JLabel leafImage( int x, int y, int w, int h, BufferedImage... arr) {
 		JLabel result = new JLabel( new MultiIcon( w, h, arr));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-//		result.setOpaque( false);
+		result.setOpaque( false);
 		result.setBorder( null);
 //		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		result.setBounds( x, y, w, h);
@@ -226,6 +237,8 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 	protected static JLabel leafRepImage( FSetting rs) {
 		JLabel result = new JLabel( new ReputationIcon( rs));
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, ICON_SIZE));
+		result.setMaximumSize( new Dimension( Short.MAX_VALUE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 //		result.setBackground( Color.BLUE);
 		result.setOpaque( false);
@@ -246,10 +259,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 	protected static JLabel leafStack( AStack stk) {
 		int amount = stk != null ? stk.getAmount() : 0;
-		BufferedImage[] arr = new BufferedImage[] {
-			ICON_BACK
-		};
-		JLabel result = new JLabel( new CountIcon( arr, amount > 1 ? Integer.toString( amount) : null));
+		String count = amount > 1 ? Integer.toString( amount) : null;
+		JLabel result = new JLabel( new CountIcon( count, ICON_BACK, null));
+		result.setPreferredSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setMaximumSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 //		result.setBackground( Color.BLUE);
@@ -309,21 +321,22 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	static class CenterIcon implements Icon {
 		private BufferedImage mImage;
 		private String mText;
-		private int mWidth, mHeight;
 
-		public CenterIcon( BufferedImage img, String text, int w, int h) {
+		public CenterIcon( BufferedImage img) {
+			mImage = img;
+		}
+
+		public CenterIcon( BufferedImage img, String text) {
 			mImage = img;
 			mText = text;
-			mWidth = w;
-			mHeight = h;
 		}
 
 		public int getIconHeight() {
-			return mWidth;
+			return mImage.getWidth();
 		}
 
 		public int getIconWidth() {
-			return mHeight;
+			return mImage.getHeight();
 		}
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
@@ -338,28 +351,29 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	}
 
 	static class CountIcon implements Icon {
-		private BufferedImage[] mArr;
+		private BufferedImage mBack;
+		private BufferedImage mStack;
 		private String mText;
 
-		public CountIcon( BufferedImage[] arr, String text) {
-			mArr = arr;
+		public CountIcon( String text, BufferedImage back, BufferedImage stk) {
 			mText = text;
+			mBack = back;
+			mStack = stk;
 		}
 
 		public int getIconHeight() {
-			return ICON_SIZE;
+			return mBack.getHeight();
 		}
 
 		public int getIconWidth() {
-			return ICON_SIZE;
+			return mBack.getWidth();
 		}
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
-			for (BufferedImage img : mArr) {
-				if (img != null) {
-					EditView.drawImage( g2, c, img);
-				}
+			EditView.drawImage( g2, c, mBack);
+			if (mStack != null) {
+				EditView.drawImage( g2, c, mStack);
 			}
 			if (mText != null) {
 				g2.setFont( FONT_TITLE);
@@ -502,21 +516,22 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		}
 
 		public int getIconHeight() {
-			return ICON_SIZE;
+			return REPUATION.getHeight();
 		}
 
 		public int getIconWidth() {
-			return REP_WIDTH;
+			return REPUATION.getWidth();
 		}
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
-			EditView.drawImage( g2, c, REPUATION, 0, 20);
+			double scale = EditView.ZOOM;
+			EditView.drawImage( g2, c, REPUATION); //, scale, scale, 0, 10);
 			Vector<FMarker> marker = mSetting.mRep.mMarker;
 			for (int i = 0; i < marker.size(); ++i) {
 //				FMarker mark = marker.get( i);
-				int pos = i * REP_WIDTH / marker.size();
-				EditView.drawImage( g2, c, REP_MARKER, pos + 5, 23);
+				int pos = i * REPUATION.getWidth() / marker.size();
+				EditView.drawImage( g2, REP_MARKER, scale, scale, pos + 2, 12);
 			}
 		}
 	}
