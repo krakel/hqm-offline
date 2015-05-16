@@ -37,7 +37,11 @@ public class EditView extends JPanel implements IModelListener {
 		setLayout( new GridLayout( 1, 1));
 		mCtrl = ctrl;
 		ctrl.getModel().addListener( this);
-		setPreferredSize( new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight()));
+		Dimension min = new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight());
+		setMinimumSize( min);
+		setPreferredSize( new Dimension( min));
+//		setMaximumSize( new Dimension( min));
+//		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 	}
 
 	public EditView( EditController ctrl, ABase base) {

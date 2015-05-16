@@ -248,12 +248,13 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 	protected static JScrollPane leafScoll( JComponent view, int height) {
 		JScrollPane result = new JScrollPane( view, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, height));
+//		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
 		result.getViewport().setOpaque( false);
 		result.setBorder( null);
-		result.setPreferredSize( new Dimension( Short.MAX_VALUE, height));
-//		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+//		result.setBorder( BorderFactory.createLineBorder( Color.CYAN));
 		return result;
 	}
 

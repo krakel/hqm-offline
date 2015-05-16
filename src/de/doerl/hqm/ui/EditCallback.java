@@ -58,6 +58,7 @@ public class EditCallback implements ICallback {
 	@Override
 	public void openHQMAction( FHqm hqm) {
 		mModel.loadHQM( hqm);
+		mFrame.showHqm( hqm);
 //		mModel.getUndoable().getUndoMgr().fireChangeEvent();
 	}
 

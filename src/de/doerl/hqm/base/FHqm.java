@@ -25,6 +25,7 @@ public final class FHqm extends ABase {
 
 	public FHqm( URI uri) {
 		mURI = uri;
+		mDesc.mValue = "Hallo D:";
 	}
 
 	@Override

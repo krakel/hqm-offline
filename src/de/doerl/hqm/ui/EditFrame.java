@@ -1,6 +1,5 @@
 package de.doerl.hqm.ui;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,9 +8,8 @@ import java.awt.event.ActionEvent;
 import java.util.Locale;
 
 import javax.swing.Action;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,14 +19,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import de.doerl.hqm.EditManager;
+import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
@@ -90,13 +89,16 @@ public class EditFrame extends JFrame implements ChangeListener {
 	public static EditFrame createNew() {
 		EditFrame main = new EditFrame();
 		main.init();
-		main.createContent( main.getContentPane());
+		main.getContentPane().add( main.createContent());
 		main.setJMenuBar( main.createMenuBar());
-		main.setSize( main.getSize());
+		main.repaint();
+//		main.pack();
+//		main.createBufferStrategy( 2);
 		Utils.centerFrame( main);
 		main.addWindowListener( new WindowCloser());
 		ResourceManager.setLookAndFeel( PreferenceManager.getString( BaseDefaults.LOOK_AND_FEEL));
 		main.setVisible( true);
+		createPopupMenu();
 		return main;
 	}
 
@@ -111,39 +113,12 @@ public class EditFrame extends JFrame implements ChangeListener {
 		return popup;
 	}
 
-	private JPanel createCentered( Container cp) {
-		JPanel result = new JPanel();
-		GridBagLayout layout = new GridBagLayout();
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.CENTER;
-		layout.setConstraints( result, gbc);
-		result.setLayout( layout);
-		result.add( cp);
-		return result;
-	}
-
-	private void createContent( Container cp) {
-		createPopupMenu();
-		GroupLayout lm = new GroupLayout( cp);
-		lm.setAutoCreateGaps( false);
-		lm.setAutoCreateContainerGaps( false);
-		cp.setLayout( lm);
-		JToolBar tool = createToolBar();
-		JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, new JScrollPane( mTree), createCentered( mView));
-//		JSplitPane split = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, new JScrollPane( mTable), createCentered( mView));
-		split.setDividerSize( 5);
-		split.setDividerLocation( 320);
-		JLabel bar = createStatusBar();
-		ParallelGroup mainHori = lm.createParallelGroup();
-		mainHori.addComponent( tool);
-		mainHori.addComponent( split);
-		mainHori.addComponent( bar);
-		SequentialGroup mainVert = lm.createSequentialGroup();
-		mainVert.addComponent( tool);
-		mainVert.addComponent( split);
-		mainVert.addComponent( bar);
-		lm.setHorizontalGroup( mainHori);
-		lm.setVerticalGroup( mainVert);
+	private Box createContent() {
+		Box vert = Box.createVerticalBox();
+		vert.add( createToolBar());
+		vert.add( createSplit());
+		vert.add( createStatusBar());
+		return vert;
 	}
 
 	private JMenuBar createMenuBar() {
@@ -152,6 +127,7 @@ public class EditFrame extends JFrame implements ChangeListener {
 		menu.add( createMenuFile());
 		menu.add( createMenuEdit());
 		menu.add( createMenuHelp());
+//		menu.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
 		return menu;
 	}
 
@@ -198,19 +174,53 @@ public class EditFrame extends JFrame implements ChangeListener {
 		return menu;
 	}
 
-	private JLabel createStatusBar() {
-		mStatusBar = new JLabel();
-		mStatusBar.setText( " ");
-		return mStatusBar;
+	private Box createSplit() {
+		Box split = Box.createHorizontalBox();
+		split.setAlignmentX( LEFT_ALIGNMENT);
+//		split.setBorder( BorderFactory.createLineBorder( Color.BLACK));
+		split.add( createSplitLeft());
+		split.add( createSplitRight());
+		return split;
 	}
 
-	private JToolBar createToolBar() {
+	private JComponent createSplitLeft() {
+		JComponent result = new JScrollPane( mTree);
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		return result;
+	}
+
+	private JComponent createSplitRight() {
+		JPanel result = new JPanel( new GridBagLayout());
+//		result.setBorder( BorderFactory.createLineBorder( Color.ORANGE));
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
+		result.add( mView, gbc);
+		return result;
+	}
+
+	private JComponent createStatusBar() {
+		Box hori = Box.createHorizontalBox();
+		hori.setAlignmentX( LEFT_ALIGNMENT);
+		hori.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
+		mStatusBar = new JLabel();
+		mStatusBar.setText( "???");
+		hori.add( mStatusBar);
+		hori.add( Box.createHorizontalGlue());
+		hori.setPreferredSize( new Dimension( Short.MAX_VALUE, mStatusBar.getPreferredSize().height));
+		return hori;
+	}
+
+	private JComponent createToolBar() {
+		Box hori = Box.createHorizontalBox();
+		hori.setAlignmentX( LEFT_ALIGNMENT);
+		hori.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
 		JToolBar tool = new JToolBar();
 		tool.setFloatable( false);
 		try {
 			tool.setRollover( true);
 		}
-		catch (NoSuchMethodError e) {
+		catch (NoSuchMethodError ex) {
 		}
 		tool.add( mNewAction);
 		tool.addSeparator();
@@ -227,7 +237,10 @@ public class EditFrame extends JFrame implements ChangeListener {
 //		tool.add( createToolBtn( mModel.getUndoable().getUndoAction()));
 //		tool.add( createToolBtn( mModel.getUndoable().getRedoAction()));
 //		tool.addSeparator();
-		return tool;
+		hori.add( tool);
+		hori.add( Box.createHorizontalGlue());
+		hori.setPreferredSize( new Dimension( Short.MAX_VALUE, tool.getPreferredSize().height));
+		return hori;
 	}
 
 	public void displayHelp( String text) {
@@ -265,7 +278,7 @@ public class EditFrame extends JFrame implements ChangeListener {
 	private void init() {
 		setTitle( null);
 		setLocale( Locale.getDefault());
-		setSize( new Dimension( 1024, 600));
+		setSize( new Dimension( 1000, 600));
 		setDefaultCloseOperation( DO_NOTHING_ON_CLOSE);
 	}
 
@@ -280,6 +293,10 @@ public class EditFrame extends JFrame implements ChangeListener {
 			sb.append( title.substring( title.lastIndexOf( '/') + 1));
 		}
 		super.setTitle( sb.toString());
+	}
+
+	public void showHqm( FHqm hqm) {
+		mTree.showHqm( hqm);
 	}
 
 	@Override
