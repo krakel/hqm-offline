@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="hqm" default="main" basedir=".">
+
+	<property name="dist.dir" value="${basedir}/build" />
+	<property name="source.dir" value="${basedir}/src" />
+
+	<property name="dstName" value="hqm_convert" />
+	<property name="jarName" value="${dist.dir}/${dstName}.jar" />
+	<property name="zipName" value="${dist.dir}/${dstName}.zip" />
+	<property name="title" value="offline hqm editor" />
+	<property name="mainClass" value="de.doerl.hqm.ui.EditMain" />
+
+	<!-- set this to 'on' if you wish the classes to be compiled with debug information -->
+	<property name="withDebug" value="on" />
+	<property name="javaVersion" value="1.7" />
+	<property name="javaCompiler" value="modern" />
+
+	<!-- ######################################################################################### -->
+
+	<target name="main" depends="zipAll, jarMain, jarDefault">
+		<delete dir="${dist.dir}/classes" />
+		<delete dir="${dist.dir}/temp" />
+	</target>
+
+	<target name="main.clean">
+		<delete dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}/classes" />
+		<mkdir dir="${dist.dir}/temp" />
+	</target>
+
+	<target name="main.copy" depends="main.clean">
+		<copy todir="${dist.dir}" preservelastmodified="yes">
+			<fileset dir="${basedir}">
+				<include name="*.sh" />
+				<include name="*.bat" />
+			</fileset>
+		</copy>
+		<chmod file="${dist.dir}/*.sh" perm="ugo+rx" />
+	</target>
+
+	<path id="classID">
+		<pathelement path="${dist.dir}/temp/" />
+	</path>
+
+	<target name="build.src" depends="main.copy">
+		<condition property="failOnError" value="no" else="yes">
+			<isset property="ignoreError" />
+		</condition>
+		<delete file="${jarName}" />
+		<!-- compile the source -->
+		<javac destdir="${dist.dir}/temp" target="${javaVersion}" failonerror="${failOnError}" debug="${withDebug}" source="${javaVersion}" compiler="${javaCompiler}" includeantruntime="false">
+			<classpath refid="classID" />
+			<src path="${source.dir}" />
+			<include name="**/*.java" />
+			<exclude name="bin/**" />
+			<!-- compilerarg value="-Xlint:unchecked" /-->
+			<!-- compilerarg value="-Xlint:deprecation" /-->
+		</javac>
+		<!-- create jar file -->
+		<exec executable="C:/Program Files (x86)/Git/bin/git" outputproperty="gitRevision" failifexecutionfails="false" errorproperty="gitError">
+			<arg value="describe" />
+			<arg value="--tags" />
+			<arg value="--always" />
+			<arg value="HEAD" />
+		</exec>
+		<antcall target="message">
+			<param name="text" value="${gitError}" />
+		</antcall>
+	</target>
+
+	<target name="message" if="text">
+		<echo message="${text}" level="error" />
+	</target>
+
+	<!-- build the library file with Main-Class -->
+	<target name="jarMain" depends="build.src" if="mainClass">
+		<jar jarfile="${jarName}" basedir="${dist.dir}/temp">
+			<include name="**/*.class" />
+			<fileset dir="${source.dir}">
+				<include name="de/**" />
+				<include name="META-INF/**" />
+				<exclude name="**/*.java" />
+				<exclude name="**/.*" />
+			</fileset>
+			<manifest>
+				<attribute name="Created-By" value="Krakel" />
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Git-Revision" value="${gitRevision}" />
+				<attribute name="Main-Class" value="${mainClass}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- build the library file without Main-Class -->
+	<target name="jarDefault" depends="build.src" unless="mainClass">
+		<jar jarfile="${jarName}" basedir="${dist.dir}/temp">
+			<include name="**/*.class" />
+			<fileset dir="${source.dir}">
+				<include name="de/**" />
+				<include name="META-INF/**" />
+				<exclude name="**/*.java" />
+				<exclude name="**/.*" />
+			</fileset>
+			<manifest>
+				<attribute name="Created-By" value="Krakel" />
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Git-Revision" value="${gitRevision}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="zipAll" depends="jarMain, jarDefault">
+		<zip destfile="${zipName}">
+			<fileset dir="${dist.dir}">
+				<include name="*.jar" />
+				<include name="*.bat" />
+				<include name="*.sh" />
+			</fileset>
+		</zip>
+	</target>
+
+	<!-- ######################################################################################### -->
+
+	<target name="test">
+		<ant antfile="test.xml" />
+	</target>
+
+	<target name="all">
+		<antcall target="main" />
+		<ant antfile="test.xml" />
+	</target>
+</project>
