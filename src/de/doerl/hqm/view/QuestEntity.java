@@ -124,6 +124,16 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 	}
 
 	@Override
+	protected JComponent getLeftTool() {
+		return null;
+	}
+
+	@Override
+	protected JComponent getRightTool() {
+		return null;
+	}
+
+	@Override
 	public void mouseClicked( MouseEvent evt) {
 		try {
 			JList<?> list = (JList<?>) evt.getSource();

@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -84,6 +85,16 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 	@Override
 	public FQuestSet getBase() {
 		return mQS;
+	}
+
+	@Override
+	protected JComponent getLeftTool() {
+		return null;
+	}
+
+	@Override
+	protected JComponent getRightTool() {
+		return null;
 	}
 
 	private static class LineFactory extends AHQMWorker<Object, Object> {

@@ -6,14 +6,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.util.Vector;
 
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,10 +25,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
+import javax.swing.JToolBar;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.Border;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AStack;
@@ -43,34 +45,32 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static final BufferedImage LARGE_BTN = MAP.getSubimage( 54, 235, 57, 18);
 	protected static final BufferedImage REPUATION = MAP.getSubimage( 0, 101, 125, 3);
 	protected static final BufferedImage REP_MARKER = MAP.getSubimage( 10, 93, 5, 5);
+	private static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
+	private static final Dimension VIEW_SIZE = new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight());
+//	private static final int LEAF_WIDTH = BACKGROUND.getWidth();
 	protected static final int FONT_NORMAL_HIGH = 14;
 	protected static final int FONT_TITLE_HIGH = 18;
 	protected static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, FONT_NORMAL_HIGH);
 	protected static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, FONT_TITLE_HIGH);
 	protected static final Color SELECTED = new Color( 0xAAAAAA);
 	protected static final Color UNSELECTED = new Color( 0x404040);
+	private static final Border LEFT_BORDER = BorderFactory.createEmptyBorder( 40, 40, 40, 10);
+	private static final Border RIGHT_BORDER = BorderFactory.createEmptyBorder( 40, 10, 40, 40);
 	protected static final int GAP = 8;
 	protected static final int ICON_SIZE = 36;
+	private static int sColValue;
 	protected EditView mView;
-
-	AEntity( EditView view) {
-		mView = view;
-		setOpaque( true);
-	}
 
 	AEntity( EditView view, LayoutManager layout) {
 		super( layout, true);
 		mView = view;
 		setOpaque( true);
+		setMinimumSize( new Dimension( VIEW_SIZE));
+		setPreferredSize( new Dimension( VIEW_SIZE));
+//		setMaximumSize( new Dimension( min));
 	}
 
-	public static void addKeyAction( JComponent comp, String key, Action action) {
-		Object o = new Object();
-		comp.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW).put( KeyStroke.getKeyStroke( key), o);
-		comp.getActionMap().put( o, action);
-	}
-
-	public static BufferedImage copy( BufferedImage src) {
+	protected static BufferedImage copy( BufferedImage src) {
 		ColorModel cm = src.getColorModel();
 		BufferedImage result = new BufferedImage( cm, src.getRaster().createCompatibleWritableRaster(), cm.isAlphaPremultiplied(), null);
 		Graphics2D g = result.createGraphics();
@@ -79,20 +79,88 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return result;
 	}
 
+	private static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean left) {
+		double sx = (double) c.getWidth() / img.getWidth();
+		double sy = (double) c.getHeight() / img.getHeight();
+		if (left) {
+			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			g2.drawImage( img, xform, null);
+		}
+		else {
+			AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
+			xform.translate( -img.getWidth(), 0);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
+	private static void drawBackgroundHalf( Graphics2D g2, Component c, BufferedImage img, boolean left) {
+		double sx = (double) c.getWidth() / img.getWidth() / 2;
+		double sy = (double) c.getHeight() / img.getHeight();
+		if (left) {
+			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			g2.drawImage( img, xform, null);
+		}
+		else {
+			AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
+			xform.translate( -2 * img.getWidth(), 0);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
+	private static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
+		FontMetrics fm = g2.getFontMetrics();
+		int x = c.getWidth() - fm.stringWidth( text);
+		int y = c.getHeight() - fm.getDescent();
+		g2.drawString( text, x, y);
+	}
+
+	private static void drawCenteredString( Graphics2D g2, Component c, String text) {
+		FontMetrics fm = g2.getFontMetrics();
+		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
+		int y = (c.getHeight() + fm.getAscent() - fm.getDescent()) / 2;
+		g2.drawString( text, x, y);
+	}
+
+	private static void drawImage( Graphics2D g2, BufferedImage img, double sx, double sy, double tx, double ty) {
+		if (img != null) {
+			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			xform.translate( tx, ty);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
+	private static void drawImage( Graphics2D g2, Component c, BufferedImage img) {
+		if (img != null) {
+			double sx = (double) c.getWidth() / img.getWidth();
+			double sy = (double) c.getHeight() / img.getHeight();
+			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
+	@SuppressWarnings( "unused")
+	private static void drawImage( Graphics2D g2, Component c, BufferedImage img, double sx, double sy) {
+		if (img != null) {
+			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
 	protected static JComponent leafBox( int axis) {
 		JPanel result = new JPanel();
 		result.setLayout( new BoxLayout( result, axis));
+		result.setOpaque( false);
 		if (axis == BoxLayout.X_AXIS) {
-			result.setBackground( Color.RED);
+//			result.setBorder( null);
+			result.setBorder( BorderFactory.createLineBorder( Color.RED));
 //			result.setPreferredSize( new Dimension( Short.MAX_VALUE, 36));
 		}
 		else {
-			result.setBackground( Color.BLUE);
 			result.setAlignmentX( LEFT_ALIGNMENT);
+//			result.setBorder( null);
+			result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		}
 //		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
-//		result.setOpaque( false);
-		result.setBorder( null);
 		return result;
 	}
 
@@ -100,9 +168,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		JComponent result = (JComponent) Box.createVerticalStrut( heigh);
 		result.setLayout( new FlowLayout( FlowLayout.LEFT, 0, GAP / 2));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setBackground( Color.YELLOW);
-		result.setOpaque( true);
-		result.setBorder( null);
+		result.setOpaque( false);
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.BLACK));
 		return result;
 	}
 
@@ -110,9 +178,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		JComponent result = (JComponent) Box.createVerticalStrut( heigh);
 		result.setLayout( new BoxLayout( result, BoxLayout.X_AXIS));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setBackground( Color.GREEN);
-		result.setOpaque( true);
-		result.setBorder( null);
+		result.setOpaque( false);
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.GREEN));
 		return result;
 	}
 
@@ -120,9 +188,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		JComponent result = (JComponent) Box.createVerticalStrut( heigh);
 		result.setLayout( new BoxLayout( result, BoxLayout.Y_AXIS));
 		result.setAlignmentY( CENTER_ALIGNMENT);
-		result.setBackground( Color.ORANGE);
-		result.setOpaque( true);
-		result.setBorder( null);
+		result.setOpaque( false);
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.ORANGE));
 		return result;
 	}
 
@@ -132,7 +200,8 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setPreferredSize( new Dimension( 114, 36));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-		result.setBorder( null);
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.CYAN));
 		return result;
 	}
 
@@ -152,7 +221,8 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setMaximumSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-		result.setBorder( null);
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		return result;
 	}
 
@@ -162,8 +232,8 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-		result.setBorder( null);
-//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.RED));
 		return result;
 	}
 
@@ -171,8 +241,8 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		JLabel result = new JLabel( new MultiIcon( w, h, arr));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-		result.setBorder( null);
-//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 		result.setBounds( x, y, w, h);
 		return result;
 	}
@@ -180,11 +250,11 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static JLabel leafLabel( Color color, String text) {
 		JLabel result = new JLabel( text);
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setBackground( Color.PINK);
-		result.setOpaque( true);
-		result.setFont( AEntity.FONT_NORMAL);
+		result.setOpaque( false);
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.PINK));
+		result.setFont( FONT_NORMAL);
 		result.setForeground( color);
-		result.setBorder( null);
 		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_NORMAL_HIGH));
 		return result;
 	}
@@ -216,19 +286,40 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	}
 
 	protected static JPanel leafPanel( boolean left) {
-		LeafPanel result = new LeafPanel();
-		result.setOpaque( false);
+		JPanel result = new LeafPanel( left);
 		if (left) {
-			result.setBorder( BorderFactory.createEmptyBorder( 40, 40, 40, 10));
+			result.setBorder( LEFT_BORDER);
 		}
 		else {
-			result.setBorder( BorderFactory.createEmptyBorder( 40, 10, 40, 40));
+			result.setBorder( RIGHT_BORDER);
+		}
+		return result;
+	}
+
+	protected static JPanel leafPanel( boolean left, Color border) {
+		JPanel result = new LeafPanel( left);
+		if (left) {
+			result.setBorder( BorderFactory.createCompoundBorder( LEFT_BORDER, BorderFactory.createLineBorder( border)));
+		}
+		else {
+			result.setBorder( BorderFactory.createCompoundBorder( RIGHT_BORDER, BorderFactory.createLineBorder( border)));
+		}
+		return result;
+	}
+
+	protected static LeafPanel1 leafPanel1( boolean left) {
+		LeafPanel1 result = new LeafPanel1( left);
+		if (left) {
+			result.setBorder( BorderFactory.createCompoundBorder( LEFT_BORDER, BorderFactory.createLineBorder( Color.BLACK)));
+		}
+		else {
+			result.setBorder( BorderFactory.createCompoundBorder( RIGHT_BORDER, BorderFactory.createLineBorder( Color.BLACK)));
 		}
 		return result;
 	}
 
 	protected static JPanel leafPanelAbsolut() {
-		JPanel result = new JPanel( null);
+		JPanel result = new LeafAbsolute();
 //		result.setBackground( Color.GRAY);
 		result.setOpaque( false);
 		result.setBorder( BorderFactory.createEmptyBorder( 40, 40, 40, 40));
@@ -240,9 +331,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setPreferredSize( new Dimension( Short.MAX_VALUE, ICON_SIZE));
 		result.setMaximumSize( new Dimension( Short.MAX_VALUE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-//		result.setBackground( Color.BLUE);
 		result.setOpaque( false);
 		result.setBorder( null);
+//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		return result;
 	}
 
@@ -265,9 +356,17 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setPreferredSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setMaximumSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
-//		result.setBackground( Color.BLUE);
 		result.setOpaque( false);
-		result.setBorder( null);
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+		return result;
+	}
+
+	protected static JPanel leafTest() {
+		JPanel result = new JPanel();
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setOpaque( false);
+		result.setBorder( BorderFactory.createLineBorder( nextColor()));
 		return result;
 	}
 
@@ -277,19 +376,21 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setWrapStyleWord( true);
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-		result.setFont( AEntity.FONT_NORMAL);
 		result.setBorder( null);
+//		result.setBorder( BorderFactory.createLineBorder( Color.LIGHT_GRAY));
+		result.setFont( FONT_NORMAL);
+//		result.setEditable( false);
 		return result;
 	}
 
 	protected static JLabel leafTitle( Color color, String text) {
 		JLabel result = new JLabel();
 		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setBackground( Color.YELLOW);
-		result.setOpaque( true);
-		result.setFont( AEntity.FONT_TITLE);
+		result.setOpaque( false);
+//		result.setBorder( null);
+		result.setBorder( BorderFactory.createLineBorder( Color.DARK_GRAY));
+		result.setFont( FONT_TITLE);
 		result.setForeground( color);
-		result.setBorder( null);
 		result.setText( text);
 		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_TITLE_HIGH + 3));
 		return result;
@@ -299,25 +400,46 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return leafTitle( Color.BLACK, text);
 	}
 
-	public abstract T getBase();
-
-	@Override
-	protected void paintComponent( Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		EditView.drawBackground( g2, this);
+	protected static JComponent leafToolBar( boolean left) {
+		Box hori = Box.createHorizontalBox();
+		hori.setAlignmentX( LEFT_ALIGNMENT);
+		hori.setOpaque( false);
+//		hori.setBorder( null);
+		hori.setBorder( BorderFactory.createLineBorder( Color.BLACK));
+		hori.setPreferredSize( new Dimension( Short.MAX_VALUE, 20));
+		hori.setMaximumSize( new Dimension( Short.MAX_VALUE, 20));
+		JToolBar bar = new JToolBar();
+//		bar.setPreferredSize( new Dimension( Short.MAX_VALUE, bar.getPreferredSize().height));
+		bar.setFloatable( false);
+		try {
+			bar.setRollover( true);
+		}
+		catch (NoSuchMethodError ex) {
+		}
+		bar.setOpaque( false);
+//		bar.addSeparator();
+		if (left) {
+			hori.add( bar);
+			hori.add( Box.createHorizontalGlue());
+		}
+		else {
+			hori.add( Box.createHorizontalGlue());
+			hori.add( bar);
+		}
+		return hori;
 	}
 
-	public void remove() {
-//		mView.removeMouse( this);
-		mView.remove( this);
-		setVisible( false);
+	private static Color nextColor() {
+		sColValue += 0x3773;
+		sColValue &= 0xFFFF;
+		return new Color( sColValue | 0x3F0000);
 	}
 
-	public void update() {
-//		mView.addMouse( this);
-		setVisible( true);
-		mView.add( this);
-	}
+	public abstract T getBase();;
+
+	protected abstract JComponent getLeftTool();
+
+	protected abstract JComponent getRightTool();
 
 	static class CenterIcon implements Icon {
 		private BufferedImage mImage;
@@ -342,11 +464,11 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
-			EditView.drawImage( g2, c, mImage);
+			drawImage( g2, c, mImage);
 			if (mText != null) {
 				g2.setFont( FONT_NORMAL);
 				g2.setColor( Color.BLACK);
-				EditView.drawCenteredString( g2, c, mText);
+				drawCenteredString( g2, c, mText);
 			}
 		}
 	}
@@ -372,17 +494,17 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
-			EditView.drawImage( g2, c, mBack);
+			drawImage( g2, c, mBack);
 			if (mStack != null) {
-				EditView.drawImage( g2, c, mStack);
+				drawImage( g2, c, mStack);
 			}
 			if (mText != null) {
 				g2.setFont( FONT_TITLE);
 				g2.setColor( Color.BLACK);
-				EditView.drawBottomLeftString( g2, c, mText);
+				drawBottomLeftString( g2, c, mText);
 			}
 		}
-	};
+	}
 
 	private static class JLine extends JPanel {
 		private static final long serialVersionUID = -5876257198033732175L;
@@ -433,11 +555,94 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		}
 	}
 
-	private static class LeafPanel extends JPanel {
-		private static final long serialVersionUID = -3474402067796441059L;
+	static class LeafAbsolute extends JPanel {
+		private static final long serialVersionUID = -7421492884184131122L;
 
-		public LeafPanel() {
+		public LeafAbsolute() {
+			super( null);
+			setOpaque( false);
+			setAlignmentX( LEFT_ALIGNMENT);
+		}
+
+		@Override
+		protected void paintComponent( Graphics g) {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor( getBackground());
+			g2.fillRect( 0, 0, getWidth(), getHeight());
+			drawBackgroundHalf( g2, this, BACKGROUND, true);
+			drawBackgroundHalf( g2, this, BACKGROUND, false);
+		}
+	}
+
+	static class LeafPanel extends JPanel {
+		private static final long serialVersionUID = -3474402067796441059L;
+		private boolean mLeft;
+
+		public LeafPanel( boolean left) {
+			mLeft = left;
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
+			setOpaque( false);
+			setAlignmentX( LEFT_ALIGNMENT);
+		}
+
+		@Override
+		protected void paintComponent( Graphics g) {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor( getBackground());
+			g2.fillRect( 0, 0, getWidth(), getHeight());
+			drawBackground( g2, this, BACKGROUND, mLeft);
+		}
+	}
+
+	static class LeafPanel1 extends JPanel {
+		private static final long serialVersionUID = -3474402067796441059L;
+		private JComponent mTool;
+		private JPanel mLeaf;
+
+		public LeafPanel1( boolean left) {
+			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
+			setOpaque( false);
+			mTool = createTool( left);
+			mLeaf = new LeafPanel( left);
+			add( mTool);
+			add( Box.createVerticalGlue());
+			add( mLeaf);
+		}
+
+		private JComponent createTool( boolean left) {
+			Box result = Box.createHorizontalBox();
+			result.setAlignmentX( LEFT_ALIGNMENT);
+//			result.setOpaque( false);
+//			result.setBorder( null);
+			result.setBorder( BorderFactory.createLineBorder( Color.BLACK));
+			Dimension size = new Dimension( 2 * BACKGROUND.getWidth(), 30);
+			result.setPreferredSize( size);
+			result.setMinimumSize( new Dimension( size));
+			result.setMaximumSize( new Dimension( size));
+			JToolBar bar = new JToolBar();
+//			bar.setBorder( null);
+			bar.setBorder( BorderFactory.createLineBorder( Color.GRAY));
+//			bar.setPreferredSize( new Dimension( size));
+//			bar.setMinimumSize( new Dimension( size));
+			bar.setFloatable( false);
+			try {
+				bar.setRollover( true);
+			}
+			catch (NoSuchMethodError ex) {
+			}
+//			bar.setOpaque( false);
+			bar.addSeparator();
+			result.add( bar);
+			result.add( Box.createHorizontalGlue());
+			return result;
+		}
+
+		public JPanel getLeaf() {
+			return mLeaf;
+		}
+
+		public JComponent getTool() {
+			return mTool;
 		}
 	}
 
@@ -463,13 +668,14 @@ abstract class AEntity<T extends ABase> extends JPanel {
 			Graphics2D g2 = (Graphics2D) g;
 			for (BufferedImage img : mArr) {
 				if (img != null) {
-					EditView.drawImage( g2, c, img);
+					drawImage( g2, c, img);
 				}
 			}
 		}
 	}
 
 	static class ReputationIcon implements Icon {
+		private static double ZOOM = 2.0;
 		private FSetting mSetting;
 
 		public ReputationIcon( FSetting rs) {
@@ -526,13 +732,12 @@ abstract class AEntity<T extends ABase> extends JPanel {
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
-			double scale = EditView.ZOOM;
-			EditView.drawImage( g2, c, REPUATION); //, scale, scale, 0, 10);
+			drawImage( g2, c, REPUATION); //, scale, scale, 0, 10);
 			Vector<FMarker> marker = mSetting.mRep.mMarker;
 			for (int i = 0; i < marker.size(); ++i) {
 //				FMarker mark = marker.get( i);
 				int pos = i * REPUATION.getWidth() / marker.size();
-				EditView.drawImage( g2, REP_MARKER, scale, scale, pos + 2, 12);
+				drawImage( g2, REP_MARKER, ZOOM, ZOOM, pos + 2, 12);
 			}
 		}
 	}

@@ -1,8 +1,6 @@
 package de.doerl.hqm.ui;
 
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
@@ -16,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
@@ -74,98 +71,97 @@ public class EditFrame extends JFrame implements ChangeListener {
 	}
 
 	private static JMenu createMenu( String name) {
-		JMenu menu = new JMenu();
-		menu.setActionCommand( name);
-		menu.setBackground( UIManager.getColor( "panel.background"));
-		menu.setAction( new ABundleAction( name, ResourceManager.RESOURCE) {
+		JMenu result = new JMenu();
+		result.setActionCommand( name);
+		result.setBackground( UIManager.getColor( "panel.background"));
+		result.setAction( new ABundleAction( name, ResourceManager.RESOURCE) {
 			private static final long serialVersionUID = -2822453428777922839L;
 
 			public void actionPerformed( ActionEvent ev) {
 			}
 		});
-		return menu;
+		return result;
 	}
 
 	public static EditFrame createNew() {
-		EditFrame main = new EditFrame();
-		main.init();
-		main.getContentPane().add( main.createContent());
-		main.setJMenuBar( main.createMenuBar());
-		main.repaint();
-//		main.pack();
-//		main.createBufferStrategy( 2);
-		Utils.centerFrame( main);
-		main.addWindowListener( new WindowCloser());
+		EditFrame result = new EditFrame();
+		result.init();
+		result.getContentPane().add( result.createContent());
+		result.setJMenuBar( result.createMenuBar());
+		result.repaint();
+//		result.pack();
+//		result.createBufferStrategy( 2);
+		Utils.centerFrame( result);
+		result.addWindowListener( new WindowCloser());
 		ResourceManager.setLookAndFeel( PreferenceManager.getString( BaseDefaults.LOOK_AND_FEEL));
-		main.setVisible( true);
+		result.setVisible( true);
 		createPopupMenu();
-		return main;
+		return result;
 	}
 
 	protected static JPopupMenu createPopupMenu() {
-		JPopupMenu popup = new JPopupMenu();
-		popup.add( new JMenuItem( new ABundleAction( POPUP, ResourceManager.RESOURCE) {
+		JPopupMenu result = new JPopupMenu();
+		result.add( new JMenuItem( new ABundleAction( POPUP, ResourceManager.RESOURCE) {
 			private static final long serialVersionUID = 2766110645403746850L;
 
 			public void actionPerformed( ActionEvent ev) {
 			}
 		}));
-		return popup;
+		return result;
 	}
 
 	private Box createContent() {
-		Box vert = Box.createVerticalBox();
-		vert.add( createToolBar());
-		vert.add( createSplit());
-		vert.add( createStatusBar());
-		return vert;
+		Box result = Box.createVerticalBox();
+		result.add( createSplit());
+		result.add( createStatusBar());
+		return result;
 	}
 
 	private JMenuBar createMenuBar() {
-		JMenuBar menu = new JMenuBar();
-		menu.setBackground( UIManager.getColor( "panel.background"));
-		menu.add( createMenuFile());
-		menu.add( createMenuEdit());
-		menu.add( createMenuHelp());
-//		menu.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
-		return menu;
+		JMenuBar result = new JMenuBar();
+		result.setBackground( UIManager.getColor( "panel.background"));
+		result.add( createMenuFile());
+		result.add( createMenuEdit());
+		result.add( createMenuHelp());
+//		result.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
+		return result;
 	}
 
 	private JMenu createMenuEdit() {
-		JMenu menu = createMenu( EDIT);
-//		menu.add( new CopyAction( mMaster));
-//		menu.add( new CutAction( mMaster));
-//		menu.add( new PasteAction( mMaster));
-//		menu.addSeparator();
-//		menu.add( new DeleteAction( mMaster));
-//		menu.addSeparator();
-//		menu.add( mModel.getUndoable().getUndoAction());
-//		menu.add( mModel.getUndoable().getRedoAction());
-		return menu;
+		JMenu result = createMenu( EDIT);
+//		result.add( new CopyAction( mMaster));
+//		result.add( new CutAction( mMaster));
+//		result.add( new PasteAction( mMaster));
+//		result.addSeparator();
+//		result.add( new DeleteAction( mMaster));
+//		result.addSeparator();
+//		result.add( mModel.getUndoable().getUndoAction());
+//		result.add( mModel.getUndoable().getRedoAction());
+		return result;
 	}
 
 	private JMenu createMenuFile() {
-		JMenu menu = createMenu( FILE);
-		menu.add( mNewAction);
-		menu.addSeparator();
+		JMenu result = createMenu( FILE);
+		result.add( mNewAction);
+		result.addSeparator();
 		IMedium bit = MediaManager.get( "bit");
-		menu.add( bit.getOpen( mCB));
-		menu.add( bit.getSave( mCB));
-		menu.add( bit.getSaveAs( mCB));
-		menu.addSeparator();
+		result.add( bit.getOpen( mCB));
+		result.add( bit.getSave( mCB));
+		result.add( bit.getSaveAs( mCB));
+		result.addSeparator();
 		IMedium json = MediaManager.get( "json");
-		menu.add( json.getOpen( mCB));
-		menu.add( json.getSave( mCB));
-		menu.add( json.getSaveAs( mCB));
-		menu.addSeparator();
-//		menu.add( new RestoreBackupAction( mBackup));
-//		menu.add( new RestorePrevAction( mBackup));
-//		menu.add( new RestoreNextAction( mBackup));
-//		menu.addSeparator();
-//		menu.add( new ConfigurationAction( this));
-//		menu.addSeparator();
-		menu.add( new ExitAction( this));
-		return menu;
+		result.add( json.getOpen( mCB));
+		result.add( json.getSave( mCB));
+		result.add( json.getSaveAs( mCB));
+		result.addSeparator();
+//		result.add( new RestoreBackupAction( mBackup));
+//		result.add( new RestorePrevAction( mBackup));
+//		result.add( new RestoreNextAction( mBackup));
+//		result.addSeparator();
+//		result.add( new ConfigurationAction( this));
+//		result.addSeparator();
+		result.add( new ExitAction( this));
+		return result;
 	}
 
 	private JMenu createMenuHelp() {
@@ -175,46 +171,41 @@ public class EditFrame extends JFrame implements ChangeListener {
 	}
 
 	private Box createSplit() {
-		Box split = Box.createHorizontalBox();
-		split.setAlignmentX( LEFT_ALIGNMENT);
-//		split.setBorder( BorderFactory.createLineBorder( Color.BLACK));
-		split.add( createSplitLeft());
-		split.add( createSplitRight());
-		return split;
-	}
-
-	private JComponent createSplitLeft() {
-		JComponent result = new JScrollPane( mTree);
-		result.setPreferredSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		Box result = Box.createHorizontalBox();
+		result.setAlignmentX( LEFT_ALIGNMENT);
+//		result.setBorder( BorderFactory.createLineBorder( Color.BLACK));
+		result.add( createSplitLeft());
+		result.add( mView);
 		return result;
 	}
 
-	private JComponent createSplitRight() {
-		JPanel result = new JPanel( new GridBagLayout());
-//		result.setBorder( BorderFactory.createLineBorder( Color.ORANGE));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.anchor = GridBagConstraints.CENTER;
-		result.add( mView, gbc);
+	private JComponent createSplitLeft() {
+		JComponent scroll = new JScrollPane( mTree);
+		scroll.setAlignmentX( LEFT_ALIGNMENT);
+		Box result = Box.createVerticalBox();
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		result.add( createToolBar());
+		result.add( scroll);
 		return result;
 	}
 
 	private JComponent createStatusBar() {
-		Box hori = Box.createHorizontalBox();
-		hori.setAlignmentX( LEFT_ALIGNMENT);
-		hori.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
+		Box result = Box.createHorizontalBox();
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
 		mStatusBar = new JLabel();
 		mStatusBar.setText( "???");
-		hori.add( mStatusBar);
-		hori.add( Box.createHorizontalGlue());
-		hori.setPreferredSize( new Dimension( Short.MAX_VALUE, mStatusBar.getPreferredSize().height));
-		return hori;
+		result.add( mStatusBar);
+		result.add( Box.createHorizontalGlue());
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, mStatusBar.getPreferredSize().height));
+		return result;
 	}
 
 	private JComponent createToolBar() {
-		Box hori = Box.createHorizontalBox();
-		hori.setAlignmentX( LEFT_ALIGNMENT);
-		hori.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
+		Box result = Box.createHorizontalBox();
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
 		JToolBar tool = new JToolBar();
 		tool.setFloatable( false);
 		try {
@@ -237,10 +228,10 @@ public class EditFrame extends JFrame implements ChangeListener {
 //		tool.add( createToolBtn( mModel.getUndoable().getUndoAction()));
 //		tool.add( createToolBtn( mModel.getUndoable().getRedoAction()));
 //		tool.addSeparator();
-		hori.add( tool);
-		hori.add( Box.createHorizontalGlue());
-		hori.setPreferredSize( new Dimension( Short.MAX_VALUE, tool.getPreferredSize().height));
-		return hori;
+		result.add( tool);
+		result.add( Box.createHorizontalGlue());
+//		result.setPreferredSize( new Dimension( Short.MAX_VALUE, tool.getPreferredSize().height));
+		return result;
 	}
 
 	public void displayHelp( String text) {

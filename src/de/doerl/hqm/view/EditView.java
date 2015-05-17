@@ -1,21 +1,24 @@
 package de.doerl.hqm.view;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EtchedBorder;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.controller.EditController;
@@ -28,85 +31,35 @@ import de.doerl.hqm.utils.Utils;
 public class EditView extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -15489231166915296L;
 	private static final Logger LOGGER = Logger.getLogger( EditView.class.getName());
-	public static double ZOOM = 2.0;
-	private static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
-	protected HashMap<ABase, AEntity<?>> mContent = new HashMap<ABase, AEntity<?>>();
+	private static final GridBagConstraints GBC = createConstraints();
+	private HashMap<ABase, AEntity<?>> mContent = new HashMap<ABase, AEntity<?>>();
 	private EditController mCtrl;
+	private JPanel mCenter = new JPanel( new GridBagLayout());
+	private AEntity<?> mEmpty = new EmptyEntity( this);
+	private JToolBar mLeftBar = createToolBar( true);
+	private JToolBar mRightBar = createToolBar( false);
 
 	public EditView( EditController ctrl) {
 		setLayout( new GridLayout( 1, 1));
 		mCtrl = ctrl;
 		ctrl.getModel().addListener( this);
-		Dimension min = new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight());
-		setMinimumSize( min);
-		setPreferredSize( new Dimension( min));
-//		setMaximumSize( new Dimension( min));
-//		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
+		mCenter.setOpaque( false);
+		mCenter.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
+		setCenter( mEmpty);
+		add( createSplit());
 	}
 
-	public EditView( EditController ctrl, ABase base) {
-		mCtrl = ctrl;
+	static void addKeyAction( JComponent comp, String key, Action action) {
+		Object o = new Object();
+		comp.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW).put( KeyStroke.getKeyStroke( key), o);
+		comp.getActionMap().put( o, action);
 	}
 
-	static void drawBackground( Graphics2D g2, Component unit) {
-		g2.setColor( unit.getBackground());
-		g2.fillRect( 0, 0, unit.getWidth(), unit.getHeight());
-		drawBackground( g2, unit, BACKGROUND, false);
-		drawBackground( g2, unit, BACKGROUND, true);
-	}
-
-	private static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean flip) {
-		double sx = c.getWidth() / img.getWidth() / 2;
-		double sy = c.getHeight() / img.getHeight();
-		if (flip) {
-			AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
-			xform.translate( -2 * img.getWidth(), 0);
-			g2.drawImage( img, xform, null);
-		}
-		else {
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			g2.drawImage( img, xform, null);
-		}
-	}
-
-	static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
-		FontMetrics fm = g2.getFontMetrics();
-		int x = c.getWidth() - fm.stringWidth( text);
-		int y = c.getHeight() - fm.getDescent();
-		g2.drawString( text, x, y);
-	}
-
-	static void drawCenteredString( Graphics2D g2, Component c, String text) {
-		FontMetrics fm = g2.getFontMetrics();
-		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
-		int y = (c.getHeight() + fm.getAscent() - fm.getDescent()) / 2;
-		g2.drawString( text, x, y);
-	}
-
-	static void drawImage( Graphics2D g2, BufferedImage img, double sx, double sy, double tx, double ty) {
-		if (img != null) {
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			xform.translate( tx, ty);
-			g2.drawImage( img, xform, null);
-		}
-	}
-
-	static void drawImage( Graphics2D g2, Component c, BufferedImage img) {
-		if (img != null) {
-			double sx = c.getWidth() / img.getWidth();
-			double sy = c.getHeight() / img.getHeight();
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			g2.drawImage( img, xform, null);
-		}
-	}
-
-	static void drawZOrder( Graphics2D g2, JPanel unit) {
-		Container view = unit.getParent();
-		if (view != null) {
-			int pos = view.getComponentZOrder( unit);
-			g2.setPaint( Color.BLACK);
-			g2.drawString( Integer.toString( pos), 3, unit.getHeight() - 3);
-		}
+	private static GridBagConstraints createConstraints() {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.CENTER;
+		return gbc;
 	}
 
 	@Override
@@ -139,40 +92,97 @@ public class EditView extends JPanel implements IModelListener {
 			}
 		}
 		if (ent != null) {
-			SwingUtilities.invokeLater( new EntityAdd( ent));
+			SwingUtilities.invokeLater( new EntityUpdate( ent));
 		}
 		else {
 			Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
 		}
 	}
 
-	public ABase getBase() {
-		return null;
+	private JComponent createLeafToolBar( JToolBar bar) {
+		Box result = Box.createHorizontalBox();
+		result.setAlignmentX( LEFT_ALIGNMENT);
+		result.setAlignmentY( TOP_ALIGNMENT);
+		result.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
+		result.add( bar);
+		return result;
+	}
+
+	private JComponent createLeafTools() {
+		Box result = Box.createHorizontalBox();
+		result.add( createLeafToolBar( mLeftBar));
+		result.add( createLeafToolBar( mRightBar));
+		return result;
+	}
+
+	private JComponent createSplit() {
+		Box result = Box.createVerticalBox();
+		result.add( createLeafTools());
+		result.add( Box.createVerticalGlue());
+		result.add( mCenter);
+		return result;
+	}
+
+	private JToolBar createToolBar( boolean left) {
+		JToolBar result = new JToolBar();
+		Dimension size = new Dimension( Short.MAX_VALUE, 36);
+		result.setPreferredSize( new Dimension( size));
+		result.setFloatable( false);
+		try {
+			result.setRollover( true);
+		}
+		catch (NoSuchMethodError ex) {
+		}
+		JComponent box = Box.createHorizontalBox();
+		box.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
+//		box.setPreferredSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		JButton btn = new JButton( ResourceManager.getIcon( "blank.gif"));
+		btn.setEnabled( false);
+		btn.setBorderPainted( false);
+		if (left) {
+			result.add( box);
+			result.add( Box.createHorizontalGlue());
+			result.add( btn);
+		}
+		else {
+			result.add( box);
+			result.add( Box.createHorizontalGlue());
+			result.add( btn);
+		}
+		return result;
 	}
 
 	public EditController getController() {
 		return mCtrl;
 	}
 
-	@Override
-	protected void paintComponent( Graphics g) {
-		drawBackground( (Graphics2D) g, this);
+	private void setCenter( AEntity<?> ent) {
+		mCenter.removeAll();
+		mCenter.add( ent, GBC);
+		mCenter.validate();
+		mCenter.repaint();
+		setLeftTool( ent.getLeftTool());
+		setRightTool( ent.getRightTool());
 	}
 
-	private class EntityAdd implements Runnable {
-		private AEntity<?> mEnt;
-
-		public EntityAdd( AEntity<?> ent) {
-			mEnt = ent;
+	void setLeftTool( JComponent tool) {
+		JComponent box = (JComponent) mLeftBar.getComponent( 0);
+		box.removeAll();
+		if (tool != null) {
+			box.add( tool);
 		}
+		mLeftBar.validate();
+		mLeftBar.repaint();
+	}
 
-		@Override
-		public void run() {
-			removeAll();
-			mEnt.update();
-			validate();
-			repaint();
+	void setRightTool( JComponent tool) {
+		JComponent box = (JComponent) mRightBar.getComponent( 0);
+		box.removeAll();
+		if (tool != null) {
+			box.add( tool);
 		}
+		mRightBar.validate();
+		mRightBar.repaint();
 	}
 
 	private class EntityRemove implements Runnable {
@@ -184,10 +194,21 @@ public class EditView extends JPanel implements IModelListener {
 
 		@Override
 		public void run() {
-			mEnt.remove();
-			removeAll();
-			validate();
-			repaint();
+			mEnt.setVisible( false);
+			setCenter( mEmpty);
+		}
+	}
+
+	private class EntityUpdate implements Runnable {
+		private AEntity<?> mEnt;
+
+		public EntityUpdate( AEntity<?> ent) {
+			mEnt = ent;
+		}
+
+		@Override
+		public void run() {
+			setCenter( mEnt);
 		}
 	}
 }
