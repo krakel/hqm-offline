@@ -19,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -76,6 +77,13 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		Graphics2D g = result.createGraphics();
 		g.drawImage( src, null, null);
 		g.dispose();
+		return result;
+	}
+
+	static JButton createToolButton( Icon icon) {
+		JButton result = new JButton( icon);
+		result.setEnabled( false);
+		result.setBorderPainted( false);
 		return result;
 	}
 
@@ -307,17 +315,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return result;
 	}
 
-	protected static LeafPanel1 leafPanel1( boolean left) {
-		LeafPanel1 result = new LeafPanel1( left);
-		if (left) {
-			result.setBorder( BorderFactory.createCompoundBorder( LEFT_BORDER, BorderFactory.createLineBorder( Color.BLACK)));
-		}
-		else {
-			result.setBorder( BorderFactory.createCompoundBorder( RIGHT_BORDER, BorderFactory.createLineBorder( Color.BLACK)));
-		}
-		return result;
-	}
-
 	protected static JPanel leafPanelAbsolut() {
 		JPanel result = new LeafAbsolute();
 //		result.setBackground( Color.GRAY);
@@ -433,9 +430,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		sColValue += 0x3773;
 		sColValue &= 0xFFFF;
 		return new Color( sColValue | 0x3F0000);
-	}
+	};
 
-	public abstract T getBase();;
+	public abstract T getBase();
 
 	protected abstract JComponent getLeftTool();
 
@@ -591,58 +588,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 			g2.setColor( getBackground());
 			g2.fillRect( 0, 0, getWidth(), getHeight());
 			drawBackground( g2, this, BACKGROUND, mLeft);
-		}
-	}
-
-	static class LeafPanel1 extends JPanel {
-		private static final long serialVersionUID = -3474402067796441059L;
-		private JComponent mTool;
-		private JPanel mLeaf;
-
-		public LeafPanel1( boolean left) {
-			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			setOpaque( false);
-			mTool = createTool( left);
-			mLeaf = new LeafPanel( left);
-			add( mTool);
-			add( Box.createVerticalGlue());
-			add( mLeaf);
-		}
-
-		private JComponent createTool( boolean left) {
-			Box result = Box.createHorizontalBox();
-			result.setAlignmentX( LEFT_ALIGNMENT);
-//			result.setOpaque( false);
-//			result.setBorder( null);
-			result.setBorder( BorderFactory.createLineBorder( Color.BLACK));
-			Dimension size = new Dimension( 2 * BACKGROUND.getWidth(), 30);
-			result.setPreferredSize( size);
-			result.setMinimumSize( new Dimension( size));
-			result.setMaximumSize( new Dimension( size));
-			JToolBar bar = new JToolBar();
-//			bar.setBorder( null);
-			bar.setBorder( BorderFactory.createLineBorder( Color.GRAY));
-//			bar.setPreferredSize( new Dimension( size));
-//			bar.setMinimumSize( new Dimension( size));
-			bar.setFloatable( false);
-			try {
-				bar.setRollover( true);
-			}
-			catch (NoSuchMethodError ex) {
-			}
-//			bar.setOpaque( false);
-			bar.addSeparator();
-			result.add( bar);
-			result.add( Box.createHorizontalGlue());
-			return result;
-		}
-
-		public JPanel getLeaf() {
-			return mLeaf;
-		}
-
-		public JComponent getTool() {
-			return mTool;
 		}
 	}
 

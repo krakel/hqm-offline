@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -136,19 +135,9 @@ public class EditView extends JPanel implements IModelListener {
 		JComponent box = Box.createHorizontalBox();
 		box.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 //		box.setPreferredSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
-		JButton btn = new JButton( ResourceManager.getIcon( "blank.gif"));
-		btn.setEnabled( false);
-		btn.setBorderPainted( false);
-		if (left) {
-			result.add( box);
-			result.add( Box.createHorizontalGlue());
-			result.add( btn);
-		}
-		else {
-			result.add( box);
-			result.add( Box.createHorizontalGlue());
-			result.add( btn);
-		}
+		result.add( box);
+		result.add( Box.createHorizontalGlue());
+		result.add( AEntity.createToolButton( ResourceManager.getIcon( "blank.gif")));
 		return result;
 	}
 
