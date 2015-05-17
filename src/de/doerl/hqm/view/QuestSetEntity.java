@@ -21,7 +21,7 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 	private static BufferedImage DARK_BIG = darker( QUEST_BIG, 0.6F);
 	private static BufferedImage DARK_NORM = darker( QUEST_NORM, 0.6F);
 	private FQuestSet mQS;
-	private JPanel mLeaf = leafPanelAbsolut();
+	private JPanel mLeaf = new LeafAbsolute();
 
 	public QuestSetEntity( EditView view, FQuestSet qs) {
 		super( view, new GridLayout( 1, 1));
@@ -117,7 +117,7 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 			if (Utils.equals( quest.mSet, mSet)) {
 				for (FQuest req : quest.mRequirements) {
 					if (req != null && Utils.equals( quest.mSet, req.mSet)) {
-						mLeaf.add( leafLine( getCenterX( quest), getCenterY( quest), getCenterX( req), getCenterY( req), 5, LINE_COLOR));
+						mLeaf.add( new LeafLine( getCenterX( quest), getCenterY( quest), getCenterX( req), getCenterY( req), 5, LINE_COLOR));
 					}
 				}
 			}

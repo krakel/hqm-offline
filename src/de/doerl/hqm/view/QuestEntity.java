@@ -17,7 +17,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
@@ -52,11 +51,11 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 	protected static final BufferedImage REP_BAD = MAP.getSubimage( 94, 82, 16, 16);
 	protected static final BufferedImage REP_NORM = MAP.getSubimage( 110, 82, 16, 16);
 	private FQuest mQuest;
-	private JPanel mLeafLeft = leafPanel( true);
-	private JPanel mLeafRight = leafPanel( false);
+	private LeafPanel mLeafLeft = new LeafPanel( true);
+	private LeafPanel mLeafRight = new LeafPanel( false);
 	private JLabel mTitle = leafTitle( "");
-	private JTextArea mDesc = leafTextArea();
-	private JTextArea mTaskDesc = leafTextArea();
+	private LeafTextBox mDesc = new LeafTextBox();
+	private LeafTextBox mTaskDesc = new LeafTextBox();
 	private DefaultListModel<AQuestTask> mTaskModel = new DefaultListModel<AQuestTask>();
 	private JList<AQuestTask> mTasks;
 	private JLabel mRewards = leafTitle( "Rewards");
@@ -69,6 +68,8 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 	public QuestEntity( EditView view, FQuest quest) {
 		super( view, new GridLayout( 1, 2));
 		mQuest = quest;
+		mDesc.connectTo( quest.mDesc);
+		mTaskDesc.connectTo( null);
 		createLeft( mLeafLeft, quest);
 		createRight( mLeafRight);
 		add( mLeafLeft);
@@ -125,12 +126,12 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 
 	@Override
 	protected JComponent getLeftTool() {
-		return null;
+		return mDesc.getToolBar();
 	}
 
 	@Override
 	protected JComponent getRightTool() {
-		return null;
+		return mTaskDesc.getToolBar();
 	}
 
 	@Override
@@ -171,7 +172,7 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 	}
 
 	public void setTask( AQuestTask task) {
-		mTaskDesc.setText( task != null ? task.mDesc.mValue : "no task defined");
+		mTaskDesc.connectTo( task != null ? task.mDesc : null);
 		mTaskInfo.removeAll();
 		QuestTaskUpdate.get( task, mTaskInfo);
 		mTaskInfo.add( Box.createHorizontalGlue());

@@ -1,6 +1,5 @@
 package de.doerl.hqm.view;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -25,12 +24,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.Border;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AStack;
@@ -46,7 +43,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static final BufferedImage LARGE_BTN = MAP.getSubimage( 54, 235, 57, 18);
 	protected static final BufferedImage REPUATION = MAP.getSubimage( 0, 101, 125, 3);
 	protected static final BufferedImage REP_MARKER = MAP.getSubimage( 10, 93, 5, 5);
-	private static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
+	static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
 	private static final Dimension VIEW_SIZE = new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight());
 //	private static final int LEAF_WIDTH = BACKGROUND.getWidth();
 	protected static final int FONT_NORMAL_HIGH = 14;
@@ -55,8 +52,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, FONT_TITLE_HIGH);
 	protected static final Color SELECTED = new Color( 0xAAAAAA);
 	protected static final Color UNSELECTED = new Color( 0x404040);
-	private static final Border LEFT_BORDER = BorderFactory.createEmptyBorder( 40, 40, 40, 10);
-	private static final Border RIGHT_BORDER = BorderFactory.createEmptyBorder( 40, 10, 40, 40);
 	protected static final int GAP = 8;
 	protected static final int ICON_SIZE = 36;
 	private static int sColValue;
@@ -87,7 +82,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return result;
 	}
 
-	private static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean left) {
+	static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean left) {
 		double sx = (double) c.getWidth() / img.getWidth();
 		double sy = (double) c.getHeight() / img.getHeight();
 		if (left) {
@@ -101,7 +96,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		}
 	}
 
-	private static void drawBackgroundHalf( Graphics2D g2, Component c, BufferedImage img, boolean left) {
+	static void drawBackgroundHalf( Graphics2D g2, Component c, BufferedImage img, boolean left) {
 		double sx = (double) c.getWidth() / img.getWidth() / 2;
 		double sy = (double) c.getHeight() / img.getHeight();
 		if (left) {
@@ -271,55 +266,12 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return leafLabel( Color.BLACK, text);
 	}
 
-	protected static JComponent leafLine( int x1, int y1, int x2, int y2, int width, Color color) {
-		int dx = x1 - x2;
-		int dy = y1 - y2;
-		JComponent result = new JLine( dx, dy, width, color);
-		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setOpaque( false);
-		result.setBorder( null);
-//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
-		int dw = width / 2;
-		result.setBounds( Math.min( x1, x2), Math.min( y1, y2) - dw, Math.max( Math.abs( dx), width), Math.max( Math.abs( dy), width));
-		return result;
-	}
-
 	protected static <E> JList<E> leafList( ListModel<E> model) {
 		JList<E> result = new JList<E>( model);
 		result.setSelectionMode( ListSelectionModel.SINGLE_SELECTION);
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
 		result.setBorder( null);
-		return result;
-	}
-
-	protected static JPanel leafPanel( boolean left) {
-		JPanel result = new LeafPanel( left);
-		if (left) {
-			result.setBorder( LEFT_BORDER);
-		}
-		else {
-			result.setBorder( RIGHT_BORDER);
-		}
-		return result;
-	}
-
-	protected static JPanel leafPanel( boolean left, Color border) {
-		JPanel result = new LeafPanel( left);
-		if (left) {
-			result.setBorder( BorderFactory.createCompoundBorder( LEFT_BORDER, BorderFactory.createLineBorder( border)));
-		}
-		else {
-			result.setBorder( BorderFactory.createCompoundBorder( RIGHT_BORDER, BorderFactory.createLineBorder( border)));
-		}
-		return result;
-	}
-
-	protected static JPanel leafPanelAbsolut() {
-		JPanel result = new LeafAbsolute();
-//		result.setBackground( Color.GRAY);
-		result.setOpaque( false);
-		result.setBorder( BorderFactory.createEmptyBorder( 40, 40, 40, 40));
 		return result;
 	}
 
@@ -364,19 +316,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
 		result.setBorder( BorderFactory.createLineBorder( nextColor()));
-		return result;
-	}
-
-	protected static JTextArea leafTextArea() {
-		JTextArea result = new JTextArea();
-		result.setLineWrap( true);
-		result.setWrapStyleWord( true);
-		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setOpaque( false);
-		result.setBorder( null);
-//		result.setBorder( BorderFactory.createLineBorder( Color.LIGHT_GRAY));
-		result.setFont( FONT_NORMAL);
-//		result.setEditable( false);
 		return result;
 	}
 
@@ -430,9 +369,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		sColValue += 0x3773;
 		sColValue &= 0xFFFF;
 		return new Color( sColValue | 0x3F0000);
-	};
+	}
 
-	public abstract T getBase();
+	public abstract T getBase();;
 
 	protected abstract JComponent getLeftTool();
 
@@ -500,94 +439,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 				g2.setColor( Color.BLACK);
 				drawBottomLeftString( g2, c, mText);
 			}
-		}
-	}
-
-	private static class JLine extends JPanel {
-		private static final long serialVersionUID = -5876257198033732175L;
-		private int mDX, mDY;
-		private int mWidth;
-		private Color mColor;
-
-		public JLine( int dx, int dy, int width, Color color) {
-			mDX = dx;
-			mDY = dy;
-			mWidth = width;
-			mColor = color;
-		}
-
-		@Override
-		protected void paintComponent( Graphics g) {
-			if (ui != null) {
-				Graphics2D g2 = (Graphics2D) g;
-				g2.setColor( mColor);
-				g2.setStroke( new BasicStroke( mWidth));
-				int dw = mWidth / 2;
-				if (mDX >= mWidth) {
-					if (mDY >= mWidth) {
-						g2.drawLine( 0, 0, mDX, mDY);
-					}
-					else if (mDY < -mWidth) {
-						g2.drawLine( 0, -mDY, mDX, 0);
-					}
-					else {
-						g2.drawLine( 0, dw, mDX, dw);
-					}
-				}
-				else if (mDX < -mWidth) {
-					if (mDY >= 0) {
-						g2.drawLine( -mDX, 0, 0, mDY);
-					}
-					else if (mDY < -mWidth) {
-						g2.drawLine( -mDX, -mDY, 0, 0);
-					}
-					else {
-						g2.drawLine( 0, dw, -mDX, dw);
-					}
-				}
-				else {
-					g2.drawLine( dw, 0, dw, Math.abs( mDY));
-				}
-			}
-		}
-	}
-
-	static class LeafAbsolute extends JPanel {
-		private static final long serialVersionUID = -7421492884184131122L;
-
-		public LeafAbsolute() {
-			super( null);
-			setOpaque( false);
-			setAlignmentX( LEFT_ALIGNMENT);
-		}
-
-		@Override
-		protected void paintComponent( Graphics g) {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setColor( getBackground());
-			g2.fillRect( 0, 0, getWidth(), getHeight());
-			drawBackgroundHalf( g2, this, BACKGROUND, true);
-			drawBackgroundHalf( g2, this, BACKGROUND, false);
-		}
-	}
-
-	static class LeafPanel extends JPanel {
-		private static final long serialVersionUID = -3474402067796441059L;
-		private boolean mLeft;
-
-		public LeafPanel( boolean left) {
-			mLeft = left;
-			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			setOpaque( false);
-			setAlignmentX( LEFT_ALIGNMENT);
-		}
-
-		@Override
-		protected void paintComponent( Graphics g) {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setColor( getBackground());
-			g2.fillRect( 0, 0, getWidth(), getHeight());
-			drawBackground( g2, this, BACKGROUND, mLeft);
 		}
 	}
 

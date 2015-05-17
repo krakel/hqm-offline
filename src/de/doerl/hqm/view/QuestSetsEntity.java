@@ -17,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
@@ -39,9 +38,9 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	private FQuestSets mSet;
 	private DefaultListModel<FQuestSet> mListModel = new DefaultListModel<FQuestSet>();
 	private JList<FQuestSet> mList;
-	private JPanel mLeafLeft = leafPanel( true);
-	private JPanel mLeafRight = leafPanel( false);
-	private JTextArea mDesc = leafTextArea();
+	private LeafPanel mLeafLeft = new LeafPanel( true);
+	private LeafPanel mLeafRight = new LeafPanel( false);
+	private LeafTextBox mDesc = new LeafTextBox();
 	private JLabel mTotal = leafLabel( GuiColor.BLACK.getColor(), "");
 	private JLabel mLocked = leafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
 	private JLabel mCompleted = leafLabel( GuiColor.GREEN.getColor(), "0 completed quests");
@@ -53,11 +52,13 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	public QuestSetsEntity( EditView view, FQuestSets set) {
 		super( view, new GridLayout( 1, 2));
 		mSet = set;
+		mDesc.connectTo( null);
 		createLeft( mLeafLeft);
 		createRight( mLeafRight);
 		add( mLeafLeft);
 		add( mLeafRight);
 		QuestSetFactory.get( set, mListModel);
+		setSets( set);
 	}
 
 	private void createLeft( JPanel leaf) {
@@ -93,7 +94,7 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 
 	@Override
 	protected JComponent getRightTool() {
-		return null;
+		return mDesc.getToolBar();
 	}
 
 	@Override
@@ -138,13 +139,13 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 
 	public void setSet( FQuestSet qs) {
 		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( qs)));
-		mDesc.setText( qs.mDesc.mValue);
+		mDesc.connectTo( qs.mDesc);
 		mScroll.setVisible( true);
 	}
 
 	public void setSets( ACategory<FQuestSet> set) {
 		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( set)));
-		mDesc.setText( null);
+		mDesc.connectTo( null);
 		mScroll.setVisible( false);
 	}
 

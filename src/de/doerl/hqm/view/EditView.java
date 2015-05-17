@@ -124,15 +124,15 @@ public class EditView extends JPanel implements IModelListener {
 
 	private JToolBar createToolBar( boolean left) {
 		JToolBar result = new JToolBar();
-		Dimension size = new Dimension( Short.MAX_VALUE, 36);
-		result.setPreferredSize( new Dimension( size));
+		result.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, 36));
 		result.setFloatable( false);
 		try {
 			result.setRollover( true);
 		}
 		catch (NoSuchMethodError ex) {
 		}
-		JComponent box = Box.createHorizontalBox();
+		JComponent box = AEntity.leafBoxHorizontal( 36);
 		box.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 //		box.setPreferredSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
 		result.add( box);
