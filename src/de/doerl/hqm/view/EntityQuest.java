@@ -51,8 +51,6 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 	protected static final BufferedImage REP_BAD = MAP.getSubimage( 94, 82, 16, 16);
 	protected static final BufferedImage REP_NORM = MAP.getSubimage( 110, 82, 16, 16);
 	private FQuest mQuest;
-	private LeafPanel mLeafLeft = new LeafPanel( true);
-	private LeafPanel mLeafRight = new LeafPanel( false);
 	private JLabel mTitle = leafTitle( "");
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafTextBox mTaskDesc = new LeafTextBox();
@@ -68,11 +66,8 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 	public EntityQuest( EditView view, FQuest quest) {
 		super( view, new GridLayout( 1, 2));
 		mQuest = quest;
+		createLeafs();
 //		mDesc.connectTo( quest.mDesc);
-		createLeft( mLeafLeft, quest);
-		createRight( mLeafRight);
-		add( mLeafLeft);
-		add( mLeafRight);
 		QuestTaskFactory.get( quest, mTaskModel);
 		mTasks.setSelectedIndex( 0);
 		SwingUtilities.invokeLater( new TaskSetAction( this, QuestTaskFirst.get( quest)));
@@ -89,9 +84,10 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 		}
 	}
 
-	private void createLeft( JPanel leaf, FQuest quest) {
-		mTitle.setText( quest.getName());
-		mDesc.setText( quest.mDesc.mValue);
+	@Override
+	protected void createLeft( JPanel leaf) {
+		mTitle.setText( mQuest.getName());
+		mDesc.setText( mQuest.mDesc.mValue);
 		mTasks = leafList( mTaskModel);
 		mTasks.setCellRenderer( new CellRenderer());
 		mTasks.addMouseListener( this);
@@ -103,16 +99,17 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 //		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( Box.createVerticalGlue());
 		leaf.add( mRewards);
-		mReputation = leafIcon( REPUATION, ReputationFactory.get( quest));
-		createIconList( mRewardList, quest.mRewards, mReputation);
+		mReputation = leafIcon( REPUATION, ReputationFactory.get( mQuest));
+		createIconList( mRewardList, mQuest.mRewards, mReputation);
 		leaf.add( mRewardList);
 		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( mPickOne);
-		createIconList( mPickOneList, quest.mChoices, leafButton( "Claim reward"));
+		createIconList( mPickOneList, mQuest.mChoices, leafButton( "Claim reward"));
 		leaf.add( mPickOneList);
 	}
 
-	private void createRight( JPanel leaf) {
+	@Override
+	protected void createRight( JPanel leaf) {
 		leaf.add( leafScoll( mTaskDesc, 80));
 		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( mTaskInfo);

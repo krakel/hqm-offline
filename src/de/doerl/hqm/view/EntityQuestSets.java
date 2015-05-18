@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
@@ -28,18 +30,15 @@ import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSets;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetIndex;
-import de.doerl.hqm.base.dispatch.QuestSetSizeOf;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.utils.Utils;
 
-class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener {
+class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener, ChangeListener {
 	private static final long serialVersionUID = -5930552368392528379L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuestSets.class.getName());
-	private FQuestSets mSet;
+	private FQuestSets mCategory;
 	private DefaultListModel<FQuestSet> mListModel = new DefaultListModel<FQuestSet>();
 	private JList<FQuestSet> mList;
-	private LeafPanel mLeafLeft = new LeafPanel( true);
-	private LeafPanel mLeafRight = new LeafPanel( false);
 	private LeafTextBox mDesc = new LeafTextBox();
 	private JLabel mTotal = leafLabel( GuiColor.BLACK.getColor(), "");
 	private JLabel mLocked = leafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
@@ -48,26 +47,27 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener {
 	private JLabel mUnclaimed = leafLabel( GuiColor.PURPLE.getColor(), "0 quests with unclaimed rewards");
 	private JLabel mInvisible = leafLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
 	private JScrollPane mScroll;
+	private FQuestSet mActiv;
 
-	public EntityQuestSets( EditView view, FQuestSets set) {
+	public EntityQuestSets( EditView view, FQuestSets cat) {
 		super( view, new GridLayout( 1, 2));
-		mSet = set;
-		createLeft( mLeafLeft);
-		createRight( mLeafRight);
-		add( mLeafLeft);
-		add( mLeafRight);
-		QuestSetFactory.get( set, mListModel);
-		setSets( set);
+		mCategory = cat;
+		createLeafs();
+		QuestSetFactory.get( cat, mListModel);
+		setSet( QuestSetFirst.get( cat));
+		mDesc.getHandler().addActionListener( this);
 	}
 
-	private void createLeft( JPanel leaf) {
+	@Override
+	protected void createLeft( JPanel leaf) {
 		mList = leafList( mListModel);
 		mList.setCellRenderer( new CellRenderer());
 		mList.addMouseListener( this);
 		leaf.add( leafScoll( mList, 10000));
 	}
 
-	private void createRight( JPanel leaf) {
+	@Override
+	protected void createRight( JPanel leaf) {
 //		top.add( Box.createVerticalStrut( 100));
 		mScroll = leafScoll( mDesc, 160);
 		mScroll.setVisible( false);
@@ -83,7 +83,7 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener {
 
 	@Override
 	public FQuestSets getBase() {
-		return mSet;
+		return mCategory;
 	}
 
 	@Override
@@ -94,15 +94,7 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener {
 			if (row >= 0) {
 				ListModel<?> model = list.getModel();
 				FQuestSet qs = (FQuestSet) model.getElementAt( row);
-				switch (evt.getButton()) {
-					case MouseEvent.BUTTON1:
-						SwingUtilities.invokeLater( new QuestSetAction( this, qs));
-						break;
-					case MouseEvent.BUTTON3:
-						SwingUtilities.invokeLater( new QuestSetsAction( this, qs.mParentCategory));
-						break;
-					default:
-				}
+				SwingUtilities.invokeLater( new QuestSetAction( this, qs));
 			}
 		}
 		catch (ClassCastException ex) {
@@ -126,16 +118,36 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener {
 	public void mouseReleased( MouseEvent evt) {
 	}
 
-	public void setSet( FQuestSet qs) {
-		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( qs)));
-//		mDesc.connectTo( qs.mDesc);
-		mScroll.setVisible( true);
+	private void setSet( FQuestSet qs) {
+		if (qs == null) {
+			mTotal.setText( String.format( "%d quests in total", 0));
+			mDesc.setText( null);
+			mScroll.setVisible( false);
+			mList.clearSelection();
+			mActiv = null;
+		}
+		else if (Utils.equals( qs, mActiv)) {
+			mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( qs.mParentCategory)));
+			mDesc.setText( null);
+			mScroll.setVisible( false);
+			mList.clearSelection();
+			mActiv = null;
+		}
+		else {
+			mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( qs)));
+			mDesc.setText( qs.mDesc.mValue);
+			mScroll.setVisible( true);
+			mList.setSelectedValue( qs, true);
+			mActiv = qs;
+		}
 	}
 
-	public void setSets( ACategory<FQuestSet> set) {
-		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( set)));
-//		mDesc.connectTo( null);
-		mScroll.setVisible( false);
+	@Override
+	public void stateChanged( ChangeEvent evt) {
+		if (mActiv != null) {
+			DialogTextBox.update( mActiv.mDesc, mView);
+			mDesc.setText( mActiv.mDesc.mValue);
+		}
 	}
 
 	private static class CellRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
@@ -220,19 +232,48 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener {
 		}
 	}
 
-	private static class QuestSetsAction implements Runnable {
-		private EntityQuestSets mEntity;
-		private ACategory<FQuestSet> mSet;
+	private static class QuestSetFirst extends AHQMWorker<FQuestSet, Object> {
+		private static final QuestSetFirst WORKER = new QuestSetFirst();
 
-		public QuestSetsAction( EntityQuestSets entity, ACategory<FQuestSet> set) {
-			mEntity = entity;
-			mSet = set;
+		private QuestSetFirst() {
+		}
+
+		public static FQuestSet get( FQuestSets cat) {
+			return cat.forEachMember( WORKER, null);
 		}
 
 		@Override
-		public void run() {
-			mEntity.setSets( mSet);
-			mEntity.mList.clearSelection();
+		public FQuestSet forQuestSet( FQuestSet qs, Object p) {
+			return qs;
+		}
+	}
+
+	private static class QuestSetSizeOf extends AHQMWorker<Object, Object> {
+		private int mResult;
+		private FQuestSet mRef;
+
+		private QuestSetSizeOf( FQuestSet ref) {
+			mRef = ref;
+		}
+
+		public static int get( ACategory<FQuestSet> set) {
+			QuestSetSizeOf size = new QuestSetSizeOf( null);
+			set.mParentHQM.forEachQuest( size, null);
+			return size.mResult;
+		}
+
+		public static int get( FQuestSet qs) {
+			QuestSetSizeOf size = new QuestSetSizeOf( qs);
+			qs.mParentCategory.mParentHQM.forEachQuest( size, null);
+			return size.mResult;
+		}
+
+		@Override
+		public Object forQuest( FQuest quest, Object p) {
+			if (mRef == null || Utils.equals( quest.mSet, mRef) && !quest.isDeleted()) {
+				++mResult;
+			}
+			return null;
 		}
 	}
 }

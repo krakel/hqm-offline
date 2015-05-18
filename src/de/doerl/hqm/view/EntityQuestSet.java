@@ -82,6 +82,14 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	}
 
 	@Override
+	protected void createLeft( JPanel leaf) {
+	}
+
+	@Override
+	protected void createRight( JPanel leaf) {
+	}
+
+	@Override
 	public FQuestSet getBase() {
 		return mQS;
 	}

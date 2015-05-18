@@ -370,6 +370,19 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return new Color( sColValue | 0x3F0000);
 	}
 
+	protected void createLeafs() {
+		LeafPanel left = new LeafPanel( true);
+		LeafPanel right = new LeafPanel( false);
+		createLeft( left);
+		createRight( right);
+		add( left);
+		add( right);
+	}
+
+	protected abstract void createLeft( JPanel leaf);
+
+	protected abstract void createRight( JPanel leaf);
+
 	public abstract T getBase();
 
 	public EditView getView() {
