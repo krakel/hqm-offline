@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,8 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
@@ -33,12 +30,11 @@ import de.doerl.hqm.base.dispatch.QuestSetIndex;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.utils.Utils;
 
-class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener, ChangeListener {
+class EntityQuestSets extends AEntity<FQuestSets> {
 	private static final long serialVersionUID = -5930552368392528379L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuestSets.class.getName());
 	private FQuestSets mCategory;
-	private DefaultListModel<FQuestSet> mListModel = new DefaultListModel<FQuestSet>();
-	private JList<FQuestSet> mList;
+	private LeafList<FQuestSet> mList = new LeafList<FQuestSet>();
 	private LeafTextBox mDesc = new LeafTextBox();
 	private JLabel mTotal = leafLabel( GuiColor.BLACK.getColor(), "");
 	private JLabel mLocked = leafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
@@ -47,22 +43,39 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener, Chan
 	private JLabel mUnclaimed = leafLabel( GuiColor.PURPLE.getColor(), "0 quests with unclaimed rewards");
 	private JLabel mInvisible = leafLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
 	private JScrollPane mScroll;
-	private FQuestSet mActiv;
+	private volatile FQuestSet mActiv;
 
 	public EntityQuestSets( EditView view, FQuestSets cat) {
 		super( view, new GridLayout( 1, 2));
 		mCategory = cat;
+		mList.setCellRenderer( new QuestSetRenderer());
 		createLeafs();
-		QuestSetFactory.get( cat, mListModel);
-		setSet( QuestSetFirst.get( cat));
-		mDesc.getHandler().addActionListener( this);
+		updateList();
+		mList.getHandler().addClickListener( new IClickListener() {
+			@Override
+			public void onDoubleClick( MouseEvent evt) {
+				updateListDouble( evt);
+			}
+
+			@Override
+			public void onSingleClick( MouseEvent evt) {
+				updateListSingle( evt);
+			}
+		});
+		mDesc.getHandler().addClickListener( new IClickListener() {
+			@Override
+			public void onDoubleClick( MouseEvent evt) {
+				updateDesc();
+			}
+
+			@Override
+			public void onSingleClick( MouseEvent evt) {
+			}
+		});
 	}
 
 	@Override
 	protected void createLeft( JPanel leaf) {
-		mList = leafList( mListModel);
-		mList.setCellRenderer( new CellRenderer());
-		mList.addMouseListener( this);
 		leaf.add( leafScoll( mList, 10000));
 	}
 
@@ -84,38 +97,6 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener, Chan
 	@Override
 	public FQuestSets getBase() {
 		return mCategory;
-	}
-
-	@Override
-	public void mouseClicked( MouseEvent evt) {
-		try {
-			JList<?> list = (JList<?>) evt.getSource();
-			int row = list.locationToIndex( evt.getPoint());
-			if (row >= 0) {
-				ListModel<?> model = list.getModel();
-				FQuestSet qs = (FQuestSet) model.getElementAt( row);
-				SwingUtilities.invokeLater( new QuestSetAction( this, qs));
-			}
-		}
-		catch (ClassCastException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-	}
-
-	@Override
-	public void mouseEntered( MouseEvent evt) {
-	}
-
-	@Override
-	public void mouseExited( MouseEvent evt) {
-	}
-
-	@Override
-	public void mousePressed( MouseEvent evt) {
-	}
-
-	@Override
-	public void mouseReleased( MouseEvent evt) {
 	}
 
 	private void setSet( FQuestSet qs) {
@@ -142,38 +123,36 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener, Chan
 		}
 	}
 
-	@Override
-	public void stateChanged( ChangeEvent evt) {
+	private void updateDesc() {
 		if (mActiv != null) {
 			DialogTextBox.update( mActiv.mDesc, mView);
 			mDesc.setText( mActiv.mDesc.mValue);
 		}
 	}
 
-	private static class CellRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
-		private static final long serialVersionUID = 9081558438188872705L;
-		private JLabel mTitle = leafTitle( UNSELECTED, "");
-		private JLabel mComplete = leafLabel( Color.BLACK, "");
+	private void updateList() {
+		DefaultListModel<FQuestSet> model = mList.getModel();
+		model.clear();
+		QuestSetFactory.get( mCategory, model);
+		setSet( QuestSetFirst.get( mCategory));
+	}
 
-		public CellRenderer() {
-			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			JComponent hori = leafBoxHorizontal( FONT_NORMAL_HIGH);
-			hori.add( Box.createHorizontalStrut( 24));
-			hori.add( mComplete);
-			add( mTitle);
-			add( hori);
-			setOpaque( false);
-			setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10));
+	private void updateListDouble( MouseEvent evt) {
+		DialogList.update( mCategory, mView);
+		updateList();
+	}
+
+	private void updateListSingle( MouseEvent evt) {
+		try {
+			int row = mList.locationToIndex( evt.getPoint());
+			if (row >= 0) {
+				ListModel<FQuestSet> model = mList.getModel();
+				FQuestSet qs = model.getElementAt( row);
+				SwingUtilities.invokeLater( new QuestSetAction( this, qs));
+			}
 		}
-
-		public Component getListCellRendererComponent( JList<? extends FQuestSet> list, FQuestSet qs, int index, boolean isSelected, boolean cellHasFocus) {
-			int idx = QuestSetIndex.get( qs) + 1;
-			mTitle.setText( String.format( "%d. %s", idx, qs.getName()));
-			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
-			boolean enabled = QuestFactory.isEnabled( qs);
-			mComplete.setText( enabled ? "0% Completed" : "Locked");
-			mComplete.setEnabled( enabled);
-			return this;
+		catch (ClassCastException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 
@@ -245,6 +224,33 @@ class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener, Chan
 		@Override
 		public FQuestSet forQuestSet( FQuestSet qs, Object p) {
 			return qs;
+		}
+	}
+
+	private static class QuestSetRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
+		private static final long serialVersionUID = 9081558438188872705L;
+		private JLabel mTitle = leafTitle( UNSELECTED, "");
+		private JLabel mComplete = leafLabel( Color.BLACK, "");
+
+		public QuestSetRenderer() {
+			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
+			JComponent hori = leafBoxHorizontal( FONT_NORMAL_HIGH);
+			hori.add( Box.createHorizontalStrut( 24));
+			hori.add( mComplete);
+			add( mTitle);
+			add( hori);
+			setOpaque( false);
+			setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10));
+		}
+
+		public Component getListCellRendererComponent( JList<? extends FQuestSet> list, FQuestSet qs, int index, boolean isSelected, boolean cellHasFocus) {
+			int idx = QuestSetIndex.get( qs) + 1;
+			mTitle.setText( String.format( "%d. %s", idx, qs.getName()));
+			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
+			boolean enabled = QuestFactory.isEnabled( qs);
+			mComplete.setText( enabled ? "0% Completed" : "Locked");
+			mComplete.setEnabled( enabled);
+			return this;
 		}
 	}
 

@@ -2,6 +2,8 @@ package de.doerl.hqm.view;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -11,59 +13,43 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
 
 import de.doerl.hqm.utils.Utils;
 
 class ClickHandler implements MouseListener {
 	private static final Logger LOGGER = Logger.getLogger( ClickHandler.class.getName());
-	private static final Timer TIMER = new Timer( "doubleclickTimer", false);
+	private static final Timer TIMER = new Timer( "doubleclickTimer", true);
 	private static final Border BORDER = BorderFactory.createBevelBorder( BevelBorder.LOWERED);
-	private EventListenerList mListener = new EventListenerList();
-	private boolean mOneClick;
-	private ChangeEvent mEvent;
+	private ClickListener mListener = new ClickListener();
+	private volatile boolean mOneClick;
 	private JComponent mComp;
 	private Border mOldBorder;
 
 	public ClickHandler( JComponent comp) {
 		mComp = comp;
-		mEvent = new ChangeEvent( this);
 	}
 
-	public void addActionListener( ChangeListener l) {
-		mListener.add( ChangeListener.class, l);
-	}
-
-	protected void fireStateChanged() {
-		Object[] listeners = mListener.getListenerList();
-		for (int i = listeners.length - 2; i >= 0; i -= 2) {
-			if (listeners[i] == ChangeListener.class) {
-				try {
-					((ChangeListener) listeners[i + 1]).stateChanged( mEvent);
-				}
-				catch (ClassCastException ex) {
-					Utils.logThrows( LOGGER, Level.WARNING, ex);
-				}
-			}
-		}
+	public ClickListener getListener() {
+		return mListener;
 	}
 
 	@Override
 	public void mouseClicked( MouseEvent evt) {
-		if (mOneClick) {
-			fireStateChanged();
-			mOneClick = false;
-		}
-		else {
-			mOneClick = true;
-			TIMER.schedule( new TimerTask() {
-				@Override
-				public void run() {
+		switch (evt.getButton()) {
+			case MouseEvent.BUTTON1:
+				if (mOneClick) {
+					mListener.fireDoubleEvent( evt);
 					mOneClick = false;
 				}
-			}, 500);
+				else {
+					mListener.fireSingleEvent( evt);
+					mOneClick = true;
+					TIMER.schedule( new SingleTask(), 300);
+				}
+				break;
+			case MouseEvent.BUTTON3:
+				mListener.fireSingleEvent( evt);
+				break;
 		}
 	}
 
@@ -87,7 +73,49 @@ class ClickHandler implements MouseListener {
 	public void mouseReleased( MouseEvent evt) {
 	}
 
-	public void removeChangeListener( ChangeListener l) {
-		mListener.remove( ChangeListener.class, l);
+	public static class ClickListener {
+		private List<IClickListener> mListener = new ArrayList<IClickListener>();
+
+		public void addClickListener( IClickListener l) {
+			if (!mListener.contains( l)) {
+				mListener.add( l);
+			}
+		}
+
+		void fireDoubleEvent( MouseEvent evt) {
+			for (IClickListener l : mListener) {
+				try {
+					l.onDoubleClick( evt);
+				}
+				catch (Exception ex) {
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
+				}
+			}
+		}
+
+		void fireSingleEvent( MouseEvent evt) {
+			for (IClickListener l : mListener) {
+				try {
+					l.onSingleClick( evt);
+				}
+				catch (Exception ex) {
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
+				}
+			}
+		}
+
+		public void removeClickListener( IClickListener l) {
+			mListener.remove( l);
+		}
+	}
+
+	private final class SingleTask extends TimerTask {
+		public SingleTask() {
+		}
+
+		@Override
+		public void run() {
+			mOneClick = false;
+		}
 	}
 }

@@ -16,7 +16,7 @@ class DialogTextBox extends ADialog {
 	private static final long serialVersionUID = 5413493873409894323L;
 	private JTextArea mArea = new JTextArea();
 
-	public DialogTextBox( Window owner) {
+	private DialogTextBox( Window owner) {
 		super( owner);
 		mArea.setFont( AEntity.FONT_NORMAL);
 		mArea.setLineWrap( true);

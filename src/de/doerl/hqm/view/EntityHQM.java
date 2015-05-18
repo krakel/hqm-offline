@@ -1,18 +1,17 @@
 package de.doerl.hqm.view;
 
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.utils.ResourceManager;
 
-class EntityHQM extends AEntity<FHqm> implements ChangeListener {
+class EntityHQM extends AEntity<FHqm> {
 	private static final long serialVersionUID = 4033642877403597083L;
 	private static final BufferedImage FRONT = ResourceManager.getImage( "front.png").getSubimage( 0, 0, 280, 360);
 	private FHqm mHQM;
@@ -24,7 +23,16 @@ class EntityHQM extends AEntity<FHqm> implements ChangeListener {
 		mHQM = hqm;
 		createLeafs();
 		mDesc.setText( mHQM.mDesc.mValue);
-		mDesc.getHandler().addActionListener( this);
+		mDesc.getHandler().addClickListener( new IClickListener() {
+			@Override
+			public void onDoubleClick( MouseEvent evt) {
+				updateDesc();
+			}
+
+			@Override
+			public void onSingleClick( MouseEvent evt) {
+			}
+		});
 	}
 
 	@Override
@@ -44,7 +52,7 @@ class EntityHQM extends AEntity<FHqm> implements ChangeListener {
 		return mHQM;
 	}
 
-	public void stateChanged( ChangeEvent evt) {
+	private void updateDesc() {
 		DialogTextBox.update( mHQM.mDesc, mView);
 		mDesc.setText( mHQM.mDesc.mValue);
 	}
