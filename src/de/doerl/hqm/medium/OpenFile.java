@@ -9,7 +9,6 @@ import javax.swing.JFileChooser;
 
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 public class OpenFile extends AOpenFile {
 	private static final long serialVersionUID = -6906125595603507775L;
 	private static final Logger LOGGER = Logger.getLogger( OpenFile.class.getName());

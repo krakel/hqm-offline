@@ -18,7 +18,6 @@ import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 class OpenBit extends AOpenFile {
 	private static final long serialVersionUID = 4850961276225686266L;
 	private static final Logger LOGGER = Logger.getLogger( OpenBit.class.getName());

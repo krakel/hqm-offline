@@ -11,7 +11,6 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 public class EditModel {
 	private static final Logger LOGGER = Logger.getLogger( EditModel.class.getName());
 	private List<IModelListener> mListener = new ArrayList<IModelListener>();

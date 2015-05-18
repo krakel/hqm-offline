@@ -36,10 +36,9 @@ import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.EditView;
 
-@SuppressWarnings( "nls")
 public class EditFrame extends JFrame implements ChangeListener {
 	private static final long serialVersionUID = -2516074296297195438L;
-	private static final String BASE_TITLE = ResourceManager.RESOURCE.getString( "hqm.editor.title");
+	private static final String BASE_TITLE = ResourceManager.getString( "hqm.editor.title");
 	private static final String FILE = "hqm.file";
 	private static final String EDIT = "hqm.edit";
 	private static final String HELP = "hqm.help";
@@ -68,7 +67,7 @@ public class EditFrame extends JFrame implements ChangeListener {
 		JMenu result = new JMenu();
 		result.setActionCommand( name);
 		result.setBackground( UIManager.getColor( "panel.background"));
-		result.setAction( new ABundleAction( name, ResourceManager.RESOURCE) {
+		result.setAction( new ABundleAction( name) {
 			private static final long serialVersionUID = -2822453428777922839L;
 
 			public void actionPerformed( ActionEvent ev) {
@@ -95,7 +94,7 @@ public class EditFrame extends JFrame implements ChangeListener {
 
 	protected static JPopupMenu createPopupMenu() {
 		JPopupMenu result = new JPopupMenu();
-		result.add( new JMenuItem( new ABundleAction( POPUP, ResourceManager.RESOURCE) {
+		result.add( new JMenuItem( new ABundleAction( POPUP) {
 			private static final long serialVersionUID = 2766110645403746850L;
 
 			public void actionPerformed( ActionEvent ev) {

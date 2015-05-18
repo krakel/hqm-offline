@@ -14,7 +14,9 @@ class AboutDialog extends ADialog {
 
 	public AboutDialog( Window owner) {
 		super( owner);
+		setThema( "about.thema");
 		addAction( BTN_OK, DialogResult.APPROVE);
+		addEscapeAction();
 		createMain();
 	}
 

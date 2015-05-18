@@ -8,7 +8,6 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-@SuppressWarnings( "nls")
 public class SingleLineFormatter extends Formatter {
 	private static final String FORMAT = "{0,date,short} {0,time}";
 	private static final MessageFormat FORMATTER = new MessageFormat( FORMAT);

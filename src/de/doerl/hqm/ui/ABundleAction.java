@@ -9,30 +9,23 @@ import javax.swing.KeyStroke;
 
 import de.doerl.hqm.utils.ResourceManager;
 
-@SuppressWarnings( "nls")
 public abstract class ABundleAction extends AbstractAction {
 	public static final String DIALOGKEY = "DialogKey";
 	public static final String ENABLED = "Enabled";
 	public static final String EXECUTE = "Execute";
-	private static final String PAR = "->";
 	public static final String SELECTED = "Selected";
+	public static final String SHORTNAME = "ShortName";
+	private static final String PAR = "->";
 	private static final char SEP = ';';
 	private static final long serialVersionUID = -1893382903657392840L;
-	public static final String SHORTNAME = "ShortName";
-	protected ResourceManager mResource;
 
-	public ABundleAction( String name, ResourceManager res) {
-		mResource = res;
+	public ABundleAction( String name) {
 		setValues( name);
-	}
-
-	public ResourceManager getResource() {
-		return mResource;
 	}
 
 	protected void setValues( String name) {
 		putValue( DIALOGKEY, name);
-		String value = mResource.getString( name, null);
+		String value = ResourceManager.getString( name, null);
 		if (value != null && value.length() > 0 && (value.indexOf( SEP) >= 0 || value.indexOf( PAR) >= 0)) {
 			int pos = 0;
 			String key = null;

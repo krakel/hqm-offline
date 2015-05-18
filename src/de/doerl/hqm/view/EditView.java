@@ -26,7 +26,6 @@ import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 public class EditView extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -15489231166915296L;
 	private static final Logger LOGGER = Logger.getLogger( EditView.class.getName());

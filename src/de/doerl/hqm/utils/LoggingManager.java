@@ -13,7 +13,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
-@SuppressWarnings( "nls")
 public class LoggingManager {
 	private static final String BUNDLE_HQM = "de.doerl.hqm.resources.message";
 	public static final Logger ROOT;

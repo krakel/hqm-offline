@@ -1,6 +1,5 @@
 package de.doerl.hqm.utils;
 
-@SuppressWarnings( "nls")
 public class VersionString implements Comparable<VersionString> {
 	private String[] mList;
 	private String mVersion;

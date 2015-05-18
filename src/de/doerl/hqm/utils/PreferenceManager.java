@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
 
-@SuppressWarnings( "nls")
 public class PreferenceManager {
 	private static final Logger LOGGER = Logger.getLogger( PreferenceManager.class.getName());
 	private static boolean sFireEvents = true;

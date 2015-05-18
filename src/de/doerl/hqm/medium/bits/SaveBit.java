@@ -17,7 +17,6 @@ import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 class SaveBit extends ASaveFile {
 	private static final long serialVersionUID = 7956742276621360019L;
 	private static final Logger LOGGER = Logger.getLogger( SaveBit.class.getName());
@@ -26,7 +25,6 @@ class SaveBit extends ASaveFile {
 		super( "bit.save", cb);
 	}
 
-	@SuppressWarnings( "nls")
 	public void action( Window frame) {
 		FHqm hqm = mCallback.updateHQM();
 		if (hqm != null) {

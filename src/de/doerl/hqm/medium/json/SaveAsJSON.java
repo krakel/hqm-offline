@@ -17,7 +17,6 @@ import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 class SaveAsJSON extends ASaveAsFile {
 	private static final long serialVersionUID = -1904996548131026440L;
 	private static final Logger LOGGER = Logger.getLogger( SaveAsJSON.class.getName());

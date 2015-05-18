@@ -118,6 +118,12 @@ public abstract class ADialog extends JDialog {
 		layout.setVerticalGroup( mSelectVert);
 	}
 
+	public void setThema( String thema) {
+		if (thema != null) {
+			setTitle( ResourceManager.getString( thema));
+		}
+	}
+
 	public DialogResult showDialog() {
 		pack();
 		setLocationRelativeTo( getParent());
@@ -130,7 +136,7 @@ public abstract class ADialog extends JDialog {
 		private DialogResult mValue;
 
 		public DefaultAction( String name, DialogResult value) {
-			super( name, ResourceManager.RESOURCE);
+			super( name);
 			mValue = value;
 		}
 

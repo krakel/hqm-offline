@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-@SuppressWarnings( "nls")
 public class Utils {
 	private static final boolean INNER = false;
 	private static final String SELF = Utils.class.getName();

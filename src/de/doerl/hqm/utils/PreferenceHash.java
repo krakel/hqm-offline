@@ -15,7 +15,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings( "nls")
 class PreferenceHash extends HashMap<String, Object> {
 	private static final String COUNT_SUFFIX = ".count";
 	private static final String KEY_VALUE_SEPS = "=: \t\r\n\f";

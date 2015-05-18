@@ -8,7 +8,6 @@ import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 public class EditManager {
 	private static final Logger LOGGER;
 	static {

@@ -18,7 +18,6 @@ import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 class OpenJSON extends AOpenFile {
 	private static final long serialVersionUID = 2810099814270240119L;
 	private static final Logger LOGGER = Logger.getLogger( OpenJSON.class.getName());

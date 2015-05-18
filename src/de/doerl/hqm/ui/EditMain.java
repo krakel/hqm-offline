@@ -12,7 +12,6 @@ import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 public class EditMain {
 //	public static final String SOURCE = "regrowth";
 //	public static final String SOURCE = "pathfinder";

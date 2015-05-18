@@ -12,14 +12,13 @@ import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
-import de.doerl.hqm.utils.ResourceManager;
 
 public abstract class ADialogFile extends ABundleAction implements IRefreshListener {
 	private static final long serialVersionUID = -5353239946352595216L;
 	protected ICallback mCallback;
 
 	public ADialogFile( String name, ICallback cb) {
-		super( name, ResourceManager.RESOURCE);
+		super( name);
 		mCallback = cb;
 		cb.addRefreshListener( this);
 	}

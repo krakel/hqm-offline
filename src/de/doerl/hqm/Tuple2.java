@@ -24,8 +24,7 @@ public class Tuple2<T1, T2> {
 			return true;
 		}
 		try {
-			@SuppressWarnings( "unchecked")
-			Tuple2<T1, T2> other = (Tuple2<T1, T2>) obj;
+			Tuple2<?, ?> other = (Tuple2<?, ?>) obj;
 			if (Utils.different( _1, other._1)) {
 				return false;
 			}

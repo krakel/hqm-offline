@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings( "nls")
 public class BaseDefaults {
 	private static final Logger LOGGER = Logger.getLogger( BaseDefaults.class.getName());
 	public static final String FILE_OPEN_DIR = "file.open.directory";

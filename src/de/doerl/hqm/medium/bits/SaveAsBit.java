@@ -17,7 +17,6 @@ import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 class SaveAsBit extends ASaveAsFile {
 	private static final long serialVersionUID = -7572089145353012288L;
 	private static final Logger LOGGER = Logger.getLogger( SaveAsBit.class.getName());

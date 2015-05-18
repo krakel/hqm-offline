@@ -1,6 +1,5 @@
 package de.doerl.hqm.utils;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -25,28 +24,26 @@ import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-@SuppressWarnings( "nls")
 public class ResourceManager {
-	public static final String DIALOG_RES = "de.doerl.hqm.resources.dialog";
-	public static final String ICON_DIR = "/de/doerl/hqm/pictures/";
+	private static final String DIALOG_RES = "de.doerl.hqm.resources.dialog";
+	private static final String ICON_DIR = "/de/doerl/hqm/pictures/";
 	private static final Logger LOGGER = Logger.getLogger( ResourceManager.class.getName());
-	public static final ResourceManager RESOURCE = new ResourceManager( DIALOG_RES);
-	private static Color sDisabledColor = Color.gray;
-	private static Color sEnabledColor = Color.black;
-	private ResourceBundle mBundle;
+	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle( DIALOG_RES, Locale.getDefault(), ResourceManager.class.getClassLoader());
 
-	public ResourceManager( String bundle) {
-		mBundle = ResourceBundle.getBundle( bundle, Locale.getDefault(), ResourceManager.class.getClassLoader());
+	private ResourceManager() {
 	}
 
-	public static String getBundleString( String key, String bundle) {
+	public static String[] getArray( String key) {
+		String[] result = null;
 		try {
-			ResourceBundle rb = ResourceBundle.getBundle( bundle, Locale.getDefault(), ResourceManager.class.getClassLoader());
-			return rb.getString( key);
+			result = parseString( BUNDLE.getString( key));
 		}
 		catch (RuntimeException ex) {
-			return "<" + key + ">";
+			result = new String[] {
+				"<" + key + ">"
+			};
 		}
+		return result;
 	}
 
 	public static Icon getIcon( String name) {
@@ -57,6 +54,7 @@ public class ResourceManager {
 			}
 		}
 		catch (RuntimeException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		return new ErrorIcon( name);
 	}
@@ -69,20 +67,41 @@ public class ResourceManager {
 			}
 		}
 		catch (IOException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		return null;
 	}
 
-	public static Color getSimulationEnableColor( boolean enable) {
-		return enable ? sEnabledColor : sDisabledColor;
+	public static int getInteger( String key) {
+		return getInteger( key, 0);
 	}
 
-	public static String getVersion( String bundle) {
-		StringBuffer sb = new StringBuffer();
-		sb.append( getBundleString( "build.version", bundle));
-		sb.append( '.');
-		sb.append( getBundleString( "build.number", bundle));
-		return sb.toString();
+	public static int getInteger( String key, int def) {
+		String value = getString( key);
+		try {
+			return Integer.parseInt( value);
+		}
+		catch (NumberFormatException ex) {
+			return def;
+		}
+	}
+
+	public static String getString( String key) {
+		try {
+			return BUNDLE.getString( key);
+		}
+		catch (RuntimeException ex) {
+			return "<" + key + ">";
+		}
+	}
+
+	public static String getString( String key, String def) {
+		try {
+			return BUNDLE.getString( key);
+		}
+		catch (RuntimeException ex) {
+			return def;
+		}
 	}
 
 	private static void gotoLookAndFeel( String name) {
@@ -90,17 +109,8 @@ public class ResourceManager {
 			UIManager.setLookAndFeel( name);
 		}
 		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
-		sDisabledColor = UIManager.getColor( "Button.background");
-		if (sDisabledColor == null) {
-			sDisabledColor = Color.black;
-		}
-		float[] hsb = Color.RGBtoHSB( sDisabledColor.getRed(), sDisabledColor.getGreen(), sDisabledColor.getBlue(), null);
-		hsb[2] *= 1.1f;
-		if (hsb[2] > 1.0f) {
-			hsb[2] = 1.0f;
-		}
-		sEnabledColor = Color.getHSBColor( hsb[0], hsb[1], hsb[2]);
 		setTreeIcons();
 	}
 
@@ -154,51 +164,6 @@ public class ResourceManager {
 	public static void setTreeIcons() {
 		makeIcon( "Tree.expandedIcon", "collaps.gif");
 		makeIcon( "Tree.collapsedIcon", "expand.gif");
-	}
-
-	public String[] getArray( String key) {
-		String[] result = null;
-		try {
-			result = parseString( mBundle.getString( key));
-		}
-		catch (RuntimeException ex) {
-			result = new String[] {
-				"<" + key + ">"
-			};
-		}
-		return result;
-	}
-
-	public int getInteger( String key) {
-		return getInteger( key, 0);
-	}
-
-	public int getInteger( String key, int def) {
-		String value = getString( key);
-		try {
-			return Integer.parseInt( value);
-		}
-		catch (NumberFormatException ex) {
-			return def;
-		}
-	}
-
-	public String getString( String key) {
-		try {
-			return mBundle.getString( key);
-		}
-		catch (RuntimeException ex) {
-			return "<" + key + ">";
-		}
-	}
-
-	public String getString( String key, String def) {
-		try {
-			return mBundle.getString( key);
-		}
-		catch (RuntimeException ex) {
-			return def;
-		}
 	}
 
 	private static class ErrorIcon implements Icon {
@@ -280,7 +245,7 @@ public class ResourceManager {
 				}
 			}
 			if (buffer == null) {
-				Utils.log( LOGGER, Level.WARNING, "{0}/{1} not found.", ResourceManager.class.getName(), mName);
+				Utils.log( LOGGER, Level.WARNING, "{1} not found.", mName);
 				return null;
 			}
 			if (buffer.length == 0) {

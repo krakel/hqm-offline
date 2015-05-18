@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings( "nls")
 class PreferenceObject {
 	private static final String COUNT_SUFFIX = ".count";
 	private static final String[] DUMMY_ARRAY = new String[0];

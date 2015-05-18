@@ -2,7 +2,6 @@ package de.doerl.hqm.ui.treetable;
 
 import de.doerl.hqm.base.ABase;
 
-@SuppressWarnings( "nls")
 public class MainRow extends AParentRow {
 	private ATreeTableRow mParent;
 	private ABase mBase;

@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.utils.Utils;
 
-@SuppressWarnings( "nls")
 public class MediaManager {
 	public static final String DEFAULT_MEDIUM = System.getProperty( "hqm.medium.default", "hqm");
 	private static final Logger LOGGER = Logger.getLogger( MediaManager.class.getName());

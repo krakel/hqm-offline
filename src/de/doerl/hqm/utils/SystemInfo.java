@@ -2,7 +2,6 @@ package de.doerl.hqm.utils;
 
 import java.io.File;
 
-@SuppressWarnings( "nls")
 public final class SystemInfo {
 	public static final File HQM_DIR;
 	private static boolean sDebug = Boolean.getBoolean( "hqm.systeminfo.debug");
