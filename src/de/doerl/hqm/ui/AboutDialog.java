@@ -1,10 +1,8 @@
 package de.doerl.hqm.ui;
 
-import java.awt.Component;
 import java.awt.Window;
 
 import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Group;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JLabel;
@@ -18,11 +16,6 @@ class AboutDialog extends ADialog {
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
 		createMain();
-	}
-
-	private static void addComponent( Group hori, Group verti, Component c) {
-		hori.addComponent( c);
-		verti.addComponent( c);
 	}
 
 	@Override

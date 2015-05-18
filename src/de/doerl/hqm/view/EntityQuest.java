@@ -43,9 +43,9 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
-public class QuestEntity extends AEntity<FQuest> implements MouseListener {
+public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 	private static final long serialVersionUID = -5707664232506407627L;
-	private static final Logger LOGGER = Logger.getLogger( QuestEntity.class.getName());
+	private static final Logger LOGGER = Logger.getLogger( EntityQuest.class.getName());
 	protected static final BufferedImage REPUATION = MAP.getSubimage( 30, 82, 16, 16);
 	protected static final BufferedImage REP_GOOD = MAP.getSubimage( 78, 82, 16, 16);
 	protected static final BufferedImage REP_BAD = MAP.getSubimage( 94, 82, 16, 16);
@@ -65,11 +65,10 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 	private JComponent mTaskInfo = leafBoxVertical( 240);
 	private JLabel mReputation;
 
-	public QuestEntity( EditView view, FQuest quest) {
+	public EntityQuest( EditView view, FQuest quest) {
 		super( view, new GridLayout( 1, 2));
 		mQuest = quest;
-		mDesc.connectTo( quest.mDesc);
-		mTaskDesc.connectTo( null);
+//		mDesc.connectTo( quest.mDesc);
 		createLeft( mLeafLeft, quest);
 		createRight( mLeafRight);
 		add( mLeafLeft);
@@ -125,16 +124,6 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 	}
 
 	@Override
-	protected JComponent getLeftTool() {
-		return mDesc.getToolBar();
-	}
-
-	@Override
-	protected JComponent getRightTool() {
-		return mTaskDesc.getToolBar();
-	}
-
-	@Override
 	public void mouseClicked( MouseEvent evt) {
 		try {
 			JList<?> list = (JList<?>) evt.getSource();
@@ -172,7 +161,7 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 	}
 
 	public void setTask( AQuestTask task) {
-		mTaskDesc.connectTo( task != null ? task.mDesc : null);
+//		mTaskDesc.connectTo( task != null ? task.mDesc : null);
 		mTaskInfo.removeAll();
 		QuestTaskUpdate.get( task, mTaskInfo);
 		mTaskInfo.add( Box.createHorizontalGlue());
@@ -399,10 +388,10 @@ public class QuestEntity extends AEntity<FQuest> implements MouseListener {
 	}
 
 	private static class TaskSetAction implements Runnable {
-		private QuestEntity mEntity;
+		private EntityQuest mEntity;
 		private AQuestTask mTask;
 
-		public TaskSetAction( QuestEntity entity, AQuestTask task) {
+		public TaskSetAction( EntityQuest entity, AQuestTask task) {
 			mEntity = entity;
 			mTask = task;
 		}

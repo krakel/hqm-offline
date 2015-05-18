@@ -4,14 +4,15 @@ import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Box;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.utils.ResourceManager;
 
-class HQMEntity extends AEntity<FHqm> {
+class EntityHQM extends AEntity<FHqm> implements ChangeListener {
 	private static final long serialVersionUID = 4033642877403597083L;
 	private static final BufferedImage FRONT = ResourceManager.getImage( "front.png").getSubimage( 0, 0, 280, 360);
 	private FHqm mHQM;
@@ -20,14 +21,15 @@ class HQMEntity extends AEntity<FHqm> {
 	private JLabel mLogo = leafImage( 280, 360, FRONT);
 	private LeafTextBox mDesc = new LeafTextBox();
 
-	public HQMEntity( EditView view, FHqm hqm) {
+	public EntityHQM( EditView view, FHqm hqm) {
 		super( view, new GridLayout( 1, 2));
 		mHQM = hqm;
-		mDesc.connectTo( hqm.mDesc);
+		mDesc.setText( mHQM.mDesc.mValue);
 		createLeft( mLeafLeft);
 		createRight( mLeafRight);
 		add( mLeafLeft);
 		add( mLeafRight);
+		mDesc.getHandler().addActionListener( this);
 	}
 
 	private void createLeft( JPanel leaf) {
@@ -45,13 +47,8 @@ class HQMEntity extends AEntity<FHqm> {
 		return mHQM;
 	}
 
-	@Override
-	protected JComponent getLeftTool() {
-		return null;
-	}
-
-	@Override
-	protected JComponent getRightTool() {
-		return mDesc.getToolBar();
+	public void stateChanged( ChangeEvent evt) {
+		DialogTextBox.update( mHQM.mDesc, mView);
+		mDesc.setText( mHQM.mDesc.mValue);
 	}
 }

@@ -5,7 +5,6 @@ import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -14,7 +13,7 @@ import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
-public class QuestSetEntity extends AEntity<FQuestSet> {
+public class EntityQuestSet extends AEntity<FQuestSet> {
 	private static final long serialVersionUID = 4427035968994904913L;
 	private static final BufferedImage QUEST_NORM = MAP.getSubimage( 170, 0, 25, 30);
 	private static final BufferedImage QUEST_BIG = MAP.getSubimage( 195, 0, 31, 37);
@@ -23,7 +22,7 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 	private FQuestSet mQS;
 	private JPanel mLeaf = new LeafAbsolute();
 
-	public QuestSetEntity( EditView view, FQuestSet qs) {
+	public EntityQuestSet( EditView view, FQuestSet qs) {
 		super( view, new GridLayout( 1, 1));
 		mQS = qs;
 		add( mLeaf);
@@ -85,16 +84,6 @@ public class QuestSetEntity extends AEntity<FQuestSet> {
 	@Override
 	public FQuestSet getBase() {
 		return mQS;
-	}
-
-	@Override
-	protected JComponent getLeftTool() {
-		return null;
-	}
-
-	@Override
-	protected JComponent getRightTool() {
-		return null;
 	}
 
 	private static class LineFactory extends AHQMWorker<Object, Object> {

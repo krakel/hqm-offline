@@ -32,9 +32,9 @@ import de.doerl.hqm.base.dispatch.QuestSetSizeOf;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.utils.Utils;
 
-class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
+class EntityQuestSets extends AEntity<FQuestSets> implements MouseListener {
 	private static final long serialVersionUID = -5930552368392528379L;
-	private static final Logger LOGGER = Logger.getLogger( QuestSetsEntity.class.getName());
+	private static final Logger LOGGER = Logger.getLogger( EntityQuestSets.class.getName());
 	private FQuestSets mSet;
 	private DefaultListModel<FQuestSet> mListModel = new DefaultListModel<FQuestSet>();
 	private JList<FQuestSet> mList;
@@ -49,10 +49,9 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	private JLabel mInvisible = leafLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
 	private JScrollPane mScroll;
 
-	public QuestSetsEntity( EditView view, FQuestSets set) {
+	public EntityQuestSets( EditView view, FQuestSets set) {
 		super( view, new GridLayout( 1, 2));
 		mSet = set;
-		mDesc.connectTo( null);
 		createLeft( mLeafLeft);
 		createRight( mLeafRight);
 		add( mLeafLeft);
@@ -85,16 +84,6 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	@Override
 	public FQuestSets getBase() {
 		return mSet;
-	}
-
-	@Override
-	protected JComponent getLeftTool() {
-		return null;
-	}
-
-	@Override
-	protected JComponent getRightTool() {
-		return mDesc.getToolBar();
 	}
 
 	@Override
@@ -139,13 +128,13 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 
 	public void setSet( FQuestSet qs) {
 		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( qs)));
-		mDesc.connectTo( qs.mDesc);
+//		mDesc.connectTo( qs.mDesc);
 		mScroll.setVisible( true);
 	}
 
 	public void setSets( ACategory<FQuestSet> set) {
 		mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( set)));
-		mDesc.connectTo( null);
+//		mDesc.connectTo( null);
 		mScroll.setVisible( false);
 	}
 
@@ -194,10 +183,10 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	}
 
 	private static class QuestSetAction implements Runnable {
-		private QuestSetsEntity mEntity;
+		private EntityQuestSets mEntity;
 		private FQuestSet mQS;
 
-		public QuestSetAction( QuestSetsEntity entity, FQuestSet qs) {
+		public QuestSetAction( EntityQuestSets entity, FQuestSet qs) {
 			mEntity = entity;
 			mQS = qs;
 		}
@@ -232,10 +221,10 @@ class QuestSetsEntity extends AEntity<FQuestSets> implements MouseListener {
 	}
 
 	private static class QuestSetsAction implements Runnable {
-		private QuestSetsEntity mEntity;
+		private EntityQuestSets mEntity;
 		private ACategory<FQuestSet> mSet;
 
-		public QuestSetsAction( QuestSetsEntity entity, ACategory<FQuestSet> set) {
+		public QuestSetsAction( EntityQuestSets entity, ACategory<FQuestSet> set) {
 			mEntity = entity;
 			mSet = set;
 		}

@@ -45,22 +45,18 @@ public class EditFrame extends JFrame implements ChangeListener {
 	private static final String POPUP = "hqm.popup";
 	private EditModel mModel = new EditModel();
 	private EditView mView;
-//	private TreeTable mTable;
 	private ElementTree mTree;
 	private Action mNewAction = new NewAction( this);
 	private JLabel mStatusBar;
 	private EditCallback mCB;
 
-	public EditFrame() throws HeadlessException {
-		EditManager.init();
+	private EditFrame() throws HeadlessException {
 		EditController ctrl = new EditController( mModel);
 		mView = new EditView( ctrl);
-//		mTable = new TreeTable( ctrl);
 		mTree = new ElementTree( ctrl);
 		mModel.addListener( mTree.getModel());
-//		mTable.addMouseListener( new SelectHandler( ctrl));
-//		mModel.addListener( mTable.getModel());
 		mCB = new EditCallback( this);
+		createPopupMenu();
 	}
 
 	private static JMenu createMenu( String name) {
@@ -76,19 +72,18 @@ public class EditFrame extends JFrame implements ChangeListener {
 		return result;
 	}
 
-	public static EditFrame createNew() {
+	static EditFrame createNew() {
+		EditManager.init();
 		EditFrame result = new EditFrame();
 		result.init();
 		result.getContentPane().add( result.createContent());
 		result.setJMenuBar( result.createMenuBar());
 		result.repaint();
 //		result.pack();
-//		result.createBufferStrategy( 2);
 		Utils.centerFrame( result);
 		result.addWindowListener( new WindowCloser());
 		ResourceManager.setLookAndFeel( PreferenceManager.getString( BaseDefaults.LOOK_AND_FEEL));
 		result.setVisible( true);
-		createPopupMenu();
 		return result;
 	}
 
@@ -105,6 +100,7 @@ public class EditFrame extends JFrame implements ChangeListener {
 
 	private Box createContent() {
 		Box result = Box.createVerticalBox();
+		result.add( createToolBar());
 		result.add( createSplit());
 		result.add( createStatusBar());
 		return result;
@@ -173,13 +169,8 @@ public class EditFrame extends JFrame implements ChangeListener {
 	}
 
 	private JComponent createSplitLeft() {
-		JComponent scroll = new JScrollPane( mTree);
-		scroll.setAlignmentX( LEFT_ALIGNMENT);
-		Box result = Box.createVerticalBox();
-		result.setAlignmentX( LEFT_ALIGNMENT);
+		JComponent result = new JScrollPane( mTree);
 		result.setPreferredSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
-		result.add( createToolBar());
-		result.add( scroll);
 		return result;
 	}
 

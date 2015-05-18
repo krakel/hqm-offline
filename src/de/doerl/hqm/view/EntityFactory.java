@@ -27,7 +27,7 @@ class EntityFactory extends AHQMWorker<AEntity<? extends ABase>, EditView> {
 
 	@Override
 	public AEntity<? extends ABase> forHQM( FHqm hqm, EditView view) {
-		return new HQMEntity( view, hqm);
+		return new EntityHQM( view, hqm);
 	}
 
 	@Override
@@ -35,16 +35,16 @@ class EntityFactory extends AHQMWorker<AEntity<? extends ABase>, EditView> {
 		if (quest.isDeleted()) {
 			return null;
 		}
-		return new QuestEntity( view, quest);
+		return new EntityQuest( view, quest);
 	}
 
 	@Override
 	public AEntity<? extends ABase> forQuestSet( FQuestSet qs, EditView view) {
-		return new QuestSetEntity( view, qs);
+		return new EntityQuestSet( view, qs);
 	}
 
 	@Override
 	public AEntity<? extends ABase> forQuestSets( FQuestSets set, EditView view) {
-		return new QuestSetsEntity( view, set);
+		return new EntityQuestSets( view, set);
 	}
 }
