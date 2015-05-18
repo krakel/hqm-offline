@@ -1,10 +1,8 @@
 package de.doerl.hqm.ui;
 
+import java.awt.Dimension;
 import java.awt.Window;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JLabel;
 
 class AboutDialog extends ADialog {
@@ -20,11 +18,9 @@ class AboutDialog extends ADialog {
 
 	@Override
 	protected void createMain() {
-		GroupLayout layout = mMain.getLayout();
-		ParallelGroup hori = layout.createParallelGroup();
-		SequentialGroup vert = layout.createSequentialGroup();
-		addComponent( hori, vert, new JLabel( "Krakel"));
-		layout.setHorizontalGroup( hori);
-		layout.setVerticalGroup( vert);
+		JLabel lbl = new JLabel( "Krakel");
+		lbl.setPreferredSize( new Dimension( 400, 200));
+		lbl.setAlignmentX( TOP_ALIGNMENT);
+		mMain.add( lbl);
 	}
 }

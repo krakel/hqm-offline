@@ -1,10 +1,8 @@
 package de.doerl.hqm.view;
 
+import java.awt.Dimension;
 import java.awt.Window;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -41,13 +39,9 @@ class DialogTextBox extends ADialog {
 	@Override
 	protected void createMain() {
 		JScrollPane scroll = new JScrollPane( mArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		GroupLayout layout = mMain.getLayout();
-		ParallelGroup hori = layout.createParallelGroup( GroupLayout.Alignment.CENTER);
-		SequentialGroup vert = layout.createSequentialGroup();
-		hori.addComponent( scroll, 400, 400, Short.MAX_VALUE);
-		vert.addComponent( scroll, 200, 200, Short.MAX_VALUE);
-		layout.setHorizontalGroup( hori);
-		layout.setVerticalGroup( vert);
+		scroll.setPreferredSize( new Dimension( 400, 200));
+		scroll.setAlignmentX( TOP_ALIGNMENT);
+		mMain.add( scroll);
 	}
 
 	private String getText() {

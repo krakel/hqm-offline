@@ -1,12 +1,12 @@
 package de.doerl.hqm.view;
 
+import java.awt.Dimension;
 import java.awt.Window;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JList;
+import javax.swing.border.BevelBorder;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
@@ -42,13 +42,11 @@ class DialogList extends ADialog {
 
 	@Override
 	protected void createMain() {
-		GroupLayout layout = mMain.getLayout();
-		ParallelGroup hori = layout.createParallelGroup( GroupLayout.Alignment.CENTER);
-		SequentialGroup vert = layout.createSequentialGroup();
-		hori.addComponent( mList, 400, 400, Short.MAX_VALUE);
-		vert.addComponent( mList, 200, 200, Short.MAX_VALUE);
-		layout.setHorizontalGroup( hori);
-		layout.setVerticalGroup( vert);
+		mList.setPreferredSize( new Dimension( 400, 200));
+		mList.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		mList.setAlignmentY( TOP_ALIGNMENT);
+		mList.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED));
+		mMain.add( mList);
 	}
 
 	private static class MemberFactory extends AHQMWorker<Object, DefaultListModel<String>> {

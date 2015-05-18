@@ -11,16 +11,14 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.GroupLayout.Group;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 
 import de.doerl.hqm.utils.ResourceManager;
@@ -37,11 +35,8 @@ public abstract class ADialog extends JDialog {
 	public static final int GAP = 10;
 	protected final Action ESC_ACTION = new DefaultAction( "esc pressed", DialogResult.CANCEL);
 	protected DialogResult mReturnValue = DialogResult.CANCEL;
-	protected GroupPanel mMain = new GroupPanel();
-	protected GroupPanel mSelect = new GroupPanel();
-	private GroupLayout mLayout;
-	private SequentialGroup mSelectHori;
-	private ParallelGroup mSelectVert;
+	protected Box mMain = Box.createHorizontalBox();
+	protected Box mSelect = Box.createHorizontalBox();
 
 	public ADialog( Window owner) {
 		this( owner, ModalityType.DOCUMENT_MODAL);
@@ -53,10 +48,10 @@ public abstract class ADialog extends JDialog {
 		rootPane.setBackground( UIManager.getColor( "Panel.background"));
 		rootPane.setBorder( BorderFactory.createEmptyBorder( GAP, GAP, GAP, GAP));
 		Container content = rootPane.getContentPane();
-		mLayout = new GroupLayout( content);
-		content.setLayout( mLayout);
+		content.setLayout( new BoxLayout( content, BoxLayout.Y_AXIS));
+		mMain.setAlignmentX( LEFT_ALIGNMENT);
 		createSelect();
-		createDialog();
+		createDialog( content);
 	}
 
 	protected static void addComponent( Group hori, Group verti, Component c) {
@@ -84,11 +79,8 @@ public abstract class ADialog extends JDialog {
 	}
 
 	public void addAction( ABundleAction action) {
-		JButton btn = new JButton( action);
-//		btn.addFocusListener( mFocusListener);
-		mSelectHori.addGap( GAP);
-		mSelectHori.addComponent( btn);
-		mSelectVert.addComponent( btn);
+		mSelect.add( Box.createHorizontalStrut( GAP));
+		mSelect.add( new JButton( action));
 	}
 
 	public void addAction( String name, DialogResult value) {
@@ -99,30 +91,19 @@ public abstract class ADialog extends JDialog {
 		addKeyAction( getRootPane(), JComponent.WHEN_IN_FOCUSED_WINDOW, "ESCAPE", ESC_ACTION);
 	}
 
-	private void createDialog() {
+	private void createDialog( Container content) {
 		JPanel line = new JSinkLine();
-		ParallelGroup dlgHori = mLayout.createParallelGroup();
-		dlgHori.addComponent( mMain);
-		dlgHori.addComponent( line);
-		dlgHori.addComponent( mSelect);
-		mLayout.setHorizontalGroup( dlgHori);
-		SequentialGroup dlgVert = mLayout.createSequentialGroup();
-		dlgVert.addComponent( mMain);
-		dlgVert.addGap( GAP);
-		dlgVert.addComponent( line, 0, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
-		dlgVert.addComponent( mSelect, 0, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
-		mLayout.setVerticalGroup( dlgVert);
+		content.add( mMain);
+		content.add( Box.createVerticalStrut( GAP));
+		content.add( line);
+		content.add( mSelect);
 	}
 
 	protected abstract void createMain();
 
 	private void createSelect() {
-		GroupLayout layout = mSelect.getLayout();
-		mSelectHori = layout.createSequentialGroup();
-		mSelectHori.addPreferredGap( LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
-		mSelectVert = layout.createParallelGroup( GroupLayout.Alignment.BASELINE);
-		layout.setHorizontalGroup( mSelectHori);
-		layout.setVerticalGroup( mSelectVert);
+		mSelect.setAlignmentX( LEFT_ALIGNMENT);
+		mSelect.add( Box.createHorizontalGlue());
 	}
 
 	public void setThema( String thema) {
@@ -167,6 +148,7 @@ public abstract class ADialog extends JDialog {
 		private static final Dimension PREF_SIZE = new Dimension( 0, 1);
 
 		public JSingleLine() {
+			setAlignmentX( LEFT_ALIGNMENT);
 		}
 
 		@Override
@@ -193,6 +175,7 @@ public abstract class ADialog extends JDialog {
 		private static final Dimension PREF_SIZE = new Dimension( 0, 2);
 
 		public JSinkLine() {
+			setAlignmentX( LEFT_ALIGNMENT);
 		}
 
 		@Override
