@@ -17,7 +17,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
@@ -29,6 +28,7 @@ import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.model.EditModel;
+import de.doerl.hqm.ui.ADialog.DialogResult;
 import de.doerl.hqm.ui.tree.ElementTree;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
@@ -62,12 +62,6 @@ public class EditFrame extends JFrame implements ChangeListener {
 //		mTable.addMouseListener( new SelectHandler( ctrl));
 //		mModel.addListener( mTable.getModel());
 		mCB = new EditCallback( this);
-	}
-
-	public static void addKeyAction( JComponent comp, String key, Action action) {
-		Object o = new Object();
-		comp.getInputMap( JComponent.WHEN_IN_FOCUSED_WINDOW).put( KeyStroke.getKeyStroke( key), o);
-		comp.getActionMap().put( o, action);
 	}
 
 	private static JMenu createMenu( String name) {
@@ -240,15 +234,15 @@ public class EditFrame extends JFrame implements ChangeListener {
 
 	@Override
 	public void dispose() {
-		int result = getModifiedResult();
+		DialogResult result = getModifiedResult();
 		switch (result) {
-			case ADialog.APPROVE:
+			case APPROVE:
 //				save();
 //				if (!mCB.isModifiedPipeDef()) {
 				super.dispose();
 //				}
 				break;
-			case ADialog.NO:
+			case NO:
 				super.dispose();
 				break;
 			default:
@@ -259,11 +253,11 @@ public class EditFrame extends JFrame implements ChangeListener {
 		return mModel;
 	}
 
-	int getModifiedResult() {
+	DialogResult getModifiedResult() {
 //		if (mCB.isModifiedPipeDef()) {
 //			return new ModifiedDialog().showDialog( this);
 //		}
-		return ADialog.NO;
+		return DialogResult.NO;
 	}
 
 	private void init() {

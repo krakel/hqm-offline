@@ -2,6 +2,7 @@ package de.doerl.hqm.ui;
 
 import java.awt.event.ActionEvent;
 
+import de.doerl.hqm.ui.ADialog.DialogResult;
 import de.doerl.hqm.utils.ResourceManager;
 
 @SuppressWarnings( "nls")
@@ -15,13 +16,14 @@ public class SaveAsAction extends ABundleAction {
 	}
 
 	public void actionPerformed( ActionEvent e) {
-		int result = mFrame.getModifiedResult();
+		DialogResult result = mFrame.getModifiedResult();
 		switch (result) {
-			case ADialog.APPROVE:
+			case APPROVE:
 				mFrame.saveHQM();
-			case ADialog.NO:
+			case NO:
 //				FHqm hqm = new FHqm( null);
 				EditFrame.createNew();
+			default:
 		}
 	}
 }

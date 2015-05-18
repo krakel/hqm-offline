@@ -36,7 +36,7 @@ class LeafTextBox extends JTextArea implements FocusListener, DocumentListener {
 		mTools = createToolBar();
 		addFocusListener( this);
 		getDocument().addDocumentListener( this);
-		mBtnCancel.setAction( new ABtnAction( "cancel.gif") {
+		mBtnCancel.setAction( new AAction( "cancel.gif") {
 			private static final long serialVersionUID = 4342077619245237347L;
 
 			@Override
@@ -47,7 +47,7 @@ class LeafTextBox extends JTextArea implements FocusListener, DocumentListener {
 				clearTextFocus();
 			}
 		});
-		mBtnUndo.setAction( new ABtnAction( "undo.gif") {
+		mBtnUndo.setAction( new AAction( "undo.gif") {
 			private static final long serialVersionUID = 4342077619245237347L;
 
 			@Override
@@ -56,7 +56,7 @@ class LeafTextBox extends JTextArea implements FocusListener, DocumentListener {
 				setBtnsEnabled( false);
 			}
 		});
-		mBtnOk.setAction( new ABtnAction( "ok.gif") {
+		mBtnOk.setAction( new AAction( "ok.gif") {
 			private static final long serialVersionUID = 1278703013229143730L;
 
 			@Override
@@ -135,10 +135,10 @@ class LeafTextBox extends JTextArea implements FocusListener, DocumentListener {
 		mBtnOk.setEnabled( value);
 	}
 
-	private abstract class ABtnAction extends AbstractAction {
+	private abstract class AAction extends AbstractAction {
 		private static final long serialVersionUID = 4594454317850021607L;
 
-		public ABtnAction( String icon) {
+		public AAction( String icon) {
 			super( null, ResourceManager.getIcon( icon));
 			setEnabled( false);
 //			putValue( "enabled", Boolean.FALSE);
