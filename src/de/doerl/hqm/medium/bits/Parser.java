@@ -61,6 +61,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private BitInputStream mSrc;
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<FQuest, int[]>();
+	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<FQuest, int[]>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
@@ -268,7 +269,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 					mRequirements.put( member, mSrc.readIds( DataBitHelper.QUESTS));
 				}
 				if (mSrc.contains( FileVersion.OPTION_LINKS) && mSrc.readBoolean()) {
-					member.mOptionLinks.mValue = mSrc.readIds( DataBitHelper.QUESTS);
+					mOptionLinks.put( member, mSrc.readIds( DataBitHelper.QUESTS));
 				}
 				FRepeatInfo info = member.getRepeatInfo();
 				if (mSrc.contains( FileVersion.REPEATABLE_QUESTS)) {
@@ -363,6 +364,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			readGroup( hqm.mGroups);
 		}
 		updateRequirements( hqm);
+		updateOptionLinks( hqm);
 	}
 
 	private void readTasks( FQuest quest) {
@@ -376,6 +378,23 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 //			if (result.size() > 0) {
 //				task.addRequirement( result.get( result.size() - 1));
 //			}
+		}
+	}
+
+	private void updateOptionLinks( FHqm hqm) {
+		for (Map.Entry<FQuest, int[]> e : mOptionLinks.entrySet()) {
+			FQuest quest = e.getKey();
+			int[] ids = e.getValue();
+			for (int i = 0; i < ids.length; ++i) {
+				int id = ids[i];
+				FQuest req = QuestOfIdx.get( hqm, id);
+				if (req != null && !req.isDeleted()) {
+					quest.mOptionLinks.add( req);
+				}
+				else {
+					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{2}]{1} for {0}", quest.mName, id, i);
+				}
+			}
 		}
 	}
 

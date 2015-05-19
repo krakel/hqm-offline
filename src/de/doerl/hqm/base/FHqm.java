@@ -78,6 +78,13 @@ public final class FHqm extends ABase {
 		return mVersion;
 	}
 
+	public void removeQuest( FQuest quest) {
+		int pos = mQuests.indexOf( quest);
+		if (pos >= 0) {
+			mQuests.setElementAt( mDeleted, pos);
+		}
+	}
+
 	public void setVersion( FileVersion version) {
 		mVersion = version;
 	}

@@ -194,15 +194,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 			mDst.print( "setID", QuestSetIndex.get( quest.mSet));
 			mDst.print( "icon", quest.mIcon);
 			if (quest.mRequirements != null) {
-				mDst.beginArray( "requirements");
-				for (FQuest req : quest.mRequirements) {
-					mDst.print( QuestIndex.get( req));
-				}
-				mDst.endArray();
-				mDst.println();
+				writeQuestArr( quest.mRequirements, "requirements");
 			}
 			if (quest.mOptionLinks != null) {
-				mDst.print( "optionLinks", quest.mOptionLinks);
+				writeQuestArr( quest.mOptionLinks, "optionLinks");
 			}
 			FRepeatInfo ri = quest.getRepeatInfo();
 			if (ri != null) {
@@ -376,6 +371,17 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.beginArray( "markers");
 		rep.forEachMarker( this, mDst);
 		mDst.endArray();
+	}
+
+	private void writeQuestArr( Vector<FQuest> arr, String key) {
+		mDst.beginArray( key);
+		for (FQuest req : arr) {
+			if (req != null) {
+				mDst.print( QuestIndex.get( req));
+			}
+		}
+		mDst.endArray();
+		mDst.println();
 	}
 
 	private void writeQuests( FHqm hqm) {

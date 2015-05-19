@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -160,7 +161,11 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 	}
 
 	private void updateDeleteSet() {
-		WarnDialogs.warnMissing( mView);
+		if (WarnDialogs.askDelete( mView)) {
+			mActiv.delete();
+			QuestDeleteFactory.get( mActiv);
+			updateList( null);
+		}
 	}
 
 	private void updateDesc() {
@@ -236,6 +241,27 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 		}
 	}
 
+	private static class QuestDeleteFactory extends AHQMWorker<Object, FQuestSet> {
+		private static final QuestDeleteFactory WORKER = new QuestDeleteFactory();
+
+		private QuestDeleteFactory() {
+		}
+
+		public static void get( FQuestSet qs) {
+			qs.mParentCategory.mParentHQM.forEachQuest( WORKER, qs);
+		}
+
+		@Override
+		public Object forQuest( FQuest quest, FQuestSet qs) {
+			if (Utils.equals( quest.mSet, qs)) {
+				QuestRemoveDepent.get( quest);
+//				quest.forEachQuestTask( this, qs); not needed
+				quest.remove();
+			}
+			return null;
+		}
+	}
+
 	private static class QuestFactory extends AHQMWorker<Object, Object> {
 //		private static final QuestFactory WORKER = new QuestFactory();
 		private QuestFactory() {
@@ -250,6 +276,33 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 			// 1. isLinkFree() // verlinkte quests
 //			return  && ( triggerType.doesWorkAsInvisible() || isVisible( playerName)) && enabledParentEvaluator.isValid( playerName);
 			return null;
+		}
+	}
+
+	private static class QuestRemoveDepent extends AHQMWorker<Object, FQuest> {
+		private static final QuestRemoveDepent WORKER = new QuestRemoveDepent();
+
+		private QuestRemoveDepent() {
+		}
+
+		public static void get( FQuest req) {
+			req.mParentHQM.forEachQuest( WORKER, req);
+		}
+
+		@Override
+		public Object forQuest( FQuest quest, FQuest req) {
+			remove( quest.mRequirements, req);
+			remove( quest.mOptionLinks, req);
+			return null;
+		}
+
+		private void remove( Vector<FQuest> arr, FQuest req) {
+			for (int i = 0; i < arr.size(); ++i) {
+				FQuest q = arr.get( i);
+				if (Utils.equals( q, req)) {
+					arr.setElementAt( null, i);
+				}
+			}
 		}
 	}
 

@@ -7,6 +7,12 @@ import javax.swing.JOptionPane;
 import de.doerl.hqm.utils.ResourceManager;
 
 public class WarnDialogs {
+	public static boolean askDelete( Container owner) {
+		String msg = ResourceManager.getString( "warn.delete.comment");
+		String title = ResourceManager.getString( "warn.delete.title");
+		return JOptionPane.showConfirmDialog( ADialog.getParentFrame( owner), msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
+	}
+
 	public static boolean askOverwrite( Container owner) {
 		String msg = ResourceManager.getString( "warn.overwrite.comment");
 		String title = ResourceManager.getString( "warn.overwrite.title");

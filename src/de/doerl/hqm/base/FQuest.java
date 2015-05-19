@@ -17,14 +17,14 @@ public final class FQuest extends ANamed {
 	public final FParameterInt mY = new FParameterInt( this);
 	public final FParameterBoolean mBig = new FParameterBoolean( this);
 	public final FParameterStack mIcon = new FParameterStack( this);
-	public final Vector<FQuest> mRequirements = new Vector<FQuest>();
-	public final FParameterIntegerArr mOptionLinks = new FParameterIntegerArr( this);
 	public final FParameterInt mTriggerTasks = new FParameterInt( this);
 	public final FParameterEnum<TriggerType> mTriggerType = new FParameterEnum<TriggerType>( this);
 	public final FParameterBoolean mReqUseModified = new FParameterBoolean( this);
 	public final FParameterInt mReqCount = new FParameterInt( this);
 	public final Vector<FParameterStack> mRewards = new Vector<FParameterStack>();
 	public final Vector<FParameterStack> mChoices = new Vector<FParameterStack>();
+	public final Vector<FQuest> mRequirements = new Vector<FQuest>();
+	public final Vector<FQuest> mOptionLinks = new Vector<FQuest>();
 	public FQuestSet mSet;
 	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();
@@ -140,5 +140,9 @@ public final class FQuest extends ANamed {
 
 	public boolean isDeleted() {
 		return mDeleted;
+	}
+
+	public void remove() {
+		mParentHQM.removeQuest( this);
 	}
 }
