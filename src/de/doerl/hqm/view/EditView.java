@@ -1,13 +1,11 @@
 package de.doerl.hqm.view;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
@@ -30,7 +28,7 @@ public class EditView extends JPanel implements IModelListener {
 		setLayout( new GridBagLayout());
 		mCtrl = ctrl;
 		setOpaque( false);
-		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
+//		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 		setCenter( mEmpty);
 	}
 

@@ -162,14 +162,11 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setLayout( new BoxLayout( result, axis));
 		result.setOpaque( false);
 		if (axis == BoxLayout.X_AXIS) {
-//			result.setBorder( null);
-			result.setBorder( BorderFactory.createLineBorder( Color.RED));
-//			result.setPreferredSize( new Dimension( Short.MAX_VALUE, 36));
+//			result.setBorder( BorderFactory.createLineBorder( Color.RED));
 		}
 		else {
 			result.setAlignmentX( LEFT_ALIGNMENT);
-//			result.setBorder( null);
-			result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+//			result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		}
 //		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
 		return result;
@@ -180,8 +177,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setLayout( new FlowLayout( FlowLayout.LEFT, 0, GAP / 2));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.BLACK));
+//		result.setBorder( BorderFactory.createLineBorder( Color.BLACK));
 		return result;
 	}
 
@@ -190,8 +186,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setLayout( new BoxLayout( result, BoxLayout.X_AXIS));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.GREEN));
+//		result.setBorder( BorderFactory.createLineBorder( Color.GREEN));
 		return result;
 	}
 
@@ -200,8 +195,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setLayout( new BoxLayout( result, BoxLayout.Y_AXIS));
 		result.setAlignmentY( CENTER_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.ORANGE));
+//		result.setBorder( BorderFactory.createLineBorder( Color.ORANGE));
 		return result;
 	}
 
@@ -211,8 +205,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setPreferredSize( new Dimension( 114, 36));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.CYAN));
+//		result.setBorder( BorderFactory.createLineBorder( Color.CYAN));
 		return result;
 	}
 
@@ -232,8 +225,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setMaximumSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		return result;
 	}
 
@@ -243,8 +235,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.RED));
+//		result.setBorder( BorderFactory.createLineBorder( Color.RED));
 		return result;
 	}
 
@@ -252,8 +243,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		JLabel result = new JLabel( new MultiIcon( w, h, arr));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
+//		result.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 		result.setBounds( x, y, w, h);
 		return result;
 	}
@@ -262,8 +252,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		JLabel result = new JLabel( text);
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.PINK));
+//		result.setBorder( BorderFactory.createLineBorder( Color.PINK));
 		result.setFont( FONT_NORMAL);
 		result.setForeground( color);
 		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_NORMAL_HIGH));
@@ -279,7 +268,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setSelectionMode( ListSelectionModel.SINGLE_SELECTION);
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-		result.setBorder( null);
 		return result;
 	}
 
@@ -289,7 +277,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setMaximumSize( new Dimension( Short.MAX_VALUE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-		result.setBorder( null);
 //		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		return result;
 	}
@@ -313,8 +300,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		result.setMaximumSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
+//		result.setBorder( BorderFactory.createLineBorder( Color.BLUE));
 		return result;
 	}
 
@@ -330,8 +316,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		JLabel result = new JLabel();
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
-//		result.setBorder( null);
-		result.setBorder( BorderFactory.createLineBorder( Color.DARK_GRAY));
+//		result.setBorder( BorderFactory.createLineBorder( Color.DARK_GRAY));
 		result.setFont( FONT_TITLE);
 		result.setForeground( color);
 		result.setText( text);
@@ -347,8 +332,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		Box hori = Box.createHorizontalBox();
 		hori.setAlignmentX( LEFT_ALIGNMENT);
 		hori.setOpaque( false);
-//		hori.setBorder( null);
-		hori.setBorder( BorderFactory.createLineBorder( Color.BLACK));
+//		hori.setBorder( BorderFactory.createLineBorder( Color.BLACK));
 		hori.setPreferredSize( new Dimension( Short.MAX_VALUE, 20));
 		hori.setMaximumSize( new Dimension( Short.MAX_VALUE, 20));
 		JToolBar bar = new JToolBar();
@@ -512,7 +496,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 			else {
 				lowerValue = lower.mMark.mValue;
 				lowerOnMarker = Utils.equals( lower, first) && lower.mMark.mValue > 0;
-				if (Utils.equals( lower.getName(), rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
+				if (Utils.equals( lower.mName, rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
 					lowerValue = last.mMark.mValue;
 					lowerOnMarker = true;
 //					lowerMovedInner = true;

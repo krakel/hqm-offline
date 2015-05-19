@@ -9,24 +9,15 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-
 import de.doerl.hqm.utils.Utils;
 
 class ClickHandler implements MouseListener {
 	private static final Logger LOGGER = Logger.getLogger( ClickHandler.class.getName());
 	private static final Timer TIMER = new Timer( "doubleclickTimer", true);
-	private static final Border BORDER = BorderFactory.createBevelBorder( BevelBorder.RAISED);
 	private ClickListener mListener = new ClickListener();
 	private volatile boolean mOneClick;
-	private JComponent mComp;
-	private Border mOldBorder;
 
-	public ClickHandler( JComponent comp) {
-		mComp = comp;
+	public ClickHandler() {
 	}
 
 	public ClickListener getListener() {
@@ -55,14 +46,12 @@ class ClickHandler implements MouseListener {
 
 	@Override
 	public void mouseEntered( MouseEvent evt) {
-		mOldBorder = mComp.getBorder();
-		mComp.setBorder( BORDER);
+		mListener.fireEnterEvent( evt);
 	}
 
 	@Override
 	public void mouseExited( MouseEvent evt) {
-		mComp.setBorder( mOldBorder);
-		mOldBorder = null;
+		mListener.fireExitEvent( evt);
 	}
 
 	@Override
@@ -86,6 +75,28 @@ class ClickHandler implements MouseListener {
 			for (IClickListener l : mListener) {
 				try {
 					l.onDoubleClick( evt);
+				}
+				catch (Exception ex) {
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
+				}
+			}
+		}
+
+		void fireEnterEvent( MouseEvent evt) {
+			for (IClickListener l : mListener) {
+				try {
+					l.onEnterClick( evt);
+				}
+				catch (Exception ex) {
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
+				}
+			}
+		}
+
+		void fireExitEvent( MouseEvent evt) {
+			for (IClickListener l : mListener) {
+				try {
+					l.onExitClick( evt);
 				}
 				catch (Exception ex) {
 					Utils.logThrows( LOGGER, Level.WARNING, ex);

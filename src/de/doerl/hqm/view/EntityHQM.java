@@ -28,14 +28,10 @@ class EntityHQM extends AEntity<FHqm> {
 		mHQM = hqm;
 		createLeafs();
 		mDesc.setText( mHQM.mDesc.mValue);
-		mDesc.getHandler().addClickListener( new IClickListener() {
+		mDesc.getHandler().addClickListener( new AClickListener() {
 			@Override
 			public void onDoubleClick( MouseEvent evt) {
 				updateDesc();
-			}
-
-			@Override
-			public void onSingleClick( MouseEvent evt) {
 			}
 		});
 		mTool.add( new TextBoxAction());
@@ -73,7 +69,7 @@ class EntityHQM extends AEntity<FHqm> {
 		private static final long serialVersionUID = -8367056239473171639L;
 
 		public TextBoxAction() {
-			super( "entity.edit");
+			super( "entity.textbox");
 			setEnabled( true);
 		}
 

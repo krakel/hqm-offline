@@ -61,7 +61,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 
 	private void doTask( AQuestTask task, String type) {
 		mDst.print( "type", type);
-		mDst.print( "name", task.getName());
+		mDst.print( "name", task.mName);
 		mDst.print( "description", task.mDesc);
 	}
 
@@ -93,7 +93,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	public Object forGroup( FGroup grp, Object p) {
 		mDst.beginObject();
 		mDst.print( "id", grp.mID);
-		mDst.print( "name", grp.getName());
+		mDst.print( "name", grp.mName);
 		mDst.print( "tierID", grp.mTierID);
 		writeStacks( grp.mStacks, "stacks");
 		mDst.endObject();
@@ -103,7 +103,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forGroupTier( FGroupTier gt, Object p) {
 		mDst.beginObject();
-		mDst.print( "name", gt.getName());
+		mDst.print( "name", gt.mName);
 		mDst.print( "color", gt.mColorID);
 		mDst.print( "weights", gt.mWeights);
 		mDst.endObject();
@@ -149,7 +149,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forLocation( FLocation loc, Object p) {
 		mDst.beginObject();
-		mDst.print( "name", loc.getName());
+		mDst.print( "name", loc.mName);
 		mDst.print( "icon", loc.mIcon);
 		mDst.print( "x", loc.mX);
 		mDst.print( "y", loc.mY);
@@ -164,7 +164,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forMarker( FMarker mark, Object p) {
 		mDst.beginObject();
-		mDst.print( "name", mark.getName());
+		mDst.print( "name", mark.mName);
 		mDst.print( "value", mark.mMark);
 		mDst.endObject();
 		return null;
@@ -173,7 +173,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forMob( FMob mob, Object p) {
 		mDst.beginObject();
-		mDst.print( "name", mob.getName());
+		mDst.print( "name", mob.mName);
 		mDst.print( "icon", mob.mIcon);
 		mDst.print( "mob", mob.mMob);
 		mDst.print( "count", mob.mKills);
@@ -185,7 +185,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forQuest( FQuest quest, Object p) {
 		mDst.beginObject();
-		mDst.print( "name", quest.getName());
+		mDst.print( "name", quest.mName);
 		if (!quest.isDeleted()) {
 			mDst.print( "description", quest.mDesc);
 			mDst.print( "x", quest.mX);
@@ -230,7 +230,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forQuestSet( FQuestSet qs, Object p) {
 		mDst.beginObject();
-		mDst.print( "name", qs.getName());
+		mDst.print( "name", qs.mName);
 		mDst.print( "decription", qs.mDesc);
 		mDst.endObject();
 		return null;
@@ -251,7 +251,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forReputation( FReputation rep, Object p) {
 		mDst.beginObject();
-		mDst.print( "name", rep.getName());
+		mDst.print( "name", rep.mName);
 		mDst.print( "id", rep.mID);
 		mDst.print( "neutral", rep.mNeutral);
 		writeMarkers( rep);

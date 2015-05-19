@@ -16,6 +16,6 @@ public class QuestSetOfName extends AHQMWorker<FQuestSet, String> {
 
 	@Override
 	public FQuestSet forQuestSet( FQuestSet qs, String name) {
-		return Utils.equals( qs.getName(), name) ? qs : null;
+		return Utils.equals( qs.mName, name) ? qs : null;
 	}
 }

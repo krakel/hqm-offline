@@ -32,6 +32,6 @@ class NamedRow extends AParentRow {
 
 	@Override
 	public String getValue() {
-		return mBase.getName();
+		return mBase.mName.mValue;
 	}
 }

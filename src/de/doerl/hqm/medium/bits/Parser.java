@@ -390,7 +390,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 					quest.mRequirements.add( req);
 				}
 				else {
-					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{2}]{1} for {0}", quest.getName(), id, i);
+					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{2}]{1} for {0}", quest.mName, id, i);
 				}
 			}
 		}

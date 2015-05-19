@@ -67,7 +67,7 @@ class DialogList extends ADialog {
 
 		@Override
 		protected Object doMember( AMember<? extends ANamed> member, DefaultListModel<String> model) {
-			model.addElement( member.getName());
+			model.addElement( member.mName.mValue);
 			return null;
 		}
 	}

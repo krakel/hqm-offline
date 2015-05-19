@@ -3,6 +3,7 @@ package de.doerl.hqm.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,14 +30,22 @@ import de.doerl.hqm.base.FQuestSets;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetIndex;
 import de.doerl.hqm.quest.GuiColor;
+import de.doerl.hqm.ui.ABundleAction;
+import de.doerl.hqm.ui.EditFrame;
+import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.Utils;
 
 class EntityQuestSets extends AEntity<FQuestSets> {
 	private static final long serialVersionUID = -5930552368392528379L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuestSets.class.getName());
 	private FQuestSets mCategory;
+	private JToolBar mTool = EditFrame.createToolBar();
 	private LeafList<FQuestSet> mList = new LeafList<FQuestSet>();
 	private LeafTextBox mDesc = new LeafTextBox();
+	private TextBoxAction mDescAction = new TextBoxAction();
+	private TextFieldAction mNameAction = new TextFieldAction();
+	private AddSetAction mAddAction = new AddSetAction();
+	private DeleteSetAction mDeleteAction = new DeleteSetAction();
 	private JLabel mTotal = leafLabel( GuiColor.BLACK.getColor(), "");
 	private JLabel mLocked = leafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
 	private JLabel mCompleted = leafLabel( GuiColor.GREEN.getColor(), "0 completed quests");
@@ -52,10 +61,10 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 		mList.setCellRenderer( new QuestSetRenderer());
 		createLeafs();
 		updateList();
-		mList.getHandler().addClickListener( new IClickListener() {
+		mList.getHandler().addClickListener( new AClickListener() {
 			@Override
 			public void onDoubleClick( MouseEvent evt) {
-				updateListDouble( evt);
+				updateName();
 			}
 
 			@Override
@@ -63,16 +72,18 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 				updateListSingle( evt);
 			}
 		});
-		mDesc.getHandler().addClickListener( new IClickListener() {
+		mDesc.getHandler().addClickListener( new AClickListener() {
 			@Override
 			public void onDoubleClick( MouseEvent evt) {
 				updateDesc();
 			}
-
-			@Override
-			public void onSingleClick( MouseEvent evt) {
-			}
 		});
+		mTool.add( mAddAction);
+		mTool.add( mDeleteAction);
+		mTool.addSeparator();
+		mTool.add( mNameAction);
+		mTool.add( mDescAction);
+		mTool.addSeparator();
 	}
 
 	@Override
@@ -102,7 +113,7 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 
 	@Override
 	public JToolBar getToolBar() {
-		return null;
+		return mTool;
 	}
 
 	private void setSet( FQuestSet qs) {
@@ -111,6 +122,9 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 			mDesc.setText( null);
 			mScroll.setVisible( false);
 			mList.clearSelection();
+			mDeleteAction.setEnabled( false);
+			mDescAction.setEnabled( false);
+			mNameAction.setEnabled( false);
 			mActiv = null;
 		}
 		else if (Utils.equals( qs, mActiv)) {
@@ -118,6 +132,9 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 			mDesc.setText( null);
 			mScroll.setVisible( false);
 			mList.clearSelection();
+			mDeleteAction.setEnabled( false);
+			mDescAction.setEnabled( false);
+			mNameAction.setEnabled( false);
 			mActiv = null;
 		}
 		else {
@@ -125,8 +142,19 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 			mDesc.setText( qs.mDesc.mValue);
 			mScroll.setVisible( true);
 			mList.setSelectedValue( qs, true);
+			mDeleteAction.setEnabled( true);
+			mDescAction.setEnabled( true);
+			mNameAction.setEnabled( true);
 			mActiv = qs;
 		}
+	}
+
+	private void updateAddSet() {
+		WarnDialogs.warnMissing( mView);
+	}
+
+	private void updateDeleteSet() {
+		WarnDialogs.warnMissing( mView);
 	}
 
 	private void updateDesc() {
@@ -143,11 +171,6 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 		setSet( QuestSetFirst.get( mCategory));
 	}
 
-	private void updateListDouble( MouseEvent evt) {
-		DialogList.update( mCategory, mView);
-		updateList();
-	}
-
 	private void updateListSingle( MouseEvent evt) {
 		try {
 			int row = mList.locationToIndex( evt.getPoint());
@@ -162,13 +185,47 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 		}
 	}
 
+	private void updateName() {
+		if (mActiv != null) {
+			DialogTextField.update( mActiv.mName, mView);
+			mList.revalidate();
+			mList.repaint();
+		}
+	}
+
+	private class AddSetAction extends ABundleAction {
+		private static final long serialVersionUID = 6724759221568885874L;
+
+		public AddSetAction() {
+			super( "entity.add");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			updateAddSet();
+		}
+	}
+
+	private class DeleteSetAction extends ABundleAction {
+		private static final long serialVersionUID = 7223654325808174399L;
+
+		public DeleteSetAction() {
+			super( "entity.delete");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			updateDeleteSet();
+		}
+	}
+
 	private static class QuestFactory extends AHQMWorker<Object, Object> {
 //		private static final QuestFactory WORKER = new QuestFactory();
 		private QuestFactory() {
 		}
 
 		public static boolean isEnabled( FQuestSet qs) {
-			return false;
+			return true;
 		}
 
 		@Override
@@ -251,7 +308,7 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 
 		public Component getListCellRendererComponent( JList<? extends FQuestSet> list, FQuestSet qs, int index, boolean isSelected, boolean cellHasFocus) {
 			int idx = QuestSetIndex.get( qs) + 1;
-			mTitle.setText( String.format( "%d. %s", idx, qs.getName()));
+			mTitle.setText( String.format( "%d. %s", idx, qs.mName));
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			boolean enabled = QuestFactory.isEnabled( qs);
 			mComplete.setText( enabled ? "0% Completed" : "Locked");
@@ -286,6 +343,32 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 				++mResult;
 			}
 			return null;
+		}
+	}
+
+	private class TextBoxAction extends ABundleAction {
+		private static final long serialVersionUID = -8367056239473171639L;
+
+		public TextBoxAction() {
+			super( "entity.textbox");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			updateDesc();
+		}
+	}
+
+	private class TextFieldAction extends ABundleAction {
+		private static final long serialVersionUID = -3873930852720932846L;
+
+		public TextFieldAction() {
+			super( "entity.textfield");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			updateName();
 		}
 	}
 }

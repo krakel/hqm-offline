@@ -8,7 +8,7 @@ import de.doerl.hqm.view.ClickHandler.ClickListener;
 
 public class LeafList<E> extends JList<E> {
 	private static final long serialVersionUID = -8417821463588699381L;
-	private ClickHandler mHandler = new ClickHandler( this);
+	private ClickHandler mHandler = new ClickHandler();
 	private DefaultListModel<E> mModel = new DefaultListModel<E>();
 
 	public LeafList() {

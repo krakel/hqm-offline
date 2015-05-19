@@ -87,7 +87,7 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 
 	@Override
 	protected void createLeft( JPanel leaf) {
-		mTitle.setText( mQuest.getName());
+		mTitle.setText( mQuest.mName.mValue);
 		mDesc.setText( mQuest.mDesc.mValue);
 		mTasks = leafList( mTaskModel);
 		mTasks.setCellRenderer( new CellRenderer());
@@ -183,7 +183,7 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 		}
 
 		public Component getListCellRendererComponent( JList<? extends AQuestTask> list, AQuestTask qs, int index, boolean isSelected, boolean cellHasFocus) {
-			mTitle.setText( qs.getName());
+			mTitle.setText( qs.mName.mValue);
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			return this;
 		}
@@ -257,7 +257,7 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 			locBox.add( leafStack( loc.mIcon.mValue));
 			locBox.add( Box.createHorizontalStrut( GAP));
 			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
-			dataBox.add( leafTitle( loc.getName()));
+			dataBox.add( leafTitle( loc.mName.mValue));
 			dataBox.add( leafLabel( String.format( "Dimension %d, [%d radius]", loc.mDim.mValue, loc.mRadius.mValue)));
 			dataBox.add( leafLabel( String.format( "(%d, %d, %d)", loc.mX.mValue, loc.mY.mValue, loc.mZ.mValue)));
 			locBox.add( dataBox);
@@ -291,7 +291,7 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 //			dataBox.add( leafLabel( String.format( "Kill a total of %d", mob.mKills.mValue)));
 //			mobBox.add( dataBox);
 			dataBox.add( leafRepImage( rs));
-			dataBox.add( leafLabel( String.format( "    %s: %s (%d)", rs.mRep.getName(), rs.mRep.mNeutral.mValue, 0)));
+			dataBox.add( leafLabel( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral.mValue, 0)));
 			repBox.add( dataBox);
 			comp.add( repBox);
 			comp.add( Box.createVerticalStrut( GAP));
