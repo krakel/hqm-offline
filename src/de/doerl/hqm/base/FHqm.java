@@ -14,8 +14,8 @@ public final class FHqm extends ABase {
 	private static final Logger LOGGER = Logger.getLogger( FHqm.class.getName());
 	private final FQuest mDeleted = new FQuest( this, "__DELETED__", true);
 	private FileVersion mVersion;
-	public final FParameterString mPassCode = new FParameterString( this, "PassCode");
-	public final FParameterString mDesc = new FParameterString( this, "Description");
+	public final FParameterString mPassCode = new FParameterString( this);
+	public final FParameterString mDesc = new FParameterString( this);
 	public final FQuestSets mQuestSets = new FQuestSets( this);
 	private Vector<FQuest> mQuests = new Vector<FQuest>();
 	public final FReputations mRepSets = new FReputations( this);

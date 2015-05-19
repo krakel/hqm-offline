@@ -6,12 +6,12 @@ import de.doerl.hqm.quest.ElementTyp;
 public final class FParameterStack extends AParameter {
 	public AStack mValue;
 
-	public FParameterStack( ABase parent, String name) {
-		super( parent, name);
+	public FParameterStack( ABase parent) {
+		super( parent);
 	}
 
 	public FParameterStack( ABase parent, String name, AStack value) {
-		super( parent, name);
+		super( parent);
 		mValue = value;
 	}
 

@@ -4,8 +4,8 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FItemRequirement extends ARequirement {
-	private FParameterStack mStack = new FParameterStack( this, "item");
-	private FParameterInt mRequired = new FParameterInt( this, "Required");
+	private FParameterStack mStack = new FParameterStack( this);
+	private FParameterInt mRequired = new FParameterInt( this);
 
 	public FItemRequirement( AQuestTaskItems parent) {
 		super( parent);

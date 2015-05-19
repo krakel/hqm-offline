@@ -5,8 +5,8 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FReward extends ABase {
 	public final FQuest mParentQuest;
-	public final FParameterInt mRepID = new FParameterInt( this, "ReputationID");
-	public final FParameterInt mValue = new FParameterInt( this, "Value");
+	public final FParameterInt mRepID = new FParameterInt( this);
+	public final FParameterInt mValue = new FParameterInt( this);
 
 	public FReward( FQuest parent) {
 		mParentQuest = parent;

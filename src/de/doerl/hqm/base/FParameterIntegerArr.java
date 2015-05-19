@@ -7,8 +7,8 @@ import de.doerl.hqm.utils.Helper;
 public final class FParameterIntegerArr extends AParameter {
 	public int[] mValue;
 
-	public FParameterIntegerArr( ABase parent, String name) {
-		super( parent, name);
+	public FParameterIntegerArr( ABase parent) {
+		super( parent);
 	}
 
 	@Override

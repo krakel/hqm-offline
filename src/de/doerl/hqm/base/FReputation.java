@@ -12,8 +12,8 @@ import de.doerl.hqm.utils.Utils;
 public final class FReputation extends AMember<FReputation> {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
 	public final FReputations mParentCategory;
-	public final FParameterInteger mID = new FParameterInteger( this, "ID");
-	public final FParameterString mNeutral = new FParameterString( this, "Neutral");
+	public final FParameterInteger mID = new FParameterInteger( this);
+	public final FParameterString mNeutral = new FParameterString( this);
 	public Vector<FMarker> mMarker = new Vector<FMarker>();
 
 	public FReputation( FReputations parent, String name) {

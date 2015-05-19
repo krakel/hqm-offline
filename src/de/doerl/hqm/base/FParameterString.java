@@ -6,8 +6,8 @@ import de.doerl.hqm.quest.ElementTyp;
 public final class FParameterString extends AParameter {
 	public String mValue;
 
-	public FParameterString( ABase parent, String name) {
-		super( parent, name);
+	public FParameterString( ABase parent) {
+		super( parent);
 	}
 
 	@Override

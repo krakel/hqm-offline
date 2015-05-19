@@ -5,8 +5,8 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FGroupTier extends AMember<FGroupTier> {
 	public final FGroupTiers mParentCategory;
-	public final FParameterInt mColorID = new FParameterInt( this, "Color");
-	public final FParameterIntegerArr mWeights = new FParameterIntegerArr( this, "Weights");
+	public final FParameterInt mColorID = new FParameterInt( this);
+	public final FParameterIntegerArr mWeights = new FParameterIntegerArr( this);
 
 	public FGroupTier( FGroupTiers parent, String name) {
 		super( name);

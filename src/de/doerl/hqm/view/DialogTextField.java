@@ -4,7 +4,6 @@ import java.awt.Window;
 
 import javax.swing.JTextField;
 
-import de.doerl.hqm.base.FParameterString;
 import de.doerl.hqm.ui.ADialog;
 
 class DialogTextField extends ADialog {
@@ -21,13 +20,14 @@ class DialogTextField extends ADialog {
 		createMain();
 	}
 
-	public static void update( FParameterString param, EditView view) {
-		if (param != null) {
-			DialogTextField dlg = new DialogTextField( ADialog.getParentFrame( view));
-			dlg.updateMain( param.mValue);
-			if (dlg.showDialog() == DialogResult.APPROVE) {
-				param.mValue = dlg.getText();
-			}
+	public static String update( String value, EditView view) {
+		DialogTextField dlg = new DialogTextField( ADialog.getParentFrame( view));
+		dlg.updateMain( value);
+		if (dlg.showDialog() == DialogResult.APPROVE) {
+			return dlg.getText();
+		}
+		else {
+			return null;
 		}
 	}
 

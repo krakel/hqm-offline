@@ -6,8 +6,8 @@ import de.doerl.hqm.quest.ElementTyp;
 public final class FParameterBoolean extends AParameter {
 	public boolean mValue;
 
-	public FParameterBoolean( ABase parent, String name) {
-		super( parent, name);
+	public FParameterBoolean( ABase parent) {
+		super( parent);
 	}
 
 	@Override

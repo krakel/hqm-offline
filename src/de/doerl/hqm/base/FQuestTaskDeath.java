@@ -4,7 +4,7 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FQuestTaskDeath extends AQuestTask {
-	public final FParameterInt mDeaths = new FParameterInt( this, "Death");
+	public final FParameterInt mDeaths = new FParameterInt( this);
 
 	public FQuestTaskDeath( FQuest parent, String name) {
 		super( parent, name);

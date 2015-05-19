@@ -7,9 +7,9 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FGroup extends AMember<FGroup> {
 	public final FGroups mParentCategory;
-	public final FParameterInt mID = new FParameterInt( this, "ID");
-	public final FParameterInt mTierID = new FParameterInt( this, "GroupTier");
-	public final FParameterInt mLimit = new FParameterInt( this, "Limit");;
+	public final FParameterInt mID = new FParameterInt( this);
+	public final FParameterInt mTierID = new FParameterInt( this);
+	public final FParameterInt mLimit = new FParameterInt( this);;
 	public final Vector<FParameterStack> mStacks = new Vector<FParameterStack>();
 
 	public FGroup( FGroups parent, String name) {

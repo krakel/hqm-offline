@@ -6,8 +6,8 @@ import de.doerl.hqm.quest.ElementTyp;
 public final class FParameterInt extends AParameter implements Comparable<FParameterInt> {
 	public int mValue;
 
-	public FParameterInt( ABase parent, String name) {
-		super( parent, name);
+	public FParameterInt( ABase parent) {
+		super( parent);
 	}
 
 	@Override

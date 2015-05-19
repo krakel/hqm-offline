@@ -6,8 +6,8 @@ import de.doerl.hqm.quest.ElementTyp;
 public class FParameterEnum<E extends Enum<?>> extends AParameter {
 	public E mValue;
 
-	public FParameterEnum( ABase parent, String name) {
-		super( parent, name);
+	public FParameterEnum( ABase parent) {
+		super( parent);
 	}
 
 	@Override

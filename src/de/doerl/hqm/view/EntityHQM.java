@@ -61,8 +61,11 @@ class EntityHQM extends AEntity<FHqm> {
 	}
 
 	private void updateDesc() {
-		DialogTextBox.update( mHQM.mDesc, mView);
-		mDesc.setText( mHQM.mDesc.mValue);
+		String result = DialogTextBox.update( mHQM.mDesc.mValue, mView);
+		if (result != null) {
+			mHQM.mDesc.mValue = result;
+			mDesc.setText( result);
+		}
 	}
 
 	private class TextBoxAction extends ABundleAction {

@@ -7,7 +7,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
-import de.doerl.hqm.base.FParameterString;
 import de.doerl.hqm.ui.ADialog;
 
 class DialogTextBox extends ADialog {
@@ -26,13 +25,14 @@ class DialogTextBox extends ADialog {
 		createMain();
 	}
 
-	public static void update( FParameterString param, EditView view) {
-		if (param != null) {
-			DialogTextBox dlg = new DialogTextBox( ADialog.getParentFrame( view));
-			dlg.updateMain( param.mValue);
-			if (dlg.showDialog() == DialogResult.APPROVE) {
-				param.mValue = dlg.getText();
-			}
+	public static String update( String value, EditView view) {
+		DialogTextBox dlg = new DialogTextBox( ADialog.getParentFrame( view));
+		dlg.updateMain( value);
+		if (dlg.showDialog() == DialogResult.APPROVE) {
+			return dlg.getText();
+		}
+		else {
+			return null;
 		}
 	}
 

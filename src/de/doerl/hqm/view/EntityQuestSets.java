@@ -60,7 +60,7 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 		mCategory = cat;
 		mList.setCellRenderer( new QuestSetRenderer());
 		createLeafs();
-		updateList();
+		updateList( null);
 		mList.getHandler().addClickListener( new AClickListener() {
 			@Override
 			public void onDoubleClick( MouseEvent evt) {
@@ -150,7 +150,13 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 	}
 
 	private void updateAddSet() {
-		WarnDialogs.warnMissing( mView);
+		String result = DialogTextField.update( "", mView);
+		if (result != null) {
+			FQuestSet qs = mCategory.createMember( result);
+			updateList( qs);
+			mList.revalidate();
+			mList.repaint();
+		}
 	}
 
 	private void updateDeleteSet() {
@@ -159,16 +165,24 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 
 	private void updateDesc() {
 		if (mActiv != null) {
-			DialogTextBox.update( mActiv.mDesc, mView);
-			mDesc.setText( mActiv.mDesc.mValue);
+			String result = DialogTextBox.update( mActiv.mDesc.mValue, mView);
+			if (result != null) {
+				mActiv.mDesc.mValue = result;
+				mDesc.setText( result);
+			}
 		}
 	}
 
-	private void updateList() {
+	private void updateList( FQuestSet qs) {
 		DefaultListModel<FQuestSet> model = mList.getModel();
 		model.clear();
 		QuestSetFactory.get( mCategory, model);
-		setSet( QuestSetFirst.get( mCategory));
+		if (qs == null) {
+			setSet( QuestSetFirst.get( mCategory));
+		}
+		else {
+			setSet( qs);
+		}
 	}
 
 	private void updateListSingle( MouseEvent evt) {
@@ -187,9 +201,12 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 
 	private void updateName() {
 		if (mActiv != null) {
-			DialogTextField.update( mActiv.mName, mView);
-			mList.revalidate();
-			mList.repaint();
+			String result = DialogTextField.update( mActiv.mName.mValue, mView);
+			if (result != null) {
+				mActiv.mName.mValue = result;
+				mList.revalidate();
+				mList.repaint();
+			}
 		}
 	}
 

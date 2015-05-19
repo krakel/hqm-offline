@@ -6,7 +6,7 @@ import de.doerl.hqm.quest.ElementTyp;
 public final class FQuestSet extends AMember<FQuestSet> {
 //	private static final Logger LOGGER = Logger.getLogger( FQuestSet.class.getName());
 	public final FQuestSets mParentCategory;
-	public final FParameterString mDesc = new FParameterString( this, "Description");
+	public final FParameterString mDesc = new FParameterString( this);
 
 	public FQuestSet( FQuestSets parent, String name) {
 		super( name);

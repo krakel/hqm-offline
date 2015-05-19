@@ -4,7 +4,7 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FFluidRequirement extends ARequirement {
-	private FParameterStack mStack = new FParameterStack( this, "fluid");
+	private FParameterStack mStack = new FParameterStack( this);
 
 	public FFluidRequirement( AQuestTaskItems parent) {
 		super( parent);
