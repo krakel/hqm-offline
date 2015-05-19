@@ -1,14 +1,18 @@
 package de.doerl.hqm.base;
 
-public abstract class AParameter extends ABase {
-	public final ABase mParentNamed;
+import de.doerl.hqm.base.dispatch.IParameter;
+import de.doerl.hqm.quest.ElementTyp;
+
+public abstract class AParameter implements IParameter {
+	public final ABase mParent;
 
 	AParameter( ABase parent) {
-		mParentNamed = parent;
+		mParent = parent;
 	}
 
-	@Override
+	public abstract ElementTyp getElementTyp();
+
 	public ABase getParent() {
-		return mParentNamed;
+		return mParent;
 	}
 }

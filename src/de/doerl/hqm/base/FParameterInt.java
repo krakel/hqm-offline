@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import de.doerl.hqm.base.dispatch.IHQMWorker;
+import de.doerl.hqm.base.dispatch.IParameterWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FParameterInt extends AParameter implements Comparable<FParameterInt> {
@@ -11,7 +11,7 @@ public final class FParameterInt extends AParameter implements Comparable<FParam
 	}
 
 	@Override
-	public <T, U> T accept( IHQMWorker<T, U> w, U p) {
+	public <T, U> T accept( IParameterWorker<T, U> w, U p) {
 		return w.forParameterInt( this, p);
 	}
 

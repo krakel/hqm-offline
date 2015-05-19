@@ -10,13 +10,6 @@ import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
-import de.doerl.hqm.base.FParameterBoolean;
-import de.doerl.hqm.base.FParameterEnum;
-import de.doerl.hqm.base.FParameterInt;
-import de.doerl.hqm.base.FParameterInteger;
-import de.doerl.hqm.base.FParameterIntegerArr;
-import de.doerl.hqm.base.FParameterStack;
-import de.doerl.hqm.base.FParameterString;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSets;
@@ -55,20 +48,6 @@ public interface IHQMWorker<T, U> extends IWorker {
 	T forMarker( FMarker mark, U p);
 
 	T forMob( FMob mob, U p);
-
-	T forParameterBoolean( FParameterBoolean par, U p);
-
-	T forParameterEnum( FParameterEnum<? extends Enum<?>> par, U p);
-
-	T forParameterInt( FParameterInt par, U p);
-
-	T forParameterInteger( FParameterInteger par, U p);
-
-	T forParameterIntegerArr( FParameterIntegerArr par, U p);
-
-	T forParameterStack( FParameterStack par, U p);
-
-	T forParameterString( FParameterString par, U p);
 
 	T forQuest( FQuest quest, U p);
 

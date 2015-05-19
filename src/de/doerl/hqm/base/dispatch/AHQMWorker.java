@@ -4,13 +4,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
-import de.doerl.hqm.base.AParameter;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
-import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
@@ -21,13 +20,6 @@ import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
-import de.doerl.hqm.base.FParameterBoolean;
-import de.doerl.hqm.base.FParameterEnum;
-import de.doerl.hqm.base.FParameterInt;
-import de.doerl.hqm.base.FParameterInteger;
-import de.doerl.hqm.base.FParameterIntegerArr;
-import de.doerl.hqm.base.FParameterStack;
-import de.doerl.hqm.base.FParameterString;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSets;
@@ -62,10 +54,6 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 
 	protected T doNamed( ANamed named, U p) {
 		return doBase( named, p);
-	}
-
-	protected T doParameter( AParameter par, U p) {
-		return doBase( par, p);
 	}
 
 	protected T doRequirement( ARequirement req, U p) {
@@ -132,40 +120,6 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	@Override
 	public T forMob( FMob mob, U p) {
 		return doNamed( mob, p);
-	}
-
-	@Override
-	public T forParameterBoolean( FParameterBoolean par, U p) {
-		return doParameter( par, p);
-	}
-
-	@Override
-	public T forParameterEnum( FParameterEnum<? extends Enum<?>> par, U p) {
-		return doParameter( par, p);
-	}
-
-	public T forParameterInt( FParameterInt par, U p) {
-		return doParameter( par, p);
-	}
-
-	@Override
-	public T forParameterInteger( FParameterInteger par, U p) {
-		return doParameter( par, p);
-	}
-
-	@Override
-	public T forParameterIntegerArr( FParameterIntegerArr par, U p) {
-		return doParameter( par, p);
-	}
-
-	@Override
-	public T forParameterStack( FParameterStack par, U p) {
-		return doParameter( par, p);
-	}
-
-	@Override
-	public T forParameterString( FParameterString par, U p) {
-		return doParameter( par, p);
 	}
 
 	@Override
