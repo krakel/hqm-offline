@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
@@ -28,7 +29,6 @@ public class EditView extends JPanel implements IModelListener {
 	public EditView( EditController ctrl) {
 		setLayout( new GridBagLayout());
 		mCtrl = ctrl;
-		ctrl.getModel().addListener( this);
 		setOpaque( false);
 		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 		setCenter( mEmpty);
@@ -62,24 +62,36 @@ public class EditView extends JPanel implements IModelListener {
 
 	@Override
 	public void baseUpdate( ModelEvent event) {
-		AEntity<?> ent = null;
 		ABase base = event.getBase();
-		if (base != null && !mContent.containsKey( base)) {
-			ent = EntityFactory.get( base, this);
+		if (base != null) {
+			AEntity<?> ent = mContent.get( base);
 			if (ent == null) {
-				mContent.put( base, ent);
+				ent = EntityFactory.get( base, this);
+				if (ent != null) {
+					mContent.put( base, ent);
+				}
 			}
-		}
-		if (ent != null) {
-			SwingUtilities.invokeLater( new EntityUpdate( ent));
-		}
-		else {
-			Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
+			if (ent != null) {
+				SwingUtilities.invokeLater( new EntityUpdate( ent));
+			}
+			else {
+				Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
+			}
 		}
 	}
 
 	public EditController getController() {
 		return mCtrl;
+	}
+
+	public JToolBar getToolBar( ABase base) {
+		if (base != null) {
+			AEntity<?> ent = mContent.get( base);
+			if (ent != null) {
+				return ent.getToolBar();
+			}
+		}
+		return null;
 	}
 
 	private void setCenter( AEntity<?> ent) {

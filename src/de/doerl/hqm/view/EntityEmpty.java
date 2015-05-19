@@ -3,6 +3,7 @@ package de.doerl.hqm.view;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 import de.doerl.hqm.base.ABase;
 
@@ -24,6 +25,11 @@ class EntityEmpty extends AEntity<ABase> {
 
 	@Override
 	public ABase getBase() {
+		return null;
+	}
+
+	@Override
+	public JToolBar getToolBar() {
 		return null;
 	}
 }

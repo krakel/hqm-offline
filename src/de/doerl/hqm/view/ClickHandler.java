@@ -19,7 +19,7 @@ import de.doerl.hqm.utils.Utils;
 class ClickHandler implements MouseListener {
 	private static final Logger LOGGER = Logger.getLogger( ClickHandler.class.getName());
 	private static final Timer TIMER = new Timer( "doubleclickTimer", true);
-	private static final Border BORDER = BorderFactory.createBevelBorder( BevelBorder.LOWERED);
+	private static final Border BORDER = BorderFactory.createBevelBorder( BevelBorder.RAISED);
 	private ClickListener mListener = new ClickListener();
 	private volatile boolean mOneClick;
 	private JComponent mComp;

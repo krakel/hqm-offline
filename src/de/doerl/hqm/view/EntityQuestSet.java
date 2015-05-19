@@ -7,6 +7,7 @@ import java.awt.image.RescaleOp;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
@@ -92,6 +93,11 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	@Override
 	public FQuestSet getBase() {
 		return mQS;
+	}
+
+	@Override
+	public JToolBar getToolBar() {
+		return null;
 	}
 
 	private static class LineFactory extends AHQMWorker<Object, Object> {

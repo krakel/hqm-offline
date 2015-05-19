@@ -17,26 +17,28 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import de.doerl.hqm.EditManager;
+import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.model.EditModel;
+import de.doerl.hqm.model.IModelListener;
+import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.ADialog.DialogResult;
 import de.doerl.hqm.ui.tree.ElementTree;
-import de.doerl.hqm.utils.BaseDefaults;
-import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.EditView;
 
-public class EditFrame extends JFrame implements ChangeListener {
+public class EditFrame extends JFrame implements ChangeListener, IModelListener {
 	private static final long serialVersionUID = -2516074296297195438L;
 	private static final String BASE_TITLE = ResourceManager.getString( "hqm.editor.title");
 	private static final String FILE = "hqm.file";
@@ -49,14 +51,17 @@ public class EditFrame extends JFrame implements ChangeListener {
 	private Action mNewAction = new NewAction( this);
 	private JLabel mStatusBar;
 	private EditCallback mCB;
+	private Box mTop = Box.createHorizontalBox();
+	private JToolBar mToolBar = createToolBar();
 
 	private EditFrame() throws HeadlessException {
 		EditController ctrl = new EditController( mModel);
 		mView = new EditView( ctrl);
 		mTree = new ElementTree( ctrl);
+		mModel.addListener( mView);
 		mModel.addListener( mTree.getModel());
+		mModel.addListener( this);
 		mCB = new EditCallback( this);
-		createPopupMenu();
 	}
 
 	private static JMenu createMenu( String name) {
@@ -74,15 +79,11 @@ public class EditFrame extends JFrame implements ChangeListener {
 
 	static EditFrame createNew() {
 		EditManager.init();
+//		ResourceManager.setLookAndFeel( PreferenceManager.getString( BaseDefaults.LOOK_AND_FEEL));
 		EditFrame result = new EditFrame();
 		result.init();
-		result.getContentPane().add( result.createContent());
-		result.setJMenuBar( result.createMenuBar());
-		result.repaint();
-//		result.pack();
 		Utils.centerFrame( result);
 		result.addWindowListener( new WindowCloser());
-		ResourceManager.setLookAndFeel( PreferenceManager.getString( BaseDefaults.LOOK_AND_FEEL));
 		result.setVisible( true);
 		return result;
 	}
@@ -98,9 +99,42 @@ public class EditFrame extends JFrame implements ChangeListener {
 		return result;
 	}
 
+	public static JToolBar createToolBar() {
+		JToolBar result = new JToolBar();
+		result.setAlignmentY( TOP_ALIGNMENT);
+		result.setFloatable( false);
+		try {
+			result.setRollover( true);
+		}
+		catch (NoSuchMethodError ex) {
+		}
+		return result;
+	}
+
+	@Override
+	public void baseAdded( ModelEvent event) {
+	}
+
+	@Override
+	public void baseChanged( ModelEvent event) {
+	}
+
+	@Override
+	public void baseRemoved( ModelEvent event) {
+	}
+
+	@Override
+	public void baseUpdate( ModelEvent event) {
+		ABase base = event.getBase();
+		if (base != null) {
+			JToolBar tool = mView.getToolBar( base);
+			SwingUtilities.invokeLater( new ToolUpdate( tool));
+		}
+	}
+
 	private Box createContent() {
 		Box result = Box.createVerticalBox();
-		result.add( createToolBar());
+		result.add( mTop);
 		result.add( createSplit());
 		result.add( createStatusBar());
 		return result;
@@ -186,38 +220,6 @@ public class EditFrame extends JFrame implements ChangeListener {
 		return result;
 	}
 
-	private JComponent createToolBar() {
-		Box result = Box.createHorizontalBox();
-		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
-		JToolBar tool = new JToolBar();
-		tool.setFloatable( false);
-		try {
-			tool.setRollover( true);
-		}
-		catch (NoSuchMethodError ex) {
-		}
-		tool.add( mNewAction);
-		tool.addSeparator();
-		IMedium bit = MediaManager.get( "bit");
-		tool.add( bit.getOpen( mCB));
-		tool.add( bit.getSave( mCB));
-		tool.add( bit.getSaveAs( mCB));
-		tool.addSeparator();
-		IMedium json = MediaManager.get( "json");
-		tool.add( json.getOpen( mCB));
-		tool.add( json.getSave( mCB));
-		tool.add( json.getSaveAs( mCB));
-		tool.addSeparator();
-//		tool.add( createToolBtn( mModel.getUndoable().getUndoAction()));
-//		tool.add( createToolBtn( mModel.getUndoable().getRedoAction()));
-//		tool.addSeparator();
-		result.add( tool);
-		result.add( Box.createHorizontalGlue());
-//		result.setPreferredSize( new Dimension( Short.MAX_VALUE, tool.getPreferredSize().height));
-		return result;
-	}
-
 	public void displayHelp( String text) {
 		mStatusBar.setText( text);
 	}
@@ -255,6 +257,13 @@ public class EditFrame extends JFrame implements ChangeListener {
 		setLocale( Locale.getDefault());
 		setSize( new Dimension( 1000, 600));
 		setDefaultCloseOperation( DO_NOTHING_ON_CLOSE);
+		createPopupMenu();
+		updateToolBar();
+		updateTop();
+		getContentPane().add( createContent());
+		setJMenuBar( createMenuBar());
+		repaint();
+//		pack();
 	}
 
 	public void saveHQM() {
@@ -278,5 +287,51 @@ public class EditFrame extends JFrame implements ChangeListener {
 	public void stateChanged( ChangeEvent event) {
 		mCB.fireActionUpdate();
 //		mTable.getModel().fireTableDataChanged();
+	}
+
+	private void updateTool( JToolBar tool) {
+		mTop.removeAll();
+		mTop.add( mToolBar);
+		if (tool != null) {
+			mTop.add( tool);
+		}
+		mTop.add( Box.createHorizontalGlue());
+		mTop.revalidate();
+		mTop.repaint();
+	}
+
+	private void updateToolBar() {
+		mToolBar.add( mNewAction);
+		mToolBar.addSeparator();
+		IMedium bit = MediaManager.get( "bit");
+		mToolBar.add( bit.getOpen( mCB));
+		mToolBar.add( bit.getSave( mCB));
+		mToolBar.add( bit.getSaveAs( mCB));
+		mToolBar.addSeparator();
+		IMedium json = MediaManager.get( "json");
+		mToolBar.add( json.getOpen( mCB));
+		mToolBar.add( json.getSave( mCB));
+		mToolBar.add( json.getSaveAs( mCB));
+		mToolBar.addSeparator( new Dimension( 80, 0));
+	}
+
+	private void updateTop() {
+		mTop.setAlignmentX( LEFT_ALIGNMENT);
+		mTop.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
+		mTop.add( mToolBar);
+		mTop.add( Box.createHorizontalGlue());
+	}
+
+	private final class ToolUpdate implements Runnable {
+		private JToolBar mTool;
+
+		public ToolUpdate( JToolBar tool) {
+			mTool = tool;
+		}
+
+		@Override
+		public void run() {
+			updateTool( mTool);
+		}
 	}
 }

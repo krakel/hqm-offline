@@ -14,7 +14,6 @@ import de.doerl.hqm.utils.Utils;
 public class EditModel {
 	private static final Logger LOGGER = Logger.getLogger( EditModel.class.getName());
 	private List<IModelListener> mListener = new ArrayList<IModelListener>();
-//	private ABase mActive;
 	private Vector<FHqm> mHQMs = new Vector<FHqm>();
 
 	public void addListener( IModelListener l) {
@@ -99,7 +98,6 @@ public class EditModel {
 	}
 
 	public void setActive( ABase base) {
-//		mActive = base;
 		fireBaseUpdate( base);
 	}
 }

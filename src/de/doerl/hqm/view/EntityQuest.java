@@ -17,6 +17,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
@@ -121,6 +122,11 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 	}
 
 	@Override
+	public JToolBar getToolBar() {
+		return null;
+	}
+
+	@Override
 	public void mouseClicked( MouseEvent evt) {
 		try {
 			JList<?> list = (JList<?>) evt.getSource();
@@ -162,6 +168,8 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 		mTaskInfo.removeAll();
 		QuestTaskUpdate.get( task, mTaskInfo);
 		mTaskInfo.add( Box.createHorizontalGlue());
+		mTaskInfo.revalidate();
+		mTaskInfo.repaint();
 	}
 
 	private static class CellRenderer extends JPanel implements ListCellRenderer<AQuestTask> {

@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
@@ -97,6 +98,11 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 	@Override
 	public FQuestSets getBase() {
 		return mCategory;
+	}
+
+	@Override
+	public JToolBar getToolBar() {
+		return null;
 	}
 
 	private void setSet( FQuestSet qs) {

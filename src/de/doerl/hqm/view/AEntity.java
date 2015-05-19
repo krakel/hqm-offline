@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.util.Vector;
 
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -73,6 +74,13 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		g.drawImage( src, null, null);
 		g.dispose();
 		return result;
+	}
+
+	protected static JButton createToolBtn( Action a) {
+		JButton btn = new JButton();
+		btn.setHideActionText( true);
+		btn.setAction( a);
+		return btn;
 	}
 
 	static JButton createToolButton( Icon icon) {
@@ -384,6 +392,8 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected abstract void createRight( JPanel leaf);
 
 	public abstract T getBase();
+
+	public abstract JToolBar getToolBar();
 
 	public EditView getView() {
 		return mView;

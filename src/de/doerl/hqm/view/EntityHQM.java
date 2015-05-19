@@ -1,20 +1,25 @@
 package de.doerl.hqm.view;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.ui.ABundleAction;
+import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.utils.ResourceManager;
 
 class EntityHQM extends AEntity<FHqm> {
 	private static final long serialVersionUID = 4033642877403597083L;
 	private static final BufferedImage FRONT = ResourceManager.getImage( "front.png").getSubimage( 0, 0, 280, 360);
 	private FHqm mHQM;
+	private JToolBar mTool = EditFrame.createToolBar();
 	private JLabel mLogo = leafImage( 280, 360, FRONT);
 	private LeafTextBox mDesc = new LeafTextBox();
 
@@ -33,6 +38,8 @@ class EntityHQM extends AEntity<FHqm> {
 			public void onSingleClick( MouseEvent evt) {
 			}
 		});
+		mTool.add( new TextBoxAction());
+		mTool.addSeparator();
 	}
 
 	@Override
@@ -52,8 +59,27 @@ class EntityHQM extends AEntity<FHqm> {
 		return mHQM;
 	}
 
+	@Override
+	public JToolBar getToolBar() {
+		return mTool;
+	}
+
 	private void updateDesc() {
 		DialogTextBox.update( mHQM.mDesc, mView);
 		mDesc.setText( mHQM.mDesc.mValue);
+	}
+
+	private class TextBoxAction extends ABundleAction {
+		private static final long serialVersionUID = -8367056239473171639L;
+
+		public TextBoxAction() {
+			super( "entity.edit");
+			setEnabled( true);
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent e) {
+			updateDesc();
+		}
 	}
 }
