@@ -40,12 +40,12 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
 	private FQuestSetCat mCategory;
 	private JToolBar mTool = EditFrame.createToolBar();
+	private ABundleAction mAddAction = new AddSetAction();
+	private ABundleAction mDeleteAction = new DeleteSetAction();
+	private ABundleAction mDescAction = new TextBoxAction();
+	private ABundleAction mNameAction = new TextFieldAction();
 	private LeafList<FQuestSet> mList = new LeafList<FQuestSet>();
 	private LeafTextBox mDesc = new LeafTextBox();
-	private AddSetAction mAddAction = new AddSetAction();
-	private DeleteSetAction mDeleteAction = new DeleteSetAction();
-	private TextBoxAction mDescAction = new TextBoxAction();
-	private TextFieldAction mNameAction = new TextFieldAction();
 	private JLabel mTotal = leafLabel( GuiColor.BLACK.getColor(), "");
 	private JLabel mLocked = leafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
 	private JLabel mCompleted = leafLabel( GuiColor.GREEN.getColor(), "0 completed quests");

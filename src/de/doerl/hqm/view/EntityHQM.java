@@ -20,6 +20,7 @@ class EntityHQM extends AEntity<FHqm> {
 	private static final BufferedImage FRONT = ResourceManager.getImage( "front.png").getSubimage( 0, 0, 280, 360);
 	private FHqm mHQM;
 	private JToolBar mTool = EditFrame.createToolBar();
+	private ABundleAction mDescAction = new TextBoxAction();
 	private JLabel mLogo = leafImage( 280, 360, FRONT);
 	private LeafTextBox mDesc = new LeafTextBox();
 
@@ -34,7 +35,7 @@ class EntityHQM extends AEntity<FHqm> {
 				updateDesc();
 			}
 		});
-		mTool.add( new TextBoxAction());
+		mTool.add( mDescAction);
 		mTool.addSeparator();
 	}
 

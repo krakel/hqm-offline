@@ -3,10 +3,9 @@ package de.doerl.hqm.view;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,9 +19,11 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.ui.ABundleAction;
+import de.doerl.hqm.ui.AToggleAction;
 import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.LeafQuest.Type;
 
 public class EntityQuestSet extends AEntity<FQuestSet> {
 	private static final long serialVersionUID = 4427035968994904913L;
@@ -30,15 +31,14 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private FQuestSet mSet;
 	private LeafAbsolute mLeaf = new LeafAbsolute();
 	private JToolBar mTool = EditFrame.createToolBar();
-	private AddQuestAction mAddAction = new AddQuestAction();
-	private MoveQuestAction mMoveAction = new MoveQuestAction();
-	private BigQuestAction mBigAction = new BigQuestAction();
-	private DeleteQuestAction mDeleteAction = new DeleteQuestAction();
-	private JToggleButton mBtnAdd = createToggleButton( mAddAction);
-	private JToggleButton mBtnMove = createToggleButton( mMoveAction);
-	private JToggleButton mBtnBig = createToggleButton( mBigAction);
-	private IClickListener mLeafQuestHandler = new LeafQuestHandler();
-	private LeafMoveHandler mLeafMoveHandler = new LeafMoveHandler();
+	private AToggleAction mAddAction = new QuestAddAction();
+	private AToggleAction mMoveAction = new QuestMoveAction();
+	private AToggleAction mLinkAction = new QuestLinkAction();
+	private AToggleAction mBigAction = new QuestBigAction();
+	private ABundleAction mDeleteAction = new QuestDeleteAction();
+	private LeafQuestHandler mLeafQuestHandler = new LeafQuestHandler();
+	private LeafMouseHandler mLeafMouseHandler = new LeafMouseHandler();
+	private HashMap<FQuest, LeafQuest> mMap = new HashMap<FQuest, LeafQuest>();
 	private volatile LeafQuest mActiv;
 
 	public EntityQuestSet( EditView view, FQuestSet set) {
@@ -47,26 +47,51 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		add( mLeaf);
 		LineFactory.set( set, this);
 		QuestFactory.set( set, this);
-		mTool.add( mBtnAdd);
-		mTool.add( mBtnMove);
-		mTool.add( mBtnBig);
+		mTool.add( createToggleButton( mAddAction));
+		mTool.add( createToggleButton( mMoveAction));
+		mTool.add( createToggleButton( mLinkAction));
 		mTool.addSeparator();
+		mTool.add( createToggleButton( mBigAction));
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
-		mLeaf.addClickListener( new AClickListener() {
-			@Override
-			public void onSingleClick( MouseEvent evt) {
-				createQuest( evt);
+		mLeaf.addClickListener( new LeafHandler());
+		updateGroup( false);
+		updateQuest( false);
+		mAddAction.setSelected( true);
+	}
+
+	private void activeUpdate( Type type) {
+		if (mActiv != null) {
+			mActiv.update( type);
+//			mActiv.revalidate();
+			mActiv.repaint();
+			FQuest quest = mActiv.getQuest();
+			for (FQuest req : quest.mRequirements) {
+				LeafQuest lq = mMap.get( req);
+				if (lq != null) {
+					lq.update( type == Type.ACTIV ? Type.PREF : Type.NORM);
+				}
 			}
-		});
-		mBtnAdd.addItemListener( new ItemListener() {
-			@Override
-			public void itemStateChanged( ItemEvent evt) {
-				updateBtnAdd();
-			}
-		});
-		mBigAction.setEnabled( false);
-		mDeleteAction.setEnabled( false);
+		}
+	}
+
+	private void activRemove() {
+		activeUpdate( Type.NORM);
+		mActiv = null;
+		updateGroup( true);
+		updateQuest( false);
+		mBigAction.setSelected( false);
+		mMoveAction.setSelected( false);
+		mLinkAction.setSelected( false);
+	}
+
+	private void activSet( LeafQuest activ, boolean enableQuest) {
+		activeUpdate( Type.NORM);
+		mActiv = activ;
+		activeUpdate( Type.ACTIV);
+		updateGroup( true);
+		updateQuest( enableQuest);
+		mBigAction.setSelected( activ.getQuest().isBig());
 	}
 
 	private LeafLine addLine( FQuest from, FQuest to) {
@@ -77,30 +102,16 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 	private LeafQuest addQuest( FQuest quest) {
 		LeafQuest comp = new LeafQuest( quest);
-		comp.addClickListener( mLeafQuestHandler);
-		comp.addMouseListener( mLeafMoveHandler);
-		comp.addMouseMotionListener( mLeafMoveHandler);
 		mLeaf.add( comp, 0);
+		mMap.put( quest, comp);
+		comp.addClickListener( mLeafQuestHandler);
+		comp.addMouseListener( mLeafMouseHandler);
+		comp.addMouseMotionListener( mLeafMouseHandler);
 		return comp;
 	}
 
 	@Override
 	protected void createLeft( JPanel leaf) {
-	}
-
-	private void createQuest( MouseEvent evt) {
-		if (mBtnAdd.isSelected()) {
-			FQuest quest = mSet.mParentCategory.mParentHQM.createQuest( "");
-			quest.mQuestSet = mSet;
-			quest.mX.mValue = evt.getX() / AEntity.ZOOM - quest.getW() / 2;
-			quest.mY.mValue = evt.getY() / AEntity.ZOOM - quest.getH() / 2;
-			mActiv = addQuest( quest);
-			mActiv.revalidate();
-			mActiv.repaint();
-			mBtnBig.setSelected( false);
-			mBigAction.setEnabled( false);
-			mDeleteAction.setEnabled( true);
-		}
 	}
 
 	@Override
@@ -140,117 +151,40 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private void updateActive( MouseEvent evt) {
-		try {
-			mActiv = (LeafQuest) evt.getSource();
-			if (!mBtnAdd.isSelected() && !mBtnMove.isSelected()) {
-				mBigAction.setEnabled( true);
-				mDeleteAction.setEnabled( true);
-				mBtnBig.setSelected( mActiv.getQuest().isBig());
+	private void updateGroup( boolean value) {
+		mAddAction.setEnabled( true);
+		mMoveAction.setEnabled( value);
+		mLinkAction.setEnabled( value);
+	}
+
+	private void updateQuest( boolean value) {
+		mBigAction.setEnabled( value);
+		mDeleteAction.setEnabled( value);
+	}
+
+	private final class LeafHandler extends AClickListener {
+		@Override
+		public void onSingleClick( MouseEvent evt) {
+			if (mAddAction.isSelected()) {
+				FQuest quest = mSet.mParentCategory.mParentHQM.createQuest( "");
+				quest.mQuestSet = mSet;
+				quest.mX.mValue = evt.getX() / AEntity.ZOOM - quest.getW() / 2;
+				quest.mY.mValue = evt.getY() / AEntity.ZOOM - quest.getH() / 2;
+				activSet( addQuest( quest), false);
+			}
+			else {
+				activRemove();
 			}
 		}
-		catch (ClassCastException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
 	}
 
-	private void updateBtnAdd() {
-		if (mBtnAdd.isSelected()) {
-			mMoveAction.setEnabled( false);
-			mBigAction.setEnabled( false);
-			mDeleteAction.setEnabled( false);
-		}
-		else {
-			mMoveAction.setEnabled( true);
-			mBigAction.setEnabled( mActiv != null);
-			mDeleteAction.setEnabled( mActiv != null);
-		}
-	}
-
-	private void updateBtnBig() {
-		if (mActiv != null) {
-			FQuest quest = mActiv.getQuest();
-			quest.mBig.mValue = !quest.isBig();
-			mBtnBig.setSelected( quest.isBig());
-			mActiv.update();
-		}
-	}
-
-	private void updateBtnDelete() {
-		if (mActiv != null && WarnDialogs.askDelete( mView)) {
-			mActiv.setVisible( false);
-			mLeaf.remove( mActiv);
-			FQuest quest = mActiv.getQuest();
-			removeDependLine( quest);
-			quest.remove();
-			QuestRemoveDepent.get( quest);
-			mActiv = null;
-			mBtnBig.setSelected( false);
-			mBigAction.setEnabled( false);
-			mDeleteAction.setEnabled( false);
-		}
-	}
-
-	private void updateBtnMove() {
-		if (mBtnMove.isSelected()) {
-			mAddAction.setEnabled( false);
-			mBigAction.setEnabled( false);
-			mDeleteAction.setEnabled( false);
-		}
-		else {
-			mAddAction.setEnabled( true);
-			mBigAction.setEnabled( mActiv != null);
-			mDeleteAction.setEnabled( mActiv != null);
-		}
-	}
-
-	private final class AddQuestAction extends ABundleAction {
-		private static final long serialVersionUID = -8667850457674712679L;
-
-		public AddQuestAction() {
-			super( "entity.add");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-//			updateAddQuest();
-		}
-	}
-
-	private final class BigQuestAction extends ABundleAction {
-		private static final long serialVersionUID = -3157466864218507113L;
-
-		public BigQuestAction() {
-			super( "entity.big");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			updateBtnBig();
-		}
-	}
-
-	private final class DeleteQuestAction extends ABundleAction {
-		private static final long serialVersionUID = -433615690858042140L;
-
-		public DeleteQuestAction() {
-			super( "entity.delete");
-			setEnabled( false);
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			updateBtnDelete();
-		}
-	}
-
-	private final class LeafMoveHandler extends MouseAdapter {
+	private final class LeafMouseHandler extends MouseAdapter {
 		private int mOldX, mOldY;
 
 		@Override
 		public void mouseDragged( MouseEvent evt) {
 			try {
-				if (mBtnMove.isSelected()) {
+				if (mMoveAction.isSelected()) {
 					LeafQuest leaf = (LeafQuest) evt.getSource();
 					moveDrag( leaf, evt);
 				}
@@ -263,7 +197,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void mousePressed( MouseEvent evt) {
 			try {
-				if (mBtnMove.isSelected()) {
+				if (mMoveAction.isSelected()) {
 					LeafQuest leaf = (LeafQuest) evt.getSource();
 					moveBegin( leaf, evt);
 				}
@@ -276,7 +210,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void mouseReleased( MouseEvent evt) {
 			try {
-				if (mBtnMove.isSelected()) {
+				if (mMoveAction.isSelected()) {
 					LeafQuest leaf = (LeafQuest) evt.getSource();
 					moveDrag( leaf, evt);
 					moveEnd( leaf, evt);
@@ -343,7 +277,13 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 		@Override
 		public void onSingleClick( MouseEvent evt) {
-			updateActive( evt);
+			try {
+				activSet( (LeafQuest) evt.getSource(), true);
+				mAddAction.setSelected( false);
+			}
+			catch (ClassCastException ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+			}
 		}
 	}
 
@@ -374,16 +314,64 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private final class MoveQuestAction extends ABundleAction {
-		private static final long serialVersionUID = -3157466864218507113L;
+	private final class QuestAddAction extends AToggleAction {
+		private static final long serialVersionUID = -8667850457674712679L;
 
-		public MoveQuestAction() {
-			super( "entity.move");
+		public QuestAddAction() {
+			super( "entity.add");
 		}
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			updateBtnMove();
+			if (mAddAction.isSelected()) {
+				mMoveAction.setSelected( false);
+				mLinkAction.setSelected( false);
+				updateQuest( false);
+			}
+			else {
+				updateQuest( mActiv != null);
+			}
+		}
+	}
+
+	private final class QuestBigAction extends AToggleAction {
+		private static final long serialVersionUID = -3157466864218507113L;
+
+		public QuestBigAction() {
+			super( "entity.big");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				FQuest quest = mActiv.getQuest();
+				quest.mBig.mValue = !quest.isBig();
+				mBigAction.setSelected( quest.isBig());
+				mActiv.update( Type.ACTIV);
+			}
+		}
+	}
+
+	private final class QuestDeleteAction extends ABundleAction {
+		private static final long serialVersionUID = -433615690858042140L;
+
+		public QuestDeleteAction() {
+			super( "entity.delete");
+			setEnabled( false);
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null && WarnDialogs.askDelete( mView)) {
+				mActiv.setVisible( false);
+				mLeaf.remove( mActiv);
+				FQuest quest = mActiv.getQuest();
+				mMap.remove( quest);
+				removeDependLine( quest);
+				quest.remove();
+				QuestRemoveDepent.get( quest);
+				activRemove();
+			}
 		}
 	}
 
@@ -407,6 +395,46 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				mEntity.addQuest( quest);
 			}
 			return null;
+		}
+	}
+
+	private final class QuestLinkAction extends AToggleAction {
+		private static final long serialVersionUID = 4085273836792762289L;
+
+		public QuestLinkAction() {
+			super( "entity.link");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mLinkAction.isSelected()) {
+				mAddAction.setSelected( false);
+				mMoveAction.setSelected( false);
+				updateQuest( false);
+			}
+			else {
+				updateQuest( mActiv != null);
+			}
+		}
+	}
+
+	private final class QuestMoveAction extends AToggleAction {
+		private static final long serialVersionUID = -3157466864218507113L;
+
+		public QuestMoveAction() {
+			super( "entity.move");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mMoveAction.isSelected()) {
+				mAddAction.setSelected( false);
+				mLinkAction.setSelected( false);
+				updateQuest( false);
+			}
+			else {
+				updateQuest( mActiv != null);
+			}
 		}
 	}
 }
