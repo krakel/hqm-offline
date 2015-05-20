@@ -44,7 +44,7 @@ public class EditController implements IModelListener {
 		SwingUtilities.invokeLater( new BaseAction( base));
 	}
 
-	private class BaseAction implements Runnable {
+	private final class BaseAction implements Runnable {
 		private ABase mBase;
 
 		public BaseAction( ABase base) {

@@ -44,8 +44,9 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	protected static final BufferedImage LARGE_BTN = MAP.getSubimage( 54, 235, 57, 18);
 	protected static final BufferedImage REPUATION = MAP.getSubimage( 0, 101, 125, 3);
 	protected static final BufferedImage REP_MARKER = MAP.getSubimage( 10, 93, 5, 5);
+	static int ZOOM = 2;
 	static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
-	private static final Dimension VIEW_SIZE = new Dimension( 4 * BACKGROUND.getWidth(), 2 * BACKGROUND.getHeight());
+	private static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * BACKGROUND.getWidth(), ZOOM * BACKGROUND.getHeight());
 //	private static final int LEAF_WIDTH = BACKGROUND.getWidth();
 	protected static final int FONT_NORMAL_HIGH = 14;
 	protected static final int FONT_TITLE_HIGH = 18;
@@ -468,7 +469,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 	}
 
 	static class ReputationIcon implements Icon {
-		private static double ZOOM = 2.0;
 		private FSetting mSetting;
 
 		public ReputationIcon( FSetting rs) {

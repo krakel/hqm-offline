@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 class LeafAbsolute extends JPanel {
 	private static final long serialVersionUID = -7421492884184131122L;
+	private ClickHandler mHandler = new ClickHandler();
 
 	public LeafAbsolute() {
 		super( null);
@@ -15,6 +16,11 @@ class LeafAbsolute extends JPanel {
 		setAlignmentX( LEFT_ALIGNMENT);
 //		setBackground( Color.GRAY);
 		setBorder( BorderFactory.createEmptyBorder( 40, 40, 40, 40));
+		addMouseListener( mHandler);
+	}
+
+	public void addClickListener( IClickListener l) {
+		mHandler.addClickListener( l);
 	}
 
 	@Override
@@ -24,5 +30,9 @@ class LeafAbsolute extends JPanel {
 		g2.fillRect( 0, 0, getWidth(), getHeight());
 		AEntity.drawBackgroundHalf( g2, this, AEntity.BACKGROUND, true);
 		AEntity.drawBackgroundHalf( g2, this, AEntity.BACKGROUND, false);
+	}
+
+	public void removeClickListener( IClickListener l) {
+		mHandler.removeClickListener( l);
 	}
 }

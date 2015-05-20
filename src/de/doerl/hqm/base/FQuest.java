@@ -125,7 +125,7 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getCenterX() {
-		return getX() + getH() / 2;
+		return getX() + getW() / 2;
 	}
 
 	public int getCenterY() {
@@ -138,7 +138,7 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getH() {
-		return 2 * (isBig() ? 37 : 30);
+		return isBig() ? 37 : 30;
 	}
 
 	@Override
@@ -151,24 +151,24 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getW() {
-		return 2 * (isBig() ? 31 : 25);
+		return isBig() ? 31 : 25;
 	}
 
 	public int getX() {
 		if (isBig()) {
-			return 2 * mX.mValue;
+			return mX.mValue;
 		}
 		else {
-			return 2 * (mX.mValue + 1);
+			return mX.mValue + 1;
 		}
 	}
 
 	public int getY() {
 		if (isBig()) {
-			return 2 * mY.mValue;
+			return mY.mValue;
 		}
 		else {
-			return 2 * (mY.mValue + 1);
+			return mY.mValue + 1;
 		}
 	}
 

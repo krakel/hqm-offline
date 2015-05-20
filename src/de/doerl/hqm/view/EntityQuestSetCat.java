@@ -215,7 +215,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private class AddSetAction extends ABundleAction {
+	private final class AddSetAction extends ABundleAction {
 		private static final long serialVersionUID = 6724759221568885874L;
 
 		public AddSetAction() {
@@ -228,7 +228,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private class DeleteSetAction extends ABundleAction {
+	private final class DeleteSetAction extends ABundleAction {
 		private static final long serialVersionUID = 7223654325808174399L;
 
 		public DeleteSetAction() {
@@ -416,7 +416,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private class TextBoxAction extends ABundleAction {
+	private final class TextBoxAction extends ABundleAction {
 		private static final long serialVersionUID = -8367056239473171639L;
 
 		public TextBoxAction() {
@@ -429,7 +429,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private class TextFieldAction extends ABundleAction {
+	private final class TextFieldAction extends ABundleAction {
 		private static final long serialVersionUID = -3873930852720932846L;
 
 		public TextFieldAction() {

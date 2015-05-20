@@ -15,25 +15,33 @@ class LeafLine extends JPanel {
 	private static final int LINE_SIZE = 6;
 	private int mDX, mDY;
 	private Color mColor = LINE_COLOR;
+	private FQuest mFrom;
+	private FQuest mTo;
 
 	public LeafLine( FQuest from, FQuest to) {
-		int x1 = from.getCenterX();
-		int y1 = from.getCenterY();
-		int x2 = to.getCenterX();
-		int y2 = to.getCenterY();
-		init( x1, y1, x2, y2);
-	}
-
-	public LeafLine( int x1, int y1, int x2, int y2) {
-		init( x1, y1, x2, y2);
-	}
-
-	private void init( int x1, int y1, int x2, int y2) {
-		mDX = x1 - x2;
-		mDY = y1 - y2;
+		mFrom = from;
+		mTo = to;
 		setOpaque( false);
 		setBorder( null);
 //		setBorder( BorderFactory.createLineBorder( Color.BLUE));
+		int x1 = AEntity.ZOOM * from.getCenterX();
+		int y1 = AEntity.ZOOM * from.getCenterY();
+		int x2 = AEntity.ZOOM * to.getCenterX();
+		int y2 = AEntity.ZOOM * to.getCenterY();
+		init( x1, y1, x2, y2);
+	}
+
+	public FQuest getFrom() {
+		return mFrom;
+	}
+
+	public FQuest getTo() {
+		return mTo;
+	}
+
+	public void init( int x1, int y1, int x2, int y2) {
+		mDX = x1 - x2;
+		mDY = y1 - y2;
 		int x = Math.min( x1, x2);
 		int y = Math.min( y1, y2) - LINE_SIZE / 2;
 		int width = Math.max( Math.abs( mDX), LINE_SIZE);

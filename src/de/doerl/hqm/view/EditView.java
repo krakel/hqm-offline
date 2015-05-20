@@ -99,7 +99,7 @@ public class EditView extends JPanel implements IModelListener {
 		repaint();
 	}
 
-	private class EntityRemove implements Runnable {
+	private final class EntityRemove implements Runnable {
 		private AEntity<?> mEnt;
 
 		public EntityRemove( AEntity<?> ent) {
@@ -113,7 +113,7 @@ public class EditView extends JPanel implements IModelListener {
 		}
 	}
 
-	private class EntityUpdate implements Runnable {
+	private final class EntityUpdate implements Runnable {
 		private AEntity<?> mEnt;
 
 		public EntityUpdate( AEntity<?> ent) {

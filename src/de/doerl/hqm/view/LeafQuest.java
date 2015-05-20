@@ -15,20 +15,18 @@ class LeafQuest extends JLabel {
 	private static final BufferedImage QUEST_BIG = AEntity.MAP.getSubimage( 195, 0, 31, 37);
 	private static BufferedImage DARK_BIG = darker( QUEST_BIG, 0.6F);
 	private static BufferedImage DARK_NORM = darker( QUEST_NORM, 0.6F);
+	private ClickHandler mHandler = new ClickHandler();
+	private FQuest mQuest;
 
-//	private ClickHandler mHandler = new ClickHandler();
 	public LeafQuest( FQuest quest) {
-		int x = quest.getX();
-		int y = quest.getY();
-		int w = quest.getW();
-		int h = quest.getH();
+		mQuest = quest;
+		int x = AEntity.ZOOM * quest.getX();
+		int y = AEntity.ZOOM * quest.getY();
+		int w = AEntity.ZOOM * quest.getW();
+		int h = AEntity.ZOOM * quest.getH();
 		MultiIcon icon = new MultiIcon( w, h, getImage( quest));
 		init( x, y, w, h, icon);
-	}
-
-	public LeafQuest( int x, int y, int w, int h, BufferedImage... arr) {
-		MultiIcon icon = new MultiIcon( w, h, arr);
-		init( x, y, w, h, icon);
+		addMouseListener( mHandler);
 	}
 
 	private static BufferedImage darker( BufferedImage src, float factor) {
@@ -48,17 +46,23 @@ class LeafQuest extends JLabel {
 		return quest.isBig() ? QUEST_BIG : QUEST_NORM;
 	}
 
-//	public ClickListener getHandler() {
-//		return mHandler.getListener();
-//	}
-//
+	public void addClickListener( IClickListener l) {
+		mHandler.addClickListener( l);
+	}
+
+	public FQuest getQuest() {
+		return mQuest;
+	}
+
 	private void init( int x, int y, int w, int h, Icon icon) {
 		setIcon( icon);
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 //		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 		setBounds( x, y, w, h);
-//		addMouseListener( mHandler);
-//		mHandler.getListener().addClickListener( this);
+	}
+
+	public void removeClickListener( IClickListener l) {
+		mHandler.removeClickListener( l);
 	}
 }

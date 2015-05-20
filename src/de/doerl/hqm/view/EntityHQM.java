@@ -68,7 +68,7 @@ class EntityHQM extends AEntity<FHqm> {
 		}
 	}
 
-	private class TextBoxAction extends ABundleAction {
+	private final class TextBoxAction extends ABundleAction {
 		private static final long serialVersionUID = -8367056239473171639L;
 
 		public TextBoxAction() {
