@@ -6,13 +6,13 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FGroup extends AMember<FGroup> {
-	public final FGroups mParentCategory;
+	public final FGroupCat mParentCategory;
 	public final FParameterInt mID = new FParameterInt( this);
 	public final FParameterInt mTierID = new FParameterInt( this);
 	public final FParameterInt mLimit = new FParameterInt( this);;
 	public final Vector<FParameterStack> mStacks = new Vector<FParameterStack>();
 
-	public FGroup( FGroups parent, String name) {
+	public FGroup( FGroupCat parent, String name) {
 		super( name);
 		mParentCategory = parent;
 	}

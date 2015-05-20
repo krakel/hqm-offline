@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IParameterWorker;
-import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.ParameterType;
 import de.doerl.hqm.utils.Helper;
 
 public final class FParameterIntegerArr extends AParameter {
@@ -17,8 +17,8 @@ public final class FParameterIntegerArr extends AParameter {
 	}
 
 	@Override
-	public ElementTyp getElementTyp() {
-		return ElementTyp.PARAMETER_INT_ARR;
+	public ParameterType getElementTyp() {
+		return ParameterType.PARAMETER_INT_ARR;
 	}
 
 	@Override

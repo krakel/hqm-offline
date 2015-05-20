@@ -6,7 +6,7 @@ import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FQuestSets;
+import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 
 class EntityFactory extends AHQMWorker<AEntity<? extends ABase>, EditView> {
@@ -21,7 +21,7 @@ class EntityFactory extends AHQMWorker<AEntity<? extends ABase>, EditView> {
 	}
 
 	@Override
-	protected AEntity<? extends ABase> doSet( ACategory<? extends ANamed> set, EditView view) {
+	protected AEntity<? extends ABase> doCategory( ACategory<? extends ANamed> set, EditView view) {
 		return null;
 	}
 
@@ -39,12 +39,12 @@ class EntityFactory extends AHQMWorker<AEntity<? extends ABase>, EditView> {
 	}
 
 	@Override
-	public AEntity<? extends ABase> forQuestSet( FQuestSet qs, EditView view) {
-		return new EntityQuestSet( view, qs);
+	public AEntity<? extends ABase> forQuestSet( FQuestSet set, EditView view) {
+		return new EntityQuestSet( view, set);
 	}
 
 	@Override
-	public AEntity<? extends ABase> forQuestSets( FQuestSets set, EditView view) {
-		return new EntityQuestSets( view, set);
+	public AEntity<? extends ABase> forQuestSetCat( FQuestSetCat cat, EditView view) {
+		return new EntityQuestSetCat( view, cat);
 	}
 }

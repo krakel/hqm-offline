@@ -4,8 +4,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
-import de.doerl.hqm.view.ClickHandler.ClickListener;
-
 public class LeafList<E> extends JList<E> {
 	private static final long serialVersionUID = -8417821463588699381L;
 	private ClickHandler mHandler = new ClickHandler();
@@ -20,12 +18,16 @@ public class LeafList<E> extends JList<E> {
 		addMouseListener( mHandler);
 	}
 
-	public ClickListener getHandler() {
-		return mHandler.getListener();
+	public void addClickListener( IClickListener l) {
+		mHandler.addClickListener( l);
 	}
 
 	@Override
 	public DefaultListModel<E> getModel() {
 		return mModel;
+	}
+
+	public void removeClickListener( IClickListener l) {
+		mHandler.removeClickListener( l);
 	}
 }

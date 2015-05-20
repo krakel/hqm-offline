@@ -239,15 +239,6 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		return result;
 	}
 
-	protected static JLabel leafImage( int x, int y, int w, int h, BufferedImage... arr) {
-		JLabel result = new JLabel( new MultiIcon( w, h, arr));
-		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setOpaque( false);
-//		result.setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
-		result.setBounds( x, y, w, h);
-		return result;
-	}
-
 	protected static JLabel leafLabel( Color color, String text) {
 		JLabel result = new JLabel( text);
 		result.setAlignmentX( LEFT_ALIGNMENT);
@@ -452,7 +443,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 		private int mWidth, mHeight;
 		private BufferedImage[] mArr;
 
-		public MultiIcon( int w, int h, BufferedImage[] arr) {
+		public MultiIcon( int w, int h, BufferedImage... arr) {
 			mWidth = w;
 			mHeight = h;
 			mArr = arr;

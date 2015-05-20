@@ -1,85 +1,74 @@
 package de.doerl.hqm.view;
 
-import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
 
-import javax.swing.JLabel;
+import javax.swing.Action;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.ui.ABundleAction;
+import de.doerl.hqm.ui.EditFrame;
+import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.Utils;
 
 public class EntityQuestSet extends AEntity<FQuestSet> {
 	private static final long serialVersionUID = 4427035968994904913L;
-	private static final BufferedImage QUEST_NORM = MAP.getSubimage( 170, 0, 25, 30);
-	private static final BufferedImage QUEST_BIG = MAP.getSubimage( 195, 0, 31, 37);
-	private static BufferedImage DARK_BIG = darker( QUEST_BIG, 0.6F);
-	private static BufferedImage DARK_NORM = darker( QUEST_NORM, 0.6F);
-	private FQuestSet mQS;
+	private FQuestSet mSet;
 	private JPanel mLeaf = new LeafAbsolute();
+	private JToolBar mTool = EditFrame.createToolBar();
+	private ClickHandler mHandler = new ClickHandler();
+	private AddQuestAction mAddAction = new AddQuestAction();
+	private MoveQuestAction mMoveAction = new MoveQuestAction();
+	private DeleteQuestAction mDeleteAction = new DeleteQuestAction();
+	private JToggleButton mBtnAdd = createToggleButton( mAddAction);
+	private JToggleButton mBtnMove = createToggleButton( mMoveAction);
+	private volatile LeafQuest mActiv;
 
-	public EntityQuestSet( EditView view, FQuestSet qs) {
+	public EntityQuestSet( EditView view, FQuestSet set) {
 		super( view, new GridLayout( 1, 1));
-		mQS = qs;
+		mSet = set;
 		add( mLeaf);
-		LineFactory.set( qs, mLeaf);
-		QuestFactory.set( qs, mLeaf);
+		LineFactory.set( set, this);
+		QuestFactory.set( set, this);
+		mTool.add( mBtnAdd);
+		mTool.add( mBtnMove);
+		mTool.add( mDeleteAction);
+		mTool.addSeparator();
+		mLeaf.addMouseListener( mHandler);
+		mHandler.addClickListener( new IClickListener() {
+			@Override
+			public void onDoubleClick( MouseEvent evt) {
+//				updateName();
+			}
+
+			@Override
+			public void onSingleClick( MouseEvent evt) {
+				updateActive( evt);
+			}
+		});
+		mBtnAdd.addItemListener( new ItemListener() {
+			@Override
+			public void itemStateChanged( ItemEvent evt) {
+				updateAddQuest();
+			}
+		});
 	}
 
-	private static BufferedImage darker( BufferedImage src, float factor) {
-		float[] scales = {
-			factor, factor, factor, 1F
-		};
-		RescaleOp op = new RescaleOp( scales, new float[4], null);
-		BufferedImage cc = copy( src);
-		return op.filter( cc, cc);
+	private void addLine( FQuest from, FQuest to) {
+		mLeaf.add( new LeafLine( from, to));
 	}
 
-	private static int getCenterX( FQuest quest) {
-		return getX( quest) + getW( quest) / 2;
-	}
-
-	private static int getCenterY( FQuest quest) {
-		return getY( quest) + getH( quest) / 2;
-	}
-
-	private static BufferedImage getDarker( FQuest quest) {
-		return quest.mBig.mValue ? DARK_BIG : DARK_NORM;
-	}
-
-	private static int getH( FQuest quest) {
-		return 2 * getImage( quest).getHeight();
-	}
-
-	private static BufferedImage getImage( FQuest quest) {
-		return quest.mBig.mValue ? QUEST_BIG : QUEST_NORM;
-	}
-
-	private static int getW( FQuest quest) {
-		return 2 * getImage( quest).getWidth();
-	}
-
-	private static int getX( FQuest quest) {
-		if (quest.mBig.mValue) {
-			return 2 * quest.mX.mValue;
-		}
-		else {
-			return 2 * (quest.mX.mValue + 1);
-		}
-	}
-
-	private static int getY( FQuest quest) {
-		if (quest.mBig.mValue) {
-			return 2 * quest.mY.mValue;
-		}
-		else {
-			return 2 * (quest.mY.mValue + 1);
-		}
+	private void addQuest( FQuest quest) {
+		mLeaf.add( new LeafQuest( quest), 0);
 	}
 
 	@Override
@@ -90,37 +79,105 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	protected void createRight( JPanel leaf) {
 	}
 
+	private JToggleButton createToggleButton( Action a) {
+		JToggleButton btn = new JToggleButton();
+		if (a != null && (a.getValue( Action.SMALL_ICON) != null || a.getValue( Action.LARGE_ICON_KEY) != null)) {
+			btn.setHideActionText( true);
+		}
+		btn.setHorizontalTextPosition( SwingConstants.CENTER);
+		btn.setVerticalTextPosition( SwingConstants.BOTTOM);
+		btn.setAction( a);
+		return btn;
+	}
+
 	@Override
 	public FQuestSet getBase() {
-		return mQS;
+		return mSet;
 	}
 
 	@Override
 	public JToolBar getToolBar() {
-		return null;
+		return mTool;
+	}
+
+	private void updateActive( MouseEvent evt) {
+		Object src = evt.getSource();
+		if (src instanceof LeafQuest) {
+			mActiv = (LeafQuest) src;
+		}
+		else if (src instanceof LeafLine) {
+		}
+		else {
+			FQuest quest = mSet.mParentCategory.mParentHQM.createQuest( "");
+			quest.mQuestSet = mSet;
+			quest.mX.mValue = evt.getX();
+			quest.mY.mValue = evt.getY();
+		}
+	}
+
+	private void updateAddQuest() {
+		boolean enabled = !mBtnAdd.isSelected();
+		mMoveAction.setEnabled( enabled);
+		mDeleteAction.setEnabled( enabled);
+	}
+
+	private void updateDeleteQuest() {
+		WarnDialogs.warnMissing( mView);
+	}
+
+	private void updateMoveQuest() {
+		boolean enabled = !mBtnMove.isSelected();
+		mAddAction.setEnabled( enabled);
+		mDeleteAction.setEnabled( enabled);
+	}
+
+	private class AddQuestAction extends ABundleAction {
+		private static final long serialVersionUID = -8667850457674712679L;
+
+		public AddQuestAction() {
+			super( "entity.add");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+//			updateAddQuest();
+		}
+	}
+
+	private class DeleteQuestAction extends ABundleAction {
+		private static final long serialVersionUID = -433615690858042140L;
+
+		public DeleteQuestAction() {
+			super( "entity.delete");
+			setEnabled( false);
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			updateDeleteQuest();
+		}
 	}
 
 	private static class LineFactory extends AHQMWorker<Object, Object> {
-		private static final Color LINE_COLOR = new Color( 0xff404040);
+		private EntityQuestSet mEntity;
 		private FQuestSet mSet;
-		private JPanel mLeaf;
 
-		private LineFactory( FQuestSet qs, JPanel leaf) {
+		private LineFactory( FQuestSet qs, EntityQuestSet leaf) {
 			mSet = qs;
-			mLeaf = leaf;
+			mEntity = leaf;
 		}
 
-		public static void set( FQuestSet qs, JPanel leaf) {
-			LineFactory worker = new LineFactory( qs, leaf);
-			qs.mParentCategory.mParentHQM.forEachQuest( worker, leaf);
+		public static void set( FQuestSet qs, EntityQuestSet entity) {
+			LineFactory worker = new LineFactory( qs, entity);
+			qs.mParentCategory.mParentHQM.forEachQuest( worker, null);
 		}
 
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
-			if (Utils.equals( quest.mSet, mSet)) {
+			if (Utils.equals( quest.mQuestSet, mSet)) {
 				for (FQuest req : quest.mRequirements) {
-					if (req != null && Utils.equals( quest.mSet, req.mSet)) {
-						mLeaf.add( new LeafLine( getCenterX( quest), getCenterY( quest), getCenterX( req), getCenterY( req), 5, LINE_COLOR));
+					if (req != null && Utils.equals( quest.mQuestSet, req.mQuestSet)) {
+						mEntity.addLine( quest, req);
 					}
 				}
 			}
@@ -128,30 +185,37 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private static class QuestFactory extends AHQMWorker<Object, Object> {
-		private FQuestSet mSet;
-		private JPanel mLeaf;
+	private class MoveQuestAction extends ABundleAction {
+		private static final long serialVersionUID = -3157466864218507113L;
 
-		private QuestFactory( FQuestSet qs, JPanel leaf) {
-			mSet = qs;
-			mLeaf = leaf;
+		public MoveQuestAction() {
+			super( "entity.move");
 		}
 
-		public static void set( FQuestSet qs, JPanel leaf) {
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			updateMoveQuest();
+		}
+	}
+
+	private static class QuestFactory extends AHQMWorker<Object, Object> {
+		private EntityQuestSet mEntity;
+		private FQuestSet mSet;
+
+		private QuestFactory( FQuestSet qs, EntityQuestSet entity) {
+			mSet = qs;
+			mEntity = entity;
+		}
+
+		public static void set( FQuestSet qs, EntityQuestSet leaf) {
 			QuestFactory worker = new QuestFactory( qs, leaf);
-			qs.mParentCategory.mParentHQM.forEachQuest( worker, leaf);
+			qs.mParentCategory.mParentHQM.forEachQuest( worker, null);
 		}
 
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
-			if (Utils.equals( quest.mSet, mSet)) {
-				int x = getX( quest);
-				int y = getY( quest);
-				int w = getW( quest);
-				int h = getH( quest);
-				JLabel lbl = leafImage( x, y, w, h, getDarker( quest));
-				mLeaf.add( lbl);
-				mLeaf.setComponentZOrder( lbl, 0);
+			if (Utils.equals( quest.mQuestSet, mSet)) {
+				mEntity.addQuest( quest);
 			}
 			return null;
 		}

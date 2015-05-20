@@ -12,9 +12,9 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
+import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
-import de.doerl.hqm.base.FGroupTiers;
-import de.doerl.hqm.base.FGroups;
+import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FLocation;
@@ -22,7 +22,7 @@ import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FQuestSets;
+import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskItemsConsume;
 import de.doerl.hqm.base.FQuestTaskItemsConsumeQDS;
@@ -34,7 +34,7 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputations;
+import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.utils.ToString;
@@ -48,6 +48,10 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 		return null;
 	}
 
+	protected T doCategory( ACategory<? extends ANamed> cat, U p) {
+		return doBase( cat, p);
+	}
+
 	protected T doMember( AMember<? extends ANamed> member, U p) {
 		return doNamed( member, p);
 	}
@@ -58,10 +62,6 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 
 	protected T doRequirement( ARequirement req, U p) {
 		return doBase( req, p);
-	}
-
-	protected T doSet( ACategory<? extends ANamed> cat, U p) {
-		return doBase( cat, p);
 	}
 
 	protected T doTask( AQuestTask task, U p) {
@@ -83,8 +83,8 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	@Override
-	public T forGroups( FGroups set, U p) {
-		return doSet( set, p);
+	public T forGroupCat( FGroupCat cat, U p) {
+		return doCategory( cat, p);
 	}
 
 	@Override
@@ -93,8 +93,8 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	@Override
-	public T forGroupTiers( FGroupTiers set, U p) {
-		return doSet( set, p);
+	public T forGroupTierCat( FGroupTierCat cat, U p) {
+		return doCategory( cat, p);
 	}
 
 	@Override
@@ -128,13 +128,13 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	@Override
-	public T forQuestSet( FQuestSet qs, U p) {
-		return doMember( qs, p);
+	public T forQuestSet( FQuestSet set, U p) {
+		return doMember( set, p);
 	}
 
 	@Override
-	public T forQuestSets( FQuestSets set, U p) {
-		return doSet( set, p);
+	public T forQuestSetCat( FQuestSetCat cat, U p) {
+		return doCategory( cat, p);
 	}
 
 	@Override
@@ -148,8 +148,8 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	@Override
-	public T forReputations( FReputations set, U p) {
-		return doSet( set, p);
+	public T forReputationCat( FReputationCat cat, U p) {
+		return doCategory( cat, p);
 	}
 
 	@Override

@@ -15,8 +15,8 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
-import de.doerl.hqm.base.FGroupTiers;
-import de.doerl.hqm.base.FGroups;
+import de.doerl.hqm.base.FGroupTierCat;
+import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FItemStack;
@@ -26,7 +26,7 @@ import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FQuestSets;
+import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskItemsConsume;
 import de.doerl.hqm.base.FQuestTaskItemsConsumeQDS;
@@ -38,7 +38,7 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputations;
+import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
@@ -182,7 +182,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		return null;
 	}
 
-	private void readGroup( FGroups set) {
+	private void readGroup( FGroupCat set) {
 		int count = mSrc.readData( DataBitHelper.GROUP_COUNT);
 		for (int i = 0; i < count; ++i) {
 			int id = mSrc.contains( FileVersion.BAG_LIMITS) ? mSrc.readData( DataBitHelper.GROUP_COUNT) : i;
@@ -207,7 +207,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 	}
 
-	private void readGroupTiers( FGroupTiers set) {
+	private void readGroupTiers( FGroupTierCat set) {
 		int count = mSrc.readData( DataBitHelper.TIER_COUNT);
 		for (int i = 0; i < count; ++i) {
 			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
@@ -254,16 +254,16 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 				member.mBig.mValue = mSrc.readBoolean();
 				if (mSrc.contains( FileVersion.SETS)) {
 					int setID = mSrc.readData( DataBitHelper.QUEST_SETS);
-					FQuestSet qs = QuestSetOfIdx.get( hqm.mQuestSets, setID);
+					FQuestSet qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
 					if (qs == null) {
-						qs = hqm.mQuestSets.createMember( "--Missing--");
+						qs = hqm.mQuestSetCat.createMember( "--Missing--");
 					}
 					member.mIcon.mValue = mSrc.readIconIf();
-					member.mSet = qs;
+					member.mQuestSet = qs;
 				}
 				else {
-					FQuestSet qs = hqm.mQuestSets.createMember( "--Default--");
-					member.mSet = qs;
+					FQuestSet qs = hqm.mQuestSetCat.createMember( "--Default--");
+					member.mQuestSet = qs;
 				}
 				if (mSrc.readBoolean()) {
 					mRequirements.put( member, mSrc.readIds( DataBitHelper.QUESTS));
@@ -304,7 +304,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 	}
 
-	private void readQuestSets( FQuestSets set) {
+	private void readQuestSetCat( FQuestSetCat set) {
 		if (mSrc.contains( FileVersion.SETS)) {
 			int count = mSrc.readData( DataBitHelper.QUEST_SETS);
 			for (int i = 0; i < count; i++) {
@@ -331,7 +331,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 	}
 
-	private void readReputations( FReputations set) {
+	private void readReputations( FReputationCat set) {
 		if (mSrc.contains( FileVersion.REPUTATION)) {
 			int count = mSrc.readData( DataBitHelper.REPUTATION);
 			for (int i = 0; i < count; ++i) {
@@ -356,12 +356,12 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		else {
 			hqm.mDesc.mValue = "No description";
 		}
-		readQuestSets( hqm.mQuestSets);
-		readReputations( hqm.mRepSets);
+		readQuestSetCat( hqm.mQuestSetCat);
+		readReputations( hqm.mReputationCat);
 		readQuests( hqm);
 		if (mSrc.contains( FileVersion.BAGS)) {
-			readGroupTiers( hqm.mGroupTiers);
-			readGroup( hqm.mGroups);
+			readGroupTiers( hqm.mGroupTierCat);
+			readGroup( hqm.mGroupCat);
 		}
 		updateRequirements( hqm);
 		updateOptionLinks( hqm);

@@ -9,9 +9,9 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
+import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
-import de.doerl.hqm.base.FGroupTiers;
-import de.doerl.hqm.base.FGroups;
+import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FItemStack;
@@ -21,7 +21,7 @@ import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FQuestSets;
+import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskItemsConsume;
 import de.doerl.hqm.base.FQuestTaskItemsConsumeQDS;
@@ -33,7 +33,7 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputations;
+import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
@@ -116,11 +116,11 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( "version", hqm.getVersion());
 		mDst.printIf( "passcode", hqm.mPassCode);
 		mDst.print( "decription", hqm.mDesc);
-		writeSets( hqm.mQuestSets);
+		writeQuestSetCat( hqm.mQuestSetCat);
 		writeQuests( hqm);
-		writeReputations( hqm.mRepSets);
-		writeGroupTiers( hqm.mGroupTiers);
-		writeGroups( hqm.mGroups);
+		writeReputations( hqm.mReputationCat);
+		writeGroupTiers( hqm.mGroupTierCat);
+		writeGroups( hqm.mGroupCat);
 		mDst.endObject();
 		return null;
 	}
@@ -191,7 +191,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 			mDst.print( "x", quest.mX);
 			mDst.print( "y", quest.mY);
 			mDst.print( "big", quest.mBig);
-			mDst.print( "setID", QuestSetIndex.get( quest.mSet));
+			mDst.print( "setID", QuestSetIndex.get( quest.mQuestSet));
 			mDst.print( "icon", quest.mIcon);
 			if (quest.mRequirements != null) {
 				writeQuestArr( quest.mRequirements, "requirements");
@@ -223,10 +223,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	}
 
 	@Override
-	public Object forQuestSet( FQuestSet qs, Object p) {
+	public Object forQuestSet( FQuestSet set, Object p) {
 		mDst.beginObject();
-		mDst.print( "name", qs.mName);
-		mDst.print( "decription", qs.mDesc);
+		mDst.print( "name", set.mName);
+		mDst.print( "decription", set.mDesc);
 		mDst.endObject();
 		return null;
 	}
@@ -353,15 +353,15 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		hqm.accept( this, null);
 	}
 
-	private void writeGroups( FGroups set) {
-		mDst.beginArray( "groups");
+	private void writeGroups( FGroupCat set) {
+		mDst.beginArray( "groupCat");
 		set.forEachMember( this, mDst);
 		mDst.endArray();
 		mDst.println();
 	}
 
-	private void writeGroupTiers( FGroupTiers set) {
-		mDst.beginArray( "groupTiers");
+	private void writeGroupTiers( FGroupTierCat set) {
+		mDst.beginArray( "groupTierCat");
 		set.forEachMember( this, mDst);
 		mDst.endArray();
 		mDst.println();
@@ -391,15 +391,15 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.println();
 	}
 
-	private void writeReputations( FReputations set) {
-		mDst.beginArray( "reputations");
+	private void writeQuestSetCat( FQuestSetCat set) {
+		mDst.beginArray( "questSetCat");
 		set.forEachMember( this, mDst);
 		mDst.endArray();
 		mDst.println();
 	}
 
-	private void writeSets( FQuestSets set) {
-		mDst.beginArray( "questSets");
+	private void writeReputations( FReputationCat set) {
+		mDst.beginArray( "reputationCat");
 		set.forEachMember( this, mDst);
 		mDst.endArray();
 		mDst.println();

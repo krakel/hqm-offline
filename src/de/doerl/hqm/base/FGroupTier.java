@@ -4,11 +4,11 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FGroupTier extends AMember<FGroupTier> {
-	public final FGroupTiers mParentCategory;
+	public final FGroupTierCat mParentCategory;
 	public final FParameterInt mColorID = new FParameterInt( this);
 	public final FParameterIntegerArr mWeights = new FParameterIntegerArr( this);
 
-	public FGroupTier( FGroupTiers parent, String name) {
+	public FGroupTier( FGroupTierCat parent, String name) {
 		super( name);
 		mParentCategory = parent;
 	}

@@ -16,11 +16,11 @@ public final class FHqm extends ABase {
 	private FileVersion mVersion;
 	public final FParameterString mPassCode = new FParameterString( this);
 	public final FParameterString mDesc = new FParameterString( this);
-	public final FQuestSets mQuestSets = new FQuestSets( this);
+	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
+	public final FReputationCat mReputationCat = new FReputationCat( this);
+	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
+	public final FGroupCat mGroupCat = new FGroupCat( this);
 	private Vector<FQuest> mQuests = new Vector<FQuest>();
-	public final FReputations mRepSets = new FReputations( this);
-	public final FGroupTiers mGroupTiers = new FGroupTiers( this);
-	public final FGroups mGroups = new FGroups( this);
 	private URI mURI;
 
 	public FHqm( URI uri) {

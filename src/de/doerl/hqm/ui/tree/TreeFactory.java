@@ -22,7 +22,7 @@ public class TreeFactory extends AHQMWorker<Object, ElementTreeModel> {
 	}
 
 	@Override
-	protected Object doSet( ACategory<? extends ANamed> set, ElementTreeModel model) {
+	protected Object doCategory( ACategory<? extends ANamed> set, ElementTreeModel model) {
 		NodeFactory.get( set, model);
 		set.forEachMember( this, model);
 		return null;
@@ -49,11 +49,11 @@ public class TreeFactory extends AHQMWorker<Object, ElementTreeModel> {
 	@Override
 	public Object forHQM( FHqm hqm, ElementTreeModel model) {
 		NodeFactory.get( hqm, model);
-		hqm.mQuestSets.accept( this, model);
-		hqm.mRepSets.accept( this, model);
+		hqm.mQuestSetCat.accept( this, model);
+		hqm.mReputationCat.accept( this, model);
 		hqm.forEachQuest( this, model);
-		hqm.mGroupTiers.accept( this, model);
-		hqm.mGroups.accept( this, model);
+		hqm.mGroupTierCat.accept( this, model);
+		hqm.mGroupCat.accept( this, model);
 		return null;
 	}
 
@@ -83,8 +83,8 @@ public class TreeFactory extends AHQMWorker<Object, ElementTreeModel> {
 	}
 
 	@Override
-	public Object forQuestSet( FQuestSet qs, ElementTreeModel model) {
-		NodeFactory.get( qs, model);
+	public Object forQuestSet( FQuestSet set, ElementTreeModel model) {
+		NodeFactory.get( set, model);
 //		NodeFactory.get( qs.mDesc, model);
 		return null;
 	}

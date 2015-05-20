@@ -18,8 +18,8 @@ public class QuestSetIndex extends AHQMWorker<Boolean, Object> {
 	}
 
 	@Override
-	public Boolean forQuestSet( FQuestSet qs, Object p) {
+	public Boolean forQuestSet( FQuestSet set, Object p) {
 		++mResult;
-		return Utils.equals( qs, mSet) ? Boolean.TRUE : null;
+		return Utils.equals( set, mSet) ? Boolean.TRUE : null;
 	}
 }

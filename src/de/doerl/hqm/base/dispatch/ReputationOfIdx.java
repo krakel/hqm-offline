@@ -3,7 +3,7 @@ package de.doerl.hqm.base.dispatch;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputations;
+import de.doerl.hqm.base.FReputationCat;
 
 public class ReputationOfIdx extends AHQMWorker<FReputation, Object> {
 	private int mIndex;
@@ -13,14 +13,14 @@ public class ReputationOfIdx extends AHQMWorker<FReputation, Object> {
 	}
 
 	public static FReputation get( FHqm hqm, int idx) {
-		return get( hqm.mRepSets, idx);
+		return get( hqm.mReputationCat, idx);
 	}
 
 	public static FReputation get( FQuestTaskReputationTarget task, int idx) {
-		return get( task.mParentQuest.mParentHQM.mRepSets, idx);
+		return get( task.mParentQuest.mParentHQM.mReputationCat, idx);
 	}
 
-	public static FReputation get( FReputations set, int idx) {
+	public static FReputation get( FReputationCat set, int idx) {
 		ReputationOfIdx worker = new ReputationOfIdx( idx);
 		return set.forEachMember( worker, null);
 	}

@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IParameterWorker;
-import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.ParameterType;
 
 public final class FParameterInt extends AParameter implements Comparable<FParameterInt> {
 	public int mValue;
@@ -20,8 +20,8 @@ public final class FParameterInt extends AParameter implements Comparable<FParam
 	}
 
 	@Override
-	public ElementTyp getElementTyp() {
-		return ElementTyp.PARAMETER_INT;
+	public ParameterType getElementTyp() {
+		return ParameterType.PARAMETER_INT;
 	}
 
 	@Override

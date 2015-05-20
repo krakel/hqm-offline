@@ -11,7 +11,7 @@ public enum ElementTyp {
 	HQM( "HQM", "hqm"),
 	QUEST( "Quest", "quest"),
 	QUEST_SET( "QuestSet", "questSet"),
-	QUEST_SETS( "QuestSets", "questSets"),
+	QUEST_SET_CAT( "QuestSetCat", "questSetCat"),
 	QUEST_TASK_DEATH( "TaskDeath", "taskDeath"),
 	QUEST_TASK_ITEMS_CONSUME( "TaskItemsConsume", "taskItemConsume"),
 	QUEST_TASK_ITEMS_CONSUME_QDS( "TaskItemsConsumeQDS", "taskItemConsumeQDS"),
@@ -22,7 +22,7 @@ public enum ElementTyp {
 	QUEST_TASK_REPUTATION_KILL( "TaskReputationKill", "taskRepKill"),
 	QUEST_TASK_REPUTATION_TARGET( "TaskReputationTarget", "taskRepTarget"),
 	REPUTATION( "Reputation", "reputation"),
-	REPUTATIONS( "Reputations", "reputations"),
+	REPUTATION_CAT( "ReputationCat", "reputationCat"),
 	REPUTATION_MARKER( "Marker", "repMarker"),
 	REPUTATION_REWARD( "Reward", "repReward"),
 	REPUTATION_SETTING( "Setting", "repSetting"),
@@ -32,16 +32,9 @@ public enum ElementTyp {
 	ITEM_REQUIREMENT( "ItemRequirement", "itemReq"),
 	FLUID_REQUIREMENT( "FluidRequirement", "fluidReq"),
 	GROUP( "Group", "grp"),
-	GROUPS( "Groups", "grps"),
+	GROUP_CAT( "GroupCat", "grpCat"),
 	GROUP_TIER( "GroupTier", "grpTier"),
-	GROUP_TIERS( "GroupTiers", "grpTiers"),
-	PARAMETER_SETS( "ParameterSets", "paramSets"),
-	PARAMETER_BOOLEAN( "ParameterBoolean", "paramBool"),
-	PARAMETER_INTEGER( "ParameterInteger", "paramInt"),
-	PARAMETER_INT( "ParameterInt", "paramInt"),
-	PARAMETER_INT_ARR( "ParameterIntArr", "paramIntArr"),
-	PARAMETER_STACK( "ParameterStack", "paramStk"),
-	PARAMETER_STRING( "ParameterString", "paramString");
+	GROUP_TIER_CAT( "GroupTierCat", "grpTierCat");
 	private String mToken;
 	private String mIconName;
 

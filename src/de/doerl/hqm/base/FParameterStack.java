@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IParameterWorker;
-import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.ParameterType;
 
 public final class FParameterStack extends AParameter {
 	public AStack mValue;
@@ -21,8 +21,8 @@ public final class FParameterStack extends AParameter {
 	}
 
 	@Override
-	public ElementTyp getElementTyp() {
-		return ElementTyp.PARAMETER_STACK;
+	public ParameterType getElementTyp() {
+		return ParameterType.PARAMETER_STACK;
 	}
 
 	@Override

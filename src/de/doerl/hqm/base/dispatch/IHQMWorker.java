@@ -2,9 +2,9 @@ package de.doerl.hqm.base.dispatch;
 
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
+import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
-import de.doerl.hqm.base.FGroupTiers;
-import de.doerl.hqm.base.FGroups;
+import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FLocation;
@@ -12,7 +12,7 @@ import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FQuestSets;
+import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskItemsConsume;
 import de.doerl.hqm.base.FQuestTaskItemsConsumeQDS;
@@ -24,7 +24,7 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputations;
+import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 
@@ -33,11 +33,11 @@ public interface IHQMWorker<T, U> extends IWorker {
 
 	T forGroup( FGroup grp, U p);
 
-	T forGroups( FGroups set, U p);
+	T forGroupCat( FGroupCat cat, U p);
 
 	T forGroupTier( FGroupTier gt, U p);
 
-	T forGroupTiers( FGroupTiers set, U p);
+	T forGroupTierCat( FGroupTierCat cat, U p);
 
 	T forHQM( FHqm hqm, U p);
 
@@ -51,15 +51,15 @@ public interface IHQMWorker<T, U> extends IWorker {
 
 	T forQuest( FQuest quest, U p);
 
-	T forQuestSet( FQuestSet qs, U p);
+	T forQuestSet( FQuestSet set, U p);
 
-	T forQuestSets( FQuestSets set, U p);
+	T forQuestSetCat( FQuestSetCat cat, U p);
 
 	T forRepeatInfo( FRepeatInfo info, U p);
 
 	T forReputation( FReputation rep, U p);
 
-	T forReputations( FReputations set, U p);
+	T forReputationCat( FReputationCat cat, U p);
 
 	T forReward( FReward rr, U p);
 

@@ -1,7 +1,7 @@
 package de.doerl.hqm.view;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.utils.Utils;
 
-class ClickHandler implements MouseListener {
+class ClickHandler extends MouseAdapter {
 	private static final Logger LOGGER = Logger.getLogger( ClickHandler.class.getName());
 	private static final Timer TIMER = new Timer( "doubleclickTimer", true);
 	private ClickListener mListener = new ClickListener();
@@ -20,8 +20,8 @@ class ClickHandler implements MouseListener {
 	public ClickHandler() {
 	}
 
-	public ClickListener getListener() {
-		return mListener;
+	public void addClickListener( IClickListener l) {
+		mListener.addClickListener( l);
 	}
 
 	@Override
@@ -44,22 +44,8 @@ class ClickHandler implements MouseListener {
 		}
 	}
 
-	@Override
-	public void mouseEntered( MouseEvent evt) {
-		mListener.fireEnterEvent( evt);
-	}
-
-	@Override
-	public void mouseExited( MouseEvent evt) {
-		mListener.fireExitEvent( evt);
-	}
-
-	@Override
-	public void mousePressed( MouseEvent evt) {
-	}
-
-	@Override
-	public void mouseReleased( MouseEvent evt) {
+	public void removeClickListener( IClickListener l) {
+		mListener.removeClickListener( l);
 	}
 
 	public static class ClickListener {
@@ -75,28 +61,6 @@ class ClickHandler implements MouseListener {
 			for (IClickListener l : mListener) {
 				try {
 					l.onDoubleClick( evt);
-				}
-				catch (Exception ex) {
-					Utils.logThrows( LOGGER, Level.WARNING, ex);
-				}
-			}
-		}
-
-		void fireEnterEvent( MouseEvent evt) {
-			for (IClickListener l : mListener) {
-				try {
-					l.onEnterClick( evt);
-				}
-				catch (Exception ex) {
-					Utils.logThrows( LOGGER, Level.WARNING, ex);
-				}
-			}
-		}
-
-		void fireExitEvent( MouseEvent evt) {
-			for (IClickListener l : mListener) {
-				try {
-					l.onExitClick( evt);
 				}
 				catch (Exception ex) {
 					Utils.logThrows( LOGGER, Level.WARNING, ex);

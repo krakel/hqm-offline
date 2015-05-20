@@ -5,10 +5,10 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FQuestSet extends AMember<FQuestSet> {
 //	private static final Logger LOGGER = Logger.getLogger( FQuestSet.class.getName());
-	public final FQuestSets mParentCategory;
+	public final FQuestSetCat mParentCategory;
 	public final FParameterString mDesc = new FParameterString( this);
 
-	public FQuestSet( FQuestSets parent, String name) {
+	public FQuestSet( FQuestSetCat parent, String name) {
 		super( name);
 		mParentCategory = parent;
 	}

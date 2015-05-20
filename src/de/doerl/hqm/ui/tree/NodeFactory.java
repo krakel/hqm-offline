@@ -30,21 +30,21 @@ public class NodeFactory extends AHQMWorker<MutableTreeNode, ElementTreeModel> {
 	}
 
 	@Override
-	protected MutableTreeNode doNamed( ANamed named, ElementTreeModel model) {
-		MutableTreeNode node = model.getNode( named);
+	protected MutableTreeNode doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
+		MutableTreeNode node = model.getNode( cat);
 		if (node == null) {
-			MutableTreeNode parent = named.getParent().accept( this, model);
-			node = model.createNode( parent, new NamedNode( named));
+			MutableTreeNode parent = cat.getParent().accept( this, model);
+			node = model.createNode( parent, new SetNode( cat));
 		}
 		return node;
 	}
 
 	@Override
-	protected MutableTreeNode doSet( ACategory<? extends ANamed> cat, ElementTreeModel model) {
-		MutableTreeNode node = model.getNode( cat);
+	protected MutableTreeNode doNamed( ANamed named, ElementTreeModel model) {
+		MutableTreeNode node = model.getNode( named);
 		if (node == null) {
-			MutableTreeNode parent = cat.getParent().accept( this, model);
-			node = model.createNode( parent, new SetNode( cat));
+			MutableTreeNode parent = named.getParent().accept( this, model);
+			node = model.createNode( parent, new NamedNode( named));
 		}
 		return node;
 	}
@@ -63,7 +63,7 @@ public class NodeFactory extends AHQMWorker<MutableTreeNode, ElementTreeModel> {
 	public MutableTreeNode forQuest( FQuest quest, ElementTreeModel model) {
 		MutableTreeNode node = model.getNode( quest);
 		if (node == null) {
-			MutableTreeNode parent = quest.mSet.accept( this, model);
+			MutableTreeNode parent = quest.mQuestSet.accept( this, model);
 			node = model.createNode( parent, new NamedNode( quest));
 		}
 		return node;

@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IParameter;
-import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.ParameterType;
 
 public abstract class AParameter implements IParameter {
 	public final ABase mParent;
@@ -10,7 +10,7 @@ public abstract class AParameter implements IParameter {
 		mParent = parent;
 	}
 
-	public abstract ElementTyp getElementTyp();
+	public abstract ParameterType getElementTyp();
 
 	public ABase getParent() {
 		return mParent;

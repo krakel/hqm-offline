@@ -11,12 +11,12 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FReputation extends AMember<FReputation> {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
-	public final FReputations mParentCategory;
+	public final FReputationCat mParentCategory;
 	public final FParameterInteger mID = new FParameterInteger( this);
 	public final FParameterString mNeutral = new FParameterString( this);
 	public Vector<FMarker> mMarker = new Vector<FMarker>();
 
-	public FReputation( FReputations parent, String name) {
+	public FReputation( FReputationCat parent, String name) {
 		super( name);
 		mParentCategory = parent;
 	}

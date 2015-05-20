@@ -28,7 +28,7 @@ class EntityHQM extends AEntity<FHqm> {
 		mHQM = hqm;
 		createLeafs();
 		mDesc.setText( mHQM.mDesc.mValue);
-		mDesc.getHandler().addClickListener( new AClickListener() {
+		mDesc.addClickListener( new AClickListener() {
 			@Override
 			public void onDoubleClick( MouseEvent evt) {
 				updateDesc();

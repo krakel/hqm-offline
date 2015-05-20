@@ -27,7 +27,7 @@ import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FQuestSets;
+import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetIndex;
 import de.doerl.hqm.quest.GuiColor;
@@ -36,17 +36,17 @@ import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.Utils;
 
-class EntityQuestSets extends AEntity<FQuestSets> {
+class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private static final long serialVersionUID = -5930552368392528379L;
-	private static final Logger LOGGER = Logger.getLogger( EntityQuestSets.class.getName());
-	private FQuestSets mCategory;
+	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
+	private FQuestSetCat mCategory;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private LeafList<FQuestSet> mList = new LeafList<FQuestSet>();
 	private LeafTextBox mDesc = new LeafTextBox();
-	private TextBoxAction mDescAction = new TextBoxAction();
-	private TextFieldAction mNameAction = new TextFieldAction();
 	private AddSetAction mAddAction = new AddSetAction();
 	private DeleteSetAction mDeleteAction = new DeleteSetAction();
+	private TextBoxAction mDescAction = new TextBoxAction();
+	private TextFieldAction mNameAction = new TextFieldAction();
 	private JLabel mTotal = leafLabel( GuiColor.BLACK.getColor(), "");
 	private JLabel mLocked = leafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
 	private JLabel mCompleted = leafLabel( GuiColor.GREEN.getColor(), "0 completed quests");
@@ -56,13 +56,13 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 	private JScrollPane mScroll;
 	private volatile FQuestSet mActiv;
 
-	public EntityQuestSets( EditView view, FQuestSets cat) {
+	public EntityQuestSetCat( EditView view, FQuestSetCat cat) {
 		super( view, new GridLayout( 1, 2));
 		mCategory = cat;
 		mList.setCellRenderer( new QuestSetRenderer());
 		createLeafs();
 		updateList( null);
-		mList.getHandler().addClickListener( new AClickListener() {
+		mList.addClickListener( new AClickListener() {
 			@Override
 			public void onDoubleClick( MouseEvent evt) {
 				updateName();
@@ -73,7 +73,7 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 				updateListSingle( evt);
 			}
 		});
-		mDesc.getHandler().addClickListener( new AClickListener() {
+		mDesc.addClickListener( new AClickListener() {
 			@Override
 			public void onDoubleClick( MouseEvent evt) {
 				updateDesc();
@@ -108,7 +108,7 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 	}
 
 	@Override
-	public FQuestSets getBase() {
+	public FQuestSetCat getBase() {
 		return mCategory;
 	}
 
@@ -253,7 +253,7 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 
 		@Override
 		public Object forQuest( FQuest quest, FQuestSet qs) {
-			if (Utils.equals( quest.mSet, qs)) {
+			if (Utils.equals( quest.mQuestSet, qs)) {
 				QuestRemoveDepent.get( quest);
 //				quest.forEachQuestTask( this, qs); not needed
 				quest.remove();
@@ -307,10 +307,10 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 	}
 
 	private static class QuestSetAction implements Runnable {
-		private EntityQuestSets mEntity;
+		private EntityQuestSetCat mEntity;
 		private FQuestSet mQS;
 
-		public QuestSetAction( EntityQuestSets entity, FQuestSet qs) {
+		public QuestSetAction( EntityQuestSetCat entity, FQuestSet qs) {
 			mEntity = entity;
 			mQS = qs;
 		}
@@ -327,7 +327,7 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 		private QuestSetFactory() {
 		}
 
-		public static void get( FQuestSets set, DefaultListModel<FQuestSet> model) {
+		public static void get( FQuestSetCat set, DefaultListModel<FQuestSet> model) {
 			model.clear();
 			set.forEachMember( WORKER, model);
 		}
@@ -338,8 +338,8 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 		}
 
 		@Override
-		public Object forQuestSet( FQuestSet qs, DefaultListModel<FQuestSet> model) {
-			model.addElement( qs);
+		public Object forQuestSet( FQuestSet set, DefaultListModel<FQuestSet> model) {
+			model.addElement( set);
 			return null;
 		}
 	}
@@ -350,13 +350,13 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 		private QuestSetFirst() {
 		}
 
-		public static FQuestSet get( FQuestSets cat) {
+		public static FQuestSet get( FQuestSetCat cat) {
 			return cat.forEachMember( WORKER, null);
 		}
 
 		@Override
-		public FQuestSet forQuestSet( FQuestSet qs, Object p) {
-			return qs;
+		public FQuestSet forQuestSet( FQuestSet set, Object p) {
+			return set;
 		}
 	}
 
@@ -409,7 +409,7 @@ class EntityQuestSets extends AEntity<FQuestSets> {
 
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
-			if (mRef == null || Utils.equals( quest.mSet, mRef) && !quest.isDeleted()) {
+			if (mRef == null || Utils.equals( quest.mQuestSet, mRef) && !quest.isDeleted()) {
 				++mResult;
 			}
 			return null;

@@ -8,14 +8,6 @@ public abstract class AClickListener implements IClickListener {
 	}
 
 	@Override
-	public void onEnterClick( MouseEvent evt) {
-	}
-
-	@Override
-	public void onExitClick( MouseEvent evt) {
-	}
-
-	@Override
 	public void onSingleClick( MouseEvent evt) {
 	}
 }

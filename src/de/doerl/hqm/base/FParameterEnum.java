@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IParameterWorker;
-import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.ParameterType;
 
 public class FParameterEnum<E extends Enum<?>> extends AParameter {
 	public E mValue;
@@ -16,8 +16,8 @@ public class FParameterEnum<E extends Enum<?>> extends AParameter {
 	}
 
 	@Override
-	public ElementTyp getElementTyp() {
-		return ElementTyp.PARAMETER_STRING;
+	public ParameterType getElementTyp() {
+		return ParameterType.PARAMETER_STRING;
 	}
 
 	@Override

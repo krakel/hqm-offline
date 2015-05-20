@@ -4,14 +4,14 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FQuestSets extends ACategory<FQuestSet> {
-	FQuestSets( FHqm parent) {
+public final class FQuestSetCat extends ACategory<FQuestSet> {
+	FQuestSetCat( FHqm parent) {
 		super( parent);
 	}
 
 	@Override
 	public <T, U> T accept( IHQMWorker<T, U> w, U p) {
-		return w.forQuestSets( this, p);
+		return w.forQuestSetCat( this, p);
 	}
 
 	@Override
@@ -26,6 +26,6 @@ public final class FQuestSets extends ACategory<FQuestSet> {
 
 	@Override
 	public ElementTyp getElementTyp() {
-		return ElementTyp.QUEST_SETS;
+		return ElementTyp.QUEST_SET_CAT;
 	}
 }

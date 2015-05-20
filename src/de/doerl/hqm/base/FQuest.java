@@ -25,7 +25,7 @@ public final class FQuest extends ANamed {
 	public final Vector<FParameterStack> mChoices = new Vector<FParameterStack>();
 	public final Vector<FQuest> mRequirements = new Vector<FQuest>();
 	public final Vector<FQuest> mOptionLinks = new Vector<FQuest>();
-	public FQuestSet mSet;
+	public FQuestSet mQuestSet;
 	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();
 	private Vector<FReward> Reputation = new Vector<FReward>();
@@ -124,9 +124,21 @@ public final class FQuest extends ANamed {
 		return null;
 	}
 
+	public int getCenterX() {
+		return getX() + getH() / 2;
+	}
+
+	public int getCenterY() {
+		return getY() + getH() / 2;
+	}
+
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST;
+	}
+
+	public int getH() {
+		return 2 * (isBig() ? 37 : 30);
 	}
 
 	@Override
@@ -136,6 +148,32 @@ public final class FQuest extends ANamed {
 
 	public FRepeatInfo getRepeatInfo() {
 		return mRepeatInfo;
+	}
+
+	public int getW() {
+		return 2 * (isBig() ? 31 : 25);
+	}
+
+	public int getX() {
+		if (isBig()) {
+			return 2 * mX.mValue;
+		}
+		else {
+			return 2 * (mX.mValue + 1);
+		}
+	}
+
+	public int getY() {
+		if (isBig()) {
+			return 2 * mY.mValue;
+		}
+		else {
+			return 2 * (mY.mValue + 1);
+		}
+	}
+
+	public boolean isBig() {
+		return mBig.mValue;
 	}
 
 	public boolean isDeleted() {
