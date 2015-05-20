@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,10 +79,10 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			}
 		});
 		mTool.add( mAddAction);
-		mTool.add( mDeleteAction);
-		mTool.addSeparator();
 		mTool.add( mNameAction);
 		mTool.add( mDescAction);
+		mTool.addSeparator();
+		mTool.add( mDeleteAction);
 		mTool.addSeparator();
 	}
 
@@ -276,33 +275,6 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			// 1. isLinkFree() // verlinkte quests
 //			return  && ( triggerType.doesWorkAsInvisible() || isVisible( playerName)) && enabledParentEvaluator.isValid( playerName);
 			return null;
-		}
-	}
-
-	private static class QuestRemoveDepent extends AHQMWorker<Object, FQuest> {
-		private static final QuestRemoveDepent WORKER = new QuestRemoveDepent();
-
-		private QuestRemoveDepent() {
-		}
-
-		public static void get( FQuest req) {
-			req.mParentHQM.forEachQuest( WORKER, req);
-		}
-
-		@Override
-		public Object forQuest( FQuest quest, FQuest req) {
-			remove( quest.mRequirements, req);
-			remove( quest.mOptionLinks, req);
-			return null;
-		}
-
-		private void remove( Vector<FQuest> arr, FQuest req) {
-			for (int i = 0; i < arr.size(); ++i) {
-				FQuest q = arr.get( i);
-				if (Utils.equals( q, req)) {
-					arr.setElementAt( null, i);
-				}
-			}
 		}
 	}
 

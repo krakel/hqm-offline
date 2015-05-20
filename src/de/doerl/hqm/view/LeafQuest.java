@@ -3,7 +3,6 @@ package de.doerl.hqm.view;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
-import javax.swing.Icon;
 import javax.swing.JLabel;
 
 import de.doerl.hqm.base.FQuest;
@@ -20,12 +19,10 @@ class LeafQuest extends JLabel {
 
 	public LeafQuest( FQuest quest) {
 		mQuest = quest;
-		int x = AEntity.ZOOM * quest.getX();
-		int y = AEntity.ZOOM * quest.getY();
-		int w = AEntity.ZOOM * quest.getW();
-		int h = AEntity.ZOOM * quest.getH();
-		MultiIcon icon = new MultiIcon( w, h, getImage( quest));
-		init( x, y, w, h, icon);
+		setAlignmentX( LEFT_ALIGNMENT);
+		setOpaque( false);
+//		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
+		update();
 		addMouseListener( mHandler);
 	}
 
@@ -54,15 +51,16 @@ class LeafQuest extends JLabel {
 		return mQuest;
 	}
 
-	private void init( int x, int y, int w, int h, Icon icon) {
-		setIcon( icon);
-		setAlignmentX( LEFT_ALIGNMENT);
-		setOpaque( false);
-//		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
-		setBounds( x, y, w, h);
-	}
-
 	public void removeClickListener( IClickListener l) {
 		mHandler.removeClickListener( l);
+	}
+
+	public void update() {
+		int x = AEntity.ZOOM * mQuest.getX();
+		int y = AEntity.ZOOM * mQuest.getY();
+		int w = AEntity.ZOOM * mQuest.getW();
+		int h = AEntity.ZOOM * mQuest.getH();
+		setIcon( new MultiIcon( w, h, getImage( mQuest)));
+		setBounds( x, y, w, h);
 	}
 }
