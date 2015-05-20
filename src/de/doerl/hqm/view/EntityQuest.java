@@ -164,7 +164,7 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 	}
 
 	public void setTask( AQuestTask task) {
-//		mTaskDesc.connectTo( task != null ? task.mDesc : null);
+		mTaskDesc.setText( task.mDesc.mValue);
 		mTaskInfo.removeAll();
 		QuestTaskUpdate.get( task, mTaskInfo);
 		mTaskInfo.add( Box.createHorizontalGlue());

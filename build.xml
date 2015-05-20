@@ -7,6 +7,7 @@
 	<property name="dstName" value="hqm_convert" />
 	<property name="jarName" value="${dist.dir}/${dstName}.jar" />
 	<property name="zipName" value="${dist.dir}/${dstName}.zip" />
+	<property name="srcName" value="${dist.dir}/${dstName}-src.zip" />
 	<property name="title" value="offline hqm editor" />
 	<property name="mainClass" value="de.doerl.hqm.ui.EditMain" />
 
@@ -17,7 +18,7 @@
 
 	<!-- ######################################################################################### -->
 
-	<target name="main" depends="zipAll, jarMain, jarDefault">
+	<target name="main" depends="zipAll, zipSrc, jarMain, jarDefault">
 		<delete dir="${dist.dir}/classes" />
 		<delete dir="${dist.dir}/temp" />
 	</target>
@@ -110,12 +111,20 @@
 		</jar>
 	</target>
 
-	<target name="zipAll" depends="jarMain, jarDefault">
+	<target name="zipSrc" depends="jarMain, jarDefault">
+		<zip destfile="${srcName}" duplicate="preserve">
+			<zipfileset dir="src" />
+			<zipfileset dir="." includes="build.xml, convert.bat, convert.sh" />
+		</zip>
+	</target>
+
+	<target name="zipAll" depends="zipSrc, jarMain, jarDefault">
 		<zip destfile="${zipName}">
 			<fileset dir="${dist.dir}">
 				<include name="*.jar" />
 				<include name="*.bat" />
 				<include name="*.sh" />
+				<include name="*.zip" />
 			</fileset>
 		</zip>
 	</target>
