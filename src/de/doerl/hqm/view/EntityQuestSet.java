@@ -21,6 +21,7 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetOfName;
+import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.AToggleAction;
 import de.doerl.hqm.ui.EditFrame;
@@ -68,8 +69,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private void activeUpdate( Type type) {
 		if (mActiv != null) {
 			mActiv.update( type);
-//			mActiv.revalidate();
-//			mActiv.repaint();
 			FQuest quest = mActiv.getQuest();
 			for (FQuest req : quest.mRequirements) {
 				LeafQuest lq = mMap.get( req);
@@ -119,6 +118,22 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		comp.addMouseListener( mLeafMouseHandler);
 		comp.addMouseMotionListener( mLeafMouseHandler);
 		return comp;
+	}
+
+	@Override
+	public void baseActivate( ModelEvent event) {
+	}
+
+	@Override
+	public void baseAdded( ModelEvent event) {
+	}
+
+	@Override
+	public void baseChanged( ModelEvent event) {
+	}
+
+	@Override
+	public void baseRemoved( ModelEvent event) {
 	}
 
 	@Override
@@ -438,7 +453,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				removeQuest( mActiv);
 				removeAllLines( mActiv);
 				FQuest quest = mActiv.getQuest();
-				QuestRemoveDepent.get( quest);
+				mView.getController().removeDepend( quest);
 				quest.remove();
 				activRemove();
 			}

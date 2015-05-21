@@ -112,6 +112,15 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 	}
 
 	@Override
+	public void baseActivate( ModelEvent event) {
+		ABase base = event.mBase;
+		if (base != null) {
+			JToolBar tool = mView.getToolBar( base);
+			SwingUtilities.invokeLater( new ToolUpdate( tool));
+		}
+	}
+
+	@Override
 	public void baseAdded( ModelEvent event) {
 	}
 
@@ -121,15 +130,6 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 
 	@Override
 	public void baseRemoved( ModelEvent event) {
-	}
-
-	@Override
-	public void baseUpdate( ModelEvent event) {
-		ABase base = event.getBase();
-		if (base != null) {
-			JToolBar tool = mView.getToolBar( base);
-			SwingUtilities.invokeLater( new ToolUpdate( tool));
-		}
 	}
 
 	private Box createContent() {
@@ -289,17 +289,6 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 //		mTable.getModel().fireTableDataChanged();
 	}
 
-	private void updateTool( JToolBar tool) {
-		mTop.removeAll();
-		mTop.add( mToolBar);
-		if (tool != null) {
-			mTop.add( tool);
-		}
-		mTop.add( Box.createHorizontalGlue());
-		mTop.revalidate();
-		mTop.repaint();
-	}
-
 	private void updateToolBar() {
 		mToolBar.add( mNewAction);
 		mToolBar.addSeparator();
@@ -331,7 +320,14 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 
 		@Override
 		public void run() {
-			updateTool( mTool);
+			mTop.removeAll();
+			mTop.add( mToolBar);
+			if (mTool != null) {
+				mTop.add( mTool);
+			}
+			mTop.add( Box.createHorizontalGlue());
+			mTop.revalidate();
+			mTop.repaint();
 		}
 	}
 }

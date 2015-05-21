@@ -13,6 +13,7 @@ import de.doerl.hqm.utils.Utils;
 
 public class EditModel {
 	private static final Logger LOGGER = Logger.getLogger( EditModel.class.getName());
+	private static final IModelListener[] EMPTY = new IModelListener[0];
 	private List<IModelListener> mListener = new ArrayList<IModelListener>();
 	private Vector<FHqm> mHQMs = new Vector<FHqm>();
 
@@ -22,9 +23,21 @@ public class EditModel {
 		}
 	}
 
+	public void fireBaseActivate( ABase base) {
+		ModelEvent event = new ModelEvent( base);
+		for (IModelListener l : mListener.toArray( EMPTY)) {
+			try {
+				l.baseActivate( event);
+			}
+			catch (Exception ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+			}
+		}
+	}
+
 	public void fireBaseAdded( ABase base) {
 		ModelEvent event = new ModelEvent( base);
-		for (IModelListener l : mListener) {
+		for (IModelListener l : mListener.toArray( EMPTY)) {
 			try {
 				l.baseAdded( event);
 			}
@@ -36,7 +49,7 @@ public class EditModel {
 
 	public void fireBaseChanged( ABase base) {
 		ModelEvent event = new ModelEvent( base);
-		for (IModelListener l : mListener) {
+		for (IModelListener l : mListener.toArray( EMPTY)) {
 			try {
 				l.baseChanged( event);
 			}
@@ -48,21 +61,9 @@ public class EditModel {
 
 	public void fireBaseRemoved( ABase base) {
 		ModelEvent event = new ModelEvent( base);
-		for (IModelListener l : mListener) {
+		for (IModelListener l : mListener.toArray( EMPTY)) {
 			try {
 				l.baseRemoved( event);
-			}
-			catch (Exception ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, ex);
-			}
-		}
-	}
-
-	public void fireBaseUpdate( ABase base) {
-		ModelEvent event = new ModelEvent( base);
-		for (IModelListener l : mListener) {
-			try {
-				l.baseUpdate( event);
 			}
 			catch (Exception ex) {
 				Utils.logThrows( LOGGER, Level.WARNING, ex);
@@ -90,14 +91,10 @@ public class EditModel {
 	public void loadHQM( FHqm hqm) {
 		mHQMs.add( hqm);
 		fireBaseAdded( hqm);
-		setActive( hqm);
+		fireBaseActivate( hqm);
 	}
 
 	public void removeListener( IModelListener l) {
 		mListener.remove( l);
-	}
-
-	public void setActive( ABase base) {
-		fireBaseUpdate( base);
 	}
 }

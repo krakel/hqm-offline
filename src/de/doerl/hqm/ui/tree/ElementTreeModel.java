@@ -8,6 +8,15 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.ACategory;
+import de.doerl.hqm.base.ANamed;
+import de.doerl.hqm.base.FGroup;
+import de.doerl.hqm.base.FGroupTier;
+import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.base.FQuest;
+import de.doerl.hqm.base.FQuestSet;
+import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.utils.Utils;
@@ -21,15 +30,14 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 	}
 
 	@Override
+	public void baseActivate( ModelEvent event) {
+	}
+
+	@Override
 	public void baseAdded( ModelEvent event) {
-		try {
-			ABase base = event.getBase();
-			if (base != null) {
-				TreeFactory.get( base, this);
-			}
-		}
-		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		ABase base = event.mBase;
+		if (base != null) {
+			TreeFactory.get( base, this);
 		}
 	}
 
@@ -39,10 +47,10 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 
 	@Override
 	public void baseRemoved( ModelEvent event) {
-	}
-
-	@Override
-	public void baseUpdate( ModelEvent event) {
+		MutableTreeNode node = getNode( event.mBase);
+		if (node != null) {
+			removeNodeFromParent( node);
+		}
 	}
 
 	MutableTreeNode createNode( MutableTreeNode parent, ANode elem) {
@@ -90,5 +98,127 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 	@Override
 	public DefaultMutableTreeNode getRoot() {
 		return (DefaultMutableTreeNode) super.getRoot();
+	}
+
+	private static class NodeFactory extends AHQMWorker<MutableTreeNode, ElementTreeModel> {
+		private static final NodeFactory WORKER = new NodeFactory();
+
+		public NodeFactory() {
+		}
+
+		public static void get( ABase base, ElementTreeModel model) {
+			base.accept( WORKER, model);
+		}
+
+		@Override
+		protected MutableTreeNode doBase( ABase base, ElementTreeModel model) {
+			MutableTreeNode node = model.getNode( base);
+			if (node == null) {
+				MutableTreeNode parent = base.getParent().accept( this, model);
+				node = model.createNode( parent, new BaseNode( base));
+			}
+			return node;
+		}
+
+		@Override
+		protected MutableTreeNode doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
+			MutableTreeNode node = model.getNode( cat);
+			if (node == null) {
+				MutableTreeNode parent = cat.getParent().accept( this, model);
+				node = model.createNode( parent, new SetNode( cat));
+			}
+			return node;
+		}
+
+		@Override
+		protected MutableTreeNode doNamed( ANamed named, ElementTreeModel model) {
+			MutableTreeNode node = model.getNode( named);
+			if (node == null) {
+				MutableTreeNode parent = named.getParent().accept( this, model);
+				node = model.createNode( parent, new NamedNode( named));
+			}
+			return node;
+		}
+
+		@Override
+		public MutableTreeNode forHQM( FHqm hqm, ElementTreeModel model) {
+			MutableTreeNode node = model.getNode( hqm);
+			if (node == null) {
+				MutableTreeNode root = model.getRoot();
+				node = model.createNode( root, new MainNode( hqm));
+			}
+			return node;
+		}
+
+		@Override
+		public MutableTreeNode forQuest( FQuest quest, ElementTreeModel model) {
+			MutableTreeNode node = model.getNode( quest);
+			if (node == null) {
+				MutableTreeNode parent = quest.mQuestSet.accept( this, model);
+				node = model.createNode( parent, new NamedNode( quest));
+			}
+			return node;
+		}
+	}
+
+	private static class TreeFactory extends AHQMWorker<Object, ElementTreeModel> {
+		private static final TreeFactory WORKER = new TreeFactory();
+
+		private TreeFactory() {
+		}
+
+		public static void get( ABase base, ElementTreeModel model) {
+			base.accept( WORKER, model);
+		}
+
+		@Override
+		protected Object doCategory( ACategory<? extends ANamed> set, ElementTreeModel model) {
+			NodeFactory.get( set, model);
+			set.forEachMember( this, model);
+			return null;
+		}
+
+		@Override
+		public Object forGroup( FGroup grp, ElementTreeModel model) {
+			NodeFactory.get( grp, model);
+			return null;
+		}
+
+		@Override
+		public Object forGroupTier( FGroupTier gt, ElementTreeModel model) {
+			NodeFactory.get( gt, model);
+			return null;
+		}
+
+		@Override
+		public Object forHQM( FHqm hqm, ElementTreeModel model) {
+			NodeFactory.get( hqm, model);
+			hqm.mQuestSetCat.accept( this, model);
+			hqm.mReputationCat.accept( this, model);
+			hqm.forEachQuest( this, model);
+			hqm.mGroupTierCat.accept( this, model);
+			hqm.mGroupCat.accept( this, model);
+			return null;
+		}
+
+		@Override
+		public Object forQuest( FQuest quest, ElementTreeModel model) {
+			if (!quest.isDeleted()) {
+				NodeFactory.get( quest, model);
+			}
+			return null;
+		}
+
+		@Override
+		public Object forQuestSet( FQuestSet set, ElementTreeModel model) {
+			NodeFactory.get( set, model);
+			return null;
+		}
+
+		@Override
+		public Object forReputation( FReputation rep, ElementTreeModel model) {
+			NodeFactory.get( rep, model);
+			return null;
+		}
 	}
 }

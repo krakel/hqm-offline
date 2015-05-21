@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,6 +29,7 @@ import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetIndex;
+import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.EditFrame;
@@ -35,7 +38,7 @@ import de.doerl.hqm.utils.Utils;
 
 class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private static final long serialVersionUID = -5930552368392528379L;
-//	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
+	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
 	private FQuestSetCat mCategory;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mAddAction = new AddSetAction();
@@ -56,15 +59,16 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	public EntityQuestSetCat( EditView view, FQuestSetCat cat) {
 		super( view, new GridLayout( 1, 2));
 		mCategory = cat;
-		mList.setCellRenderer( new QuestSetRenderer());
+		mList.setCellRenderer( new ListRenderer());
 		createLeafs();
-		updateList( null);
+		update();
+		updateActive( QuestSetFirst.get( mCategory), true);
 		mList.addMouseListener( new MouseAdapter() {
 			@Override
 			public void mouseClicked( MouseEvent evt) {
 				FQuestSet qs = mList.getSelectedValue();
 				if (qs != null) {
-					SwingUtilities.invokeLater( new QuestSetAction( qs));
+					SwingUtilities.invokeLater( new ListMouseAction( qs));
 				}
 			}
 		});
@@ -76,6 +80,41 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		mTool.addSeparator();
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
+	}
+
+	@Override
+	public void baseActivate( ModelEvent event) {
+	}
+
+	@Override
+	public void baseAdded( ModelEvent event) {
+		try {
+			ABase base = event.mBase;
+			if (mCategory.equals( base.getParent())) {
+				update();
+				updateActive( (FQuestSet) base, true);
+			}
+		}
+		catch (ClassCastException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+	}
+
+	@Override
+	public void baseChanged( ModelEvent event) {
+		if (mCategory.equals( event.mBase)) {
+			update();
+			updateActive( mActiv, false);
+		}
+	}
+
+	@Override
+	public void baseRemoved( ModelEvent event) {
+		ABase base = event.mBase;
+		if (mCategory.equals( base.getParent())) {
+			update();
+			updateActive( QuestSetFirst.get( mCategory), true);
+		}
 	}
 
 	@Override
@@ -108,66 +147,41 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		return mTool;
 	}
 
-	private void setSet( FQuestSet qs) {
+	private void update() {
+		DefaultListModel<FQuestSet> model = mList.getModel();
+		QuestSetUpdate.get( mCategory, model);
+	}
+
+	private void updateActions( boolean enabled) {
+		mDeleteAction.setEnabled( enabled);
+		mDescAction.setEnabled( enabled);
+		mNameAction.setEnabled( enabled);
+	}
+
+	private void updateActive( FQuestSet qs, boolean toggel) {
 		if (qs == null) {
 			mTotal.setText( String.format( "%d quests in total", 0));
 			mDesc.setText( null);
 			mScroll.setVisible( false);
 			mList.clearSelection();
-			mDeleteAction.setEnabled( false);
-			mDescAction.setEnabled( false);
-			mNameAction.setEnabled( false);
+			updateActions( false);
 			mActiv = null;
 		}
-		else if (Utils.equals( qs, mActiv)) {
-			mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( qs.mParentCategory)));
+		else if (toggel && Utils.equals( qs, mActiv)) {
+			mTotal.setText( String.format( "%d quests in total", QuestSizeOf.get( qs.mParentCategory)));
 			mDesc.setText( null);
 			mScroll.setVisible( false);
 			mList.clearSelection();
-			mDeleteAction.setEnabled( false);
-			mDescAction.setEnabled( false);
-			mNameAction.setEnabled( false);
+			updateActions( false);
 			mActiv = null;
 		}
 		else {
-			mTotal.setText( String.format( "%d quests in total", QuestSetSizeOf.get( qs)));
+			mTotal.setText( String.format( "%d quests in total", QuestSizeOf.get( qs)));
 			mDesc.setText( qs.mDesc.mValue);
 			mScroll.setVisible( true);
 			mList.setSelectedValue( qs, true);
-			mDeleteAction.setEnabled( true);
-			mDescAction.setEnabled( true);
-			mNameAction.setEnabled( true);
+			updateActions( true);
 			mActiv = qs;
-		}
-	}
-
-	private void updateAddSet() {
-		String result = DialogTextField.update( "", mView);
-		if (result != null) {
-			FQuestSet qs = mCategory.createMember( result);
-			updateList( qs);
-			mList.revalidate();
-			mList.repaint();
-		}
-	}
-
-	private void updateDeleteSet() {
-		if (WarnDialogs.askDelete( mView)) {
-			mActiv.delete();
-			QuestDeleteFactory.get( mActiv);
-			updateList( null);
-		}
-	}
-
-	private void updateList( FQuestSet qs) {
-		DefaultListModel<FQuestSet> model = mList.getModel();
-		model.clear();
-		QuestSetFactory.get( mCategory, model);
-		if (qs == null) {
-			setSet( QuestSetFirst.get( mCategory));
-		}
-		else {
-			setSet( qs);
 		}
 	}
 
@@ -180,7 +194,10 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			updateAddSet();
+			String result = DialogTextField.update( "", mView);
+			if (result != null) {
+				mView.getController().createQuestSet( mCategory, result);
+			}
 		}
 	}
 
@@ -193,81 +210,49 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			updateDeleteSet();
-		}
-	}
-
-	private static class QuestDeleteFactory extends AHQMWorker<Object, FQuestSet> {
-		private static final QuestDeleteFactory WORKER = new QuestDeleteFactory();
-
-		private QuestDeleteFactory() {
-		}
-
-		public static void get( FQuestSet qs) {
-			qs.mParentCategory.mParentHQM.forEachQuest( WORKER, qs);
-		}
-
-		@Override
-		public Object forQuest( FQuest quest, FQuestSet qs) {
-			if (Utils.equals( quest.mQuestSet, qs)) {
-				QuestRemoveDepent.get( quest);
-//				quest.forEachQuestTask( this, qs); not needed
-				quest.remove();
+			if (WarnDialogs.askDelete( mView)) {
+				mView.getController().deleteQuestSet( mActiv);
 			}
-			return null;
 		}
 	}
 
-	private static class QuestFactory extends AHQMWorker<Object, Object> {
-//		private static final QuestFactory WORKER = new QuestFactory();
-		private QuestFactory() {
-		}
-
-		public static boolean isEnabled( FQuestSet qs) {
-			return true;
-		}
-
-		@Override
-		public Object forQuest( FQuest quest, Object p) {
-			// 1. isLinkFree() // verlinkte quests
-//			return  && ( triggerType.doesWorkAsInvisible() || isVisible( playerName)) && enabledParentEvaluator.isValid( playerName);
-			return null;
-		}
-	}
-
-	private final class QuestSetAction implements Runnable {
+	private final class ListMouseAction implements Runnable {
 		private FQuestSet mQS;
 
-		public QuestSetAction( FQuestSet qs) {
+		public ListMouseAction( FQuestSet qs) {
 			mQS = qs;
 		}
 
 		@Override
 		public void run() {
-			setSet( mQS);
+			updateActive( mQS, true);
 		}
 	}
 
-	private static class QuestSetFactory extends AHQMWorker<Object, DefaultListModel<FQuestSet>> {
-		private static final QuestSetFactory WORKER = new QuestSetFactory();
+	private static class ListRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
+		private static final long serialVersionUID = 9081558438188872705L;
+		private JLabel mTitle = leafTitle( UNSELECTED, "");
+		private JLabel mComplete = leafLabel( Color.BLACK, "");
 
-		private QuestSetFactory() {
+		public ListRenderer() {
+			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
+			JComponent hori = leafBoxHorizontal( FONT_NORMAL_HIGH);
+			hori.add( Box.createHorizontalStrut( 24));
+			hori.add( mComplete);
+			add( mTitle);
+			add( hori);
+			setOpaque( false);
+			setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10));
 		}
 
-		public static void get( FQuestSetCat set, DefaultListModel<FQuestSet> model) {
-			model.clear();
-			set.forEachMember( WORKER, model);
-		}
-
-		@Override
-		protected Object doBase( ABase base, DefaultListModel<FQuestSet> model) {
-			return null;
-		}
-
-		@Override
-		public Object forQuestSet( FQuestSet set, DefaultListModel<FQuestSet> model) {
-			model.addElement( set);
-			return null;
+		public Component getListCellRendererComponent( JList<? extends FQuestSet> list, FQuestSet qs, int index, boolean isSelected, boolean cellHasFocus) {
+			int idx = QuestSetIndex.get( qs) + 1;
+			mTitle.setText( String.format( "%d. %s", idx, qs.mName));
+			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
+			boolean enabled = QuestSetIsEnabled.isEnabled( qs);
+			mComplete.setText( enabled ? "0% Completed" : "Locked");
+			mComplete.setEnabled( enabled);
+			return this;
 		}
 	}
 
@@ -287,56 +272,72 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private static class QuestSetRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
-		private static final long serialVersionUID = 9081558438188872705L;
-		private JLabel mTitle = leafTitle( UNSELECTED, "");
-		private JLabel mComplete = leafLabel( Color.BLACK, "");
-
-		public QuestSetRenderer() {
-			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			JComponent hori = leafBoxHorizontal( FONT_NORMAL_HIGH);
-			hori.add( Box.createHorizontalStrut( 24));
-			hori.add( mComplete);
-			add( mTitle);
-			add( hori);
-			setOpaque( false);
-			setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10));
+	private static class QuestSetIsEnabled extends AHQMWorker<Object, Object> {
+//		private static final QuestFactory WORKER = new QuestFactory();
+		private QuestSetIsEnabled() {
 		}
 
-		public Component getListCellRendererComponent( JList<? extends FQuestSet> list, FQuestSet qs, int index, boolean isSelected, boolean cellHasFocus) {
-			int idx = QuestSetIndex.get( qs) + 1;
-			mTitle.setText( String.format( "%d. %s", idx, qs.mName));
-			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
-			boolean enabled = QuestFactory.isEnabled( qs);
-			mComplete.setText( enabled ? "0% Completed" : "Locked");
-			mComplete.setEnabled( enabled);
-			return this;
+		public static boolean isEnabled( FQuestSet qs) {
+			return true;
+		}
+
+		@Override
+		public Object forQuest( FQuest quest, Object p) {
+			// 1. isLinkFree() // verlinkte quests
+//			return  && ( triggerType.doesWorkAsInvisible() || isVisible( playerName)) && enabledParentEvaluator.isValid( playerName);
+			return null;
 		}
 	}
 
-	private static class QuestSetSizeOf extends AHQMWorker<Object, Object> {
+	private static class QuestSetUpdate extends AHQMWorker<Object, DefaultListModel<FQuestSet>> {
+		private static final QuestSetUpdate WORKER = new QuestSetUpdate();
+
+		private QuestSetUpdate() {
+		}
+
+		public static void get( FQuestSetCat set, DefaultListModel<FQuestSet> model) {
+			model.clear();
+			set.forEachMember( WORKER, model);
+		}
+
+		@Override
+		protected Object doBase( ABase base, DefaultListModel<FQuestSet> model) {
+			return null;
+		}
+
+		@Override
+		public Object forQuestSet( FQuestSet set, DefaultListModel<FQuestSet> model) {
+			model.addElement( set);
+			return null;
+		}
+	}
+
+	private static class QuestSizeOf extends AHQMWorker<Object, Object> {
 		private int mResult;
 		private FQuestSet mRef;
 
-		private QuestSetSizeOf( FQuestSet ref) {
+		private QuestSizeOf( FQuestSet ref) {
 			mRef = ref;
 		}
 
 		public static int get( ACategory<FQuestSet> set) {
-			QuestSetSizeOf size = new QuestSetSizeOf( null);
+			QuestSizeOf size = new QuestSizeOf( null);
 			set.mParentHQM.forEachQuest( size, null);
 			return size.mResult;
 		}
 
 		public static int get( FQuestSet qs) {
-			QuestSetSizeOf size = new QuestSetSizeOf( qs);
+			QuestSizeOf size = new QuestSizeOf( qs);
 			qs.mParentCategory.mParentHQM.forEachQuest( size, null);
 			return size.mResult;
 		}
 
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
-			if (mRef == null || Utils.equals( quest.mQuestSet, mRef) && !quest.isDeleted()) {
+			if (quest.isDeleted()) {
+				return null;
+			}
+			if (mRef == null || Utils.equals( quest.mQuestSet, mRef)) {
 				++mResult;
 			}
 			return null;
@@ -356,7 +357,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 				String result = DialogTextBox.update( mActiv.mDesc.mValue, mView);
 				if (result != null) {
 					mActiv.mDesc.mValue = result;
-					mDesc.setText( result);
+					mView.getController().fireChanged( mCategory);
 				}
 			}
 		}
@@ -375,8 +376,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 				String result = DialogTextField.update( mActiv.mName.mValue, mView);
 				if (result != null) {
 					mActiv.mName.mValue = result;
-					mList.revalidate();
-					mList.repaint();
+					mView.getController().fireChanged( mCategory);
 				}
 			}
 		}

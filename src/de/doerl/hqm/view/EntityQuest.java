@@ -42,6 +42,7 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.utils.Utils;
 
 public class EntityQuest extends AEntity<FQuest> implements MouseListener {
@@ -72,6 +73,22 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 		QuestTaskFactory.get( quest, mTaskModel);
 		mTasks.setSelectedIndex( 0);
 		SwingUtilities.invokeLater( new TaskSetAction( this, QuestTaskFirst.get( quest)));
+	}
+
+	@Override
+	public void baseAdded( ModelEvent event) {
+	}
+
+	@Override
+	public void baseChanged( ModelEvent event) {
+	}
+
+	@Override
+	public void baseRemoved( ModelEvent event) {
+	}
+
+	@Override
+	public void baseActivate( ModelEvent event) {
 	}
 
 	private void createIconList( JComponent panel, Vector<FParameterStack> list, JLabel btn) {

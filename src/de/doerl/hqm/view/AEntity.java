@@ -34,10 +34,11 @@ import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FSetting;
+import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
-abstract class AEntity<T extends ABase> extends JPanel {
+abstract class AEntity<T extends ABase> extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -3039298434411863516L;
 	protected static final BufferedImage MAP = ResourceManager.getImage( "questmap.png");
 	protected static final BufferedImage ICON_BACK = MAP.getSubimage( 18, 235, 18, 18);

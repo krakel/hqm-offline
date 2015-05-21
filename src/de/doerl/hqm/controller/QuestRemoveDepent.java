@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.controller;
 
 import java.util.Vector;
 
@@ -7,19 +7,17 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
 class QuestRemoveDepent extends AHQMWorker<Object, FQuest> {
-	private static final QuestRemoveDepent WORKER = new QuestRemoveDepent();
+	private EditController mController;
 
-	private QuestRemoveDepent() {
-	}
-
-	public static void get( FQuest req) {
-		req.mParentHQM.forEachQuest( WORKER, req);
+	public QuestRemoveDepent( EditController ctrl) {
+		mController = ctrl;
 	}
 
 	@Override
 	public Object forQuest( FQuest quest, FQuest req) {
 		remove( quest.mRequirements, req);
 		remove( quest.mOptionLinks, req);
+		mController.fireChanged( quest);
 		return null;
 	}
 

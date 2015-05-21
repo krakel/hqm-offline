@@ -11,6 +11,13 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.ACategory;
+import de.doerl.hqm.base.ANamed;
+import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.base.FQuest;
+import de.doerl.hqm.base.FQuestSet;
+import de.doerl.hqm.base.FQuestSetCat;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
@@ -40,7 +47,20 @@ public class EditView extends JPanel implements IModelListener {
 	}
 
 	@Override
+	public void baseActivate( ModelEvent event) {
+		ABase base = event.mBase;
+		AEntity<?> ent = EntityFactory.get( base, this);
+		if (ent != null) {
+			SwingUtilities.invokeLater( new EntityActivate( ent));
+		}
+		else {
+			Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
+		}
+	}
+
+	@Override
 	public void baseAdded( ModelEvent event) {
+		EntityFactory.get( event.mBase, this);
 	}
 
 	@Override
@@ -49,32 +69,11 @@ public class EditView extends JPanel implements IModelListener {
 
 	@Override
 	public void baseRemoved( ModelEvent event) {
-		ABase base = event.getBase();
-		if (base != null) {
-			AEntity<?> ent = mContent.remove( base);
-			if (ent != null) {
-				SwingUtilities.invokeLater( new EntityRemove( ent));
-			}
-		}
-	}
-
-	@Override
-	public void baseUpdate( ModelEvent event) {
-		ABase base = event.getBase();
-		if (base != null) {
-			AEntity<?> ent = mContent.get( base);
-			if (ent == null) {
-				ent = EntityFactory.get( base, this);
-				if (ent != null) {
-					mContent.put( base, ent);
-				}
-			}
-			if (ent != null) {
-				SwingUtilities.invokeLater( new EntityUpdate( ent));
-			}
-			else {
-				Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
-			}
+		ABase base = event.mBase;
+		AEntity<?> ent = mContent.remove( base);
+		if (ent != null) {
+			mCtrl.removeListener( ent);
+			SwingUtilities.invokeLater( new EntityRemove( ent));
 		}
 	}
 
@@ -83,11 +82,9 @@ public class EditView extends JPanel implements IModelListener {
 	}
 
 	public JToolBar getToolBar( ABase base) {
-		if (base != null) {
-			AEntity<?> ent = mContent.get( base);
-			if (ent != null) {
-				return ent.getToolBar();
-			}
+		AEntity<?> ent = EntityFactory.get( base, this);
+		if (ent != null) {
+			return ent.getToolBar();
 		}
 		return null;
 	}
@@ -97,6 +94,83 @@ public class EditView extends JPanel implements IModelListener {
 		add( ent, GBC);
 		validate();
 		repaint();
+	}
+
+	private final class EntityActivate implements Runnable {
+		private AEntity<?> mEnt;
+
+		public EntityActivate( AEntity<?> ent) {
+			mEnt = ent;
+		}
+
+		@Override
+		public void run() {
+			setCenter( mEnt);
+		}
+	}
+
+	private static class EntityFactory extends AHQMWorker<AEntity<? extends ABase>, EditView> {
+//		private static final Logger LOGGER = Logger.getLogger( EntityFactory.class.getName());
+		private static final EntityFactory WORKER = new EntityFactory();
+
+		private EntityFactory() {
+		}
+
+		public static AEntity<? extends ABase> get( ABase base, EditView view) {
+			return base.accept( WORKER, view);
+		}
+
+		@Override
+		protected AEntity<? extends ABase> doCategory( ACategory<? extends ANamed> set, EditView view) {
+			return null;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forHQM( FHqm hqm, EditView view) {
+			AEntity<?> ent = view.mContent.get( hqm);
+			if (ent == null) {
+				ent = new EntityHQM( view, hqm);
+				view.mContent.put( hqm, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forQuest( FQuest quest, EditView view) {
+			if (quest.isDeleted()) {
+				return null;
+			}
+			AEntity<?> ent = view.mContent.get( quest);
+			if (ent == null) {
+				ent = new EntityQuest( view, quest);
+				view.mContent.put( quest, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forQuestSet( FQuestSet set, EditView view) {
+			AEntity<?> ent = view.mContent.get( set);
+			if (ent == null) {
+				ent = new EntityQuestSet( view, set);
+				view.mContent.put( set, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forQuestSetCat( FQuestSetCat cat, EditView view) {
+			AEntity<?> ent = view.mContent.get( cat);
+			if (ent == null) {
+				ent = new EntityQuestSetCat( view, cat);
+				view.mContent.put( cat, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
 	}
 
 	private final class EntityRemove implements Runnable {
@@ -110,19 +184,6 @@ public class EditView extends JPanel implements IModelListener {
 		public void run() {
 			mEnt.setVisible( false);
 			setCenter( mEmpty);
-		}
-	}
-
-	private final class EntityUpdate implements Runnable {
-		private AEntity<?> mEnt;
-
-		public EntityUpdate( AEntity<?> ent) {
-			mEnt = ent;
-		}
-
-		@Override
-		public void run() {
-			setCenter( mEnt);
 		}
 	}
 }

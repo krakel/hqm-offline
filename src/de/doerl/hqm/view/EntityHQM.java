@@ -8,8 +8,10 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.utils.ResourceManager;
@@ -27,10 +29,34 @@ class EntityHQM extends AEntity<FHqm> {
 		super( view, new GridLayout( 1, 2));
 		mHQM = hqm;
 		createLeafs();
-		mDesc.setText( mHQM.mDesc.mValue);
+		update();
 		mDesc.addClickListener( mDescAction);
 		mTool.add( mDescAction);
 		mTool.addSeparator();
+	}
+
+	@Override
+	public void baseActivate( ModelEvent event) {
+	}
+
+	@Override
+	public void baseAdded( ModelEvent event) {
+	}
+
+	@Override
+	public void baseChanged( ModelEvent event) {
+		if (mHQM.equals( event.mBase)) {
+			SwingUtilities.invokeLater( new Runnable() {
+				@Override
+				public void run() {
+					update();
+				}
+			});
+		}
+	}
+
+	@Override
+	public void baseRemoved( ModelEvent event) {
 	}
 
 	@Override
@@ -55,12 +81,8 @@ class EntityHQM extends AEntity<FHqm> {
 		return mTool;
 	}
 
-	private void updateDesc() {
-		String result = DialogTextBox.update( mHQM.mDesc.mValue, mView);
-		if (result != null) {
-			mHQM.mDesc.mValue = result;
-			mDesc.setText( result);
-		}
+	public void update() {
+		mDesc.setText( mHQM.mDesc.mValue);
 	}
 
 	private final class TextBoxAction extends ABundleAction {
@@ -73,7 +95,11 @@ class EntityHQM extends AEntity<FHqm> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			updateDesc();
+			String result = DialogTextBox.update( mHQM.mDesc.mValue, mView);
+			if (result != null) {
+				mHQM.mDesc.mValue = result;
+				mView.getController().fireChanged( mHQM);
+			}
 		}
 	}
 }

@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.model.ModelEvent;
 
 class EntityEmpty extends AEntity<ABase> {
 	private static final long serialVersionUID = -5245406021362050386L;
@@ -13,6 +14,22 @@ class EntityEmpty extends AEntity<ABase> {
 	public EntityEmpty( EditView view) {
 		super( view, new GridLayout( 1, 2));
 		createLeafs();
+	}
+
+	@Override
+	public void baseAdded( ModelEvent event) {
+	}
+
+	@Override
+	public void baseChanged( ModelEvent event) {
+	}
+
+	@Override
+	public void baseRemoved( ModelEvent event) {
+	}
+
+	@Override
+	public void baseActivate( ModelEvent event) {
 	}
 
 	@Override
