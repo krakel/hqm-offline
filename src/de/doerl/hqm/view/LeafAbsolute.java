@@ -2,6 +2,7 @@ package de.doerl.hqm.view;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -19,7 +20,7 @@ class LeafAbsolute extends JPanel {
 		addMouseListener( mHandler);
 	}
 
-	public void addClickListener( IClickListener l) {
+	public void addClickListener( ActionListener l) {
 		mHandler.addClickListener( l);
 	}
 
@@ -32,7 +33,7 @@ class LeafAbsolute extends JPanel {
 		AEntity.drawBackgroundHalf( g2, this, AEntity.BACKGROUND, false);
 	}
 
-	public void removeClickListener( IClickListener l) {
+	public void removeClickListener( ActionListener l) {
 		mHandler.removeClickListener( l);
 	}
 }

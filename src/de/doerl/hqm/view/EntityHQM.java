@@ -2,7 +2,6 @@ package de.doerl.hqm.view;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Box;
@@ -29,12 +28,7 @@ class EntityHQM extends AEntity<FHqm> {
 		mHQM = hqm;
 		createLeafs();
 		mDesc.setText( mHQM.mDesc.mValue);
-		mDesc.addClickListener( new AClickListener() {
-			@Override
-			public void onDoubleClick( MouseEvent evt) {
-				updateDesc();
-			}
-		});
+		mDesc.addClickListener( mDescAction);
 		mTool.add( mDescAction);
 		mTool.addSeparator();
 	}
@@ -78,7 +72,7 @@ class EntityHQM extends AEntity<FHqm> {
 		}
 
 		@Override
-		public void actionPerformed( ActionEvent e) {
+		public void actionPerformed( ActionEvent evt) {
 			updateDesc();
 		}
 	}

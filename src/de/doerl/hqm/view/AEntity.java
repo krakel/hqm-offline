@@ -487,7 +487,7 @@ abstract class AEntity<T extends ABase> extends JPanel {
 			else {
 				lowerValue = lower.mMark.mValue;
 				lowerOnMarker = Utils.equals( lower, first) && lower.mMark.mValue > 0;
-				if (Utils.equals( lower.mName, rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
+				if (Utils.equals( lower.mName.mValue, rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
 					lowerValue = last.mMark.mValue;
 					lowerOnMarker = true;
 //					lowerMovedInner = true;

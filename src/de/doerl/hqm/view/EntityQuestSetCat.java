@@ -4,9 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
@@ -37,7 +35,7 @@ import de.doerl.hqm.utils.Utils;
 
 class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private static final long serialVersionUID = -5930552368392528379L;
-	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
+//	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
 	private FQuestSetCat mCategory;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mAddAction = new AddSetAction();
@@ -61,23 +59,17 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		mList.setCellRenderer( new QuestSetRenderer());
 		createLeafs();
 		updateList( null);
-		mList.addClickListener( new AClickListener() {
+		mList.addMouseListener( new MouseAdapter() {
 			@Override
-			public void onDoubleClick( MouseEvent evt) {
-				updateName();
-			}
-
-			@Override
-			public void onSingleClick( MouseEvent evt) {
-				updateListSingle( evt);
+			public void mouseClicked( MouseEvent evt) {
+				FQuestSet qs = mList.getSelectedValue();
+				if (qs != null) {
+					SwingUtilities.invokeLater( new QuestSetAction( qs));
+				}
 			}
 		});
-		mDesc.addClickListener( new AClickListener() {
-			@Override
-			public void onDoubleClick( MouseEvent evt) {
-				updateDesc();
-			}
-		});
+		mList.addClickListener( mNameAction);
+		mDesc.addClickListener( mDescAction);
 		mTool.add( mAddAction);
 		mTool.add( mNameAction);
 		mTool.add( mDescAction);
@@ -167,16 +159,6 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private void updateDesc() {
-		if (mActiv != null) {
-			String result = DialogTextBox.update( mActiv.mDesc.mValue, mView);
-			if (result != null) {
-				mActiv.mDesc.mValue = result;
-				mDesc.setText( result);
-			}
-		}
-	}
-
 	private void updateList( FQuestSet qs) {
 		DefaultListModel<FQuestSet> model = mList.getModel();
 		model.clear();
@@ -186,31 +168,6 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 		else {
 			setSet( qs);
-		}
-	}
-
-	private void updateListSingle( MouseEvent evt) {
-		try {
-			int row = mList.locationToIndex( evt.getPoint());
-			if (row >= 0) {
-				ListModel<FQuestSet> model = mList.getModel();
-				FQuestSet qs = model.getElementAt( row);
-				SwingUtilities.invokeLater( new QuestSetAction( this, qs));
-			}
-		}
-		catch (ClassCastException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-	}
-
-	private void updateName() {
-		if (mActiv != null) {
-			String result = DialogTextField.update( mActiv.mName.mValue, mView);
-			if (result != null) {
-				mActiv.mName.mValue = result;
-				mList.revalidate();
-				mList.repaint();
-			}
 		}
 	}
 
@@ -278,18 +235,16 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private static class QuestSetAction implements Runnable {
-		private EntityQuestSetCat mEntity;
+	private final class QuestSetAction implements Runnable {
 		private FQuestSet mQS;
 
-		public QuestSetAction( EntityQuestSetCat entity, FQuestSet qs) {
-			mEntity = entity;
+		public QuestSetAction( FQuestSet qs) {
 			mQS = qs;
 		}
 
 		@Override
 		public void run() {
-			mEntity.setSet( mQS);
+			setSet( mQS);
 		}
 	}
 
@@ -397,7 +352,13 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			updateDesc();
+			if (mActiv != null) {
+				String result = DialogTextBox.update( mActiv.mDesc.mValue, mView);
+				if (result != null) {
+					mActiv.mDesc.mValue = result;
+					mDesc.setText( result);
+				}
+			}
 		}
 	}
 
@@ -410,7 +371,14 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			updateName();
+			if (mActiv != null) {
+				String result = DialogTextField.update( mActiv.mName.mValue, mView);
+				if (result != null) {
+					mActiv.mName.mValue = result;
+					mList.revalidate();
+					mList.repaint();
+				}
+			}
 		}
 	}
 }

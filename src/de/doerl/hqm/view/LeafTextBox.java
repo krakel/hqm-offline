@@ -1,5 +1,6 @@
 package de.doerl.hqm.view;
 
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -36,7 +37,7 @@ class LeafTextBox extends JTextArea {
 		});
 	}
 
-	public void addClickListener( IClickListener l) {
+	public void addClickListener( ActionListener l) {
 		mHandler.addClickListener( l);
 	}
 
@@ -50,7 +51,7 @@ class LeafTextBox extends JTextArea {
 		mOldBorder = null;
 	}
 
-	public void removeClickListener( IClickListener l) {
+	public void removeClickListener( ActionListener l) {
 		mHandler.removeClickListener( l);
 	}
 }

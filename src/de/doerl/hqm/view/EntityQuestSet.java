@@ -16,9 +16,11 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
+import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.AToggleAction;
 import de.doerl.hqm.ui.EditFrame;
@@ -36,9 +38,10 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private AToggleAction mMoveAction = new QuestMoveAction();
 	private AToggleAction mLinkAction = new QuestLinkAction();
 	private AToggleAction mBigAction = new QuestBigAction();
+	private ABundleAction mSetAction = new QuestSetAction();
 	private ABundleAction mDeleteAction = new QuestDeleteAction();
-	private LeafQuestHandler mLeafQuestHandler = new LeafQuestHandler();
-	private LeafMouseHandler mLeafMouseHandler = new LeafMouseHandler();
+	private MouseAdapter mLeafQuestHandler = new LeafQuestHandler();
+	private MouseAdapter mLeafMouseHandler = new LeafMouseHandler();
 	private HashMap<FQuest, LeafQuest> mMap = new HashMap<FQuest, LeafQuest>();
 	private volatile LeafQuest mActiv;
 
@@ -53,9 +56,10 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( createToggleButton( mLinkAction));
 		mTool.addSeparator();
 		mTool.add( createToggleButton( mBigAction));
+		mTool.add( mSetAction);
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
-		mLeaf.addClickListener( new LeafHandler());
+		mLeaf.addMouseListener( new LeafHandler());
 		updateGroup( false);
 		updateQuest( false);
 		mAddAction.setSelected( true);
@@ -111,7 +115,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		LeafQuest comp = new LeafQuest( quest);
 		mLeaf.add( comp, 0);
 		mMap.put( quest, comp);
-		comp.addClickListener( mLeafQuestHandler);
+		comp.addMouseListener( mLeafQuestHandler);
 		comp.addMouseListener( mLeafMouseHandler);
 		comp.addMouseMotionListener( mLeafMouseHandler);
 		return comp;
@@ -146,7 +150,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		return mTool;
 	}
 
-	private void removeAllLines( FQuest quest) {
+	private void removeAllLines( LeafQuest leaf) {
+		FQuest quest = leaf.getQuest();
 		for (Component cc : mLeaf.getComponents()) {
 			if (cc instanceof LeafLine) {
 				LeafLine ll = (LeafLine) cc;
@@ -168,6 +173,13 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				}
 			}
 		}
+	}
+
+	private void removeQuest( LeafQuest leaf) {
+		mMap.remove( leaf.getQuest());
+		leaf.removeMouseListener( mLeafQuestHandler);
+		leaf.removeMouseListener( mLeafMouseHandler);
+		leaf.removeMouseMotionListener( mLeafMouseHandler);
 	}
 
 	private void selectAdd() {
@@ -199,12 +211,13 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 	private void updateQuest( boolean value) {
 		mBigAction.setEnabled( value);
+		mSetAction.setEnabled( value);
 		mDeleteAction.setEnabled( value);
 	}
 
-	private final class LeafHandler extends AClickListener {
+	private final class LeafHandler extends MouseAdapter {
 		@Override
-		public void onSingleClick( MouseEvent evt) {
+		public void mouseClicked( MouseEvent evt) {
 			if (mAddAction.isSelected()) {
 				FQuest quest = mSet.mParentCategory.mParentHQM.createQuest( "");
 				quest.mQuestSet = mSet;
@@ -309,14 +322,9 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private final class LeafQuestHandler implements IClickListener {
+	private final class LeafQuestHandler extends MouseAdapter {
 		@Override
-		public void onDoubleClick( MouseEvent evt) {
-//			updateName();
-		}
-
-		@Override
-		public void onSingleClick( MouseEvent evt) {
+		public void mouseClicked( MouseEvent evt) {
 			try {
 				LeafQuest dst = (LeafQuest) evt.getSource();
 				if (mActiv != null && mLinkAction.isSelected()) {
@@ -325,9 +333,9 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 						FQuest req = dst.getQuest();
 						Vector<FQuest> prevs = quest.mRequirements;
 						if (prevs.contains( req)) {
-							prevs.remove( req);
 							dst.update( Type.NORM);
 							removeLine( req, quest);
+							prevs.remove( req);
 						}
 						else {
 							prevs.add( req);
@@ -427,11 +435,11 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null && WarnDialogs.askDelete( mView)) {
 				mActiv.setVisible( false);
 				mLeaf.remove( mActiv);
+				removeQuest( mActiv);
+				removeAllLines( mActiv);
 				FQuest quest = mActiv.getQuest();
-				mMap.remove( quest);
-				removeAllLines( quest);
-				quest.remove();
 				QuestRemoveDepent.get( quest);
+				quest.remove();
 				activRemove();
 			}
 		}
@@ -493,6 +501,53 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			else {
 				updateQuest( mActiv != null);
 			}
+		}
+	}
+
+	private final class QuestSetAction extends ABundleAction {
+		private static final long serialVersionUID = -2650359366196052333L;
+
+		public QuestSetAction() {
+			super( "entity.questSet");
+			setEnabled( false);
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				FQuest quest = mActiv.getQuest();
+				Vector<String> names = QuestSetNames.get( quest.mParentHQM);
+				String result = DialogList.update( names, quest.mQuestSet.mName.mValue, mView);
+				if (result != null) {
+					FQuestSet set = QuestSetOfName.get( quest.mParentHQM, result);
+					if (set != null && Utils.different( quest.mQuestSet, set)) {
+						quest.mQuestSet = set;
+						removeQuest( mActiv);
+						removeAllLines( mActiv);
+						mActiv.setVisible( false);
+						activRemove();
+					}
+				}
+			}
+		}
+	}
+
+	private static class QuestSetNames extends AHQMWorker<Object, Vector<String>> {
+		private static final QuestSetNames WORKER = new QuestSetNames();
+
+		private QuestSetNames() {
+		}
+
+		public static Vector<String> get( FHqm hqm) {
+			Vector<String> arr = new Vector<String>();
+			hqm.mQuestSetCat.forEachMember( WORKER, arr);
+			return arr;
+		}
+
+		@Override
+		public Object forQuestSet( FQuestSet set, Vector<String> arr) {
+			arr.add( set.mName.mValue);
+			return null;
 		}
 	}
 }

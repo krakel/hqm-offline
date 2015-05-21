@@ -57,7 +57,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 				try {
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) parent.getChildAt( i);
 					ANode user = (ANode) node.getUserObject();
-					if (Utils.equals( base, user.getBase())) {
+					if (Utils.match( base, user.getBase())) {
 						return node;
 					}
 				}

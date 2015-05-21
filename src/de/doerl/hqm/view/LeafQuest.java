@@ -1,5 +1,6 @@
 package de.doerl.hqm.view;
 
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
@@ -70,7 +71,7 @@ class LeafQuest extends JLabel {
 		return quest.isBig() ? PREF_BIG : PREF_NORM;
 	}
 
-	public void addClickListener( IClickListener l) {
+	public void addClickListener( ActionListener l) {
 		mHandler.addClickListener( l);
 	}
 
@@ -78,7 +79,7 @@ class LeafQuest extends JLabel {
 		return mQuest;
 	}
 
-	public void removeClickListener( IClickListener l) {
+	public void removeClickListener( ActionListener l) {
 		mHandler.removeClickListener( l);
 	}
 

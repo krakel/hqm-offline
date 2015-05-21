@@ -1,5 +1,7 @@
 package de.doerl.hqm.view;
 
+import java.awt.event.ActionListener;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
@@ -18,7 +20,7 @@ public class LeafList<E> extends JList<E> {
 		addMouseListener( mHandler);
 	}
 
-	public void addClickListener( IClickListener l) {
+	public void addClickListener( ActionListener l) {
 		mHandler.addClickListener( l);
 	}
 
@@ -27,7 +29,7 @@ public class LeafList<E> extends JList<E> {
 		return mModel;
 	}
 
-	public void removeClickListener( IClickListener l) {
+	public void removeClickListener( ActionListener l) {
 		mHandler.removeClickListener( l);
 	}
 }

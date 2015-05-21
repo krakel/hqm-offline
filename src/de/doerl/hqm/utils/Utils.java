@@ -108,6 +108,9 @@ public class Utils {
 
 	public static <T> boolean different( T obj1, T obj2) {
 		if (obj1 != null) {
+			if (obj2 != null && obj1.getClass() != obj2.getClass()) {
+				log( SELF_LOGGER, Level.WARNING, "different class {0} != {1}", obj1, obj2);
+			}
 			return !obj1.equals( obj2);
 		}
 		return obj2 != null;
@@ -167,6 +170,9 @@ public class Utils {
 
 	public static <T> boolean equals( T obj1, T obj2) {
 		if (obj1 != null) {
+			if (obj2 != null && obj1.getClass() != obj2.getClass()) {
+				log( SELF_LOGGER, Level.WARNING, "different class {0} != {1}", obj1, obj2);
+			}
 			return obj1.equals( obj2);
 		}
 		return obj2 == null;
@@ -360,6 +366,13 @@ public class Utils {
 				});
 			}
 		}
+	}
+
+	public static <T> boolean match( T obj1, T obj2) {
+		if (obj1 != null) {
+			return obj1.equals( obj2);
+		}
+		return obj2 == null;
 	}
 
 	public static boolean parseBoolean( String value) {

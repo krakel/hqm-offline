@@ -1,43 +1,57 @@
 package de.doerl.hqm.view;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.border.BevelBorder;
 
-import de.doerl.hqm.base.ABase;
-import de.doerl.hqm.base.ACategory;
-import de.doerl.hqm.base.AMember;
-import de.doerl.hqm.base.ANamed;
-import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.utils.Utils;
 
 class DialogList extends ADialog {
 	private static final long serialVersionUID = -2711755204151080619L;
 	private DefaultListModel<String> mModel = new DefaultListModel<String>();
+	private DefaultAction mOk = new DefaultAction( BTN_OK, DialogResult.APPROVE);
 	private JList<String> mList;
+	private String mIgnore;
 
-	private DialogList( Window owner) {
+	private DialogList( Window owner, String ignore) {
 		super( owner);
+		mIgnore = ignore;
 		mList = new JList<String>( mModel);
+		mList.setCellRenderer( new Renderer());
+		mList.addMouseListener( new MouseAdapter() {
+			@Override
+			public void mouseClicked( MouseEvent evt) {
+				String current = mList.getSelectedValue();
+				mOk.setEnabled( current != null && Utils.different( current, mIgnore));
+			}
+		});
+		mOk.setEnabled( false);
 		setThema( "edit.list.thema");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
-		addAction( BTN_OK, DialogResult.APPROVE);
+		addAction( mOk);
 		addEscapeAction();
 		createMain();
 	}
 
-	public static <E extends ANamed> void update( ACategory<E> param, EditView view) {
-		if (param != null) {
-			DialogList dlg = new DialogList( ADialog.getParentFrame( view));
-			MemberFactory.get( param, dlg.mModel);
+	public static String update( Vector<String> vals, String ignore, EditView view) {
+		if (vals != null) {
+			DialogList dlg = new DialogList( ADialog.getParentFrame( view), ignore);
+			dlg.updateMain( vals);
 			if (dlg.showDialog() == DialogResult.APPROVE) {
-//				param.mValue = dlg.getText();
+				return dlg.getSelected();
 			}
 		}
+		return null;
 	}
 
 	@Override
@@ -49,26 +63,25 @@ class DialogList extends ADialog {
 		mMain.add( mList);
 	}
 
-	private static class MemberFactory extends AHQMWorker<Object, DefaultListModel<String>> {
-		private static final MemberFactory WORKER = new MemberFactory();
+	private String getSelected() {
+		return mList.getSelectedValue();
+	}
 
-		private MemberFactory() {
+	private void updateMain( Vector<String> vals) {
+		mModel.clear();
+		for (String s : vals) {
+			mModel.addElement( s);
 		}
+	}
 
-		public static void get( ACategory<?> set, DefaultListModel<String> model) {
-			model.clear();
-			set.forEachMember( WORKER, model);
-		}
+	public class Renderer extends DefaultListCellRenderer {
+		private static final long serialVersionUID = -534075821364492652L;
 
 		@Override
-		protected Object doBase( ABase base, DefaultListModel<String> model) {
-			return null;
-		}
-
-		@Override
-		protected Object doMember( AMember<? extends ANamed> member, DefaultListModel<String> model) {
-			model.addElement( member.mName.mValue);
-			return null;
+		public Component getListCellRendererComponent( JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			super.getListCellRendererComponent( list, value, index, isSelected, cellHasFocus);
+			setEnabled( Utils.different( value, mIgnore));
+			return this;
 		}
 	}
 }
