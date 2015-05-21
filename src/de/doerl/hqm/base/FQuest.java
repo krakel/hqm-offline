@@ -25,6 +25,7 @@ public final class FQuest extends ANamed {
 	public final Vector<FParameterStack> mChoices = new Vector<FParameterStack>();
 	public final Vector<FQuest> mRequirements = new Vector<FQuest>();
 	public final Vector<FQuest> mOptionLinks = new Vector<FQuest>();
+	public final Vector<FQuest> mPosts = new Vector<FQuest>();
 	public FQuestSet mQuestSet;
 	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();

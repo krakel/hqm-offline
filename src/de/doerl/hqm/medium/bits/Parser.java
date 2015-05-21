@@ -14,9 +14,9 @@ import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
+import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
-import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FItemStack;
@@ -62,9 +62,25 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	private BitInputStream mSrc;
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<FQuest, int[]>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<FQuest, int[]>();
+	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<Integer, Vector<FQuest>>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
+	}
+
+	private void addAllPosts( FQuest quest, int[] reqs) {
+		for (int i : reqs) {
+			addPost( quest, i);
+		}
+	}
+
+	private void addPost( FQuest quest, Integer req) {
+		Vector<FQuest> p = mPosts.get( req);
+		if (p == null) {
+			p = new Vector<FQuest>();
+			mPosts.put( req, p);
+		}
+		p.add( quest);
 	}
 
 	@Override
@@ -266,7 +282,9 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 					member.mQuestSet = qs;
 				}
 				if (mSrc.readBoolean()) {
-					mRequirements.put( member, mSrc.readIds( DataBitHelper.QUESTS));
+					int[] ids = mSrc.readIds( DataBitHelper.QUESTS);
+					mRequirements.put( member, ids);
+					addAllPosts( member, ids);
 				}
 				if (mSrc.contains( FileVersion.OPTION_LINKS) && mSrc.readBoolean()) {
 					mOptionLinks.put( member, mSrc.readIds( DataBitHelper.QUESTS));
@@ -365,6 +383,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 		updateRequirements( hqm);
 		updateOptionLinks( hqm);
+		updatePosts( hqm);
 	}
 
 	private void readTasks( FQuest quest) {
@@ -388,12 +407,26 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
 				FQuest req = QuestOfIdx.get( hqm, id);
-				if (req != null && !req.isDeleted()) {
-					quest.mOptionLinks.add( req);
+				if (req == null || req.isDeleted()) {
+					Utils.log( LOGGER, Level.WARNING, "missing OptionLink [{0}] {1} for {2}", i, id, quest.mName);
 				}
 				else {
-					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{2}]{1} for {0}", quest.mName, id, i);
+					quest.mOptionLinks.add( req);
 				}
+			}
+		}
+	}
+
+	private void updatePosts( FHqm hqm) {
+		for (Map.Entry<Integer, Vector<FQuest>> e : mPosts.entrySet()) {
+			int id = e.getKey();
+			Vector<FQuest> posts = e.getValue();
+			FQuest quest = QuestOfIdx.get( hqm, id);
+			if (quest == null || quest.isDeleted()) {
+				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
+			}
+			else {
+				quest.mPosts.addAll( posts);
 			}
 		}
 	}
@@ -405,11 +438,11 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
 				FQuest req = QuestOfIdx.get( hqm, id);
-				if (req != null && !req.isDeleted()) {
-					quest.mRequirements.add( req);
+				if (req == null || req.isDeleted()) {
+					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{0}] {1} for {2}", i, id, quest.mName);
 				}
 				else {
-					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{2}]{1} for {0}", quest.mName, id, i);
+					quest.mRequirements.add( req);
 				}
 			}
 		}

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,12 +65,18 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		if (mActiv != null) {
 			mActiv.update( type);
 //			mActiv.revalidate();
-			mActiv.repaint();
+//			mActiv.repaint();
 			FQuest quest = mActiv.getQuest();
 			for (FQuest req : quest.mRequirements) {
 				LeafQuest lq = mMap.get( req);
 				if (lq != null) {
 					lq.update( type == Type.ACTIV ? Type.PREF : Type.NORM);
+				}
+			}
+			for (FQuest req : quest.mPosts) {
+				LeafQuest lq = mMap.get( req);
+				if (lq != null) {
+					lq.update( type == Type.ACTIV ? Type.POST : Type.NORM);
 				}
 			}
 		}
@@ -94,8 +101,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mBigAction.setSelected( activ.getQuest().isBig());
 	}
 
-	private LeafLine addLine( FQuest from, FQuest to) {
-		LeafLine comp = new LeafLine( from, to);
+	private LeafLine addLine( FQuest req, FQuest quest) {
+		LeafLine comp = new LeafLine( req, quest);
 		mLeaf.add( comp);
 		return comp;
 	}
@@ -139,7 +146,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		return mTool;
 	}
 
-	private void removeDependLine( FQuest quest) {
+	private void removeAllLines( FQuest quest) {
 		for (Component cc : mLeaf.getComponents()) {
 			if (cc instanceof LeafLine) {
 				LeafLine ll = (LeafLine) cc;
@@ -149,6 +156,39 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				}
 			}
 		}
+	}
+
+	private void removeLine( FQuest req, FQuest quest) {
+		for (Component cc : mLeaf.getComponents()) {
+			if (cc instanceof LeafLine) {
+				LeafLine ll = (LeafLine) cc;
+				if (Utils.equals( req, ll.getFrom()) && Utils.equals( quest, ll.getTo())) {
+					ll.setVisible( false);
+					mLeaf.remove( ll);
+				}
+			}
+		}
+	}
+
+	private void selectAdd() {
+		mAddAction.setSelected( true);
+		mMoveAction.setSelected( false);
+		mLinkAction.setSelected( false);
+		updateQuest( false);
+	}
+
+	private void selectLink() {
+		mAddAction.setSelected( false);
+		mMoveAction.setSelected( false);
+		mLinkAction.setSelected( true);
+		updateQuest( false);
+	}
+
+	private void selectMove() {
+		mAddAction.setSelected( false);
+		mMoveAction.setSelected( true);
+		mLinkAction.setSelected( false);
+		updateQuest( false);
 	}
 
 	private void updateGroup( boolean value) {
@@ -278,8 +318,32 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void onSingleClick( MouseEvent evt) {
 			try {
-				activSet( (LeafQuest) evt.getSource(), true);
-				mAddAction.setSelected( false);
+				LeafQuest dst = (LeafQuest) evt.getSource();
+				if (mActiv != null && mLinkAction.isSelected()) {
+					if (Utils.different( mActiv, dst)) {
+						FQuest quest = mActiv.getQuest();
+						FQuest req = dst.getQuest();
+						Vector<FQuest> prevs = quest.mRequirements;
+						if (prevs.contains( req)) {
+							prevs.remove( req);
+							dst.update( Type.NORM);
+							removeLine( req, quest);
+						}
+						else {
+							prevs.add( req);
+							dst.update( Type.PREF);
+							LeafLine ll = addLine( req, quest);
+							ll.repaint();
+						}
+					}
+				}
+				else if (mActiv != null && Utils.equals( mActiv, dst)) {
+					selectMove();
+				}
+				else {
+					activSet( dst, true);
+					mAddAction.setSelected( false);
+				}
 			}
 			catch (ClassCastException ex) {
 				Utils.logThrows( LOGGER, Level.WARNING, ex);
@@ -324,9 +388,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mAddAction.isSelected()) {
-				mMoveAction.setSelected( false);
-				mLinkAction.setSelected( false);
-				updateQuest( false);
+				selectAdd();
 			}
 			else {
 				updateQuest( mActiv != null);
@@ -367,7 +429,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				mLeaf.remove( mActiv);
 				FQuest quest = mActiv.getQuest();
 				mMap.remove( quest);
-				removeDependLine( quest);
+				removeAllLines( quest);
 				quest.remove();
 				QuestRemoveDepent.get( quest);
 				activRemove();
@@ -408,9 +470,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mLinkAction.isSelected()) {
-				mAddAction.setSelected( false);
-				mMoveAction.setSelected( false);
-				updateQuest( false);
+				selectLink();
 			}
 			else {
 				updateQuest( mActiv != null);
@@ -428,9 +488,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mMoveAction.isSelected()) {
-				mAddAction.setSelected( false);
-				mLinkAction.setSelected( false);
-				updateQuest( false);
+				selectMove();
 			}
 			else {
 				updateQuest( mActiv != null);
