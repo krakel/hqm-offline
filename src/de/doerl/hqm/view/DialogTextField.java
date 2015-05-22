@@ -20,8 +20,8 @@ class DialogTextField extends ADialog {
 		createMain();
 	}
 
-	public static String update( String value, EditView view) {
-		DialogTextField dlg = new DialogTextField( ADialog.getParentFrame( view));
+	public static String update( String value, Window owner) {
+		DialogTextField dlg = new DialogTextField( owner);
 		dlg.updateMain( value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
 			return dlg.getText();

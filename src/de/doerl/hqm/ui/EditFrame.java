@@ -55,7 +55,7 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 	private JToolBar mToolBar = createToolBar();
 
 	private EditFrame() throws HeadlessException {
-		EditController ctrl = new EditController( mModel);
+		EditController ctrl = new EditController( mModel, this);
 		mView = new EditView( ctrl);
 		mTree = new ElementTree( ctrl);
 		mModel.addListener( mView);

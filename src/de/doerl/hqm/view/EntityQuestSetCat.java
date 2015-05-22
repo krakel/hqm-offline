@@ -29,6 +29,7 @@ import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetIndex;
+import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.ui.ABundleAction;
@@ -56,8 +57,8 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private JScrollPane mScroll;
 	private volatile FQuestSet mActiv;
 
-	public EntityQuestSetCat( EditView view, FQuestSetCat cat) {
-		super( view, new GridLayout( 1, 2));
+	public EntityQuestSetCat( FQuestSetCat cat, EditController ctrl) {
+		super( ctrl, new GridLayout( 1, 2));
 		mCategory = cat;
 		mList.setCellRenderer( new ListRenderer());
 		createLeafs();
@@ -194,9 +195,10 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( "", mView);
+			String result = DialogTextField.update( "", mCtrl.getFrame());
 			if (result != null) {
-				mView.getController().questSetCreate( mCategory, result);
+				FQuestSet qs = mCtrl.questSetCreate( mCategory, result);
+				mCtrl.fireAdded( qs);
 			}
 		}
 	}
@@ -210,8 +212,9 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (WarnDialogs.askDelete( mView)) {
-				mView.getController().questSetDelete( mActiv);
+			if (WarnDialogs.askDelete( mCtrl.getFrame())) {
+				mCtrl.questSetDelete( mActiv);
+				mCtrl.fireRemoved( mActiv);
 			}
 		}
 	}
@@ -354,10 +357,10 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.mDesc.mValue, mView);
+				String result = DialogTextBox.update( mActiv.mDesc.mValue, mCtrl.getFrame());
 				if (result != null) {
 					mActiv.mDesc.mValue = result;
-					mView.getController().fireChanged( mCategory);
+					mCtrl.fireChanged( mCategory);
 				}
 			}
 		}
@@ -373,10 +376,10 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.mName.mValue, mView);
+				String result = DialogTextField.update( mActiv.mName.mValue, mCtrl.getFrame());
 				if (result != null) {
 					mActiv.mName.mValue = result;
-					mView.getController().fireChanged( mCategory);
+					mCtrl.fireChanged( mCategory);
 				}
 			}
 		}

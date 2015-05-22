@@ -21,6 +21,7 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetOfName;
+import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.AToggleAction;
@@ -46,8 +47,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private MouseAdapter mLeafMouseHandler = new LeafMouseHandler();
 	private volatile LeafQuest mActiv;
 
-	public EntityQuestSet( EditView view, FQuestSet set) {
-		super( view, new GridLayout( 1, 1));
+	public EntityQuestSet( FQuestSet set, EditController ctrl) {
+		super( ctrl, new GridLayout( 1, 1));
 		mSet = set;
 		add( mLeaf);
 		QuestFactory.add( mSet, this);
@@ -332,7 +333,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mGroupAdd.isSelected()) {
 				int x = evt.getX() / AEntity.ZOOM - ResourceManager.getW( false) / 2;
 				int y = evt.getY() / AEntity.ZOOM - ResourceManager.getH( false) / 2;
-				mView.getController().questCreate( mSet, "", x, y);
+				FQuest quest = mCtrl.questCreate( mSet, "", x, y);
+				mCtrl.fireAdded( quest);
 			}
 			else {
 				activRemove();
@@ -354,7 +356,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				quest.mBig.mValue = !quest.isBig();
 				mBigAction.setSelected( quest.isBig());
 				mActiv.update( Type.BASE);
-				mView.getController().fireChanged( quest);
+				mCtrl.fireChanged( quest);
 			}
 		}
 	}
@@ -369,10 +371,11 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null && WarnDialogs.askDelete( mView)) {
+			if (mActiv != null && WarnDialogs.askDelete( mCtrl.getFrame())) {
 				mActiv.setVisible( false);
 				FQuest quest = mActiv.getQuest();
-				mView.getController().questDelete( quest);
+				mCtrl.questDelete( quest);
+				mCtrl.fireRemoved( quest);
 			}
 		}
 	}
@@ -495,7 +498,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			FQuest quest = leaf.getQuest();
 			quest.mX.mValue += dx / ZOOM;
 			quest.mY.mValue += dy / ZOOM;
-			mView.getController().fireChanged( quest);
+			mCtrl.fireChanged( quest);
 		}
 
 		private void moveLines( FQuest quest, int dx, int dy) {
@@ -638,14 +641,14 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				FQuest quest = mActiv.getQuest();
 				Vector<String> names = QuestSetNames.get( quest.mParentHQM);
 				FQuestSet oldSet = quest.mQuestSet;
-				String result = DialogList.update( names, oldSet.mName.mValue, mView);
+				String result = DialogList.update( names, oldSet.mName.mValue, mCtrl.getFrame());
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( quest.mParentHQM, result);
 					if (set != null && Utils.different( quest.mQuestSet, set)) {
 						removeLeafQuest( mActiv);
 						quest.mQuestSet = set;
-						mView.getController().questSetChanged( oldSet);
-						mView.getController().questSetChanged( set);
+						mCtrl.questSetChanged( oldSet);
+						mCtrl.questSetChanged( set);
 					}
 				}
 			}

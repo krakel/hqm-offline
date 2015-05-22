@@ -29,11 +29,12 @@ public class EditView extends JPanel implements IModelListener {
 	private static final GridBagConstraints GBC = createConstraints();
 	private HashMap<ABase, AEntity<?>> mContent = new HashMap<ABase, AEntity<?>>();
 	private EditController mCtrl;
-	private AEntity<?> mEmpty = new EntityEmpty( this);
+	private AEntity<?> mEmpty;
 
 	public EditView( EditController ctrl) {
 		setLayout( new GridBagLayout());
 		mCtrl = ctrl;
+		mEmpty = new EntityEmpty( ctrl);
 		setOpaque( false);
 //		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 		setCenter( mEmpty);
@@ -129,7 +130,7 @@ public class EditView extends JPanel implements IModelListener {
 		public AEntity<? extends ABase> forHQM( FHqm hqm, EditView view) {
 			AEntity<?> ent = view.mContent.get( hqm);
 			if (ent == null) {
-				ent = new EntityHQM( view, hqm);
+				ent = new EntityHQM( hqm, view.getController());
 				view.mContent.put( hqm, ent);
 				view.mCtrl.addListener( ent);
 			}
@@ -143,7 +144,7 @@ public class EditView extends JPanel implements IModelListener {
 			}
 			AEntity<?> ent = view.mContent.get( quest);
 			if (ent == null) {
-				ent = new EntityQuest( view, quest);
+				ent = new EntityQuest( quest, view.getController());
 				view.mContent.put( quest, ent);
 				view.mCtrl.addListener( ent);
 			}
@@ -154,7 +155,7 @@ public class EditView extends JPanel implements IModelListener {
 		public AEntity<? extends ABase> forQuestSet( FQuestSet set, EditView view) {
 			AEntity<?> ent = view.mContent.get( set);
 			if (ent == null) {
-				ent = new EntityQuestSet( view, set);
+				ent = new EntityQuestSet( set, view.getController());
 				view.mContent.put( set, ent);
 				view.mCtrl.addListener( ent);
 			}
@@ -165,7 +166,7 @@ public class EditView extends JPanel implements IModelListener {
 		public AEntity<? extends ABase> forQuestSetCat( FQuestSetCat cat, EditView view) {
 			AEntity<?> ent = view.mContent.get( cat);
 			if (ent == null) {
-				ent = new EntityQuestSetCat( view, cat);
+				ent = new EntityQuestSetCat( cat, view.getController());
 				view.mContent.put( cat, ent);
 				view.mCtrl.addListener( ent);
 			}

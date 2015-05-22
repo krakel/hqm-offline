@@ -42,6 +42,7 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
@@ -62,8 +63,8 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 	private JComponent mTaskInfo = leafBoxVertical( 240);
 	private JLabel mReputation;
 
-	public EntityQuest( EditView view, FQuest quest) {
-		super( view, new GridLayout( 1, 2));
+	public EntityQuest( FQuest quest, EditController ctrl) {
+		super( ctrl, new GridLayout( 1, 2));
 		mQuest = quest;
 		createLeafs();
 //		mDesc.connectTo( quest.mDesc);

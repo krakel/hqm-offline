@@ -43,9 +43,9 @@ class DialogList extends ADialog {
 		createMain();
 	}
 
-	public static String update( Vector<String> vals, String ignore, EditView view) {
+	public static String update( Vector<String> vals, String ignore, Window owner) {
 		if (vals != null) {
-			DialogList dlg = new DialogList( ADialog.getParentFrame( view), ignore);
+			DialogList dlg = new DialogList( owner, ignore);
 			dlg.updateMain( vals);
 			if (dlg.showDialog() == DialogResult.APPROVE) {
 				return dlg.getSelected();

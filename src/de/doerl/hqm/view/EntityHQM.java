@@ -10,6 +10,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.EditFrame;
@@ -23,8 +24,8 @@ class EntityHQM extends AEntity<FHqm> {
 	private JLabel mLogo = leafImage( 280, 360, ResourceManager.getImageUI( "hqm.default"));
 	private LeafTextBox mDesc = new LeafTextBox();
 
-	public EntityHQM( EditView view, FHqm hqm) {
-		super( view, new GridLayout( 1, 2));
+	public EntityHQM( FHqm hqm, EditController ctrl) {
+		super( ctrl, new GridLayout( 1, 2));
 		mHQM = hqm;
 		createLeafs();
 		update();
@@ -93,10 +94,10 @@ class EntityHQM extends AEntity<FHqm> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextBox.update( mHQM.mDesc.mValue, mView);
+			String result = DialogTextBox.update( mHQM.mDesc.mValue, mCtrl.getFrame());
 			if (result != null) {
 				mHQM.mDesc.mValue = result;
-				mView.getController().fireChanged( mHQM);
+				mCtrl.fireChanged( mHQM);
 			}
 		}
 	}

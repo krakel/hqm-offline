@@ -25,8 +25,8 @@ class DialogTextBox extends ADialog {
 		createMain();
 	}
 
-	public static String update( String value, EditView view) {
-		DialogTextBox dlg = new DialogTextBox( ADialog.getParentFrame( view));
+	public static String update( String value, Window owner) {
+		DialogTextBox dlg = new DialogTextBox( owner);
 		dlg.updateMain( value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
 			return dlg.getText();
