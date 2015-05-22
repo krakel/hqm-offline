@@ -28,6 +28,11 @@ public final class FGroup extends AMember<FGroup> {
 	}
 
 	@Override
+	public ACategory<FGroup> getHierarchy() {
+		return mParentCategory;
+	}
+
+	@Override
 	public ACategory<FGroup> getParent() {
 		return mParentCategory;
 	}

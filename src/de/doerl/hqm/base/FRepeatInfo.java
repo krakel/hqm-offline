@@ -25,6 +25,11 @@ public final class FRepeatInfo extends ABase {
 	}
 
 	@Override
+	public FQuest getHierarchy() {
+		return mParentQuest;
+	}
+
+	@Override
 	public FQuest getParent() {
 		return mParentQuest;
 	}

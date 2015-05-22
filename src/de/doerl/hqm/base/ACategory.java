@@ -40,6 +40,11 @@ public abstract class ACategory<E extends ANamed> extends ABase {
 	}
 
 	@Override
+	public FHqm getHierarchy() {
+		return mParentHQM;
+	}
+
+	@Override
 	public FHqm getParent() {
 		return mParentHQM;
 	}

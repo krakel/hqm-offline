@@ -10,6 +10,8 @@ public abstract class ABase implements IBase {
 
 	public abstract ElementTyp getElementTyp();
 
+	public abstract ABase getHierarchy();
+
 	public abstract ABase getParent();
 
 	@Override

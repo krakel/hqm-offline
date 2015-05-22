@@ -24,6 +24,11 @@ public final class FQuestSet extends AMember<FQuestSet> {
 	}
 
 	@Override
+	public ACategory<FQuestSet> getHierarchy() {
+		return mParentCategory;
+	}
+
+	@Override
 	public ACategory<FQuestSet> getParent() {
 		return mParentCategory;
 	}

@@ -11,7 +11,12 @@ public abstract class ARequirement extends ABase {
 	}
 
 	@Override
-	public ABase getParent() {
+	public AQuestTaskItems getHierarchy() {
+		return mParentTask;
+	}
+
+	@Override
+	public AQuestTaskItems getParent() {
 		return mParentTask;
 	}
 

@@ -55,6 +55,10 @@ public class EditController implements IModelListener {
 		mModel.fireBaseRemoved( base);
 	}
 
+	public void questChange( FQuest quest) {
+		fireChanged( quest);
+	}
+
 	public void questCreate( FQuestSet set, String name, int x, int y) {
 		FQuest quest = set.mParentCategory.mParentHQM.createQuest( name);
 		quest.mX.mValue = x;
@@ -71,6 +75,10 @@ public class EditController implements IModelListener {
 
 	public void questDependentDelete( FQuest quest) {
 		quest.mParentHQM.forEachQuest( mRemoverDepent, quest);
+	}
+
+	public void questSetChanged( FQuestSet qs) {
+		fireChanged( qs);
 	}
 
 	public void questSetCreate( FQuestSetCat cat, String name) {

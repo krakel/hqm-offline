@@ -3,10 +3,10 @@ package de.doerl.hqm.ui.tree;
 import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.ANamed;
 
-class SetNode extends ANode {
+class CatNode extends ANode {
 	private ACategory<? extends ANamed> mCat;
 
-	public SetNode( ACategory<? extends ANamed> cat) {
+	public CatNode( ACategory<? extends ANamed> cat) {
 		mCat = cat;
 	}
 

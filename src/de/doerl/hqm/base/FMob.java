@@ -27,6 +27,11 @@ public final class FMob extends ANamed {
 	}
 
 	@Override
+	public FQuestTaskMob getHierarchy() {
+		return mParentTask;
+	}
+
+	@Override
 	public FQuestTaskMob getParent() {
 		return mParentTask;
 	}

@@ -25,6 +25,11 @@ public final class FSetting extends ABase {
 	}
 
 	@Override
+	public FQuestTaskReputationTarget getHierarchy() {
+		return mParentTask;
+	}
+
+	@Override
 	public FQuestTaskReputationTarget getParent() {
 		return mParentTask;
 	}

@@ -66,6 +66,11 @@ public final class FHqm extends ABase {
 	}
 
 	@Override
+	public ABase getHierarchy() {
+		return null;
+	}
+
+	@Override
 	public ABase getParent() {
 		return null;
 	}

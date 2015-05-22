@@ -43,6 +43,10 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 
 	@Override
 	public void baseChanged( ModelEvent event) {
+		MutableTreeNode node = getNode( event.mBase);
+		if (node != null) {
+			nodeChanged( node);
+		}
 	}
 
 	@Override
@@ -86,7 +90,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 	}
 
 	private MutableTreeNode getParentNode( ABase base) {
-		ABase parent = base != null ? base.getParent() : null;
+		ABase parent = base != null ? base.getHierarchy() : null;
 		if (parent != null) {
 			return getNode( parent);
 		}
@@ -114,7 +118,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		protected MutableTreeNode doBase( ABase base, ElementTreeModel model) {
 			MutableTreeNode node = model.getNode( base);
 			if (node == null) {
-				MutableTreeNode parent = base.getParent().accept( this, model);
+				MutableTreeNode parent = base.getHierarchy().accept( this, model);
 				node = model.createNode( parent, new BaseNode( base));
 			}
 			return node;
@@ -124,8 +128,8 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		protected MutableTreeNode doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
 			MutableTreeNode node = model.getNode( cat);
 			if (node == null) {
-				MutableTreeNode parent = cat.getParent().accept( this, model);
-				node = model.createNode( parent, new SetNode( cat));
+				MutableTreeNode parent = cat.getHierarchy().accept( this, model);
+				node = model.createNode( parent, new CatNode( cat));
 			}
 			return node;
 		}
@@ -134,7 +138,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		protected MutableTreeNode doNamed( ANamed named, ElementTreeModel model) {
 			MutableTreeNode node = model.getNode( named);
 			if (node == null) {
-				MutableTreeNode parent = named.getParent().accept( this, model);
+				MutableTreeNode parent = named.getHierarchy().accept( this, model);
 				node = model.createNode( parent, new NamedNode( named));
 			}
 			return node;

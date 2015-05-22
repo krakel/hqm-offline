@@ -27,6 +27,11 @@ public final class FMarker extends ANamed implements Comparable<FMarker> {
 	}
 
 	@Override
+	public FReputation getHierarchy() {
+		return mParentRep;
+	}
+
+	@Override
 	public FReputation getParent() {
 		return mParentRep;
 	}

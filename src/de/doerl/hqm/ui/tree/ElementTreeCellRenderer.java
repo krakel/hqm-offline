@@ -1,21 +1,30 @@
 package de.doerl.hqm.ui.tree;
 
-import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 
-import javax.swing.JLabel;
-import javax.swing.JTree;
+import javax.swing.Icon;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
 	private static final long serialVersionUID = -6396554354333766086L;
 
 	public ElementTreeCellRenderer() {
+		super.setIcon( null);
+//		super.setBorder( BorderFactory.createLineBorder( Color.RED));
 	}
 
 	@Override
-	public Component getTreeCellRendererComponent( JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-		JLabel lbl = (JLabel) super.getTreeCellRendererComponent( tree, value, sel, expanded, leaf, row, hasFocus);
-		lbl.setIcon( null);
-		return lbl;
+	public Dimension getPreferredSize() {
+		Dimension dim = super.getPreferredSize();
+		FontRenderContext frc = new FontRenderContext( null, true, true);
+		Rectangle2D bounds = getFont().getStringBounds( getText(), frc);
+		dim.width = (int) bounds.getWidth() + getIconTextGap() + 20;
+		return dim;
+	}
+
+	@Override
+	public void setIcon( Icon icon) {
 	}
 }

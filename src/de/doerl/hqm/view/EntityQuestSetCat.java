@@ -90,7 +90,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	public void baseAdded( ModelEvent event) {
 		try {
 			ABase base = event.mBase;
-			if (mCategory.equals( base.getParent())) {
+			if (mCategory.equals( base.getHierarchy())) {
 				update();
 				updateActive( (FQuestSet) base, true);
 			}
@@ -111,7 +111,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
-		if (mCategory.equals( base.getParent())) {
+		if (mCategory.equals( base.getHierarchy())) {
 			update();
 			updateActive( QuestSetFirst.get( mCategory), true);
 		}

@@ -10,6 +10,11 @@ public abstract class AQuestTask extends ANamed {
 	}
 
 	@Override
+	public FQuest getHierarchy() {
+		return mParentQuest;
+	}
+
+	@Override
 	public FQuest getParent() {
 		return mParentQuest;
 	}

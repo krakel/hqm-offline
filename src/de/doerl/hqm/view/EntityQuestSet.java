@@ -5,7 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,14 +44,14 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private ABundleAction mDeleteAction = new DeleteAction();
 	private MouseAdapter mLeafQuestHandler = new LeafQuestHandler();
 	private MouseAdapter mLeafMouseHandler = new LeafMouseHandler();
-	private HashMap<FQuest, LeafQuest> mMap = new HashMap<FQuest, LeafQuest>();
 	private volatile LeafQuest mActiv;
 
 	public EntityQuestSet( EditView view, FQuestSet set) {
 		super( view, new GridLayout( 1, 1));
 		mSet = set;
 		add( mLeaf);
-		update();
+		QuestFactory.add( mSet, this);
+		LineFactory.add( mSet, this);
 		mTool.add( createToggleButton( mGroupAdd));
 		mTool.add( createToggleButton( mGroupMove));
 		mTool.add( createToggleButton( mGroupLink));
@@ -72,13 +71,13 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			mActiv.update( type);
 			FQuest quest = mActiv.getQuest();
 			for (FQuest req : quest.mRequirements) {
-				LeafQuest lq = mMap.get( req);
+				LeafQuest lq = getLeafQuest( req);
 				if (lq != null) {
 					lq.update( type == Type.BASE ? Type.PREF : Type.NORM);
 				}
 			}
 			for (FQuest req : quest.mPosts) {
-				LeafQuest lq = mMap.get( req);
+				LeafQuest lq = getLeafQuest( req);
 				if (lq != null) {
 					lq.update( type == Type.BASE ? Type.POST : Type.NORM);
 				}
@@ -113,8 +112,10 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	public void baseAdded( ModelEvent event) {
 		try {
 			ABase base = event.mBase;
-			if (mSet.equals( base.getParent())) {
-				activSet( createLeafQuest( (FQuest) base), false);
+			if (mSet.equals( base.getHierarchy())) {
+				FQuest quest = (FQuest) base;
+				createLeafQuest( quest);
+				createLeafLines( quest);
 			}
 		}
 		catch (ClassCastException ex) {
@@ -124,9 +125,17 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 	@Override
 	public void baseChanged( ModelEvent event) {
-		ABase base = event.mBase;
-		if (mSet.equals( base.getParent())) {
-			mMap.get( base).update();
+		try {
+			ABase base = event.mBase;
+			if (mSet.equals( base)) {
+				FQuestSet set = (FQuestSet) base;
+				removeMissingQuests();
+				QuestFactory.add( set, this);
+				LineFactory.add( set, this);
+			}
+		}
+		catch (ClassCastException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 
@@ -134,13 +143,10 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	public void baseRemoved( ModelEvent event) {
 		try {
 			ABase base = event.mBase;
-			if (mSet.equals( base.getParent())) {
-				LeafQuest lq = mMap.get( base);
-				mLeaf.remove( lq);
-				removeLeafQuest( lq);
-				removeAllLines( lq);
-				if (Utils.equals( mActiv, lq)) {
-					activRemove();
+			if (mSet.equals( base.getHierarchy())) {
+				LeafQuest lq = getLeafQuest( (FQuest) base);
+				if (lq != null) {
+					removeLeafQuest( lq);
 				}
 			}
 		}
@@ -149,20 +155,54 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private LeafLine createLeafLine( FQuest req, FQuest quest) {
-		LeafLine comp = new LeafLine( req, quest);
-		mLeaf.add( comp);
-		return comp;
+	private boolean containLeafLine( FQuest req, FQuest quest) {
+		for (Component cc : mLeaf.getComponents()) {
+			if (cc instanceof LeafLine) {
+				LeafLine ll = (LeafLine) cc;
+				if (Utils.equals( req, ll.getFrom()) && Utils.equals( quest, ll.getTo())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
-	private LeafQuest createLeafQuest( FQuest quest) {
-		LeafQuest comp = new LeafQuest( quest);
-		mLeaf.add( comp, 0);
-		mMap.put( quest, comp);
-		comp.addMouseListener( mLeafQuestHandler);
-		comp.addMouseListener( mLeafMouseHandler);
-		comp.addMouseMotionListener( mLeafMouseHandler);
-		return comp;
+	private boolean containLeafQuest( FQuest quest) {
+		for (Component cc : mLeaf.getComponents()) {
+			if (cc instanceof LeafQuest) {
+				LeafQuest lq = (LeafQuest) cc;
+				if (Utils.equals( lq.getQuest(), quest)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private void createLeafLine( FQuest req, FQuest quest) {
+		if (!containLeafLine( req, quest)) {
+			LeafLine ll = new LeafLine( req, quest);
+			mLeaf.add( ll);
+			ll.repaint();
+		}
+	}
+
+	private void createLeafLines( FQuest quest) {
+		for (FQuest req : quest.mRequirements) {
+			if (req != null && Utils.equals( req.mQuestSet, quest.mQuestSet)) {
+				createLeafLine( req, quest);
+			}
+		}
+	}
+
+	private void createLeafQuest( FQuest quest) {
+		if (!containLeafQuest( quest)) {
+			LeafQuest comp = new LeafQuest( quest);
+			mLeaf.add( comp, 0);
+			comp.addMouseListener( mLeafQuestHandler);
+			comp.addMouseListener( mLeafMouseHandler);
+			comp.addMouseMotionListener( mLeafMouseHandler);
+		}
 	}
 
 	@Override
@@ -189,22 +229,21 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		return mSet;
 	}
 
-	@Override
-	public JToolBar getToolBar() {
-		return mTool;
-	}
-
-	private void removeAllLines( LeafQuest leaf) {
-		FQuest quest = leaf.getQuest();
+	private LeafQuest getLeafQuest( FQuest quest) {
 		for (Component cc : mLeaf.getComponents()) {
-			if (cc instanceof LeafLine) {
-				LeafLine ll = (LeafLine) cc;
-				if (Utils.equals( quest, ll.getFrom()) || Utils.equals( quest, ll.getTo())) {
-					ll.setVisible( false);
-					mLeaf.remove( ll);
+			if (cc instanceof LeafQuest) {
+				LeafQuest lq = (LeafQuest) cc;
+				if (Utils.equals( lq.getQuest(), quest)) {
+					return lq;
 				}
 			}
 		}
+		return null;
+	}
+
+	@Override
+	public JToolBar getToolBar() {
+		return mTool;
 	}
 
 	private void removeLeafLine( FQuest req, FQuest quest) {
@@ -219,11 +258,39 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private void removeLeafQuest( LeafQuest leaf) {
-		mMap.remove( leaf.getQuest());
-		leaf.removeMouseListener( mLeafQuestHandler);
-		leaf.removeMouseListener( mLeafMouseHandler);
-		leaf.removeMouseMotionListener( mLeafMouseHandler);
+	private void removeLeafLines( FQuest quest) {
+		for (Component cc : mLeaf.getComponents()) {
+			if (cc instanceof LeafLine) {
+				LeafLine ll = (LeafLine) cc;
+				if (Utils.equals( quest, ll.getFrom()) || Utils.equals( quest, ll.getTo())) {
+					ll.setVisible( false);
+					mLeaf.remove( ll);
+				}
+			}
+		}
+	}
+
+	private void removeLeafQuest( LeafQuest lq) {
+		mLeaf.remove( lq);
+		lq.removeMouseListener( mLeafQuestHandler);
+		lq.removeMouseListener( mLeafMouseHandler);
+		lq.removeMouseMotionListener( mLeafMouseHandler);
+		removeLeafLines( lq.getQuest());
+		if (Utils.equals( mActiv, lq)) {
+			mActiv.setVisible( false);
+			activRemove();
+		}
+	}
+
+	private void removeMissingQuests() {
+		for (Component cc : mLeaf.getComponents()) {
+			if (cc instanceof LeafQuest) {
+				LeafQuest lq = (LeafQuest) cc;
+				if (Utils.equals( lq.getQuest().mQuestSet, mSet)) {
+					removeLeafQuest( lq);
+				}
+			}
+		}
 	}
 
 	private void selectGroupAdd() {
@@ -245,11 +312,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mGroupMove.setSelected( true);
 		mGroupLink.setSelected( false);
 		updateQuest( false);
-	}
-
-	private void update() {
-		LineFactory.set( mSet, this);
-		QuestFactory.set( mSet, this);
 	}
 
 	private void updateGroup( boolean value) {
@@ -479,8 +541,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 						else {
 							prevs.add( req);
 							dst.update( Type.PREF);
-							LeafLine ll = createLeafLine( req, quest);
-							ll.repaint();
+							createLeafLine( req, quest);
 						}
 					}
 				}
@@ -507,7 +568,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			mEntity = leaf;
 		}
 
-		public static void set( FQuestSet qs, EntityQuestSet entity) {
+		public static void add( FQuestSet qs, EntityQuestSet entity) {
 			LineFactory worker = new LineFactory( qs, entity);
 			qs.mParentCategory.mParentHQM.forEachQuest( worker, null);
 		}
@@ -515,11 +576,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
 			if (Utils.equals( quest.mQuestSet, mSet)) {
-				for (FQuest req : quest.mRequirements) {
-					if (req != null && Utils.equals( req.mQuestSet, quest.mQuestSet)) {
-						mEntity.createLeafLine( req, quest);
-					}
-				}
+				mEntity.createLeafLines( quest);
 			}
 			return null;
 		}
@@ -534,7 +591,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			mEntity = entity;
 		}
 
-		public static void set( FQuestSet qs, EntityQuestSet leaf) {
+		public static void add( FQuestSet qs, EntityQuestSet leaf) {
 			QuestFactory worker = new QuestFactory( qs, leaf);
 			qs.mParentCategory.mParentHQM.forEachQuest( worker, null);
 		}
@@ -580,15 +637,15 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				Vector<String> names = QuestSetNames.get( quest.mParentHQM);
-				String result = DialogList.update( names, quest.mQuestSet.mName.mValue, mView);
+				FQuestSet oldSet = quest.mQuestSet;
+				String result = DialogList.update( names, oldSet.mName.mValue, mView);
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( quest.mParentHQM, result);
 					if (set != null && Utils.different( quest.mQuestSet, set)) {
-						quest.mQuestSet = set;
 						removeLeafQuest( mActiv);
-						removeAllLines( mActiv);
-						mActiv.setVisible( false);
-						activRemove();
+						quest.mQuestSet = set;
+						mView.getController().questSetChanged( oldSet);
+						mView.getController().questSetChanged( set);
 					}
 				}
 			}
