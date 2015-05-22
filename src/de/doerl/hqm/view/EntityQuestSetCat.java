@@ -41,8 +41,8 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
 	private FQuestSetCat mCategory;
 	private JToolBar mTool = EditFrame.createToolBar();
-	private ABundleAction mAddAction = new AddSetAction();
-	private ABundleAction mDeleteAction = new DeleteSetAction();
+	private ABundleAction mAddAction = new AddAction();
+	private ABundleAction mDeleteAction = new DeleteAction();
 	private ABundleAction mDescAction = new TextBoxAction();
 	private ABundleAction mNameAction = new TextFieldAction();
 	private LeafList<FQuestSet> mList = new LeafList<FQuestSet>();
@@ -185,10 +185,10 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private final class AddSetAction extends ABundleAction {
+	private final class AddAction extends ABundleAction {
 		private static final long serialVersionUID = 6724759221568885874L;
 
-		public AddSetAction() {
+		public AddAction() {
 			super( "entity.add");
 		}
 
@@ -196,22 +196,22 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		public void actionPerformed( ActionEvent evt) {
 			String result = DialogTextField.update( "", mView);
 			if (result != null) {
-				mView.getController().createQuestSet( mCategory, result);
+				mView.getController().questSetCreate( mCategory, result);
 			}
 		}
 	}
 
-	private final class DeleteSetAction extends ABundleAction {
+	private final class DeleteAction extends ABundleAction {
 		private static final long serialVersionUID = 7223654325808174399L;
 
-		public DeleteSetAction() {
+		public DeleteAction() {
 			super( "entity.delete");
 		}
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (WarnDialogs.askDelete( mView)) {
-				mView.getController().deleteQuestSet( mActiv);
+				mView.getController().questSetDelete( mActiv);
 			}
 		}
 	}

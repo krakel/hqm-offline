@@ -13,9 +13,4 @@ class BaseNode extends ANode {
 	public ABase getBase() {
 		return mBase;
 	}
-
-	@Override
-	public String toString() {
-		return String.valueOf( mBase.getElementTyp().getToken());
-	}
 }

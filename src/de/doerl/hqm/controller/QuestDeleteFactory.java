@@ -15,7 +15,7 @@ class QuestDeleteFactory extends AHQMWorker<Object, FQuestSet> {
 	@Override
 	public Object forQuest( FQuest quest, FQuestSet qs) {
 		if (Utils.equals( quest.mQuestSet, qs)) {
-			mController.removeDepend( quest);
+			mController.questDependentDelete( quest);
 			quest.remove();
 		}
 		return null;

@@ -46,6 +46,6 @@ class LeafPanel extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor( getBackground());
 		g2.fillRect( 0, 0, getWidth(), getHeight());
-		AEntity.drawBackground( g2, this, AEntity.BACKGROUND, mLeft);
+		AEntity.drawBackground( g2, this, mLeft);
 	}
 }

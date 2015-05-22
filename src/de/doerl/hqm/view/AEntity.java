@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -40,14 +41,9 @@ import de.doerl.hqm.utils.Utils;
 
 abstract class AEntity<T extends ABase> extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -3039298434411863516L;
-	protected static final BufferedImage MAP = ResourceManager.getImage( "questmap.png");
-	protected static final BufferedImage ICON_BACK = MAP.getSubimage( 18, 235, 18, 18);
-	protected static final BufferedImage LARGE_BTN = MAP.getSubimage( 54, 235, 57, 18);
-	protected static final BufferedImage REPUATION = MAP.getSubimage( 0, 101, 125, 3);
-	protected static final BufferedImage REP_MARKER = MAP.getSubimage( 10, 93, 5, 5);
+	protected static final BufferedImage MAP = ResourceManager.getImageUI( "hqm.map");
 	static int ZOOM = 2;
-	static final BufferedImage BACKGROUND = ResourceManager.getImage( "book.png").getSubimage( 0, 0, 170, 234);
-	private static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * BACKGROUND.getWidth(), ZOOM * BACKGROUND.getHeight());
+	private static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * 170, ZOOM * 234);
 //	private static final int LEAF_WIDTH = BACKGROUND.getWidth();
 	protected static final int FONT_NORMAL_HIGH = 14;
 	protected static final int FONT_TITLE_HIGH = 18;
@@ -92,7 +88,11 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		return result;
 	}
 
-	static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean left) {
+	static void drawBackground( Graphics2D g2, Component c, boolean left) {
+		drawBackground( g2, c, ResourceManager.getImageUI( "hqm.book.back"), left);
+	}
+
+	private static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean left) {
 		double sx = (double) c.getWidth() / img.getWidth();
 		double sy = (double) c.getHeight() / img.getHeight();
 		if (left) {
@@ -106,7 +106,11 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	static void drawBackgroundHalf( Graphics2D g2, Component c, BufferedImage img, boolean left) {
+	static void drawBackgroundHalf( Graphics2D g2, Component c, boolean left) {
+		drawBackgroundHalf( g2, c, ResourceManager.getImageUI( "hqm.book.back"), left);
+	}
+
+	private static void drawBackgroundHalf( Graphics2D g2, Component c, BufferedImage img, boolean left) {
 		double sx = (double) c.getWidth() / img.getWidth() / 2;
 		double sy = (double) c.getHeight() / img.getHeight();
 		if (left) {
@@ -134,14 +138,6 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		g2.drawString( text, x, y);
 	}
 
-	private static void drawImage( Graphics2D g2, BufferedImage img, double sx, double sy, double tx, double ty) {
-		if (img != null) {
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			xform.translate( tx, ty);
-			g2.drawImage( img, xform, null);
-		}
-	}
-
 	private static void drawImage( Graphics2D g2, Component c, BufferedImage img) {
 		if (img != null) {
 			double sx = (double) c.getWidth() / img.getWidth();
@@ -152,9 +148,17 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	}
 
 	@SuppressWarnings( "unused")
-	private static void drawImage( Graphics2D g2, Component c, BufferedImage img, double sx, double sy) {
+	private static void drawImage( Graphics2D g2, Component c, Image img, double sx, double sy) {
 		if (img != null) {
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
+	private static void drawImage( Graphics2D g2, Image img, double sx, double sy, double tx, double ty) {
+		if (img != null) {
+			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			xform.translate( tx, ty);
 			g2.drawImage( img, xform, null);
 		}
 	}
@@ -202,7 +206,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	}
 
 	protected static JLabel leafButton( String text) {
-		JLabel result = new JLabel( new CenterIcon( LARGE_BTN, text));
+		JLabel result = new JLabel( new CenterIcon( ResourceManager.getImageUI( "hqm.button"), text));
 		result.setMinimumSize( new Dimension( 114, 36));
 		result.setPreferredSize( new Dimension( 114, 36));
 		result.setAlignmentX( LEFT_ALIGNMENT);
@@ -288,7 +292,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	protected static JLabel leafStack( AStack stk) {
 		int amount = stk != null ? stk.getAmount() : 0;
 		String count = amount > 1 ? Integer.toString( amount) : null;
-		JLabel result = new JLabel( new CountIcon( count, ICON_BACK, null));
+		JLabel result = new JLabel( new CountIcon( count, ResourceManager.getImageUI( "hqm.icon.back"), null));
 		result.setPreferredSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setMaximumSize( new Dimension( ICON_SIZE, ICON_SIZE));
 		result.setAlignmentX( LEFT_ALIGNMENT);
@@ -471,6 +475,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 
 	static class ReputationIcon implements Icon {
 		private FSetting mSetting;
+		private BufferedImage mImage = ResourceManager.getImageUI( "hqm.reputation");
 
 		public ReputationIcon( FSetting rs) {
 			mSetting = rs;
@@ -517,21 +522,21 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 
 		public int getIconHeight() {
-			return REPUATION.getHeight();
+			return mImage.getHeight();
 		}
 
 		public int getIconWidth() {
-			return REPUATION.getWidth();
+			return mImage.getWidth();
 		}
 
 		public void paintIcon( Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
-			drawImage( g2, c, REPUATION); //, scale, scale, 0, 10);
+			drawImage( g2, c, mImage); //, scale, scale, 0, 10);
 			Vector<FMarker> marker = mSetting.mRep.mMarker;
 			for (int i = 0; i < marker.size(); ++i) {
 //				FMarker mark = marker.get( i);
-				int pos = i * REPUATION.getWidth() / marker.size();
-				drawImage( g2, REP_MARKER, ZOOM, ZOOM, pos + 2, 12);
+				int pos = i * mImage.getWidth() / marker.size();
+				drawImage( g2, ResourceManager.getImageUI( "hqm.marker"), ZOOM, ZOOM, pos + 2, 12);
 			}
 		}
 	}

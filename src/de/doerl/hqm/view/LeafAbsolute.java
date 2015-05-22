@@ -29,8 +29,8 @@ class LeafAbsolute extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor( getBackground());
 		g2.fillRect( 0, 0, getWidth(), getHeight());
-		AEntity.drawBackgroundHalf( g2, this, AEntity.BACKGROUND, true);
-		AEntity.drawBackgroundHalf( g2, this, AEntity.BACKGROUND, false);
+		AEntity.drawBackgroundHalf( g2, this, true);
+		AEntity.drawBackgroundHalf( g2, this, false);
 	}
 
 	public void removeClickListener( ActionListener l) {

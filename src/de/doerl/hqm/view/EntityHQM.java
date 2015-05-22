@@ -2,7 +2,6 @@ package de.doerl.hqm.view;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -18,11 +17,10 @@ import de.doerl.hqm.utils.ResourceManager;
 
 class EntityHQM extends AEntity<FHqm> {
 	private static final long serialVersionUID = 4033642877403597083L;
-	private static final BufferedImage FRONT = ResourceManager.getImage( "front.png").getSubimage( 0, 0, 280, 360);
 	private FHqm mHQM;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mDescAction = new TextBoxAction();
-	private JLabel mLogo = leafImage( 280, 360, FRONT);
+	private JLabel mLogo = leafImage( 280, 360, ResourceManager.getImageUI( "hqm.default"));
 	private LeafTextBox mDesc = new LeafTextBox();
 
 	public EntityHQM( EditView view, FHqm hqm) {

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.TriggerType;
+import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
 public final class FQuest extends ANamed {
@@ -139,7 +140,7 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getH() {
-		return isBig() ? 37 : 30;
+		return ResourceManager.getH( mBig.mValue);
 	}
 
 	@Override
@@ -152,7 +153,7 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getW() {
-		return isBig() ? 31 : 25;
+		return ResourceManager.getW( mBig.mValue);
 	}
 
 	public int getX() {

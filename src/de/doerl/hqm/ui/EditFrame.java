@@ -80,6 +80,8 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 	static EditFrame createNew() {
 		EditManager.init();
 //		ResourceManager.setLookAndFeel( PreferenceManager.getString( BaseDefaults.LOOK_AND_FEEL));
+		ResourceManager.setTreeIcons();
+		ResourceManager.setEntityImages();
 		EditFrame result = new EditFrame();
 		result.init();
 		Utils.centerFrame( result);

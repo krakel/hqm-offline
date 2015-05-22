@@ -14,9 +14,4 @@ class SetNode extends ANode {
 	public ACategory<? extends ANamed> getBase() {
 		return mCat;
 	}
-
-	@Override
-	public String toString() {
-		return String.valueOf( mCat.getElementTyp().getToken());
-	}
 }

@@ -9,7 +9,7 @@ import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
 
 public class EditController implements IModelListener {
-	//	private static final Logger LOGGER = Logger.getLogger( EditController.class.getName());
+//	private static final Logger LOGGER = Logger.getLogger( EditController.class.getName());
 	private EditModel mModel;
 	private QuestRemoveDepent mRemoverDepent = new QuestRemoveDepent( this);
 	private QuestDeleteFactory mRemoverQuest = new QuestDeleteFactory( this);
@@ -39,21 +39,11 @@ public class EditController implements IModelListener {
 	public void baseRemoved( ModelEvent event) {
 	}
 
-	public void createQuestSet( FQuestSetCat cat, String name) {
-		fireAdded( cat.createMember( name));
-	}
-
-	public void deleteQuestSet( FQuestSet qs) {
-		qs.mParentCategory.mParentHQM.forEachQuest( mRemoverQuest, qs);
-		qs.remove();
-		fireRemoved( qs);
-	}
-
 	public void fireActive( ABase base) {
 		mModel.fireBaseActivate( base);
 	}
 
-	public void fireAdded( ABase base) {
+	void fireAdded( ABase base) {
 		mModel.fireBaseAdded( base);
 	}
 
@@ -61,12 +51,36 @@ public class EditController implements IModelListener {
 		mModel.fireBaseChanged( base);
 	}
 
-	public void fireRemoved( ABase base) {
+	void fireRemoved( ABase base) {
 		mModel.fireBaseRemoved( base);
 	}
 
-	public void removeDepend( FQuest req) {
-		req.mParentHQM.forEachQuest( mRemoverDepent, req);
+	public void questCreate( FQuestSet set, String name, int x, int y) {
+		FQuest quest = set.mParentCategory.mParentHQM.createQuest( name);
+		quest.mX.mValue = x;
+		quest.mY.mValue = y;
+		quest.mQuestSet = set;
+		fireAdded( quest);
+	}
+
+	public void questDelete( FQuest quest) {
+		questDependentDelete( quest);
+		quest.remove();
+		fireRemoved( quest);
+	}
+
+	public void questDependentDelete( FQuest quest) {
+		quest.mParentHQM.forEachQuest( mRemoverDepent, quest);
+	}
+
+	public void questSetCreate( FQuestSetCat cat, String name) {
+		fireAdded( cat.createMember( name));
+	}
+
+	public void questSetDelete( FQuestSet qs) {
+		qs.mParentCategory.mParentHQM.forEachQuest( mRemoverQuest, qs);
+		qs.remove();
+		fireRemoved( qs);
 	}
 
 	public void removeListener( IModelListener l) {
