@@ -7,7 +7,6 @@ import javax.swing.JLabel;
 
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.utils.ResourceManager;
-import de.doerl.hqm.view.AEntity.MultiIcon;
 
 class LeafQuest extends JLabel {
 	private static final long serialVersionUID = -2797500791761791369L;
@@ -32,8 +31,8 @@ class LeafQuest extends JLabel {
 		return mQuest;
 	}
 
-	private MultiIcon getTypeIcon() {
-		String key = mType.getKey( mQuest.isBig());
+	private MultiIcon getTypeIcon( boolean big) {
+		String key = mType.getKey( big);
 		BufferedImage image = ResourceManager.getImageUI( key);
 		int w = AEntity.ZOOM * image.getWidth();
 		int h = AEntity.ZOOM * image.getHeight();
@@ -58,11 +57,12 @@ class LeafQuest extends JLabel {
 		else {
 			mType = Type.DARK;
 		}
+		boolean big = mQuest.isBig();
+		setIcon( getTypeIcon( big));
 		int x = AEntity.ZOOM * mQuest.getX();
 		int y = AEntity.ZOOM * mQuest.getY();
-		int w = AEntity.ZOOM * mQuest.getW();
-		int h = AEntity.ZOOM * mQuest.getH();
-		setIcon( getTypeIcon());
+		int w = AEntity.ZOOM * ResourceManager.getW( big);
+		int h = AEntity.ZOOM * ResourceManager.getH( big);
 		setBounds( x, y, w, h);
 	}
 

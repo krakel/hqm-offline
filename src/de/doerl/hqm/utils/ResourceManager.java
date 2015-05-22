@@ -266,6 +266,12 @@ public class ResourceManager {
 		makeImage( "hqm.button", "hqm.map", 54, 235, 57, 18);
 		makeImage( "hqm.reputation", "hqm.map", 0, 101, 125, 3);
 		makeImage( "hqm.marker", "hqm.map", 10, 93, 5, 5);
+		//
+		makeImage( "hqm.rep.base", "hqm.map", 30, 82, 16, 16);
+		makeImage( "hqm.rep.good", "hqm.map", 78, 82, 16, 16);
+		makeImage( "hqm.rep.bad", "hqm.map", 94, 82, 16, 16);
+		makeImage( "hqm.rep.norm", "hqm.map", 110, 82, 16, 16);
+		//
 		makeImage( "hqm.quest.norm", "hqm.map", 170, 0, 25, 30);
 		makeImage( "hqm.quest.big", "hqm.map", 195, 0, 31, 37);
 		//

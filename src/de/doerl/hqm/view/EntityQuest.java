@@ -43,15 +43,12 @@ import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.model.ModelEvent;
+import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
 public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 	private static final long serialVersionUID = -5707664232506407627L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuest.class.getName());
-	protected static final BufferedImage REPUATION = MAP.getSubimage( 30, 82, 16, 16);
-	protected static final BufferedImage REP_GOOD = MAP.getSubimage( 78, 82, 16, 16);
-	protected static final BufferedImage REP_BAD = MAP.getSubimage( 94, 82, 16, 16);
-	protected static final BufferedImage REP_NORM = MAP.getSubimage( 110, 82, 16, 16);
 	private FQuest mQuest;
 	private JLabel mTitle = leafTitle( "");
 	private LeafTextBox mDesc = new LeafTextBox();
@@ -76,6 +73,10 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 	}
 
 	@Override
+	public void baseActivate( ModelEvent event) {
+	}
+
+	@Override
 	public void baseAdded( ModelEvent event) {
 	}
 
@@ -85,10 +86,6 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 
 	@Override
 	public void baseRemoved( ModelEvent event) {
-	}
-
-	@Override
-	public void baseActivate( ModelEvent event) {
 	}
 
 	private void createIconList( JComponent panel, Vector<FParameterStack> list, JLabel btn) {
@@ -117,7 +114,7 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 //		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( Box.createVerticalGlue());
 		leaf.add( mRewards);
-		mReputation = leafIcon( REPUATION, ReputationFactory.get( mQuest));
+		mReputation = leafIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( mQuest));
 		createIconList( mRewardList, mQuest.mRewards, mReputation);
 		leaf.add( mRewardList);
 		leaf.add( Box.createVerticalStrut( GAP));
@@ -261,7 +258,7 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 
 		@Override
 		protected Object doTaskItems( AQuestTaskItems task, JComponent comp) {
-			JComponent itemBox = leafBoxFloat( 2 * (ICON_SIZE + GAP));
+			JComponent itemBox = leafBoxFloat( 3 * (ICON_SIZE + GAP));
 			comp.add( itemBox);
 			task.forEachRequirement( this, itemBox);
 			comp.add( Box.createVerticalGlue());
@@ -390,10 +387,10 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 			ReputationFactory worker = new ReputationFactory();
 			quest.forEachReputationReward( worker, null);
 			if (worker.negative == worker.positive) {
-				return REP_NORM;
+				return ResourceManager.getImageUI( "hqm.rep.norm");
 			}
 			else {
-				return worker.positive ? REP_GOOD : REP_BAD;
+				return ResourceManager.getImageUI( worker.positive ? "hqm.rep.good" : "hqm.rep.bad");
 			}
 		}
 

@@ -127,20 +127,16 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getCenterX() {
-		return getX() + getW() / 2;
+		return getX() + ResourceManager.getW( mBig.mValue) / 2;
 	}
 
 	public int getCenterY() {
-		return getY() + getH() / 2;
+		return getY() + ResourceManager.getH( mBig.mValue) / 2;
 	}
 
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST;
-	}
-
-	public int getH() {
-		return ResourceManager.getH( mBig.mValue);
 	}
 
 	@Override
@@ -150,10 +146,6 @@ public final class FQuest extends ANamed {
 
 	public FRepeatInfo getRepeatInfo() {
 		return mRepeatInfo;
-	}
-
-	public int getW() {
-		return ResourceManager.getW( mBig.mValue);
 	}
 
 	public int getX() {

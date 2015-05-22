@@ -236,7 +236,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		public ListRenderer() {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			JComponent hori = leafBoxHorizontal( FONT_NORMAL_HIGH);
+			JComponent hori = leafBoxHorizontal( FONT_NORMAL.getSize());
 			hori.add( Box.createHorizontalStrut( 24));
 			hori.add( mComplete);
 			add( mTitle);

@@ -6,21 +6,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.util.Vector;
 
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,26 +27,20 @@ import javax.swing.ScrollPaneConstants;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AStack;
-import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.utils.ResourceManager;
-import de.doerl.hqm.utils.Utils;
 
 abstract class AEntity<T extends ABase> extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -3039298434411863516L;
-	protected static final BufferedImage MAP = ResourceManager.getImageUI( "hqm.map");
-	static int ZOOM = 2;
-	private static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * 170, ZOOM * 234);
-//	private static final int LEAF_WIDTH = BACKGROUND.getWidth();
-	protected static final int FONT_NORMAL_HIGH = 14;
-	protected static final int FONT_TITLE_HIGH = 18;
-	protected static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, FONT_NORMAL_HIGH);
-	protected static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, FONT_TITLE_HIGH);
-	protected static final Color SELECTED = new Color( 0xAAAAAA);
-	protected static final Color UNSELECTED = new Color( 0x404040);
-	protected static final int GAP = 8;
-	protected static final int ICON_SIZE = 36;
+	static final int ZOOM = 2;
+	static final int GAP = 8;
+	static final int ICON_SIZE = 36;
+	static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * 170, ZOOM * 234);
+	static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, 14);
+	static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, 18);
+	static final Color SELECTED = new Color( 0xAAAAAA);
+	static final Color UNSELECTED = new Color( 0x404040);
 	private static int sColValue;
 	protected EditView mView;
 
@@ -65,34 +53,11 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 //		setMaximumSize( new Dimension( min));
 	}
 
-	protected static BufferedImage copy( BufferedImage src) {
-		ColorModel cm = src.getColorModel();
-		BufferedImage result = new BufferedImage( cm, src.getRaster().createCompatibleWritableRaster(), cm.isAlphaPremultiplied(), null);
-		Graphics2D g = result.createGraphics();
-		g.drawImage( src, null, null);
-		g.dispose();
-		return result;
-	}
-
-	protected static JButton createToolBtn( Action a) {
-		JButton btn = new JButton();
-		btn.setHideActionText( true);
-		btn.setAction( a);
-		return btn;
-	}
-
-	static JButton createToolButton( Icon icon) {
-		JButton result = new JButton( icon);
-		result.setEnabled( false);
-		result.setBorderPainted( false);
-		return result;
-	}
-
 	static void drawBackground( Graphics2D g2, Component c, boolean left) {
 		drawBackground( g2, c, ResourceManager.getImageUI( "hqm.book.back"), left);
 	}
 
-	private static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean left) {
+	static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean left) {
 		double sx = (double) c.getWidth() / img.getWidth();
 		double sy = (double) c.getHeight() / img.getHeight();
 		if (left) {
@@ -110,7 +75,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		drawBackgroundHalf( g2, c, ResourceManager.getImageUI( "hqm.book.back"), left);
 	}
 
-	private static void drawBackgroundHalf( Graphics2D g2, Component c, BufferedImage img, boolean left) {
+	static void drawBackgroundHalf( Graphics2D g2, Component c, BufferedImage img, boolean left) {
 		double sx = (double) c.getWidth() / img.getWidth() / 2;
 		double sy = (double) c.getHeight() / img.getHeight();
 		if (left) {
@@ -124,21 +89,21 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	private static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
+	static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
 		FontMetrics fm = g2.getFontMetrics();
 		int x = c.getWidth() - fm.stringWidth( text);
 		int y = c.getHeight() - fm.getDescent();
 		g2.drawString( text, x, y);
 	}
 
-	private static void drawCenteredString( Graphics2D g2, Component c, String text) {
+	static void drawCenteredString( Graphics2D g2, Component c, String text) {
 		FontMetrics fm = g2.getFontMetrics();
 		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
 		int y = (c.getHeight() + fm.getAscent() - fm.getDescent()) / 2;
 		g2.drawString( text, x, y);
 	}
 
-	private static void drawImage( Graphics2D g2, Component c, BufferedImage img) {
+	static void drawImage( Graphics2D g2, Component c, BufferedImage img) {
 		if (img != null) {
 			double sx = (double) c.getWidth() / img.getWidth();
 			double sy = (double) c.getHeight() / img.getHeight();
@@ -147,15 +112,14 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	@SuppressWarnings( "unused")
-	private static void drawImage( Graphics2D g2, Component c, Image img, double sx, double sy) {
+	static void drawImage( Graphics2D g2, Component c, Image img, double sx, double sy) {
 		if (img != null) {
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
 			g2.drawImage( img, xform, null);
 		}
 	}
 
-	private static void drawImage( Graphics2D g2, Image img, double sx, double sy, double tx, double ty) {
+	static void drawImage( Graphics2D g2, Image img, double sx, double sy, double tx, double ty) {
 		if (img != null) {
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
 			xform.translate( tx, ty);
@@ -252,7 +216,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 //		result.setBorder( BorderFactory.createLineBorder( Color.PINK));
 		result.setFont( FONT_NORMAL);
 		result.setForeground( color);
-		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_NORMAL_HIGH));
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_NORMAL.getSize()));
 		return result;
 	}
 
@@ -317,40 +281,12 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		result.setFont( FONT_TITLE);
 		result.setForeground( color);
 		result.setText( text);
-		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_TITLE_HIGH + 3));
+		result.setPreferredSize( new Dimension( Short.MAX_VALUE, FONT_TITLE.getSize() + 3));
 		return result;
 	}
 
 	protected static JLabel leafTitle( String text) {
 		return leafTitle( Color.BLACK, text);
-	}
-
-	protected static JComponent leafToolBar( boolean left) {
-		Box hori = Box.createHorizontalBox();
-		hori.setAlignmentX( LEFT_ALIGNMENT);
-		hori.setOpaque( false);
-//		hori.setBorder( BorderFactory.createLineBorder( Color.BLACK));
-		hori.setPreferredSize( new Dimension( Short.MAX_VALUE, 20));
-		hori.setMaximumSize( new Dimension( Short.MAX_VALUE, 20));
-		JToolBar bar = new JToolBar();
-//		bar.setPreferredSize( new Dimension( Short.MAX_VALUE, bar.getPreferredSize().height));
-		bar.setFloatable( false);
-		try {
-			bar.setRollover( true);
-		}
-		catch (NoSuchMethodError ex) {
-		}
-		bar.setOpaque( false);
-//		bar.addSeparator();
-		if (left) {
-			hori.add( bar);
-			hori.add( Box.createHorizontalGlue());
-		}
-		else {
-			hori.add( Box.createHorizontalGlue());
-			hori.add( bar);
-		}
-		return hori;
 	}
 
 	private static Color nextColor() {
@@ -378,166 +314,5 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 
 	public EditView getView() {
 		return mView;
-	}
-
-	static class CenterIcon implements Icon {
-		private BufferedImage mImage;
-		private String mText;
-
-		public CenterIcon( BufferedImage img) {
-			mImage = img;
-		}
-
-		public CenterIcon( BufferedImage img, String text) {
-			mImage = img;
-			mText = text;
-		}
-
-		public int getIconHeight() {
-			return mImage.getWidth();
-		}
-
-		public int getIconWidth() {
-			return mImage.getHeight();
-		}
-
-		public void paintIcon( Component c, Graphics g, int x, int y) {
-			Graphics2D g2 = (Graphics2D) g;
-			drawImage( g2, c, mImage);
-			if (mText != null) {
-				g2.setFont( FONT_NORMAL);
-				g2.setColor( Color.BLACK);
-				drawCenteredString( g2, c, mText);
-			}
-		}
-	}
-
-	static class CountIcon implements Icon {
-		private BufferedImage mBack;
-		private BufferedImage mStack;
-		private String mText;
-
-		public CountIcon( String text, BufferedImage back, BufferedImage stk) {
-			mText = text;
-			mBack = back;
-			mStack = stk;
-		}
-
-		public int getIconHeight() {
-			return mBack.getHeight();
-		}
-
-		public int getIconWidth() {
-			return mBack.getWidth();
-		}
-
-		public void paintIcon( Component c, Graphics g, int x, int y) {
-			Graphics2D g2 = (Graphics2D) g;
-			drawImage( g2, c, mBack);
-			if (mStack != null) {
-				drawImage( g2, c, mStack);
-			}
-			if (mText != null) {
-				g2.setFont( FONT_TITLE);
-				g2.setColor( Color.BLACK);
-				drawBottomLeftString( g2, c, mText);
-			}
-		}
-	}
-
-	static class MultiIcon implements Icon {
-		private int mWidth, mHeight;
-		private BufferedImage[] mArr;
-
-		public MultiIcon( int w, int h, BufferedImage... arr) {
-			mWidth = w;
-			mHeight = h;
-			mArr = arr;
-		}
-
-		public int getIconHeight() {
-			return mHeight;
-		}
-
-		public int getIconWidth() {
-			return mWidth;
-		}
-
-		public void paintIcon( Component c, Graphics g, int x, int y) {
-			Graphics2D g2 = (Graphics2D) g;
-			for (BufferedImage img : mArr) {
-				if (img != null) {
-					drawImage( g2, c, img);
-				}
-			}
-		}
-	}
-
-	static class ReputationIcon implements Icon {
-		private FSetting mSetting;
-		private BufferedImage mImage = ResourceManager.getImageUI( "hqm.reputation");
-
-		public ReputationIcon( FSetting rs) {
-			mSetting = rs;
-			FMarker lower = rs.mLower;
-			Vector<FMarker> marker = rs.mRep.mMarker;
-			int size = marker.size();
-			FMarker first = marker.get( 0);
-			FMarker last = marker.get( size - 1);
-			int lowerValue;
-			boolean lowerOnMarker;
-			if (lower == null) {
-				lowerValue = Math.min( first.mMark.mValue, 0);
-				lowerOnMarker = false;
-			}
-			else {
-				lowerValue = lower.mMark.mValue;
-				lowerOnMarker = Utils.equals( lower, first) && lower.mMark.mValue > 0;
-				if (Utils.equals( lower.mName.mValue, rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
-					lowerValue = last.mMark.mValue;
-					lowerOnMarker = true;
-//					lowerMovedInner = true;
-//					lowerMoved = true;
-				}
-				else if (Utils.equals( lower, last)) {
-					lowerOnMarker = true;
-				}
-				else if (lowerValue <= 0) {
-					for (int i = 0; i < size; ++i) {
-						if (marker.get( i).mMark.mValue >= lowerValue) {
-							if (i > 0) {
-								lowerValue = marker.get( i - 1).mMark.mValue;
-								if (i - 1 != 0) {
-//									lowerMovedInner = true;
-								}
-//								lowerMoved = true;
-							}
-							break;
-						}
-					}
-				}
-			}
-//			FReputationMarker upper = rs.mUpper;
-//			FReputation rep = rs.mRep;
-		}
-
-		public int getIconHeight() {
-			return mImage.getHeight();
-		}
-
-		public int getIconWidth() {
-			return mImage.getWidth();
-		}
-
-		public void paintIcon( Component c, Graphics g, int x, int y) {
-			Graphics2D g2 = (Graphics2D) g;
-			drawImage( g2, c, mImage); //, scale, scale, 0, 10);
-			Vector<FMarker> marker = mSetting.mRep.mMarker;
-			for (int i = 0; i < marker.size(); ++i) {
-//				FMarker mark = marker.get( i);
-				int pos = i * mImage.getWidth() / marker.size();
-				drawImage( g2, ResourceManager.getImageUI( "hqm.marker"), ZOOM, ZOOM, pos + 2, 12);
-			}
-		}
 	}
 }
