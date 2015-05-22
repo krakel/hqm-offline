@@ -70,7 +70,10 @@ public class EntityQuest extends AEntity<FQuest> implements MouseListener {
 //		mDesc.connectTo( quest.mDesc);
 		QuestTaskFactory.get( quest, mTaskModel);
 		mTasks.setSelectedIndex( 0);
-		SwingUtilities.invokeLater( new TaskSetAction( this, QuestTaskFirst.get( quest)));
+		AQuestTask first = QuestTaskFirst.get( quest);
+		if (first != null) {
+			SwingUtilities.invokeLater( new TaskSetAction( this, first));
+		}
 	}
 
 	@Override

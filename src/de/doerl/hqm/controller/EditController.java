@@ -80,10 +80,6 @@ public class EditController implements IModelListener {
 		quest.mParentHQM.forEachQuest( mRemoverDepent, quest);
 	}
 
-	public void questSetChanged( FQuestSet qs) {
-		fireChanged( qs);
-	}
-
 	public FQuestSet questSetCreate( FQuestSetCat cat, String name) {
 		return cat.createMember( name);
 	}

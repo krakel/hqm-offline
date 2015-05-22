@@ -546,6 +546,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 							dst.update( Type.PREF);
 							createLeafLine( req, quest);
 						}
+						mCtrl.fireChanged( quest);
+						mCtrl.fireChanged( req);
 					}
 				}
 				else if (mActiv != null && Utils.equals( mActiv, dst)) {
@@ -640,15 +642,13 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				Vector<String> names = QuestSetNames.get( quest.mParentHQM);
-				FQuestSet oldSet = quest.mQuestSet;
-				String result = DialogList.update( names, oldSet.mName.mValue, mCtrl.getFrame());
+				String result = DialogList.update( names, quest.mQuestSet.mName.mValue, mCtrl.getFrame());
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( quest.mParentHQM, result);
 					if (set != null && Utils.different( quest.mQuestSet, set)) {
-						removeLeafQuest( mActiv);
+						mCtrl.fireRemoved( quest);
 						quest.mQuestSet = set;
-						mCtrl.questSetChanged( oldSet);
-						mCtrl.questSetChanged( set);
+						mCtrl.fireAdded( quest);
 					}
 				}
 			}
