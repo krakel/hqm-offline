@@ -179,6 +179,10 @@ public final class FQuest extends ANamed {
 		return mDeleted;
 	}
 
+	public boolean isFree() {
+		return mRequirements.isEmpty();
+	}
+
 	public void remove() {
 		mParentHQM.removeQuest( this);
 	}

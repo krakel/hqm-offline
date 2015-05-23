@@ -51,7 +51,7 @@ class LeafQuest extends JLabel {
 		if (type != Type.NORM) {
 			mType = type;
 		}
-		else if (mQuest.mRequirements.isEmpty()) {
+		else if (mQuest.isFree()) {
 			mType = Type.NORM;
 		}
 		else {

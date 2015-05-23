@@ -61,7 +61,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mSetAction);
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
-		mLeaf.addMouseListener( new BackgroundHandler());
+		mLeaf.addMouseListener( new AddHandler());
 		updateGroup( false);
 		updateQuest( false);
 		mGroupAdd.setSelected( true);
@@ -327,13 +327,15 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mDeleteAction.setEnabled( value);
 	}
 
-	private final class BackgroundHandler extends MouseAdapter {
+	private final class AddHandler extends MouseAdapter {
 		@Override
 		public void mouseClicked( MouseEvent evt) {
 			if (mGroupAdd.isSelected()) {
 				int x = evt.getX() / AEntity.ZOOM - ResourceManager.getW( false) / 2;
 				int y = evt.getY() / AEntity.ZOOM - ResourceManager.getH( false) / 2;
-				FQuest quest = mCtrl.questCreate( mSet, "", x, y);
+				FQuest quest = mCtrl.questCreate( mSet, "Unnamed", x, y);
+				createLeafQuest( quest);
+				activSet( getLeafQuest( quest), false);
 				mCtrl.fireAdded( quest);
 			}
 			else {

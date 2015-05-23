@@ -252,7 +252,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			int idx = QuestSetIndex.get( qs) + 1;
 			mTitle.setText( String.format( "%d. %s", idx, qs.mName));
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
-			boolean enabled = QuestSetIsEnabled.isEnabled( qs);
+			boolean enabled = QuestSetIsEnabled.get( qs);
 			mComplete.setText( enabled ? "0% Completed" : "Locked");
 			mComplete.setEnabled( enabled);
 			return this;
@@ -275,19 +275,21 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private static class QuestSetIsEnabled extends AHQMWorker<Object, Object> {
-//		private static final QuestFactory WORKER = new QuestFactory();
+	private static class QuestSetIsEnabled extends AHQMWorker<Object, FQuestSet> {
+		private static final QuestSetIsEnabled WORKER = new QuestSetIsEnabled();
+
 		private QuestSetIsEnabled() {
 		}
 
-		public static boolean isEnabled( FQuestSet qs) {
-			return true;
+		public static boolean get( FQuestSet qs) {
+			return qs.mParentCategory.mParentHQM.forEachQuest( WORKER, qs) != null;
 		}
 
 		@Override
-		public Object forQuest( FQuest quest, Object p) {
-			// 1. isLinkFree() // verlinkte quests
-//			return  && ( triggerType.doesWorkAsInvisible() || isVisible( playerName)) && enabledParentEvaluator.isValid( playerName);
+		public Object forQuest( FQuest quest, FQuestSet set) {
+			if (Utils.equals( quest.mQuestSet, set) && quest.isFree()) {
+				return Boolean.TRUE;
+			}
 			return null;
 		}
 	}
