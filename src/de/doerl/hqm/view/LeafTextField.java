@@ -28,7 +28,8 @@ class LeafTextField extends JLabel {
 		setBorder( null);
 		setFont( title ? AEntity.FONT_TITLE : AEntity.FONT_NORMAL);
 		setForeground( color);
-		setPreferredSize( new Dimension( Short.MAX_VALUE, getFont().getSize()));
+		setPreferredSize( new Dimension( 200, 2 * getFont().getSize()));
+		setMaximumSize( new Dimension( Short.MAX_VALUE, getFont().getSize()));
 		addMouseListener( mHandler);
 		addMouseListener( new BorderAdapter( this));
 	}

@@ -51,7 +51,7 @@ public abstract class ADialog extends JDialog {
 		content.setLayout( new BoxLayout( content, BoxLayout.Y_AXIS));
 		mMain.setAlignmentX( LEFT_ALIGNMENT);
 		mSelect.setAlignmentX( LEFT_ALIGNMENT);
-		mSelect.setPreferredSize( new Dimension( 100, 32));
+		mSelect.setPreferredSize( new Dimension( 300, 32));
 		mSelect.setMaximumSize( new Dimension( Short.MAX_VALUE, 32));
 		mSelect.add( Box.createHorizontalGlue());
 		content.add( mMain);
