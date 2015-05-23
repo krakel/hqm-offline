@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +26,6 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMob;
-import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskItemsConsume;
@@ -55,14 +53,16 @@ public class EntityQuest extends AEntity<FQuest> {
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mTitleAction = new TitleAction();
 	private ABundleAction mDescAction = new DescriptionAction();
+	private ABundleAction mRewardAction = new RewardAction();
+	private ABundleAction mPickOneAction = new PickOneAction();
 	private LeafTextField mTitle = new LeafTextField( true);
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafList<AQuestTask> mTasks = new LeafList<AQuestTask>();
 	private LeafLabel mRewards = new LeafLabel( "Rewards", true);
-	private JComponent mRewardList = leafBoxHorizontal( ICON_SIZE);
+	private LeafStacks mRewardList = new LeafStacks( ICON_SIZE);
 	private LeafButton mClaimButton = new LeafButton( "Claim reward");
 	private LeafLabel mPickOne = new LeafLabel( "Pick one", true);
-	private JComponent mPickOneList = leafBoxHorizontal( ICON_SIZE);
+	private LeafStacks mPickOneList = new LeafStacks( ICON_SIZE);
 	private LeafTextBox mTaskDesc = new LeafTextBox();
 	private JComponent mTaskInfo = leafBoxVertical( 240);
 
@@ -89,8 +89,13 @@ public class EntityQuest extends AEntity<FQuest> {
 		});
 		mTitle.addClickListener( mTitleAction);
 		mDesc.addClickListener( mDescAction);
+		mRewardList.addClickListener( mRewardAction);
+		mPickOneList.addClickListener( mPickOneAction);
 		mTool.add( mTitleAction);
 		mTool.add( mDescAction);
+		mTool.addSeparator();
+		mTool.add( mRewardAction);
+		mTool.add( mPickOneAction);
 		mTool.addSeparator();
 	}
 
@@ -112,17 +117,6 @@ public class EntityQuest extends AEntity<FQuest> {
 
 	@Override
 	public void baseRemoved( ModelEvent event) {
-	}
-
-	private void createIconList( JComponent panel, Vector<FParameterStack> list, JLabel btn) {
-		for (FParameterStack stk : list) {
-			panel.add( new LeafIcon( stk.mValue));
-			panel.add( Box.createHorizontalStrut( 3));
-		}
-		panel.add( Box.createHorizontalGlue());
-		if (btn != null) {
-			panel.add( btn);
-		}
 	}
 
 	@Override
@@ -162,8 +156,8 @@ public class EntityQuest extends AEntity<FQuest> {
 		mDesc.setText( mQuest.mDesc.mValue);
 		TaskListUpdate.get( mQuest, mTasks.getModel());
 		LeafIcon reputation = new LeafIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( mQuest));
-		createIconList( mRewardList, mQuest.mRewards, reputation);
-		createIconList( mPickOneList, mQuest.mChoices, mClaimButton);
+		mRewardList.createIconList( mQuest.mRewards, reputation);
+		mPickOneList.createIconList( mQuest.mChoices, mClaimButton);
 	}
 
 	public void updateActive( AQuestTask task) {
@@ -199,6 +193,18 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
+	private final class PickOneAction extends ABundleAction {
+		private static final long serialVersionUID = 3689054802238865168L;
+
+		public PickOneAction() {
+			super( "entity.pickOne");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+		}
+	}
+
 	private static class ReputationFactory extends AHQMWorker<Object, Object> {
 		private boolean positive;
 		private boolean negative;
@@ -223,6 +229,18 @@ public class EntityQuest extends AEntity<FQuest> {
 				positive = true;
 			}
 			return null;
+		}
+	}
+
+	private final class RewardAction extends ABundleAction {
+		private static final long serialVersionUID = -5444059797669279335L;
+
+		public RewardAction() {
+			super( "entity.reward");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
 		}
 	}
 

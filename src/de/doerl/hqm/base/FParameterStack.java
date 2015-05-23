@@ -10,11 +10,6 @@ public final class FParameterStack extends AParameter {
 		super( parent);
 	}
 
-	public FParameterStack( ABase parent, String name, AStack value) {
-		super( parent);
-		mValue = value;
-	}
-
 	@Override
 	public <T, U> T accept( IParameterWorker<T, U> w, U p) {
 		return w.forParameterStack( this, p);

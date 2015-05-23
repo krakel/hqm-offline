@@ -218,7 +218,9 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		for (int i = 0; i < count; ++i) {
 			AStack itemStack = mSrc.readFixedItemStack( true);
 			if (itemStack != null) {
-				param.add( new FParameterStack( grp, "stack", itemStack));
+				FParameterStack stk = new FParameterStack( grp);
+				stk.mValue = itemStack;
+				param.add( stk);
 			}
 		}
 	}
@@ -247,13 +249,15 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		rep.sort();
 	}
 
-	private void readQuestItems( FQuest quest, Vector<FParameterStack> param, String name) {
+	private void readQuestItems( FQuest quest, Vector<FParameterStack> param) {
 		if (mSrc.readBoolean()) {
 			int count = mSrc.readData( DataBitHelper.REWARDS);
 			for (int i = 0; i < count; i++) {
 				AStack itemStack = mSrc.readFixedItemStack( true);
 				if (itemStack != null) {
-					param.add( new FParameterStack( quest, name, itemStack));
+					FParameterStack stk = new FParameterStack( quest);
+					stk.mValue = itemStack;
+					param.add( stk);
 				}
 			}
 		}
@@ -312,8 +316,8 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 					member.mReqUseModified.mValue = false;
 				}
 				readTasks( member);
-				readQuestItems( member, member.mRewards, "Reward");
-				readQuestItems( member, member.mChoices, "Choice");
+				readQuestItems( member, member.mRewards);
+				readQuestItems( member, member.mChoices);
 				readReputationReward( member);
 			}
 			else {
