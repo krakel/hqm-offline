@@ -18,7 +18,7 @@ class LeafQuest extends JLabel {
 		mQuest = quest;
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
-//		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
+		setBorder( null);
 		update( mType);
 		addMouseListener( mHandler);
 	}
@@ -31,12 +31,10 @@ class LeafQuest extends JLabel {
 		return mQuest;
 	}
 
-	private MultiIcon getTypeIcon( boolean big) {
+	private StackIcon getTypeIcon( boolean big) {
 		String key = mType.getKey( big);
-		BufferedImage image = ResourceManager.getImageUI( key);
-		int w = AEntity.ZOOM * image.getWidth();
-		int h = AEntity.ZOOM * image.getHeight();
-		return new MultiIcon( w, h, image);
+		BufferedImage img = ResourceManager.getImageUI( key);
+		return new StackIcon( img, null);
 	}
 
 	public void removeClickListener( ActionListener l) {

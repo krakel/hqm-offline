@@ -1,6 +1,5 @@
 package de.doerl.hqm.view;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -14,7 +13,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -44,16 +42,16 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mAddAction = new AddAction();
 	private ABundleAction mDeleteAction = new DeleteAction();
-	private ABundleAction mDescAction = new TextBoxAction();
-	private ABundleAction mNameAction = new TextFieldAction();
+	private ABundleAction mDescAction = new DescriptionAction();
+	private ABundleAction mNameAction = new NameAction();
 	private LeafList<FQuestSet> mList = new LeafList<FQuestSet>();
 	private LeafTextBox mDesc = new LeafTextBox();
-	private JLabel mTotal = leafLabel( GuiColor.BLACK.getColor(), "");
-	private JLabel mLocked = leafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
-	private JLabel mCompleted = leafLabel( GuiColor.GREEN.getColor(), "0 completed quests");
-	private JLabel mAvailible = leafLabel( GuiColor.LIGHT_BLUE.getColor(), "0 quests available for completion");
-	private JLabel mUnclaimed = leafLabel( GuiColor.PURPLE.getColor(), "0 quests with unclaimed rewards");
-	private JLabel mInvisible = leafLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
+	private LeafLabel mTotal = new LeafLabel( GuiColor.BLACK.getColor(), "");
+	private LeafLabel mLocked = new LeafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
+	private LeafLabel mCompleted = new LeafLabel( GuiColor.GREEN.getColor(), "0 completed quests");
+	private LeafLabel mAvailible = new LeafLabel( GuiColor.LIGHT_BLUE.getColor(), "0 quests available for completion");
+	private LeafLabel mUnclaimed = new LeafLabel( GuiColor.PURPLE.getColor(), "0 quests with unclaimed rewards");
+	private LeafLabel mInvisible = new LeafLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
 	private JScrollPane mScroll;
 	private volatile FQuestSet mActiv;
 
@@ -149,8 +147,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	}
 
 	private void update() {
-		DefaultListModel<FQuestSet> model = mList.getModel();
-		QuestSetUpdate.get( mCategory, model);
+		QuestSetUpdate.get( mCategory, mList.getModel());
 	}
 
 	private void updateActions( boolean enabled) {
@@ -219,6 +216,25 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
+	private final class DescriptionAction extends ABundleAction {
+		private static final long serialVersionUID = -8367056239473171639L;
+
+		public DescriptionAction() {
+			super( "entity.textbox");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				String result = DialogTextBox.update( mActiv.mDesc.mValue, mCtrl.getFrame());
+				if (result != null) {
+					mActiv.mDesc.mValue = result;
+					mCtrl.fireChanged( mCategory);
+				}
+			}
+		}
+	}
+
 	private final class ListMouseAction implements Runnable {
 		private FQuestSet mQS;
 
@@ -234,8 +250,8 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 	private static class ListRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
 		private static final long serialVersionUID = 9081558438188872705L;
-		private JLabel mTitle = leafTitle( UNSELECTED, "");
-		private JLabel mComplete = leafLabel( Color.BLACK, "");
+		private LeafLabel mTitle = new LeafLabel( UNSELECTED, "", true);
+		private LeafLabel mComplete = new LeafLabel( "");
 
 		public ListRenderer() {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
@@ -256,6 +272,25 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			mComplete.setText( enabled ? "0% Completed" : "Locked");
 			mComplete.setEnabled( enabled);
 			return this;
+		}
+	}
+
+	private final class NameAction extends ABundleAction {
+		private static final long serialVersionUID = -3873930852720932846L;
+
+		public NameAction() {
+			super( "entity.textfield");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				String result = DialogTextField.update( mActiv.mName.mValue, mCtrl.getFrame());
+				if (result != null) {
+					mActiv.mName.mValue = result;
+					mCtrl.fireChanged( mCategory);
+				}
+			}
 		}
 	}
 
@@ -346,44 +381,6 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 				++mResult;
 			}
 			return null;
-		}
-	}
-
-	private final class TextBoxAction extends ABundleAction {
-		private static final long serialVersionUID = -8367056239473171639L;
-
-		public TextBoxAction() {
-			super( "entity.textbox");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.mDesc.mValue, mCtrl.getFrame());
-				if (result != null) {
-					mActiv.mDesc.mValue = result;
-					mCtrl.fireChanged( mCategory);
-				}
-			}
-		}
-	}
-
-	private final class TextFieldAction extends ABundleAction {
-		private static final long serialVersionUID = -3873930852720932846L;
-
-		public TextFieldAction() {
-			super( "entity.textfield");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.mName.mValue, mCtrl.getFrame());
-				if (result != null) {
-					mActiv.mName.mValue = result;
-					mCtrl.fireChanged( mCategory);
-				}
-			}
 		}
 	}
 }

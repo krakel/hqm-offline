@@ -21,7 +21,7 @@ class EntityHQM extends AEntity<FHqm> {
 	private FHqm mHQM;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mDescAction = new TextBoxAction();
-	private JLabel mLogo = leafImage( 280, 360, ResourceManager.getImageUI( "hqm.default"));
+	private JLabel mLogo = new LeafImage( ResourceManager.getImageUI( "hqm.default"));
 	private LeafTextBox mDesc = new LeafTextBox();
 
 	public EntityHQM( FHqm hqm, EditController ctrl) {
