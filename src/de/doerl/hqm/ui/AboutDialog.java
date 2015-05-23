@@ -13,7 +13,12 @@ class AboutDialog extends ADialog {
 		setThema( "about.thema");
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
-		createMain();
+	}
+
+	public static void update( Window owner) {
+		AboutDialog dlg = new AboutDialog( owner);
+		dlg.createMain();
+		dlg.showDialog();
 	}
 
 	@Override

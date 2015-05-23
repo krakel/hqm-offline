@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,8 +25,10 @@ import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMob;
+import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskItemsConsume;
@@ -54,15 +57,15 @@ public class EntityQuest extends AEntity<FQuest> {
 	private ABundleAction mTitleAction = new TitleAction();
 	private ABundleAction mDescAction = new DescriptionAction();
 	private ABundleAction mRewardAction = new RewardAction();
-	private ABundleAction mPickOneAction = new PickOneAction();
+	private ABundleAction mChoiceAction = new ChoiceAction();
 	private LeafTextField mTitle = new LeafTextField( true);
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafList<AQuestTask> mTasks = new LeafList<AQuestTask>();
-	private LeafLabel mRewards = new LeafLabel( "Rewards", true);
-	private LeafStacks mRewardList = new LeafStacks( ICON_SIZE);
 	private LeafButton mClaimButton = new LeafButton( "Claim reward");
-	private LeafLabel mPickOne = new LeafLabel( "Pick one", true);
-	private LeafStacks mPickOneList = new LeafStacks( ICON_SIZE);
+	private LeafLabel mRewards = new LeafLabel( "Rewards", true);
+	private LeafLabel mChoices = new LeafLabel( "Choices", true);
+	private LeafStacks mRewardList = new LeafStacks( ICON_SIZE);
+	private LeafStacks mChoiceList = new LeafStacks( ICON_SIZE);
 	private LeafTextBox mTaskDesc = new LeafTextBox();
 	private JComponent mTaskInfo = leafBoxVertical( 240);
 
@@ -90,12 +93,12 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTitle.addClickListener( mTitleAction);
 		mDesc.addClickListener( mDescAction);
 		mRewardList.addClickListener( mRewardAction);
-		mPickOneList.addClickListener( mPickOneAction);
+		mChoiceList.addClickListener( mChoiceAction);
 		mTool.add( mTitleAction);
 		mTool.add( mDescAction);
 		mTool.addSeparator();
 		mTool.add( mRewardAction);
-		mTool.add( mPickOneAction);
+		mTool.add( mChoiceAction);
 		mTool.addSeparator();
 	}
 
@@ -130,8 +133,8 @@ public class EntityQuest extends AEntity<FQuest> {
 		leaf.add( mRewards);
 		leaf.add( mRewardList);
 		leaf.add( Box.createVerticalStrut( GAP));
-		leaf.add( mPickOne);
-		leaf.add( mPickOneList);
+		leaf.add( mChoices);
+		leaf.add( mChoiceList);
 	}
 
 	@Override
@@ -155,9 +158,9 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTitle.setText( mQuest.mName.mValue);
 		mDesc.setText( mQuest.mDesc.mValue);
 		TaskListUpdate.get( mQuest, mTasks.getModel());
-		LeafIcon reputation = new LeafIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( mQuest));
+		LeafIcon reputation = new LeafIcon( null, ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( mQuest));
 		mRewardList.createIconList( mQuest.mRewards, reputation);
-		mPickOneList.createIconList( mQuest.mChoices, mClaimButton);
+		mChoiceList.createIconList( mQuest.mChoices, mClaimButton);
 	}
 
 	public void updateActive( AQuestTask task) {
@@ -176,6 +179,35 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
+	private void updateStacks( Vector<FParameterStack> param, Vector<AStack> stks) {
+		param.clear();
+		for (int i = 0; i < stks.size(); i++) {
+			AStack itemStack = stks.get( i);
+			if (itemStack != null) {
+				FParameterStack stk = new FParameterStack( mQuest);
+				stk.mValue = itemStack;
+				param.add( stk);
+			}
+		}
+	}
+
+	private final class ChoiceAction extends ABundleAction {
+		private static final long serialVersionUID = 3689054802238865168L;
+
+		public ChoiceAction() {
+			super( "entity.choice");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			Vector<AStack> result = DialogListStacks.update( mQuest.mChoices, mCtrl.getFrame());
+			if (result != null) {
+				updateStacks( mQuest.mChoices, result);
+				mCtrl.fireChanged( mQuest);
+			}
+		}
+	}
+
 	private final class DescriptionAction extends ABundleAction {
 		private static final long serialVersionUID = 2951694398168767124L;
 
@@ -190,18 +222,6 @@ public class EntityQuest extends AEntity<FQuest> {
 				mQuest.mDesc.mValue = result;
 				mCtrl.fireChanged( mQuest);
 			}
-		}
-	}
-
-	private final class PickOneAction extends ABundleAction {
-		private static final long serialVersionUID = 3689054802238865168L;
-
-		public PickOneAction() {
-			super( "entity.pickOne");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
 		}
 	}
 
@@ -241,6 +261,11 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
+			Vector<AStack> result = DialogListStacks.update( mQuest.mRewards, mCtrl.getFrame());
+			if (result != null) {
+				updateStacks( mQuest.mRewards, result);
+				mCtrl.fireChanged( mQuest);
+			}
 		}
 	}
 

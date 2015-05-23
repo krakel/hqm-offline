@@ -255,13 +255,13 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		public ListRenderer() {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
+			setOpaque( false);
+			setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10));
 			JComponent hori = leafBoxHorizontal( FONT_NORMAL.getSize());
 			hori.add( Box.createHorizontalStrut( 24));
 			hori.add( mComplete);
 			add( mTitle);
 			add( hori);
-			setOpaque( false);
-			setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10));
 		}
 
 		public Component getListCellRendererComponent( JList<? extends FQuestSet> list, FQuestSet qs, int index, boolean isSelected, boolean cellHasFocus) {

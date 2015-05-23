@@ -39,6 +39,19 @@ public final class FItemStack extends AStack {
 	}
 
 	@Override
+	public String getName() {
+		if (mItem != null) {
+			return mItem;
+		}
+		else if (mNBT != null) {
+			return mNBT.getValue( "id");
+		}
+		else {
+			return "unknown";
+		}
+	}
+
+	@Override
 	public FNbt getNBT() {
 		return mNBT;
 	}

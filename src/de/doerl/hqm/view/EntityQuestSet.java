@@ -644,7 +644,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				Vector<String> names = QuestSetNames.get( quest.mParentHQM);
-				String result = DialogList.update( names, quest.mQuestSet.mName.mValue, mCtrl.getFrame());
+				String result = DialogListNames.update( names, quest.mQuestSet.mName.mValue, mCtrl.getFrame());
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( quest.mParentHQM, result);
 					if (set != null && Utils.different( quest.mQuestSet, set)) {

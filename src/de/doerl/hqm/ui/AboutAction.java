@@ -13,6 +13,6 @@ public class AboutAction extends ABundleAction {
 	}
 
 	public void actionPerformed( ActionEvent event) {
-		new AboutDialog( mParent).showDialog();
+		AboutDialog.update( mParent);
 	}
 }

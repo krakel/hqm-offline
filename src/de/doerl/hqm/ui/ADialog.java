@@ -50,8 +50,15 @@ public abstract class ADialog extends JDialog {
 		Container content = rootPane.getContentPane();
 		content.setLayout( new BoxLayout( content, BoxLayout.Y_AXIS));
 		mMain.setAlignmentX( LEFT_ALIGNMENT);
-		createSelect();
-		createDialog( content);
+		mSelect.setAlignmentX( LEFT_ALIGNMENT);
+		mSelect.setPreferredSize( new Dimension( 100, 32));
+		mSelect.setMaximumSize( new Dimension( Short.MAX_VALUE, 32));
+		mSelect.add( Box.createHorizontalGlue());
+		content.add( mMain);
+		content.add( Box.createVerticalGlue());
+		content.add( Box.createVerticalStrut( GAP));
+		content.add( new JSinkLine());
+		content.add( mSelect);
 	}
 
 	protected static void addComponent( Group hori, Group verti, Component c) {
@@ -91,20 +98,7 @@ public abstract class ADialog extends JDialog {
 		addKeyAction( getRootPane(), JComponent.WHEN_IN_FOCUSED_WINDOW, "ESCAPE", ESC_ACTION);
 	}
 
-	private void createDialog( Container content) {
-		JPanel line = new JSinkLine();
-		content.add( mMain);
-		content.add( Box.createVerticalStrut( GAP));
-		content.add( line);
-		content.add( mSelect);
-	}
-
 	protected abstract void createMain();
-
-	private void createSelect() {
-		mSelect.setAlignmentX( LEFT_ALIGNMENT);
-		mSelect.add( Box.createHorizontalGlue());
-	}
 
 	public void setThema( String thema) {
 		if (thema != null) {

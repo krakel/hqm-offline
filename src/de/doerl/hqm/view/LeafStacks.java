@@ -41,6 +41,8 @@ class LeafStacks extends JPanel {
 		if (btn != null) {
 			add( btn);
 		}
+		revalidate();
+		repaint();
 	}
 
 	public void removeClickListener( ActionListener l) {

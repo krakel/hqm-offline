@@ -12,16 +12,15 @@ class DialogTextField extends ADialog {
 
 	private DialogTextField( Window owner) {
 		super( owner);
-		mField.setFont( AEntity.FONT_NORMAL);
 		setThema( "edit.textfield.thema");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
-		createMain();
 	}
 
 	public static String update( String value, Window owner) {
 		DialogTextField dlg = new DialogTextField( owner);
+		dlg.createMain();
 		dlg.updateMain( value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
 			return dlg.getText();
@@ -33,6 +32,7 @@ class DialogTextField extends ADialog {
 
 	@Override
 	protected void createMain() {
+		mField.setFont( AEntity.FONT_NORMAL);
 //		mField.setPreferredSize( new Dimension( 400, 200));
 		mField.setAlignmentX( TOP_ALIGNMENT);
 		mMain.add( mField);

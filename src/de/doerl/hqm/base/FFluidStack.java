@@ -21,6 +21,16 @@ public final class FFluidStack extends AStack {
 	}
 
 	@Override
+	public String getName() {
+		if (mNBT != null) {
+			return mNBT.getValue( "id");
+		}
+		else {
+			return "unknown";
+		}
+	}
+
+	@Override
 	public FNbt getNBT() {
 		return mNBT;
 	}

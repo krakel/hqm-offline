@@ -16,36 +16,27 @@ import javax.swing.border.BevelBorder;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 
-class DialogList extends ADialog {
+class DialogListNames extends ADialog {
 	private static final long serialVersionUID = -2711755204151080619L;
-	private DefaultListModel<String> mModel = new DefaultListModel<String>();
 	private DefaultAction mOk = new DefaultAction( BTN_OK, DialogResult.APPROVE);
+	private DefaultListModel<String> mModel = new DefaultListModel<String>();
 	private JList<String> mList;
 	private String mIgnore;
 
-	private DialogList( Window owner, String ignore) {
+	private DialogListNames( Window owner, String ignore) {
 		super( owner);
 		mIgnore = ignore;
-		mList = new JList<String>( mModel);
-		mList.setCellRenderer( new Renderer());
-		mList.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent evt) {
-				String current = mList.getSelectedValue();
-				mOk.setEnabled( current != null && Utils.different( current, mIgnore));
-			}
-		});
 		mOk.setEnabled( false);
 		setThema( "edit.list.thema");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( mOk);
 		addEscapeAction();
-		createMain();
 	}
 
 	public static String update( Vector<String> vals, String ignore, Window owner) {
 		if (vals != null) {
-			DialogList dlg = new DialogList( owner, ignore);
+			DialogListNames dlg = new DialogListNames( owner, ignore);
+			dlg.createMain();
 			dlg.updateMain( vals);
 			if (dlg.showDialog() == DialogResult.APPROVE) {
 				return dlg.getSelected();
@@ -56,10 +47,19 @@ class DialogList extends ADialog {
 
 	@Override
 	protected void createMain() {
-		mList.setPreferredSize( new Dimension( 400, 200));
-		mList.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		mList = new JList<String>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
 		mList.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED));
+		mList.setCellRenderer( new Renderer());
+		mList.addMouseListener( new MouseAdapter() {
+			@Override
+			public void mouseClicked( MouseEvent evt) {
+				String current = mList.getSelectedValue();
+				mOk.setEnabled( current != null && Utils.different( current, mIgnore));
+			}
+		});
+		mList.setPreferredSize( new Dimension( 400, 200));
+		mList.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
 		mMain.add( mList);
 	}
 
@@ -74,7 +74,7 @@ class DialogList extends ADialog {
 		}
 	}
 
-	public class Renderer extends DefaultListCellRenderer {
+	private class Renderer extends DefaultListCellRenderer {
 		private static final long serialVersionUID = -534075821364492652L;
 
 		@Override

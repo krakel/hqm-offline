@@ -22,5 +22,7 @@ public abstract class AStack {
 		return null;
 	}
 
+	public abstract String getName();
+
 	public abstract FNbt getNBT();
 }
