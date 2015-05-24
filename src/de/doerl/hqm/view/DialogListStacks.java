@@ -27,7 +27,7 @@ import de.doerl.hqm.ui.ADialog;
 
 public class DialogListStacks extends ADialog {
 	private static final long serialVersionUID = 7121230392342882985L;
-	private DefaultListModel<AStack> mModel = new DefaultListModel<AStack>();
+	private DefaultListModel<AStack> mModel = new DefaultListModel<>();
 	private JList<AStack> mList;
 	private JTextField mField = new JTextField();
 	private JButton mBtnDelete = new JButton( "Delete");
@@ -135,7 +135,7 @@ public class DialogListStacks extends ADialog {
 	}
 
 	private Vector<AStack> getResult() {
-		Vector<AStack> result = new Vector<AStack>();
+		Vector<AStack> result = new Vector<>();
 		for (int i = 0; i < mModel.size(); ++i) {
 			result.add( mModel.get( i));
 		}

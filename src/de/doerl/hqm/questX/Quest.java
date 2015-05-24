@@ -72,7 +72,7 @@ class Quest implements IWriter {
 
 	public static Vector<Quest> read( BitInputStream is) {
 		int count = is.readData( DataBitHelper.QUESTS);
-		Vector<Quest> result = new Vector<Quest>();
+		Vector<Quest> result = new Vector<>();
 		for (int i = 0; i < count; ++i) {
 			if (is.readBoolean()) {
 				result.add( new Quest( is));

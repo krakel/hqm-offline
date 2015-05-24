@@ -619,7 +619,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 
 		public static Vector<String> get( FHqm hqm) {
-			Vector<String> arr = new Vector<String>();
+			Vector<String> arr = new Vector<>();
 			hqm.mQuestSetCat.forEachMember( WORKER, arr);
 			return arr;
 		}

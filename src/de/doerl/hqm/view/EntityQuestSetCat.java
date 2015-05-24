@@ -44,7 +44,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private ABundleAction mDeleteAction = new DeleteAction();
 	private ABundleAction mDescAction = new DescriptionAction();
 	private ABundleAction mNameAction = new NameAction();
-	private LeafList<FQuestSet> mList = new LeafList<FQuestSet>();
+	private LeafList<FQuestSet> mList = new LeafList<>();
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafLabel mTotal = new LeafLabel( GuiColor.BLACK.getColor(), "");
 	private LeafLabel mLocked = new LeafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");

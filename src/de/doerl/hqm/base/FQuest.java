@@ -19,18 +19,18 @@ public final class FQuest extends ANamed {
 	public final FParameterBoolean mBig = new FParameterBoolean( this);
 	public final FParameterStack mIcon = new FParameterStack( this);
 	public final FParameterInt mTriggerTasks = new FParameterInt( this);
-	public final FParameterEnum<TriggerType> mTriggerType = new FParameterEnum<TriggerType>( this);
+	public final FParameterEnum<TriggerType> mTriggerType = new FParameterEnum<>( this);
 	public final FParameterBoolean mReqUseModified = new FParameterBoolean( this);
 	public final FParameterInt mReqCount = new FParameterInt( this);
-	public final Vector<FParameterStack> mRewards = new Vector<FParameterStack>();
-	public final Vector<FParameterStack> mChoices = new Vector<FParameterStack>();
-	public final Vector<FQuest> mRequirements = new Vector<FQuest>();
-	public final Vector<FQuest> mOptionLinks = new Vector<FQuest>();
-	public final Vector<FQuest> mPosts = new Vector<FQuest>();
+	public final Vector<FParameterStack> mRewards = new Vector<>();
+	public final Vector<FParameterStack> mChoices = new Vector<>();
+	public final Vector<FQuest> mRequirements = new Vector<>();
+	public final Vector<FQuest> mOptionLinks = new Vector<>();
+	public final Vector<FQuest> mPosts = new Vector<>();
 	public FQuestSet mQuestSet;
 	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
-	private Vector<AQuestTask> mTasks = new Vector<AQuestTask>();
-	private Vector<FReward> Reputation = new Vector<FReward>();
+	private Vector<AQuestTask> mTasks = new Vector<>();
+	private Vector<FReward> Reputation = new Vector<>();
 	private boolean mDeleted;
 
 	public FQuest( FHqm parent, String name) {

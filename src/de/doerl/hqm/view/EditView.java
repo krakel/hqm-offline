@@ -27,7 +27,7 @@ public class EditView extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -15489231166915296L;
 	private static final Logger LOGGER = Logger.getLogger( EditView.class.getName());
 	private static final GridBagConstraints GBC = createConstraints();
-	private HashMap<ABase, AEntity<?>> mContent = new HashMap<ABase, AEntity<?>>();
+	private HashMap<ABase, AEntity<?>> mContent = new HashMap<>();
 	private EditController mCtrl;
 	private AEntity<?> mEmpty;
 

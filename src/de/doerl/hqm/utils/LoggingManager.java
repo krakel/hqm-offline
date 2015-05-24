@@ -18,7 +18,7 @@ public class LoggingManager {
 	public static final Logger ROOT;
 	public static final String ROOT_LOGGER = "de.doerl.hqm";
 	private static Filter sFilter = null;
-	private static Map<Object, Handler> sHandler = new HashMap<Object, Handler>();
+	private static Map<Object, Handler> sHandler = new HashMap<>();
 	static {
 		ROOT = createRootLogger( ROOT_LOGGER, BUNDLE_HQM);
 		Runtime.getRuntime().addShutdownHook( new Thread() {

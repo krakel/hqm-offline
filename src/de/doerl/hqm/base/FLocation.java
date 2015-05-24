@@ -11,7 +11,7 @@ public final class FLocation extends ANamed {
 	public final FParameterInt mY = new FParameterInt( this);
 	public final FParameterInt mZ = new FParameterInt( this);
 	public final FParameterInt mRadius = new FParameterInt( this);
-	public final FParameterEnum<Visibility> mVisibility = new FParameterEnum<Visibility>( this);
+	public final FParameterEnum<Visibility> mVisibility = new FParameterEnum<>( this);
 	public final FParameterInt mDim = new FParameterInt( this);
 
 	public FLocation( FQuestTaskLocation parent, FItemStack icon, String name) {

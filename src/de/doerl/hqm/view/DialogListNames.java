@@ -19,7 +19,7 @@ import de.doerl.hqm.utils.Utils;
 class DialogListNames extends ADialog {
 	private static final long serialVersionUID = -2711755204151080619L;
 	private DefaultAction mOk = new DefaultAction( BTN_OK, DialogResult.APPROVE);
-	private DefaultListModel<String> mModel = new DefaultListModel<String>();
+	private DefaultListModel<String> mModel = new DefaultListModel<>();
 	private JList<String> mList;
 	private String mIgnore;
 

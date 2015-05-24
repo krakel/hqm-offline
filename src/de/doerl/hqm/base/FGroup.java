@@ -10,7 +10,7 @@ public final class FGroup extends AMember<FGroup> {
 	public final FParameterInt mID = new FParameterInt( this);
 	public final FParameterInt mTierID = new FParameterInt( this);
 	public final FParameterInt mLimit = new FParameterInt( this);;
-	public final Vector<FParameterStack> mStacks = new Vector<FParameterStack>();
+	public final Vector<FParameterStack> mStacks = new Vector<>();
 
 	public FGroup( FGroupCat parent, String name) {
 		super( name);

@@ -60,9 +60,9 @@ import de.doerl.hqm.utils.Utils;
 class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private BitInputStream mSrc;
-	private HashMap<FQuest, int[]> mRequirements = new HashMap<FQuest, int[]>();
-	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<FQuest, int[]>();
-	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<Integer, Vector<FQuest>>();
+	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
+	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
+	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);

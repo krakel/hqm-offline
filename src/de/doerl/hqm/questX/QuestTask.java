@@ -13,7 +13,7 @@ import de.doerl.hqm.questX.minecraft.ItemStack;
 public class QuestTask {
 	public static Vector<AQuestTask> read( BitInputStream is) {
 		int count = is.readData( DataBitHelper.TASKS);
-		Vector<AQuestTask> result = new Vector<AQuestTask>(); // count
+		Vector<AQuestTask> result = new Vector<>(); // count
 		for (int i = 0; i < count; ++i) {
 			int type = is.readData( DataBitHelper.TASK_TYPE);
 			if (is.contains( FileVersion.NO_ITEM_IDS)) {

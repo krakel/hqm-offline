@@ -10,7 +10,7 @@ import de.doerl.hqm.medium.RefreshEvent;
 import de.doerl.hqm.model.EditModel;
 
 public class EditCallback implements ICallback {
-	private List<IRefreshListener> mRefreshListener = new ArrayList<IRefreshListener>();
+	private List<IRefreshListener> mRefreshListener = new ArrayList<>();
 	private EditFrame mFrame;
 	private EditModel mModel;
 

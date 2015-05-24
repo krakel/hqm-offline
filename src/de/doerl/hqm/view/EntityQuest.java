@@ -60,7 +60,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	private ABundleAction mChoiceAction = new ChoiceAction();
 	private LeafTextField mTitle = new LeafTextField( true);
 	private LeafTextBox mDesc = new LeafTextBox();
-	private LeafList<AQuestTask> mTasks = new LeafList<AQuestTask>();
+	private LeafList<AQuestTask> mTasks = new LeafList<>();
 	private LeafButton mClaimButton = new LeafButton( "Claim reward");
 	private LeafLabel mRewards = new LeafLabel( "Rewards", true);
 	private LeafLabel mChoices = new LeafLabel( "Choices", true);

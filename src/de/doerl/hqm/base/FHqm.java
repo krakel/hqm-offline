@@ -20,7 +20,7 @@ public final class FHqm extends ABase {
 	public final FReputationCat mReputationCat = new FReputationCat( this);
 	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
 	public final FGroupCat mGroupCat = new FGroupCat( this);
-	private Vector<FQuest> mQuests = new Vector<FQuest>();
+	private Vector<FQuest> mQuests = new Vector<>();
 	private URI mURI;
 
 	public FHqm( URI uri) {

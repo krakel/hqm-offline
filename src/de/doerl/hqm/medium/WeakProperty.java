@@ -10,8 +10,8 @@ import de.doerl.hqm.base.FHqm;
 
 public class WeakProperty {
 	private static WeakProperty sManager = new WeakProperty();
-	private ReferenceQueue<FHqm> sQueue = new ReferenceQueue<FHqm>();
-	private Map<URI, WeakInfo> sValues = new HashMap<URI, WeakInfo>();
+	private ReferenceQueue<FHqm> sQueue = new ReferenceQueue<>();
+	private Map<URI, WeakInfo> sValues = new HashMap<>();
 
 	private WeakProperty() {
 	}

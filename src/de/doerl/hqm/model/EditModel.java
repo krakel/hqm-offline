@@ -14,8 +14,8 @@ import de.doerl.hqm.utils.Utils;
 public class EditModel {
 	private static final Logger LOGGER = Logger.getLogger( EditModel.class.getName());
 	private static final IModelListener[] EMPTY = new IModelListener[0];
-	private List<IModelListener> mListener = new ArrayList<IModelListener>();
-	private Vector<FHqm> mHQMs = new Vector<FHqm>();
+	private List<IModelListener> mListener = new ArrayList<>();
+	private Vector<FHqm> mHQMs = new Vector<>();
 
 	public void addListener( IModelListener l) {
 		if (!mListener.contains( l)) {

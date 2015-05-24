@@ -8,7 +8,7 @@ import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 
 class Reputation implements IWriter {
-	private static Map<Integer, Reputation> sReputations = new HashMap<Integer, Reputation>();
+	private static Map<Integer, Reputation> sReputations = new HashMap<>();
 	int mID;
 	String mName;
 	ReputationMarker mNeutral;

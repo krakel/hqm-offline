@@ -10,8 +10,8 @@ import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.questX.minecraft.ItemStack;
 
 class Group implements IWriter {
-	public static Map<Integer, Group> sGroups = new HashMap<Integer, Group>();
-	public static List<Group> sGroupList = new ArrayList<Group>();
+	public static Map<Integer, Group> sGroups = new HashMap<>();
+	public static List<Group> sGroupList = new ArrayList<>();
 	String mName;
 	int mTierID;
 	List<ItemStack> mItems;
