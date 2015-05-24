@@ -24,6 +24,7 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.utils.Utils;
 
 public class DialogListStacks extends ADialog {
 	private static final long serialVersionUID = 7121230392342882985L;
@@ -117,7 +118,7 @@ public class DialogListStacks extends ADialog {
 			public void actionPerformed( ActionEvent e) {
 				AStack stk = mList.getSelectedValue();
 				String text = mField.getText();
-				if (stk != null && text != null && !text.equals( "")) {
+				if (stk != null && Utils.validString( text)) {
 					int idx = mList.getSelectedIndex();
 					mModel.setElementAt( new FItemStack( null, text, 1, 0), idx);
 				}
@@ -127,7 +128,7 @@ public class DialogListStacks extends ADialog {
 			@Override
 			public void actionPerformed( ActionEvent e) {
 				String text = mField.getText();
-				if (text != null && !text.equals( "")) {
+				if (Utils.validString( text)) {
 					mModel.addElement( new FItemStack( null, text, 1, 0));
 				}
 			}
