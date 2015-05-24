@@ -15,8 +15,6 @@ import javax.swing.event.EventListenerList;
 
 public class PreferenceManager {
 	private static final Logger LOGGER = Logger.getLogger( PreferenceManager.class.getName());
-	private static boolean sFireEvents = true;
-	private static boolean sIsNotInit = true;
 	private static EventListenerList sListener = new EventListenerList();
 	private static final File SOURCE = new File( SystemInfo.HQM_DIR, "hqm.pref");
 	private static PreferenceHash sPrefs = new PreferenceHash();
@@ -58,17 +56,15 @@ public class PreferenceManager {
 	}
 
 	public static void firePreferenceChanged( String key) {
-		if (sFireEvents) {
-			Object[] listeners = sListener.getListenerList();
-			PreferenceEvent event = new PreferenceEvent( PreferenceManager.class, key);
-			for (int i = 0; i < listeners.length; i += 2) {
-				if (listeners[i] == IPreferenceChangeListener.class) {
-					try {
-						((IPreferenceChangeListener) listeners[i + 1]).preferenceChanged( event);
-					}
-					catch (ClassCastException ex) {
-						Utils.logThrows( LOGGER, Level.WARNING, ex);
-					}
+		Object[] listeners = sListener.getListenerList();
+		PreferenceEvent event = new PreferenceEvent( PreferenceManager.class, key);
+		for (int i = 0; i < listeners.length; i += 2) {
+			if (listeners[i] == IPreferenceChangeListener.class) {
+				try {
+					((IPreferenceChangeListener) listeners[i + 1]).preferenceChanged( event);
+				}
+				catch (ClassCastException ex) {
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
 				}
 			}
 		}
@@ -114,96 +110,6 @@ public class PreferenceManager {
 		return sPrefs.getColor( key, def);
 	}
 
-	public static String[] getDefaultArray( String key) {
-//		try {
-//			for (int i = 0; i < sHandler.size(); ++i) {
-//				APreferenceHandler ape = sHandler.get( i);
-//				Object obj = ape.getDefault( key);
-//				if (obj != null) {
-//					return (String[]) obj;
-//				}
-//			}
-//		}
-//		catch (RuntimeException ex) {
-//		}
-		return new String[0];
-	}
-
-	public static boolean getDefaultBoolean( String key) {
-//		try {
-//			for (int i = 0; i < sHandler.size(); ++i) {
-//				APreferenceHandler ape = sHandler.get( i);
-//				Object obj = ape.getDefault( key);
-//				if (obj != null) {
-//					return ((Boolean) obj).booleanValue();
-//				}
-//			}
-//		}
-//		catch (RuntimeException ex) {
-//		}
-		return false;
-	}
-
-	public static Color getDefaultColor( String key) {
-//		try {
-//			for (int i = 0; i < sHandler.size(); ++i) {
-//				APreferenceHandler ape = sHandler.get( i);
-//				Object obj = ape.getDefault( key);
-//				if (obj != null) {
-//					return (Color) obj;
-//				}
-//			}
-//		}
-//		catch (RuntimeException ex) {
-//		}
-		return Color.BLACK;
-	}
-
-	public static int getDefaultInteger( String key) {
-//		try {
-//			for (int i = 0; i < sHandler.size(); ++i) {
-//				APreferenceHandler ape = sHandler.get( i);
-//				Object obj = ape.getDefault( key);
-//				if (obj != null) {
-//					return ((Integer) obj).intValue();
-//				}
-//			}
-//		}
-//		catch (RuntimeException ex) {
-//		}
-		return 0;
-	}
-
-	public static Level getDefaultLevel( String key) {
-//		try {
-//			for (int i = 0; i < sHandler.size(); ++i) {
-//				APreferenceHandler ape = sHandler.get( i);
-//				Object obj = ape.getDefault( key);
-//				if (obj != null) {
-//					return (Level) obj;
-//				}
-//			}
-//		}
-//		catch (RuntimeException ex) {
-//		}
-		return Level.OFF;
-	}
-
-	public static String getDefaultString( String key) {
-//		try {
-//			for (int i = 0; i < sHandler.size(); ++i) {
-//				APreferenceHandler ape = sHandler.get( i);
-//				Object obj = ape.getDefault( key);
-//				if (obj != null) {
-//					return obj.toString();
-//				}
-//			}
-//		}
-//		catch (RuntimeException ex) {
-//		}
-		return null;
-	}
-
 	public static int getInt( String key) {
 		return sPrefs.getInt( key, 0);
 	}
@@ -243,60 +149,42 @@ public class PreferenceManager {
 
 	public static void init() {
 		synchronized (PreferenceManager.class) {
-			if (sIsNotInit) {
-				sIsNotInit = false;
-				if (SOURCE.exists()) {
-					try {
-						loadAll();
-						initAll( false);
-					}
-					catch (IOException ex) {
-						Utils.logThrows( LOGGER, Level.WARNING, ex);
-						initAll( true);
-					}
-				}
-				else {
-					initAll( true);
-//					PreferenceSaver.event();
-				}
-				Runtime.getRuntime().addShutdownHook( new Thread() {
-					@Override
-					public void run() {
-						savePreferences();
-					}
-				});
-//				LoggingChangeListener.init();
-//				PreferenceSaver.init();
-				Utils.setStackTrace( getBool( BaseDefaults.STACKTRC));
+			if (SOURCE.exists()) {
+				loadPreferenes();
 			}
 		}
-	}
-
-	private static void initAll( boolean load) {
 		synchronized (sPrefs) {
-			BaseDefaults handler = new BaseDefaults();
-			if (load) {
-				handler.load( sPrefs);
-			}
-			handler.check( sPrefs);
-			handler.keys( sPrefs);
+			BaseDefaults.check( sPrefs);
+			BaseDefaults.keys( sPrefs);
 		}
+		Utils.setStackTrace( getBool( BaseDefaults.STACKTRC));
+		Runtime.getRuntime().addShutdownHook( new Thread() {
+			@Override
+			public void run() {
+				savePreferences();
+			}
+		});
 	}
 
 	public static Set<String> keySet() {
 		return sPrefs.keySet();
 	}
 
-	private static void loadAll() throws IOException {
-		FileInputStream in = null;
+	private static void loadPreferenes() {
 		try {
-			in = new FileInputStream( SOURCE);
-			sPrefs.load( in);
-		}
-		finally {
-			if (in != null) {
-				in.close();
+			FileInputStream in = null;
+			try {
+				in = new FileInputStream( SOURCE);
+				sPrefs.load( in);
 			}
+			finally {
+				if (in != null) {
+					in.close();
+				}
+			}
+		}
+		catch (IOException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 
@@ -304,42 +192,37 @@ public class PreferenceManager {
 		sListener.add( IPreferenceChangeListener.class, new WeakChangeListener( l));
 	}
 
-	private static void saveAll() {
-		File oldFile = null;
-		if (SOURCE.exists()) {
-			oldFile = new File( SOURCE.getAbsolutePath() + ".old");
-			if (!SOURCE.renameTo( oldFile)) {
-				Utils.log( LOGGER, Level.SEVERE, "error.preference.rename {0}", SOURCE.getName());
-				return;
-			}
-		}
-		try {
-			FileOutputStream out = null;
-			try {
-				out = new FileOutputStream( SOURCE);
-				BaseDefaults.save( sPrefs, out);
-			}
-			finally {
-				if (out != null) {
-					out.close();
-				}
-			}
-			if (oldFile != null) {
-				oldFile.delete();
-			}
-//			System.out.println("save Properties for " + class.getName());
-		}
-		catch (Exception ex) {
-			if (oldFile != null) {
-				oldFile.renameTo( SOURCE);
-			}
-			Utils.log( LOGGER, Level.WARNING, "error.preference.save {0} {1}", SOURCE.getName(), ex.getMessage());
-		}
-	}
-
 	static void savePreferences() {
 		synchronized (sPrefs) {
-			saveAll();
+			File oldFile = null;
+			if (SOURCE.exists()) {
+				oldFile = new File( SOURCE.getAbsolutePath() + ".old");
+				if (!SOURCE.renameTo( oldFile)) {
+					Utils.log( LOGGER, Level.SEVERE, "error.preference.rename {0}", SOURCE.getName());
+					return;
+				}
+			}
+			try {
+				FileOutputStream out = null;
+				try {
+					out = new FileOutputStream( SOURCE);
+					sPrefs.store( out, "Generated by HQM Manager");
+				}
+				finally {
+					if (out != null) {
+						out.close();
+					}
+				}
+				if (oldFile != null) {
+					oldFile.delete();
+				}
+			}
+			catch (Exception ex) {
+				if (oldFile != null) {
+					oldFile.renameTo( SOURCE);
+				}
+				Utils.log( LOGGER, Level.WARNING, "error.preference.save {0} {1}", SOURCE.getName(), ex.getMessage());
+			}
 		}
 	}
 
@@ -369,10 +252,6 @@ public class PreferenceManager {
 		if (sPrefs.setColor( key, val)) {
 			firePreferenceChanged( key);
 		}
-	}
-
-	public static void setFireEvents( boolean enable) {
-		sFireEvents = enable;
 	}
 
 	public static void setInt( String key, int val) {

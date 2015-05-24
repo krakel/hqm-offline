@@ -11,7 +11,6 @@ import java.io.OutputStreamWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -110,21 +109,13 @@ class PreferenceHash extends HashMap<String, Object> {
 	}
 
 	synchronized void checkArray( String key) {
-		checkArray( key, false, false);
-	}
-
-	synchronized void checkArray( String key, boolean discrete, boolean freezed) {
 		if (!containsKey( key)) {
-			setArray( key, PreferenceManager.getDefaultArray( key));
+			setArray( key, BaseDefaults.getDefaultArray( key));
 		}
 	}
 
 	synchronized void checkBool( String key) {
-		checkBool( key, false, false);
-	}
-
-	synchronized void checkBool( String key, boolean discrete, boolean freezed) {
-		boolean def = PreferenceManager.getDefaultBoolean( key);
+		boolean def = BaseDefaults.getDefaultBoolean( key);
 		if (containsKey( key)) {
 			def = getBool( key, def); // correct 1,0 to true, false
 		}
@@ -132,33 +123,21 @@ class PreferenceHash extends HashMap<String, Object> {
 	}
 
 	synchronized void checkColor( String key) {
-		checkColor( key, false, false);
-	}
-
-	synchronized void checkColor( String key, boolean discrete, boolean freezed) {
 		if (!containsKey( key)) {
-			Color def = PreferenceManager.getDefaultColor( key);
+			Color def = BaseDefaults.getDefaultColor( key);
 			setColor( key, def);
 		}
 	}
 
 	synchronized void checkInteger( String key) {
-		checkInteger( key, false, false);
-	}
-
-	synchronized void checkInteger( String key, boolean discrete, boolean freezed) {
 		if (!containsKey( key)) {
-			setInt( key, PreferenceManager.getDefaultInteger( key));
+			setInt( key, BaseDefaults.getDefaultInteger( key));
 		}
 	}
 
 	synchronized void checkLevel( String key) {
-		checkLevel( key, false, false);
-	}
-
-	synchronized void checkLevel( String key, boolean discrete, boolean freezed) {
 		if (!containsKey( key)) {
-			setString( key, PreferenceManager.getDefaultLevel( key).getName());
+			setString( key, BaseDefaults.getDefaultLevel( key).getName());
 		}
 	}
 
@@ -179,7 +158,7 @@ class PreferenceHash extends HashMap<String, Object> {
 	}
 
 	synchronized void checkSelect( String key) {
-		String[] def = PreferenceManager.getDefaultArray( key);
+		String[] def = BaseDefaults.getDefaultArray( key);
 		String val = getString( null, key);
 		if (val != null) {
 			for (int i = 0; i < def.length; ++i) {
@@ -191,17 +170,9 @@ class PreferenceHash extends HashMap<String, Object> {
 		setString( key, def.length > 0 ? def[0] : null);
 	}
 
-	synchronized void checkSelect( String key, boolean discrete, boolean freezed) {
-		checkSelect( key);
-	}
-
 	synchronized void checkString( String key) {
-		checkString( key, false, false);
-	}
-
-	synchronized void checkString( String key, boolean discrete, boolean freezed) {
 		if (!containsKey( key)) {
-			setString( key, PreferenceManager.getDefaultString( key));
+			setString( key, BaseDefaults.getDefaultString( key));
 		}
 	}
 
@@ -320,10 +291,6 @@ class PreferenceHash extends HashMap<String, Object> {
 		getValue( key).incInteger();
 	}
 
-	public synchronized Iterator<String> keys() {
-		return searchKeys().iterator();
-	}
-
 	synchronized void load( InputStream is) throws IOException {
 		BufferedReader in = new BufferedReader( new InputStreamReader( is, "8859_1"));
 		while (true) {
@@ -422,22 +389,6 @@ class PreferenceHash extends HashMap<String, Object> {
 		}
 	}
 
-	private synchronized TreeSet<String> searchKeys() {
-		TreeSet<String> set = new TreeSet<String>();
-		for (Iterator<String> e = keySet().iterator(); e.hasNext();) {
-			try {
-				String key = e.next();
-				if (BaseDefaults.isKeyForSave( key)) {
-					set.add( key);
-				}
-			}
-			catch (ClassCastException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, ex);
-			}
-		}
-		return set;
-	}
-
 	void setArray( String key, String[] val) {
 		getValue( key).setArray( val);
 	}
@@ -517,9 +468,10 @@ class PreferenceHash extends HashMap<String, Object> {
 		bw.write( "# " + new Date().toString());
 		bw.newLine();
 		synchronized (this) {
-			for (Iterator<String> i = keys(); i.hasNext();) {
-				String key = i.next().toString();
-				getValue( key).write( bw, key);
+			for (String key : keySet()) {
+				if (BaseDefaults.isKeyForSave( key)) {
+					getValue( key).write( bw, key);
+				}
 			}
 		}
 		bw.write( '\n');

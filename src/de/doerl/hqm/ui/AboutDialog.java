@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 class AboutDialog extends ADialog {
 	private static final long serialVersionUID = 7261363764353127252L;
 
-	public AboutDialog( Window owner) {
+	private AboutDialog( Window owner) {
 		super( owner);
 		setThema( "about.thema");
 		addAction( BTN_OK, DialogResult.APPROVE);

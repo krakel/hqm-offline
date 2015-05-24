@@ -190,9 +190,11 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 	}
 
 	private JMenu createMenuHelp() {
-		JMenu menu = createMenu( HELP);
-		menu.add( new AboutAction( this));
-		return menu;
+		JMenu result = createMenu( HELP);
+		result.add( new ConfigAction( this));
+//		result.addSeparator();
+		result.add( new AboutAction( this));
+		return result;
 	}
 
 	private Box createSplit() {

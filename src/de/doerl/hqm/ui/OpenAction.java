@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 
 import de.doerl.hqm.ui.ADialog.DialogResult;
 
-public class OpenAction extends ABundleAction {
+class OpenAction extends ABundleAction {
 	private static final long serialVersionUID = -8745034689875059841L;
 	private EditFrame mFrame;
 

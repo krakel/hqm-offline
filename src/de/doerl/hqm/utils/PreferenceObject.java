@@ -320,7 +320,7 @@ class PreferenceObject {
 		return sb.toString();
 	}
 
-	void write( BufferedWriter bw, Object key) throws IOException {
+	public void write( BufferedWriter bw, Object key) throws IOException {
 		if (mValue == null) {
 			return;
 		}
@@ -328,8 +328,7 @@ class PreferenceObject {
 			String[] old = getArray();
 			int size = 0;
 			for (int i = 0; i < old.length; ++i) {
-				String value = old[i];
-				bw.write( saveConvert( key.toString() + '.' + size, true) + " = " + saveConvert( value, false));
+				bw.write( saveConvert( key.toString() + '.' + size, true) + " = " + saveConvert( old[i], false));
 				bw.newLine();
 				++size;
 			}

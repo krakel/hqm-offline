@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JFrame;
 
-public class ExitAction extends ABundleAction {
+class ExitAction extends ABundleAction {
 	private static final long serialVersionUID = 6920098751121756081L;
 	private JFrame mFrame;
 
