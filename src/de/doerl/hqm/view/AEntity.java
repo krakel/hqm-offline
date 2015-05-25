@@ -5,11 +5,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -51,16 +51,16 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		drawBackground( g2, c, ResourceManager.getImageUI( "hqm.book.back"), left);
 	}
 
-	static void drawBackground( Graphics2D g2, Component c, BufferedImage img, boolean left) {
-		double sx = (double) c.getWidth() / img.getWidth();
-		double sy = (double) c.getHeight() / img.getHeight();
+	static void drawBackground( Graphics2D g2, Component c, Image img, boolean left) {
+		double sx = (double) c.getWidth() / img.getWidth( null);
+		double sy = (double) c.getHeight() / img.getHeight( null);
 		if (left) {
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
 			g2.drawImage( img, xform, null);
 		}
 		else {
 			AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
-			xform.translate( -img.getWidth(), 0);
+			xform.translate( -img.getWidth( null), 0);
 			g2.drawImage( img, xform, null);
 		}
 	}
@@ -69,24 +69,73 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		drawBackgroundHalf( g2, c, ResourceManager.getImageUI( "hqm.book.back"), left);
 	}
 
-	static void drawBackgroundHalf( Graphics2D g2, Component c, BufferedImage img, boolean left) {
-		double sx = (double) c.getWidth() / img.getWidth() / 2;
-		double sy = (double) c.getHeight() / img.getHeight();
+	static void drawBackgroundHalf( Graphics2D g2, Component c, Image img, boolean left) {
+		double sx = (double) c.getWidth() / img.getWidth( null) / 2;
+		double sy = (double) c.getHeight() / img.getHeight( null);
 		if (left) {
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
 			g2.drawImage( img, xform, null);
 		}
 		else {
 			AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
-			xform.translate( -2 * img.getWidth(), 0);
+			xform.translate( -2 * img.getWidth( null), 0);
 			g2.drawImage( img, xform, null);
 		}
 	}
 
-	static void drawImage( Graphics2D g2, Component c, BufferedImage img) {
+	static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
+		FontMetrics fm = g2.getFontMetrics();
+		int x = c.getWidth() - fm.stringWidth( text);
+		int y = c.getHeight() - fm.getDescent();
+		g2.drawString( text, x, y);
+	}
+
+	static void drawCenteredImage( Graphics2D g2, Component c, Image img) {
 		if (img != null) {
-			double sx = (double) c.getWidth() / img.getWidth();
-			double sy = (double) c.getHeight() / img.getHeight();
+			double sx = (double) c.getWidth() / img.getWidth( null);
+			double sy = (double) c.getHeight() / img.getHeight( null);
+			double sm = Math.min( sx, sy);
+			AffineTransform xform = AffineTransform.getScaleInstance( sm, sm);
+			double dx = (c.getWidth() - img.getWidth( null)) / 2;
+			double dy = (c.getHeight() - img.getHeight( null)) / 2;
+			g2.translate( dx, dy);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
+	static void drawCenteredImage( Graphics2D g2, Component c, Image img, double zoom) {
+		if (img != null) {
+			double sx = zoom * c.getWidth() / img.getWidth( null);
+			double sy = zoom * c.getHeight() / img.getHeight( null);
+			double sm = Math.min( sx, sy);
+			AffineTransform xform = AffineTransform.getScaleInstance( sm, sm);
+			double dx = (1 - zoom) * c.getWidth() / 2;
+			double dy = (1 - zoom) * c.getHeight() / 2;
+			g2.translate( dx, dy);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
+	static void drawCenteredString( Graphics2D g2, Component c, String text) {
+		FontMetrics fm = g2.getFontMetrics();
+		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
+		int y = (c.getHeight() + fm.getAscent() - fm.getDescent()) / 2;
+		g2.drawString( text, x, y);
+	}
+
+	static void drawImage( Graphics2D g2, Component c, Image img) {
+		if (img != null) {
+			double sx = (double) c.getWidth() / img.getWidth( null);
+			double sy = (double) c.getHeight() / img.getHeight( null);
+			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
+			g2.drawImage( img, xform, null);
+		}
+	}
+
+	static void drawImage( Graphics2D g2, Component c, Image img, double zoom) {
+		if (img != null) {
+			double sx = zoom * c.getWidth() / img.getWidth( null);
+			double sy = zoom * c.getHeight() / img.getHeight( null);
 			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
 			g2.drawImage( img, xform, null);
 		}

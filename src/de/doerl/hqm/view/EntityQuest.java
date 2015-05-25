@@ -2,10 +2,10 @@ package de.doerl.hqm.view;
 
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -229,7 +229,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private boolean positive;
 		private boolean negative;
 
-		public static BufferedImage get( FQuest quest) {
+		public static Image get( FQuest quest) {
 			ReputationFactory worker = new ReputationFactory();
 			quest.forEachReputationReward( worker, null);
 			if (worker.negative == worker.positive) {

@@ -2,39 +2,31 @@ package de.doerl.hqm.view;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 
 import javax.swing.Icon;
 
 class ButtonIcon implements Icon {
-	private BufferedImage mImage;
+	private Image mImage;
 	private String mText;
 
-	public ButtonIcon( BufferedImage img) {
+	public ButtonIcon( Image img) {
 		mImage = img;
 	}
 
-	public ButtonIcon( String text, BufferedImage img) {
+	public ButtonIcon( String text, Image img) {
 		mImage = img;
 		mText = text;
 	}
 
-	private static void drawCenteredString( Graphics2D g2, Component c, String text) {
-		FontMetrics fm = g2.getFontMetrics();
-		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
-		int y = (c.getHeight() + fm.getAscent() - fm.getDescent()) / 2;
-		g2.drawString( text, x, y);
-	}
-
 	public int getIconHeight() {
-		return mImage.getWidth();
+		return mImage.getWidth( null);
 	}
 
 	public int getIconWidth() {
-		return mImage.getHeight();
+		return mImage.getHeight( null);
 	}
 
 	public void paintIcon( Component c, Graphics g, int x, int y) {
@@ -43,7 +35,7 @@ class ButtonIcon implements Icon {
 		if (mText != null) {
 			g2.setFont( AEntity.FONT_NORMAL);
 			g2.setColor( Color.BLACK);
-			drawCenteredString( g2, c, mText);
+			AEntity.drawCenteredString( g2, c, mText);
 		}
 	}
 }

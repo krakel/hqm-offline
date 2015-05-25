@@ -1,7 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 
 import javax.swing.JLabel;
 
@@ -10,25 +10,25 @@ import de.doerl.hqm.utils.ResourceManager;
 
 public class LeafIcon extends JLabel {
 	private static final long serialVersionUID = -6010940963328765201L;
-	private BufferedImage mBack;
+	private Image mBack;
 
 	public LeafIcon( AStack stk) {
 		this( ResourceManager.getImageUI( "hqm.icon.back"));
 		setIcon( stk);
 	}
 
-	private LeafIcon( BufferedImage back) {
+	private LeafIcon( Image back) {
 		mBack = back;
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
-		Dimension size = new Dimension( AEntity.ZOOM * back.getWidth(), AEntity.ZOOM * back.getHeight());
+		Dimension size = new Dimension( AEntity.ZOOM * back.getWidth( null), AEntity.ZOOM * back.getHeight( null));
 		setPreferredSize( size);
 		setMinimumSize( size.getSize());
 		setMaximumSize( size.getSize());
 	}
 
-	public LeafIcon( String text, BufferedImage back, BufferedImage img) {
+	public LeafIcon( String text, Image back, Image img) {
 		this( back);
 		setIcon( text, img);
 	}
@@ -37,7 +37,7 @@ public class LeafIcon extends JLabel {
 		return stk != null ? stk.getCount() : null;
 	}
 
-	private static BufferedImage imageOf( AStack stk) {
+	private static Image imageOf( AStack stk) {
 		return stk != null ? stk.getImage() : null;
 	}
 
@@ -45,7 +45,7 @@ public class LeafIcon extends JLabel {
 		super.setIcon( new StackIcon( countOf( stk), mBack, imageOf( stk)));
 	}
 
-	public void setIcon( String text, BufferedImage img) {
+	public void setIcon( String text, Image img) {
 		super.setIcon( new StackIcon( text, mBack, img));
 	}
 }

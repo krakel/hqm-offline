@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 
 import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.medium.FNbt;
@@ -18,7 +18,7 @@ public abstract class AStack {
 		return amount > 1 ? Integer.toString( amount) : null;
 	}
 
-	public BufferedImage getImage() {
+	public Image getImage() {
 		return null;
 	}
 

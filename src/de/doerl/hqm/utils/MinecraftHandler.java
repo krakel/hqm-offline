@@ -1,7 +1,7 @@
 package de.doerl.hqm.utils;
 
 import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 public class MinecraftHandler implements IHandler {
 	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
@@ -77,17 +79,13 @@ public class MinecraftHandler implements IHandler {
 			for (Enumeration<JarEntry> e = jar.entries(); e.hasMoreElements();) {
 				JarEntry entry = e.nextElement();
 				String name = entry.getName();
-				if (name.startsWith( ITEMS)) {
-					String key = createKey( name);
-					if (Utils.validString( key)) {
-						mCache.put( "minecraft:" + key, readImage( jar, entry));
-					}
+				if (name.endsWith( ".mcmeta")) {
+				}
+				else if (name.startsWith( ITEMS)) {
+					putIf( jar, entry, name, true);
 				}
 				else if (name.startsWith( BLOCKS)) {
-					String key = createKey( name);
-					if (Utils.validString( key) && !mCache.containsKey( key)) {
-						mCache.put( "minecraft:" + key, readImage( jar, entry));
-					}
+					putIf( jar, entry, name, false);
 				}
 			}
 		}
@@ -105,12 +103,28 @@ public class MinecraftHandler implements IHandler {
 		}
 	}
 
+	private void putIf( JarFile jar, JarEntry entry, String name, boolean overwrite) throws IOException {
+		String key = createKey( name);
+		if (Utils.validString( key) && (overwrite || !mCache.containsKey( key))) {
+			Image img = readImage( jar, entry);
+			if (img != null) {
+				mCache.put( key, img);
+				Utils.log( LOGGER, Level.WARNING, "found minecraft:{0}", key);
+				int pos = key.lastIndexOf( '_');
+				if (pos > 0) {
+					mCache.put( key.substring( pos + 1) + '_' + key.substring( 0, pos), img);
+					mCache.put( key.substring( 0, pos), img);
+				}
+			}
+		}
+	}
+
 	private Image readImage( JarFile jar, JarEntry entry) throws IOException {
-		byte[] bb = new byte[(int) entry.getSize()];
+		BufferedImage img = null;
 		InputStream is = null;
 		try {
 			is = jar.getInputStream( entry);
-			is.read( bb);
+			img = ImageIO.read( is);
 		}
 		catch (Exception ex) {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
@@ -124,6 +138,6 @@ public class MinecraftHandler implements IHandler {
 			catch (Exception ex) {
 			}
 		}
-		return Toolkit.getDefaultToolkit().createImage( bb);
+		return img;
 	}
 }

@@ -200,6 +200,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		if (!containLeafQuest( quest)) {
 			LeafQuest comp = new LeafQuest( quest);
 			mLeaf.add( comp, 0);
+			comp.update( Type.NORM);
 			comp.addMouseListener( mLeafQuestHandler);
 			comp.addMouseListener( mLeafMouseHandler);
 			comp.addMouseMotionListener( mLeafMouseHandler);

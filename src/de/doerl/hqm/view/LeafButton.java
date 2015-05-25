@@ -1,7 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 
 import javax.swing.JLabel;
 
@@ -14,9 +14,9 @@ class LeafButton extends JLabel {
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
-		BufferedImage img = ResourceManager.getImageUI( "hqm.button");
+		Image img = ResourceManager.getImageUI( "hqm.button");
 		setIcon( new ButtonIcon( text, img));
-		Dimension size = new Dimension( AEntity.ZOOM * img.getWidth(), AEntity.ZOOM * img.getHeight());
+		Dimension size = new Dimension( AEntity.ZOOM * img.getWidth( null), AEntity.ZOOM * img.getHeight( null));
 		setMinimumSize( size.getSize());
 		setPreferredSize( size);
 	}

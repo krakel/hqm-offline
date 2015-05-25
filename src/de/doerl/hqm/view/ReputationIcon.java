@@ -3,7 +3,7 @@ package de.doerl.hqm.view;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 import java.util.Vector;
 
 import javax.swing.Icon;
@@ -15,7 +15,7 @@ import de.doerl.hqm.utils.Utils;
 
 class ReputationIcon implements Icon {
 	private FSetting mSetting;
-	private BufferedImage mImage = ResourceManager.getImageUI( "hqm.reputation");
+	private Image mImage = ResourceManager.getImageUI( "hqm.reputation");
 
 	public ReputationIcon( FSetting rs) {
 		mSetting = rs;
@@ -62,11 +62,11 @@ class ReputationIcon implements Icon {
 	}
 
 	public int getIconHeight() {
-		return mImage.getHeight();
+		return mImage.getHeight( null);
 	}
 
 	public int getIconWidth() {
-		return mImage.getWidth();
+		return mImage.getWidth( null);
 	}
 
 	public void paintIcon( Component c, Graphics g, int x, int y) {
@@ -75,7 +75,7 @@ class ReputationIcon implements Icon {
 		Vector<FMarker> marker = mSetting.mRep.mMarker;
 		for (int i = 0; i < marker.size(); ++i) {
 //				FMarker mark = marker.get( i);
-			int pos = i * mImage.getWidth() / marker.size();
+			int pos = i * mImage.getWidth( null) / marker.size();
 			AEntity.drawImage( g2, ResourceManager.getImageUI( "hqm.marker"), AEntity.ZOOM, AEntity.ZOOM, pos + 2, 12);
 		}
 	}

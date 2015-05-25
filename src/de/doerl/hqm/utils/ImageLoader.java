@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 public class ImageLoader extends Thread {
 	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
 	public static final ImageLoader SINGLETON = new ImageLoader();
@@ -30,7 +32,7 @@ public class ImageLoader extends Thread {
 
 	public static Image getImage( String entry, Runnable cb) {
 		Image img = sCache.get( entry);
-		if (img == null) {
+		if (img == null && cb != null) {
 			SINGLETON.add( entry, cb);
 		}
 		return img;
@@ -45,14 +47,14 @@ public class ImageLoader extends Thread {
 			else {
 				String mod = req.mEntry.substring( 0, pos);
 				String stk = req.mEntry.substring( pos + 1);
-				Utils.log( LOGGER, Level.FINEST, "load image {0}:{1}", mod, stk);
+//				Utils.log( LOGGER, Level.FINEST, "load image {0}:{1}", mod, stk);
 				IHandler hdl = sHandler.get( mod);
 				if (hdl != null) {
 					Image img = hdl.load( stk);
 					if (img != null) {
 						sCache.put( req.mEntry, img);
 						if (req.mCallback != null) {
-							req.mCallback.run();
+							SwingUtilities.invokeLater( req.mCallback);
 						}
 					}
 					else {
@@ -67,7 +69,7 @@ public class ImageLoader extends Thread {
 	}
 
 	private synchronized void add( String entry, Runnable cb) {
-		Utils.log( LOGGER, Level.FINEST, "ImageLoader.add");
+		Utils.log( LOGGER, Level.FINEST, entry);
 		mQueue.addLast( new Request( entry, cb));
 		notifyAll();
 	}
