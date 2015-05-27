@@ -52,16 +52,17 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	}
 
 	static void drawBackground( Graphics2D g2, Component c, Image img, boolean left) {
+		AffineTransform form = new AffineTransform();
 		double sx = (double) c.getWidth() / img.getWidth( null);
 		double sy = (double) c.getHeight() / img.getHeight( null);
 		if (left) {
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			g2.drawImage( img, xform, null);
+			form.scale( sx, sy);
+			g2.drawImage( img, form, null);
 		}
 		else {
-			AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
-			xform.translate( -img.getWidth( null), 0);
-			g2.drawImage( img, xform, null);
+			form.scale( -sx, sy);
+			form.translate( -img.getWidth( null), 0);
+			g2.drawImage( img, form, null);
 		}
 	}
 
@@ -70,16 +71,17 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	}
 
 	static void drawBackgroundHalf( Graphics2D g2, Component c, Image img, boolean left) {
+		AffineTransform form = new AffineTransform();
 		double sx = (double) c.getWidth() / img.getWidth( null) / 2;
 		double sy = (double) c.getHeight() / img.getHeight( null);
 		if (left) {
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			g2.drawImage( img, xform, null);
+			form.scale( sx, sy);
+			g2.drawImage( img, form, null);
 		}
 		else {
-			AffineTransform xform = AffineTransform.getScaleInstance( -sx, sy);
-			xform.translate( -2 * img.getWidth( null), 0);
-			g2.drawImage( img, xform, null);
+			form.scale( -sx, sy);
+			form.translate( -2 * img.getWidth( null), 0);
+			g2.drawImage( img, form, null);
 		}
 	}
 
@@ -92,27 +94,27 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 
 	static void drawCenteredImage( Graphics2D g2, Component c, Image img) {
 		if (img != null) {
+			AffineTransform form = new AffineTransform();
 			double sx = (double) c.getWidth() / img.getWidth( null);
 			double sy = (double) c.getHeight() / img.getHeight( null);
 			double sm = Math.min( sx, sy);
-			AffineTransform xform = AffineTransform.getScaleInstance( sm, sm);
-			double dx = (c.getWidth() - img.getWidth( null)) / 2;
-			double dy = (c.getHeight() - img.getHeight( null)) / 2;
-			g2.translate( dx, dy);
-			g2.drawImage( img, xform, null);
+			form.translate( c.getWidth() / 2, c.getHeight() / 2);
+			form.scale( sm, sm);
+			form.translate( -img.getWidth( null) / 2, -img.getHeight( null) / 2);
+			g2.drawImage( img, form, null);
 		}
 	}
 
 	static void drawCenteredImage( Graphics2D g2, Component c, Image img, double zoom) {
 		if (img != null) {
+			AffineTransform form = new AffineTransform();
 			double sx = zoom * c.getWidth() / img.getWidth( null);
 			double sy = zoom * c.getHeight() / img.getHeight( null);
 			double sm = Math.min( sx, sy);
-			AffineTransform xform = AffineTransform.getScaleInstance( sm, sm);
-			double dx = (1 - zoom) * c.getWidth() / 2;
-			double dy = (1 - zoom) * c.getHeight() / 2;
-			g2.translate( dx, dy);
-			g2.drawImage( img, xform, null);
+			form.translate( c.getWidth() / 2, c.getHeight() / 2);
+			form.scale( sm, sm);
+			form.translate( -img.getWidth( null) / 2, -img.getHeight( null) / 2);
+			g2.drawImage( img, form, null);
 		}
 	}
 
@@ -125,34 +127,20 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 
 	static void drawImage( Graphics2D g2, Component c, Image img) {
 		if (img != null) {
+			AffineTransform form = new AffineTransform();
 			double sx = (double) c.getWidth() / img.getWidth( null);
 			double sy = (double) c.getHeight() / img.getHeight( null);
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			g2.drawImage( img, xform, null);
-		}
-	}
-
-	static void drawImage( Graphics2D g2, Component c, Image img, double zoom) {
-		if (img != null) {
-			double sx = zoom * c.getWidth() / img.getWidth( null);
-			double sy = zoom * c.getHeight() / img.getHeight( null);
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			g2.drawImage( img, xform, null);
-		}
-	}
-
-	static void drawImage( Graphics2D g2, Component c, Image img, double sx, double sy) {
-		if (img != null) {
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			g2.drawImage( img, xform, null);
+			form.scale( sx, sy);
+			g2.drawImage( img, form, null);
 		}
 	}
 
 	static void drawImage( Graphics2D g2, Image img, double sx, double sy, double tx, double ty) {
 		if (img != null) {
-			AffineTransform xform = AffineTransform.getScaleInstance( sx, sy);
-			xform.translate( tx, ty);
-			g2.drawImage( img, xform, null);
+			AffineTransform form = new AffineTransform();
+			form.scale( sx, sy);
+			form.translate( tx, ty);
+			g2.drawImage( img, form, null);
 		}
 	}
 

@@ -39,12 +39,6 @@ class LeafQuest extends JLabel {
 		mHandler.addClickListener( l);
 	}
 
-	private StackIcon createIcon( Image img) {
-		String key = mType.getKey( mQuest.isBig());
-		Image back = ResourceManager.getImageUI( key);
-		return new StackIcon( back, img);
-	}
-
 	public FQuest getQuest() {
 		return mQuest;
 	}
@@ -70,18 +64,10 @@ class LeafQuest extends JLabel {
 
 	private void updateIcon( Runnable cb) {
 		AStack stk = mQuest.mIcon.mValue;
-		if (stk == null) {
-			setIcon( createIcon( ResourceManager.getImageUI( "hqm.unknown")));
-		}
-		else {
-			Image img = ImageLoader.getImage( stk.getKey(), cb);
-			if (img != null) {
-				setIcon( createIcon( img));
-			}
-			else {
-				setIcon( createIcon( ResourceManager.getImageUI( "hqm.unknown")));
-			}
-		}
+		String key = mType.getKey( mQuest.isBig());
+		Image back = ResourceManager.getImageUI( key);
+		Image img = stk != null ? ImageLoader.getImage( stk.getKey(), cb) : null;
+		setIcon( new StackIcon( back, img, 0.6));
 	}
 
 	private void updateType( Type type) {

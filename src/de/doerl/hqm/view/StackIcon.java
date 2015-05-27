@@ -8,19 +8,34 @@ import java.awt.Image;
 
 import javax.swing.Icon;
 
+import de.doerl.hqm.base.AStack;
+import de.doerl.hqm.utils.ResourceManager;
+
 class StackIcon implements Icon {
+	public static final Image ICON_BACK = ResourceManager.getImageUI( "hqm.icon.back");
 	private Image mBack;
 	private Image mImage;
 	private String mText;
+	private double mZoom;
 
-	public StackIcon( Image back, Image img) {
-		this( null, back, img);
+	public StackIcon( AStack stk) {
+		this( StackIcon.ICON_BACK, null, 0.6);
+		mText = stk != null ? stk.countOf() : null;
 	}
 
-	public StackIcon( String text, Image back, Image stk) {
-		mText = text;
+	public StackIcon( Image back, Image img, double zoom) {
 		mBack = back;
-		mImage = stk;
+		mImage = img != null ? img : ResourceManager.getImageUI( "hqm.unknown");
+		mZoom = zoom;
+	}
+
+	public StackIcon( String txt, Image img, double zoom) {
+		this( StackIcon.ICON_BACK, img, zoom);
+		mText = txt;
+	}
+
+	public Image getBack() {
+		return mBack;
 	}
 
 	public int getIconHeight() {
@@ -35,7 +50,7 @@ class StackIcon implements Icon {
 		Graphics2D g2 = (Graphics2D) g;
 		AEntity.drawImage( g2, c, mBack);
 		if (mImage != null) {
-			AEntity.drawCenteredImage( g2, c, mImage, 0.5);
+			AEntity.drawCenteredImage( g2, c, mImage, mZoom);
 		}
 		if (mText != null) {
 			g2.setFont( AEntity.FONT_TITLE);

@@ -157,7 +157,7 @@ public class DialogListStacks extends ADialog {
 
 	private final class Renderer extends JPanel implements ListCellRenderer<AStack> {
 		private static final long serialVersionUID = 5239073494468176719L;
-		private LeafIcon mIcon = new LeafIcon( null);
+		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_BACK);
 		private LeafLabel mName = new LeafLabel( "Unknown");
 
 		public Renderer() {
@@ -165,15 +165,16 @@ public class DialogListStacks extends ADialog {
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
+			mIcon.setIcon( new StackIcon( null));
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
 			add( mName);
 		}
 
 		@Override
-		public Component getListCellRendererComponent( JList<? extends AStack> list, AStack value, int index, boolean isSelected, boolean cellHasFocus) {
-			mIcon.setIcon( value);
-			mName.setText( value.getName());
+		public Component getListCellRendererComponent( JList<? extends AStack> list, AStack stk, int index, boolean isSelected, boolean cellHasFocus) {
+			mIcon.setIcon( new StackIcon( stk));
+			mName.setText( stk.getName());
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}

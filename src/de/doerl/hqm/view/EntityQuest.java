@@ -64,14 +64,17 @@ public class EntityQuest extends AEntity<FQuest> {
 	private LeafButton mClaimButton = new LeafButton( "Claim reward");
 	private LeafLabel mRewards = new LeafLabel( "Rewards", true);
 	private LeafLabel mChoices = new LeafLabel( "Choices", true);
-	private LeafStacks mRewardList = new LeafStacks( ICON_SIZE);
-	private LeafStacks mChoiceList = new LeafStacks( ICON_SIZE);
+	private LeafStacks mRewardList;
+	private LeafStacks mChoiceList;
 	private LeafTextBox mTaskDesc = new LeafTextBox();
 	private JComponent mTaskInfo = leafBoxVertical( 240);
 
 	public EntityQuest( FQuest quest, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
 		mQuest = quest;
+		StackIcon icon = new StackIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( quest), 1.0);
+		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, new LeafIcon( icon));
+		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, mClaimButton);
 		mTasks.setCellRenderer( new TaskListRenderer());
 		createLeafs();
 		update();
@@ -158,9 +161,8 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTitle.setText( mQuest.mName.mValue);
 		mDesc.setText( mQuest.mDesc.mValue);
 		TaskListUpdate.get( mQuest, mTasks.getModel());
-		LeafIcon reputation = new LeafIcon( null, ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( mQuest));
-		mRewardList.createIconList( mQuest.mRewards, reputation);
-		mChoiceList.createIconList( mQuest.mChoices, mClaimButton);
+		mRewardList.update();
+		mChoiceList.update();
 	}
 
 	public void updateActive( AQuestTask task) {
@@ -347,7 +349,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		protected Object doRequirement( ARequirement req, JComponent comp) {
-			comp.add( new LeafIcon( req.getStack().mValue));
+			comp.add( new LeafIcon( new StackIcon( req.getStack().mValue)));
 			comp.add( Box.createHorizontalStrut( 3));
 			return null;
 		}
@@ -364,7 +366,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		@Override
 		public Object forLocation( FLocation loc, JComponent comp) {
 			JComponent locBox = leafBoxHorizontal( 54);
-			locBox.add( new LeafIcon( loc.mIcon.mValue));
+			locBox.add( new LeafIcon( new StackIcon( loc.mIcon.mValue)));
 			locBox.add( Box.createHorizontalStrut( GAP));
 			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
 			dataBox.add( new LeafLabel( loc.mName.mValue, true));
@@ -379,7 +381,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		@Override
 		public Object forMob( FMob mob, JComponent comp) {
 			JComponent mobBox = leafBoxHorizontal( 54);
-			mobBox.add( new LeafIcon( mob.mIcon.mValue));
+			mobBox.add( new LeafIcon( new StackIcon( mob.mIcon.mValue)));
 			mobBox.add( Box.createHorizontalStrut( GAP));
 			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
 			dataBox.add( new LeafLabel( mob.mMob.mValue, true));
