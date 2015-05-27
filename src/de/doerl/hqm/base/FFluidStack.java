@@ -6,9 +6,11 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FFluidStack extends AStack {
 	private FNbt mNBT;
+	private String mKey;
 
-	public FFluidStack( FNbt compound) {
-		mNBT = compound;
+	public FFluidStack( FNbt nbt) {
+		mNBT = nbt;
+		mKey = getName() + "%" + getDamage();
 	}
 
 	@Override
@@ -22,7 +24,7 @@ public final class FFluidStack extends AStack {
 			return Utils.parseInteger( mNBT.getValue( "Count"), 1);
 		}
 		else {
-			return 0;
+			return 1;
 		}
 	}
 
@@ -34,6 +36,11 @@ public final class FFluidStack extends AStack {
 		else {
 			return 0;
 		}
+	}
+
+	@Override
+	public String getKey() {
+		return mKey;
 	}
 
 	@Override

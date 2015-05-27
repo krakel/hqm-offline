@@ -74,7 +74,7 @@ class LeafQuest extends JLabel {
 			setIcon( createIcon( ResourceManager.getImageUI( "hqm.unknown")));
 		}
 		else {
-			Image img = ImageLoader.getImage( stk.getName(), stk.getDamage(), cb);
+			Image img = ImageLoader.getImage( stk.getKey(), cb);
 			if (img != null) {
 				setIcon( createIcon( img));
 			}

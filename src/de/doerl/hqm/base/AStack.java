@@ -1,7 +1,5 @@
 package de.doerl.hqm.base;
 
-import java.awt.Image;
-
 import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.medium.FNbt;
 
@@ -15,9 +13,7 @@ public abstract class AStack {
 
 	public abstract int getDamage();
 
-	public Image getImage() {
-		return null;
-	}
+	public abstract String getKey();
 
 	public abstract String getName();
 

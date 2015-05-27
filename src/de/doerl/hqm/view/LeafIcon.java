@@ -43,12 +43,8 @@ public class LeafIcon extends JLabel {
 		}
 	}
 
-	private static Image imageOf( AStack stk) {
-		return stk != null ? stk.getImage() : null;
-	}
-
 	public void setIcon( AStack stk) {
-		super.setIcon( new StackIcon( countOf( stk), mBack, imageOf( stk)));
+		super.setIcon( new StackIcon( countOf( stk), mBack, null));
 	}
 
 	public void setIcon( String text, Image img) {

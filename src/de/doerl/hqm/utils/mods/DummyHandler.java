@@ -21,7 +21,7 @@ public class DummyHandler implements IHandler {
 	}
 
 	@Override
-	public Image load( String stk, int dmg) {
+	public Image load( String stk) {
 		Image img = mCache.get( stk);
 		if (img == null) {
 			img = ResourceManager.stringImage( mToken + mCache.size());

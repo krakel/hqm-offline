@@ -9,9 +9,11 @@ public final class FItemStack extends AStack {
 	private String mItem;
 	private int mSize;
 	private int mDmg;
+	private String mKey;
 
 	public FItemStack( FNbt nbt) {
 		mNBT = nbt;
+		mKey = getName() + "%" + getDamage();
 	}
 
 	public FItemStack( FNbt nbt, String item, int size, int dmg) {
@@ -19,6 +21,7 @@ public final class FItemStack extends AStack {
 		mItem = item;
 		mSize = size;
 		mDmg = dmg;
+		mKey = getName() + "%" + getDamage();
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public final class FItemStack extends AStack {
 			return Utils.parseInteger( mNBT.getValue( "Count"), 1);
 		}
 		else {
-			return 0;
+			return 1;
 		}
 	}
 
@@ -54,6 +57,11 @@ public final class FItemStack extends AStack {
 
 	public String getItem() {
 		return mItem;
+	}
+
+	@Override
+	public String getKey() {
+		return mKey;
 	}
 
 	@Override
