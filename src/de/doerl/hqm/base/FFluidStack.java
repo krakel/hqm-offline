@@ -2,6 +2,7 @@ package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.medium.FNbt;
+import de.doerl.hqm.utils.Utils;
 
 public final class FFluidStack extends AStack {
 	private FNbt mNBT;
@@ -16,8 +17,23 @@ public final class FFluidStack extends AStack {
 	}
 
 	@Override
-	public int getAmount() {
-		return Integer.parseInt( mNBT.getValue( "Amount"));
+	public int getCount() {
+		if (mNBT != null) {
+			return Utils.parseInteger( mNBT.getValue( "Count"), 1);
+		}
+		else {
+			return 0;
+		}
+	}
+
+	@Override
+	public int getDamage() {
+		if (mNBT != null) {
+			return Utils.parseInteger( mNBT.getValue( "Damage"), 0);
+		}
+		else {
+			return 0;
+		}
 	}
 
 	@Override

@@ -34,7 +34,13 @@ public class LeafIcon extends JLabel {
 	}
 
 	private static String countOf( AStack stk) {
-		return stk != null ? stk.getCount() : null;
+		if (stk != null) {
+			int count = stk.getCount();
+			return count > 1 ? Integer.toString( count) : null;
+		}
+		else {
+			return null;
+		}
 	}
 
 	private static Image imageOf( AStack stk) {

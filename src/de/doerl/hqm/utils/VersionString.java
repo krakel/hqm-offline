@@ -30,8 +30,8 @@ public class VersionString implements Comparable<VersionString> {
 	private static int compareList( String[] list1, String[] list2) {
 		int min = Math.min( list1.length, list2.length);
 		for (int i = 0; i < min; ++i) {
-			int thisNum = Integer.parseInt( list1[i]);
-			int otherNum = Integer.parseInt( list2[i]);
+			int thisNum = Utils.parseInteger( list1[i], 0);
+			int otherNum = Utils.parseInteger( list2[i], 0);
 			if (thisNum != otherNum) {
 				return thisNum < otherNum ? -1 : 1;
 			}
@@ -51,7 +51,7 @@ public class VersionString implements Comparable<VersionString> {
 			if (s.length() == 0) {
 				throw new IllegalArgumentException( "version contains a zero lenght version sub-string");
 			}
-			Integer.parseInt( s);
+			Utils.parseInteger( s, 0);
 		}
 		return list;
 	}

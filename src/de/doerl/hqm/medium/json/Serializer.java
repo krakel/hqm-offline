@@ -139,8 +139,8 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	public Object forItemStack( FItemStack stk, Object p) {
 		mDst.beginObject();
 		mDst.print( "item", stk.getItem());
-		mDst.print( "size", stk.getAmount());
-		mDst.print( "dmg", stk.getDmg());
+		mDst.print( "size", stk.getCount());
+		mDst.print( "dmg", stk.getDamage());
 		mDst.printNBT( "nbt", stk.getNBT());
 		mDst.endObject();
 		return null;

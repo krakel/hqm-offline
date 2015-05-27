@@ -34,7 +34,6 @@ import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.ADialog.DialogResult;
 import de.doerl.hqm.ui.tree.ElementTree;
-import de.doerl.hqm.utils.ImageManager;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.EditView;
@@ -80,9 +79,7 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 
 	static EditFrame createNew() {
 		EditManager.init();
-//		ResourceManager.setLookAndFeel( PreferenceManager.getString( BaseDefaults.LOOK_AND_FEEL));
-		ResourceManager.setTreeIcons();
-		ImageManager.setImages();
+		ResourceManager.init();
 		EditFrame result = new EditFrame();
 		result.init();
 		Utils.centerFrame( result);

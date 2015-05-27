@@ -3,7 +3,6 @@ package de.doerl.hqm.utils;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
@@ -18,9 +17,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 public class ResourceManager {
 	private static final String DIALOG_RES = "de.doerl.hqm.resources.dialog";
@@ -88,17 +85,11 @@ public class ResourceManager {
 	}
 
 	public static int getInteger( String key) {
-		return getInteger( key, 0);
+		return Utils.parseInteger( getString( key), 0);
 	}
 
 	public static int getInteger( String key, int def) {
-		String value = getString( key);
-		try {
-			return Integer.parseInt( value);
-		}
-		catch (NumberFormatException ex) {
-			return def;
-		}
+		return Utils.parseInteger( getString( key), def);
 	}
 
 	public static String getString( String key) {
@@ -123,22 +114,40 @@ public class ResourceManager {
 		return big ? 31 : 25;
 	}
 
-	private static void gotoLookAndFeel( String name) {
-		try {
-			UIManager.setLookAndFeel( name);
-		}
-		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		setTreeIcons();
-	}
-
-	private static void makeIcon( String key, String name) {
-		if (!GraphicsEnvironment.isHeadless()) {
-			UIManager.put( key, new UIDefaults.ProxyLazyValue( ResourceManager.class.getName(), "getIcon", new Object[] {
-				name
-			}));
-		}
+	public static void init() {
+		ImageManager.makeIcon( "Tree.expandedIcon", "collaps.gif");
+		ImageManager.makeIcon( "Tree.collapsedIcon", "expand.gif");
+		//
+		ImageManager.makeImage( "hqm.unknown");
+		ImageManager.makeImage( "hqm.map", "questmap.png");
+		ImageManager.makeImage( "hqm.book", "book.png");
+		ImageManager.makeImage( "hqm.front", "front.png");
+		//
+		ImageManager.makeImage( "hqm.icon.back", "hqm.map", 18, 235, 18, 18);
+		ImageManager.makeImage( "hqm.button", "hqm.map", 54, 235, 57, 18);
+		ImageManager.makeImage( "hqm.reputation", "hqm.map", 0, 101, 125, 3);
+		ImageManager.makeImage( "hqm.marker", "hqm.map", 10, 93, 5, 5);
+		//
+		ImageManager.makeImage( "hqm.rep.base", "hqm.map", 30, 82, 16, 16);
+		ImageManager.makeImage( "hqm.rep.good", "hqm.map", 78, 82, 16, 16);
+		ImageManager.makeImage( "hqm.rep.bad", "hqm.map", 94, 82, 16, 16);
+		ImageManager.makeImage( "hqm.rep.norm", "hqm.map", 110, 82, 16, 16);
+		//
+		ImageManager.makeImage( "hqm.quest.norm", "hqm.map", 170, 0, 25, 30);
+		ImageManager.makeImage( "hqm.quest.big", "hqm.map", 195, 0, 31, 37);
+		//
+		ImageManager.makeImage( "hqm.dark.norm", "hqm.quest.norm", 0.6F, 0.6F, 0.6F);
+		ImageManager.makeImage( "hqm.base.norm", "hqm.quest.norm", 0.6F, 1F, 0.6F);
+		ImageManager.makeImage( "hqm.pref.norm", "hqm.quest.norm", 0.6F, 0.6F, 1F);
+		ImageManager.makeImage( "hqm.post.norm", "hqm.quest.norm", 1F, 0.6F, 0.6F);
+		//
+		ImageManager.makeImage( "hqm.dark.big", "hqm.quest.big", 0.6F, 0.6F, 0.6F);
+		ImageManager.makeImage( "hqm.base.big", "hqm.quest.big", 0.6F, 1F, 0.6F);
+		ImageManager.makeImage( "hqm.pref.big", "hqm.quest.big", 0.6F, 0.6F, 1F);
+		ImageManager.makeImage( "hqm.post.big", "hqm.quest.big", 1F, 0.6F, 0.6F);
+		//
+		ImageManager.makeImage( "hqm.book.back", "hqm.book", 0, 0, 170, 234);
+		ImageManager.makeImage( "hqm.default", "hqm.front", 0, 0, 280, 360);
 	}
 
 	private static String[] parseString( String value) {
@@ -169,27 +178,13 @@ public class ResourceManager {
 		return result;
 	}
 
-	public static void setLookAndFeel( String laf) {
-		if (!GraphicsEnvironment.isHeadless()) {
-			LookAndFeelInfo[] infos = UIManager.getInstalledLookAndFeels();
-			for (int i = 0; i < infos.length; ++i) {
-				if (Utils.equals( infos[i].getName(), laf)) {
-					gotoLookAndFeel( infos[i].getClassName());
-					return;
-				}
-			}
-			gotoLookAndFeel( UIManager.getSystemLookAndFeelClassName());
-		}
-	}
-
-	public static void setTreeIcons() {
-		makeIcon( "Tree.expandedIcon", "collaps.gif");
-		makeIcon( "Tree.collapsedIcon", "expand.gif");
+	public static Image stringImage( String value) {
+		return ImageManager.centerImage( value, 24);
 	}
 
 	private static class ErrorIcon implements Icon {
 		private Rectangle2D mBounds;
-		private Font mFont = new Font( "Dialog", Font.BOLD, 12);
+		private Font mFont = new Font( Font.DIALOG, Font.BOLD, 12);
 		private String mText;
 
 		public ErrorIcon( String text) {

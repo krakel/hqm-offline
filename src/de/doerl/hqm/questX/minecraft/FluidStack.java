@@ -1,6 +1,7 @@
 package de.doerl.hqm.questX.minecraft;
 
 import de.doerl.hqm.questX.AWriter;
+import de.doerl.hqm.utils.Utils;
 
 public class FluidStack {
 	NBTTagCompound mNBT;
@@ -12,7 +13,7 @@ public class FluidStack {
 	}
 
 	public int getAmount() {
-		return Integer.parseInt( mNBT.getValue( "Amount"));
+		return Utils.parseInteger( mNBT.getValue( "Amount"), 1);
 	}
 
 	public NBTTagCompound getCompound() {

@@ -2,6 +2,7 @@ package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.medium.FNbt;
+import de.doerl.hqm.utils.Utils;
 
 public final class FItemStack extends AStack {
 	private FNbt mNBT;
@@ -26,12 +27,29 @@ public final class FItemStack extends AStack {
 	}
 
 	@Override
-	public int getAmount() {
-		return mSize;
+	public int getCount() {
+		if (mItem != null) {
+			return mSize;
+		}
+		else if (mNBT != null) {
+			return Utils.parseInteger( mNBT.getValue( "Count"), 1);
+		}
+		else {
+			return 0;
+		}
 	}
 
-	public int getDmg() {
-		return mDmg;
+	@Override
+	public int getDamage() {
+		if (mItem != null) {
+			return mDmg;
+		}
+		else if (mNBT != null) {
+			return Utils.parseInteger( mNBT.getValue( "Damage"), 0);
+		}
+		else {
+			return 0;
+		}
 	}
 
 	public String getItem() {

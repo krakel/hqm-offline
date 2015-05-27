@@ -11,12 +11,9 @@ public abstract class AStack {
 
 	public abstract <T, U> T accept( IStackWorker<T, U> w, U p);
 
-	public abstract int getAmount();
+	public abstract int getCount();
 
-	public String getCount() {
-		int amount = getAmount();
-		return amount > 1 ? Integer.toString( amount) : null;
-	}
+	public abstract int getDamage();
 
 	public Image getImage() {
 		return null;

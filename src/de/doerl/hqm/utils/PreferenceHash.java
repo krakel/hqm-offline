@@ -135,12 +135,6 @@ class PreferenceHash extends HashMap<String, Object> {
 		}
 	}
 
-	synchronized void checkLevel( String key) {
-		if (!containsKey( key)) {
-			setString( key, BaseDefaults.getDefaultLevel( key).getName());
-		}
-	}
-
 	synchronized void checkMaximum( String key, int max, String msg) {
 		int val = getInt( key);
 		if (val > max) {

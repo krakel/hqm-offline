@@ -13,6 +13,7 @@ import java.awt.image.RescaleOp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.Icon;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 
@@ -20,6 +21,19 @@ public class ImageManager {
 	private static final Logger LOGGER = Logger.getLogger( ImageManager.class.getName());
 
 	private ImageManager() {
+	}
+
+	static BufferedImage centerImage( String text, int size) {
+		BufferedImage image = new BufferedImage( size, size, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = image.createGraphics();
+		g2.setColor( Color.LIGHT_GRAY);
+		g2.setFont( new Font( Font.DIALOG, Font.BOLD, 12));
+		FontMetrics fm = g2.getFontMetrics();
+		int x = (size - fm.stringWidth( text)) / 2;
+		int y = (size + fm.getAscent() - fm.getDescent()) / 2;
+		g2.drawString( text, x, y);
+		g2.dispose();
+		return image;
 	}
 
 	private static BufferedImage colored( BufferedImage src, float r, float g, float b) {
@@ -41,7 +55,7 @@ public class ImageManager {
 	}
 
 	static BufferedImage errorImage( String value) {
-		Font font = new Font( "Dialog", Font.BOLD, 12);
+		Font font = new Font( Font.DIALOG, Font.BOLD, 12);
 		FontRenderContext fc = new FontRenderContext( null, true, true);
 		Rectangle2D bounds = font.getStringBounds( value, fc);
 		int w = (int) bounds.getWidth();
@@ -70,19 +84,12 @@ public class ImageManager {
 		return errorImage( key);
 	}
 
+	public static Icon loadIcon( String name) {
+		return ResourceManager.getIcon( name);
+	}
+
 	public static BufferedImage loadImage() {
-		String text = "?";
-		int size = 18;
-		BufferedImage image = new BufferedImage( size, size, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = image.createGraphics();
-		g2.setColor( Color.LIGHT_GRAY);
-		g2.setFont( new Font( "Dialog", Font.BOLD, size));
-		FontMetrics fm = g2.getFontMetrics();
-		int x = (size - fm.stringWidth( text)) / 2;
-		int y = (size + fm.getAscent() - fm.getDescent()) / 2;
-		g2.drawString( text, x, y);
-		g2.dispose();
-		return image;
+		return centerImage( "?", 18);
 	}
 
 	public static BufferedImage loadImage( String name) {
@@ -115,13 +122,21 @@ public class ImageManager {
 		return null;
 	}
 
-	private static void makeImage( String key) {
+	static void makeIcon( String key, String name) {
+		if (!GraphicsEnvironment.isHeadless()) {
+			UIManager.put( key, new UIDefaults.ProxyLazyValue( ImageManager.class.getName(), "loadIcon", new Object[] {
+				name
+			}));
+		}
+	}
+
+	static void makeImage( String key) {
 		if (!GraphicsEnvironment.isHeadless()) {
 			UIManager.put( key, new UIDefaults.ProxyLazyValue( ImageManager.class.getName(), "loadImage", new Object[] {}));
 		}
 	}
 
-	private static void makeImage( String key, String name) {
+	static void makeImage( String key, String name) {
 		if (!GraphicsEnvironment.isHeadless()) {
 			UIManager.put( key, new UIDefaults.ProxyLazyValue( ImageManager.class.getName(), "loadImage", new Object[] {
 				name
@@ -129,7 +144,7 @@ public class ImageManager {
 		}
 	}
 
-	private static void makeImage( String key, String base, Float r, Float g, Float b) {
+	static void makeImage( String key, String base, Float r, Float g, Float b) {
 		if (!GraphicsEnvironment.isHeadless()) {
 			UIManager.put( key, new UIDefaults.ProxyLazyValue( ImageManager.class.getName(), "loadImage", new Object[] {
 				base, r, g, b
@@ -137,44 +152,11 @@ public class ImageManager {
 		}
 	}
 
-	private static void makeImage( String key, String base, int x, int y, int w, int h) {
+	static void makeImage( String key, String base, int x, int y, int w, int h) {
 		if (!GraphicsEnvironment.isHeadless()) {
 			UIManager.put( key, new UIDefaults.ProxyLazyValue( ImageManager.class.getName(), "loadImage", new Object[] {
 				base, x, y, w, h
 			}));
 		}
-	}
-
-	public static void setImages() {
-		makeImage( "hqm.unknown");
-		makeImage( "hqm.map", "questmap.png");
-		makeImage( "hqm.book", "book.png");
-		makeImage( "hqm.front", "front.png");
-		//
-		makeImage( "hqm.icon.back", "hqm.map", 18, 235, 18, 18);
-		makeImage( "hqm.button", "hqm.map", 54, 235, 57, 18);
-		makeImage( "hqm.reputation", "hqm.map", 0, 101, 125, 3);
-		makeImage( "hqm.marker", "hqm.map", 10, 93, 5, 5);
-		//
-		makeImage( "hqm.rep.base", "hqm.map", 30, 82, 16, 16);
-		makeImage( "hqm.rep.good", "hqm.map", 78, 82, 16, 16);
-		makeImage( "hqm.rep.bad", "hqm.map", 94, 82, 16, 16);
-		makeImage( "hqm.rep.norm", "hqm.map", 110, 82, 16, 16);
-		//
-		makeImage( "hqm.quest.norm", "hqm.map", 170, 0, 25, 30);
-		makeImage( "hqm.quest.big", "hqm.map", 195, 0, 31, 37);
-		//
-		makeImage( "hqm.dark.norm", "hqm.quest.norm", 0.6F, 0.6F, 0.6F);
-		makeImage( "hqm.base.norm", "hqm.quest.norm", 0.6F, 1F, 0.6F);
-		makeImage( "hqm.pref.norm", "hqm.quest.norm", 0.6F, 0.6F, 1F);
-		makeImage( "hqm.post.norm", "hqm.quest.norm", 1F, 0.6F, 0.6F);
-		//
-		makeImage( "hqm.dark.big", "hqm.quest.big", 0.6F, 0.6F, 0.6F);
-		makeImage( "hqm.base.big", "hqm.quest.big", 0.6F, 1F, 0.6F);
-		makeImage( "hqm.pref.big", "hqm.quest.big", 0.6F, 0.6F, 1F);
-		makeImage( "hqm.post.big", "hqm.quest.big", 1F, 0.6F, 0.6F);
-		//
-		makeImage( "hqm.book.back", "hqm.book", 0, 0, 170, 234);
-		makeImage( "hqm.default", "hqm.front", 0, 0, 280, 360);
 	}
 }

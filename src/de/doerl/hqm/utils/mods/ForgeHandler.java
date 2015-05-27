@@ -1,9 +1,8 @@
-package de.doerl.hqm.utils;
+package de.doerl.hqm.utils.mods;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -15,14 +14,13 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-public class MinecraftHandler implements IHandler {
-	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
-	private static FileFilter JAR_FILTER = new FileFilter() {
-		@Override
-		public boolean accept( File src) {
-			return src.isFile() && src.getName().endsWith( ".jar");
-		}
-	};
+import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
+import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.utils.Utils;
+
+public class ForgeHandler implements IHandler {
+	private static Logger LOGGER = Logger.getLogger( ForgeHandler.class.getName());
 	private static final String ITEMS = "assets/minecraft/textures/items";
 	private static final String BLOCKS = "assets/minecraft/textures/blocks";
 	private static HashMap<String, String> sNames;
@@ -349,7 +347,7 @@ public class MinecraftHandler implements IHandler {
 	private HashMap<String, Image> mCache = new HashMap<>();
 	private File mJarFile;
 
-	public MinecraftHandler() {
+	public ForgeHandler() {
 	}
 
 	private String createID( String path) {
@@ -368,7 +366,7 @@ public class MinecraftHandler implements IHandler {
 			if (src.isDirectory()) {
 				File[] arr = src.listFiles();
 				for (File curr : arr) {
-					if (JAR_FILTER.accept( curr)) {
+					if (JarFilter.isJar( curr)) {
 						return curr;
 					}
 				}
@@ -388,14 +386,22 @@ public class MinecraftHandler implements IHandler {
 	}
 
 	@Override
-	public Image load( String stk) {
+	public Image load( String stk, int dmg) {
 		if (mJarFile == null) {
 			mJarFile = getJarFile();
-			if (mJarFile != null) {
+			if (mJarFile == null) {
+				mJarFile = new File( "."); // only one try
+			}
+			else {
 				parseFile();
 			}
 		}
-		return mCache.get( stk);
+		Image img = mCache.get( stk);
+		if (img == null) {
+			img = ResourceManager.stringImage( "fo" + mCache.size());
+			mCache.put( stk, img);
+		}
+		return img;
 	}
 
 	private void parseFile() {
@@ -440,12 +446,7 @@ public class MinecraftHandler implements IHandler {
 				Image img = readImage( jar, entry);
 				if (img != null) {
 					mCache.put( key, img);
-					Utils.log( LOGGER, Level.WARNING, "found {0}", key);
-//					int pos = key.lastIndexOf( '_');
-//					if (pos > 0) {
-//						mCache.put( key.substring( pos + 1) + '_' + key.substring( 0, pos), img);
-//						mCache.put( key.substring( 0, pos), img);
-//					}
+//					Utils.log( LOGGER, Level.WARNING, "found {0}", key);
 				}
 			}
 		}

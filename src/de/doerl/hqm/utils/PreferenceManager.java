@@ -40,11 +40,6 @@ public class PreferenceManager {
 		return sPrefs.containsArrayString( key, value);
 	}
 
-	public static void decInteger( String key) {
-		sPrefs.decInteger( key);
-		firePreferenceChanged( key);
-	}
-
 	public static void deleteArrayString( String key, int nr) {
 		sPrefs.deleteArrayString( key, nr);
 		firePreferenceChanged( key);
@@ -140,11 +135,6 @@ public class PreferenceManager {
 
 	static PreferenceObject getValue( String key) {
 		return sPrefs.getValue( key);
-	}
-
-	public static void incInteger( String key) {
-		sPrefs.incInteger( key);
-		firePreferenceChanged( key);
 	}
 
 	public static void init() {
