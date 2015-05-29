@@ -67,7 +67,7 @@ public class LeafFloating extends JPanel {
 		@Override
 		protected Object doRequirement( ARequirement req, Runnable cb) {
 			AStack stk = req.getStack().mValue;
-			Image img = ImageLoader.getImage( stk.getKey(), cb);
+			Image img = ImageLoader.getImage( stk, cb);
 			add( new LeafIcon( new StackIcon( img, 0.8, "0%")));
 			add( Box.createHorizontalStrut( 3));
 			return null;

@@ -61,7 +61,7 @@ class LeafStacks extends JPanel {
 		else {
 			for (FParameterStack param : mList) {
 				AStack stk = param.mValue;
-				Image img = ImageLoader.getImage( stk.getKey(), cb);
+				Image img = ImageLoader.getImage( stk, cb);
 				add( new LeafIcon( new StackIcon( img, 0.8, stk.countOf())));
 				add( Box.createHorizontalStrut( 3));
 			}

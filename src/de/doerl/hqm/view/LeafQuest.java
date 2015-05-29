@@ -66,7 +66,7 @@ class LeafQuest extends JLabel {
 		AStack stk = mQuest.mIcon.mValue;
 		String key = mType.getKey( mQuest.isBig());
 		Image back = ResourceManager.getImageUI( key);
-		Image img = stk != null ? ImageLoader.getImage( stk.getKey(), cb) : null;
+		Image img = ImageLoader.getImage( stk, cb);
 		setIcon( new StackIcon( back, img, 0.6, null));
 	}
 

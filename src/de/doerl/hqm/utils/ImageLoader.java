@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.utils.mods.DummyHandler;
 import de.doerl.hqm.utils.mods.IHandler;
 
@@ -27,6 +28,15 @@ public class ImageLoader extends Thread {
 
 	public static void addHandler( IHandler hdl) {
 		sHandler.put( hdl.getName(), hdl);
+	}
+
+	public static Image getImage( AStack stk, Runnable cb) {
+		if (stk != null) {
+			return getImage( stk.getKey(), cb);
+		}
+		else {
+			return null;
+		}
 	}
 
 	public static Image getImage( String key, Runnable cb) {
