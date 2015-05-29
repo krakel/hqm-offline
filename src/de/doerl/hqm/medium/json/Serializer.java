@@ -62,7 +62,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	private void doTask( AQuestTask task, String type) {
 		mDst.print( "type", type);
 		mDst.print( "name", task.mName);
-		mDst.print( "description", task.mDesc);
+		mDst.print( "description", task.mDescr);
 	}
 
 	private void doTaskItem( AQuestTaskItems task, String type) {
@@ -115,7 +115,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.beginObject();
 		mDst.print( "version", hqm.getVersion());
 		mDst.printIf( "passcode", hqm.mPassCode);
-		mDst.print( "decription", hqm.mDesc);
+		mDst.print( "decription", hqm.mDescr);
 		writeQuestSetCat( hqm.mQuestSetCat);
 		writeQuests( hqm);
 		writeReputations( hqm.mReputationCat);
@@ -187,7 +187,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.beginObject();
 		mDst.print( "name", quest.mName);
 		if (!quest.isDeleted()) {
-			mDst.print( "description", quest.mDesc);
+			mDst.print( "description", quest.mDescr);
 			mDst.print( "x", quest.mX);
 			mDst.print( "y", quest.mY);
 			mDst.print( "big", quest.mBig);
@@ -226,7 +226,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	public Object forQuestSet( FQuestSet set, Object p) {
 		mDst.beginObject();
 		mDst.print( "name", set.mName);
-		mDst.print( "decription", set.mDesc);
+		mDst.print( "decription", set.mDescr);
 		mDst.endObject();
 		return null;
 	}

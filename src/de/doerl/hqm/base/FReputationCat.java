@@ -24,4 +24,9 @@ public final class FReputationCat extends ACategory<FReputation> {
 	public ElementTyp getElementTyp() {
 		return ElementTyp.REPUTATION_CAT;
 	}
+
+	@Override
+	public String getNodeName() {
+		return "Reputations";
+	}
 }

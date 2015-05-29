@@ -21,6 +21,7 @@ import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 
+import de.doerl.hqm.Tuple2;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
@@ -44,8 +45,10 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
+import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.EditFrame;
+import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
@@ -58,23 +61,25 @@ public class EntityQuest extends AEntity<FQuest> {
 	private ABundleAction mDescAction = new DescriptionAction();
 	private ABundleAction mRewardAction = new RewardAction();
 	private ABundleAction mChoiceAction = new ChoiceAction();
+	private ABundleAction mTaskNameAction = new TaskNameAction();
+	private ABundleAction mTaskDescAction = new TaskDescriptionAction();
+	private ABundleAction mTaskAddAction = new TaskAddAction();
+	private ABundleAction mTaskDeleteAction = new TaskDeleteAction();
 	private LeafTextField mTitle = new LeafTextField( true);
 	private LeafTextBox mDesc = new LeafTextBox();
-	private LeafList<AQuestTask> mTasks = new LeafList<>();
-	private LeafButton mClaimButton = new LeafButton( "Claim reward");
-	private LeafLabel mRewards = new LeafLabel( "Rewards", true);
-	private LeafLabel mChoices = new LeafLabel( "Choices", true);
 	private LeafStacks mRewardList;
 	private LeafStacks mChoiceList;
+	private LeafList<AQuestTask> mTasks = new LeafList<>();
 	private LeafTextBox mTaskDesc = new LeafTextBox();
 	private JComponent mTaskInfo = leafBoxVertical( 240);
+	private volatile AQuestTask mActiv;
 
 	public EntityQuest( FQuest quest, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
 		mQuest = quest;
 		StackIcon icon = new StackIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( quest), 1.0);
 		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, new LeafIcon( icon));
-		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, mClaimButton);
+		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, new LeafButton( "Claim reward"));
 		mTasks.setCellRenderer( new TaskListRenderer());
 		createLeafs();
 		update();
@@ -95,6 +100,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		});
 		mTitle.addClickListener( mTitleAction);
 		mDesc.addClickListener( mDescAction);
+		mTaskDesc.addClickListener( mTaskDescAction);
 		mRewardList.addClickListener( mRewardAction);
 		mChoiceList.addClickListener( mChoiceAction);
 		mTool.add( mTitleAction);
@@ -102,6 +108,12 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTool.addSeparator();
 		mTool.add( mRewardAction);
 		mTool.add( mChoiceAction);
+		mTool.addSeparator();
+		mTool.add( mTaskNameAction);
+		mTool.add( mTaskDescAction);
+		mTool.addSeparator();
+		mTool.add( mTaskAddAction);
+		mTool.add( mTaskDeleteAction);
 		mTool.addSeparator();
 	}
 
@@ -111,6 +123,16 @@ public class EntityQuest extends AEntity<FQuest> {
 
 	@Override
 	public void baseAdded( ModelEvent event) {
+		try {
+			ABase base = event.mBase;
+			if (mQuest.equals( base.getHierarchy())) {
+				update();
+				updateActive( (AQuestTask) base);
+			}
+		}
+		catch (ClassCastException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
 	}
 
 	@Override
@@ -118,11 +140,17 @@ public class EntityQuest extends AEntity<FQuest> {
 		ABase base = event.mBase;
 		if (Utils.equals( base, mQuest)) {
 			update();
+			updateActive( mActiv);
 		}
 	}
 
 	@Override
 	public void baseRemoved( ModelEvent event) {
+		ABase base = event.mBase;
+		if (mQuest.equals( base.getHierarchy())) {
+			update();
+			updateActive( TaskFirst.get( mQuest));
+		}
 	}
 
 	@Override
@@ -133,10 +161,10 @@ public class EntityQuest extends AEntity<FQuest> {
 		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( leafScoll( mTasks, 50));
 		leaf.add( Box.createVerticalGlue());
-		leaf.add( mRewards);
+		leaf.add( new LeafLabel( "Rewards", true));
 		leaf.add( mRewardList);
 		leaf.add( Box.createVerticalStrut( GAP));
-		leaf.add( mChoices);
+		leaf.add( new LeafLabel( "Choices", true));
 		leaf.add( mChoiceList);
 	}
 
@@ -159,10 +187,16 @@ public class EntityQuest extends AEntity<FQuest> {
 
 	private void update() {
 		mTitle.setText( mQuest.mName.mValue);
-		mDesc.setText( mQuest.mDesc.mValue);
+		mDesc.setText( mQuest.mDescr.mValue);
 		TaskListUpdate.get( mQuest, mTasks.getModel());
 		mRewardList.update();
 		mChoiceList.update();
+	}
+
+	private void updateActions( boolean enabled) {
+		mTaskNameAction.setEnabled( enabled);
+		mTaskDescAction.setEnabled( enabled);
+		mTaskDeleteAction.setEnabled( enabled);
 	}
 
 	public void updateActive( AQuestTask task) {
@@ -171,13 +205,17 @@ public class EntityQuest extends AEntity<FQuest> {
 			mTasks.clearSelection();
 			mTaskInfo.removeAll();
 			mTaskInfo.add( Box.createHorizontalGlue());
+			updateActions( false);
+			mActiv = null;
 		}
 		else {
-			mTaskDesc.setText( task.mDesc.mValue);
+			mTaskDesc.setText( task.mDescr.mValue);
 			mTasks.setSelectedValue( task, true);
 			mTaskInfo.removeAll();
 			TaskUpdate.get( task, mTaskInfo);
 			mTaskInfo.add( Box.createHorizontalGlue());
+			updateActions( true);
+			mActiv = task;
 		}
 	}
 
@@ -219,9 +257,9 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextBox.update( mQuest.mDesc.mValue, mCtrl.getFrame());
+			String result = DialogTextBox.update( mQuest.mDescr.mValue, mCtrl.getFrame());
 			if (result != null) {
-				mQuest.mDesc.mValue = result;
+				mQuest.mDescr.mValue = result;
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -267,6 +305,58 @@ public class EntityQuest extends AEntity<FQuest> {
 			if (result != null) {
 				updateStacks( mQuest.mRewards, result);
 				mCtrl.fireChanged( mQuest);
+			}
+		}
+	}
+
+	private final class TaskAddAction extends ABundleAction {
+		private static final long serialVersionUID = 6724759221568885874L;
+
+		public TaskAddAction() {
+			super( "entity.add");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			Tuple2<TaskTyp, String> result = DialogTaskField.update( null, null, mCtrl.getFrame());
+			if (result != null) {
+				AQuestTask task = mCtrl.questTaskCreate( mQuest, result._1, result._2);
+				mCtrl.fireAdded( task);
+			}
+		}
+	}
+
+	private final class TaskDeleteAction extends ABundleAction {
+		private static final long serialVersionUID = 7223654325808174399L;
+
+		public TaskDeleteAction() {
+			super( "entity.delete");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (WarnDialogs.askDelete( mCtrl.getFrame())) {
+				mCtrl.questTaskDelete( mActiv);
+				mCtrl.fireRemoved( mActiv);
+			}
+		}
+	}
+
+	private final class TaskDescriptionAction extends ABundleAction {
+		private static final long serialVersionUID = -8367056239473171639L;
+
+		public TaskDescriptionAction() {
+			super( "entity.textbox");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				String result = DialogTextBox.update( mActiv.mDescr.mValue, mCtrl.getFrame());
+				if (result != null) {
+					mActiv.mDescr.mValue = result;
+					mCtrl.fireChanged( mQuest);
+				}
 			}
 		}
 	}
@@ -334,6 +424,25 @@ public class EntityQuest extends AEntity<FQuest> {
 		protected Object doTask( AQuestTask task, DefaultListModel<AQuestTask> model) {
 			model.addElement( task);
 			return null;
+		}
+	}
+
+	private final class TaskNameAction extends ABundleAction {
+		private static final long serialVersionUID = -3873930852720932846L;
+
+		public TaskNameAction() {
+			super( "entity.textfield");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				String result = DialogTextField.update( mActiv.mName.mValue, mCtrl.getFrame());
+				if (result != null) {
+					mActiv.mName.mValue = result;
+					mCtrl.fireChanged( mQuest);
+				}
+			}
 		}
 	}
 

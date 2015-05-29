@@ -44,6 +44,8 @@ public abstract class ACategory<E extends ANamed> extends ABase {
 		return mParentHQM;
 	}
 
+	public abstract String getNodeName();
+
 	@Override
 	public FHqm getParent() {
 		return mParentHQM;

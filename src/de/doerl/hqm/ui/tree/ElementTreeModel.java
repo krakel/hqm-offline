@@ -10,6 +10,7 @@ import javax.swing.tree.MutableTreeNode;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.ANamed;
+import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FHqm;
@@ -179,6 +180,11 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		protected Object doCategory( ACategory<? extends ANamed> set, ElementTreeModel model) {
 			NodeFactory.get( set, model);
 			set.forEachMember( this, model);
+			return null;
+		}
+
+		@Override
+		protected Object doTask( AQuestTask task, ElementTreeModel p) {
 			return null;
 		}
 

@@ -24,4 +24,9 @@ public final class FGroupCat extends ACategory<FGroup> {
 	public ElementTyp getElementTyp() {
 		return ElementTyp.GROUP_CAT;
 	}
+
+	@Override
+	public String getNodeName() {
+		return "Groups";
+	}
 }

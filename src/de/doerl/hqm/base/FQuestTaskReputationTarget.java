@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
-import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.utils.Utils;
 
 public final class FQuestTaskReputationTarget extends AQuestTask {
@@ -45,7 +45,7 @@ public final class FQuestTaskReputationTarget extends AQuestTask {
 	}
 
 	@Override
-	public ElementTyp getElementTyp() {
-		return ElementTyp.QUEST_TASK_REPUTATION_TARGET;
+	public TaskTyp getTaskTyp() {
+		return TaskTyp.TASK_REPUTATION_TARGET;
 	}
 }

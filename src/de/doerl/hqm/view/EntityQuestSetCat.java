@@ -40,10 +40,10 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
 	private FQuestSetCat mCategory;
 	private JToolBar mTool = EditFrame.createToolBar();
+	private ABundleAction mNameAction = new NameAction();
+	private ABundleAction mDescAction = new DescriptionAction();
 	private ABundleAction mAddAction = new AddAction();
 	private ABundleAction mDeleteAction = new DeleteAction();
-	private ABundleAction mDescAction = new DescriptionAction();
-	private ABundleAction mNameAction = new NameAction();
 	private LeafList<FQuestSet> mList = new LeafList<>();
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafLabel mTotal = new LeafLabel( GuiColor.BLACK.getColor(), "");
@@ -73,10 +73,10 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		});
 		mList.addClickListener( mNameAction);
 		mDesc.addClickListener( mDescAction);
-		mTool.add( mAddAction);
 		mTool.add( mNameAction);
 		mTool.add( mDescAction);
 		mTool.addSeparator();
+		mTool.add( mAddAction);
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
 	}
@@ -151,9 +151,9 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	}
 
 	private void updateActions( boolean enabled) {
-		mDeleteAction.setEnabled( enabled);
-		mDescAction.setEnabled( enabled);
 		mNameAction.setEnabled( enabled);
+		mDescAction.setEnabled( enabled);
+		mDeleteAction.setEnabled( enabled);
 	}
 
 	private void updateActive( FQuestSet qs, boolean toggel) {
@@ -175,7 +175,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 		else {
 			mTotal.setText( String.format( "%d quests in total", QuestSizeOf.get( qs)));
-			mDesc.setText( qs.mDesc.mValue);
+			mDesc.setText( qs.mDescr.mValue);
 			mScroll.setVisible( true);
 			mList.setSelectedValue( qs, true);
 			updateActions( true);
@@ -192,7 +192,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( "", mCtrl.getFrame());
+			String result = DialogTextField.update( null, mCtrl.getFrame());
 			if (result != null) {
 				FQuestSet qs = mCtrl.questSetCreate( mCategory, result);
 				mCtrl.fireAdded( qs);
@@ -226,9 +226,9 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.mDesc.mValue, mCtrl.getFrame());
+				String result = DialogTextBox.update( mActiv.mDescr.mValue, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.mDesc.mValue = result;
+					mActiv.mDescr.mValue = result;
 					mCtrl.fireChanged( mCategory);
 				}
 			}

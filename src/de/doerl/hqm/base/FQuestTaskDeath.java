@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
-import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.TaskTyp;
 
 public final class FQuestTaskDeath extends AQuestTask {
 	public final FParameterInt mDeaths = new FParameterInt( this);
@@ -16,7 +16,7 @@ public final class FQuestTaskDeath extends AQuestTask {
 	}
 
 	@Override
-	public ElementTyp getElementTyp() {
-		return ElementTyp.QUEST_TASK_DEATH;
+	public TaskTyp getTaskTyp() {
+		return TaskTyp.TASK_DEATH;
 	}
 }

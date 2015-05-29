@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.ANamed;
+import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
@@ -123,6 +124,11 @@ public class EditView extends JPanel implements IModelListener {
 
 		@Override
 		protected AEntity<? extends ABase> doCategory( ACategory<? extends ANamed> set, EditView view) {
+			return null;
+		}
+
+		@Override
+		protected AEntity<? extends ABase> doTask( AQuestTask task, EditView p) {
 			return null;
 		}
 

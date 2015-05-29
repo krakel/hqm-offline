@@ -7,9 +7,4 @@ public abstract class ANode {
 	}
 
 	public abstract ABase getBase();
-
-	@Override
-	public String toString() {
-		return String.valueOf( getBase().getElementTyp().getToken());
-	}
 }

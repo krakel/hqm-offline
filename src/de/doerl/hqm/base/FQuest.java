@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
@@ -13,7 +14,7 @@ import de.doerl.hqm.utils.Utils;
 public final class FQuest extends ANamed {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	public final FHqm mParentHQM;
-	public final FParameterString mDesc = new FParameterString( this);
+	public final FParameterString mDescr = new FParameterString( this);
 	public final FParameterInt mX = new FParameterInt( this);
 	public final FParameterInt mY = new FParameterInt( this);
 	public final FParameterBoolean mBig = new FParameterBoolean( this);
@@ -51,34 +52,34 @@ public final class FQuest extends ANamed {
 		return w.forQuest( this, p);
 	}
 
-	public AQuestTask createQuestTask( int type, String name) {
+	public AQuestTask createQuestTask( TaskTyp type, String name) {
 		AQuestTask task = null;
 		switch (type) {
-			case 0:
+			case TASK_ITEMS_CONSUME:
 				task = new FQuestTaskItemsConsume( this, name);
 				break;
-			case 1:
+			case TASK_ITEMS_CRAFTING:
 				task = new FQuestTaskItemsCrafting( this, name);
 				break;
-			case 2:
+			case TASK_LOCATION:
 				task = new FQuestTaskLocation( this, name);
 				break;
-			case 3:
+			case TASK_ITEMS_CONSUME_QDS:
 				task = new FQuestTaskItemsConsumeQDS( this, name);
 				break;
-			case 4:
+			case TASK_ITEMS_DETECT:
 				task = new FQuestTaskItemsDetect( this, name);
 				break;
-			case 5:
+			case TASK_MOB:
 				task = new FQuestTaskMob( this, name);
 				break;
-			case 6:
+			case TASK_DEATH:
 				task = new FQuestTaskDeath( this, name);
 				break;
-			case 7:
+			case TASK_REPUTATION_TARGET:
 				task = new FQuestTaskReputationTarget( this, name);
 				break;
-			case 8:
+			case TASK_REPUTATION_KILL:
 				task = new FQuestTaskReputationKill( this, name);
 				break;
 		}
@@ -185,5 +186,12 @@ public final class FQuest extends ANamed {
 
 	public void remove() {
 		mParentHQM.removeQuest( this);
+	}
+
+	public void removeTask( AQuestTask task) {
+		int pos = mTasks.indexOf( task);
+		if (pos >= 0) {
+			mTasks.setElementAt( null, pos);
+		}
 	}
 }

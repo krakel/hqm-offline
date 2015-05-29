@@ -3,12 +3,14 @@ package de.doerl.hqm.controller;
 import java.awt.Frame;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.model.EditModel;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
+import de.doerl.hqm.quest.TaskTyp;
 
 public class EditController implements IModelListener {
 //	private static final Logger LOGGER = Logger.getLogger( EditController.class.getName());
@@ -87,6 +89,14 @@ public class EditController implements IModelListener {
 	public void questSetDelete( FQuestSet qs) {
 		qs.mParentCategory.mParentHQM.forEachQuest( mRemoverQuest, qs);
 		qs.remove();
+	}
+
+	public AQuestTask questTaskCreate( FQuest quest, TaskTyp type, String name) {
+		return quest.createQuestTask( type, name);
+	}
+
+	public void questTaskDelete( AQuestTask task) {
+		task.remove();
 	}
 
 	public void removeListener( IModelListener l) {

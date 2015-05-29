@@ -15,7 +15,7 @@ public final class FHqm extends ABase {
 	private final FQuest mDeleted = new FQuest( this, "__DELETED__", true);
 	private FileVersion mVersion;
 	public final FParameterString mPassCode = new FParameterString( this);
-	public final FParameterString mDesc = new FParameterString( this);
+	public final FParameterString mDescr = new FParameterString( this);
 	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
 	public final FReputationCat mReputationCat = new FReputationCat( this);
 	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
@@ -25,7 +25,7 @@ public final class FHqm extends ABase {
 
 	public FHqm( URI uri) {
 		mURI = uri;
-		mDesc.mValue = "Hallo D:";
+		mDescr.mValue = "Hallo D:";
 	}
 
 	@Override

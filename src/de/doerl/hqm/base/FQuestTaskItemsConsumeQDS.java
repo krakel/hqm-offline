@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
-import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.TaskTyp;
 
 public final class FQuestTaskItemsConsumeQDS extends AQuestTaskItems {
 	public FQuestTaskItemsConsumeQDS( FQuest parent, String name) {
@@ -14,7 +14,7 @@ public final class FQuestTaskItemsConsumeQDS extends AQuestTaskItems {
 	}
 
 	@Override
-	public ElementTyp getElementTyp() {
-		return ElementTyp.QUEST_TASK_ITEMS_CONSUME_QDS;
+	public TaskTyp getTaskTyp() {
+		return TaskTyp.TASK_ITEMS_CONSUME_QDS;
 	}
 }

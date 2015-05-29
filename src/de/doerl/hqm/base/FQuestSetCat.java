@@ -28,4 +28,9 @@ public final class FQuestSetCat extends ACategory<FQuestSet> {
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST_SET_CAT;
 	}
+
+	@Override
+	public String getNodeName() {
+		return "Quest Sets";
+	}
 }

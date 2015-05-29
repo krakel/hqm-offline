@@ -53,6 +53,7 @@ import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.quest.RepeatType;
+import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.quest.Visibility;
 import de.doerl.hqm.utils.Utils;
@@ -268,7 +269,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		for (int i = 0; i < count; ++i) {
 			if (mSrc.readBoolean()) {
 				FQuest member = hqm.createQuest( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
-				member.mDesc.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+				member.mDescr.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 				member.mX.mValue = mSrc.readData( DataBitHelper.QUEST_POS_X);
 				member.mY.mValue = mSrc.readData( DataBitHelper.QUEST_POS_Y);
 				member.mBig.mValue = mSrc.readBoolean();
@@ -332,7 +333,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			for (int i = 0; i < count; i++) {
 				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
 				FQuestSet member = set.createMember( name);
-				member.mDesc.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+				member.mDescr.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 			}
 		}
 		else {
@@ -373,10 +374,10 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			hqm.mPassCode.mValue = mSrc.readString( DataBitHelper.PASS_CODE);
 		}
 		if (mSrc.contains( FileVersion.LORE)) {
-			hqm.mDesc.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+			hqm.mDescr.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		}
 		else {
-			hqm.mDesc.mValue = "No description";
+			hqm.mDescr.mValue = "No description";
 		}
 		readQuestSetCat( hqm.mQuestSetCat);
 		readReputations( hqm.mReputationCat);
@@ -393,10 +394,11 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	private void readTasks( FQuest quest) {
 		int count = mSrc.readData( DataBitHelper.TASKS);
 		for (int i = 0; i < count; ++i) {
-			int type = mSrc.readData( DataBitHelper.TASK_TYPE);
+			int id = mSrc.readData( DataBitHelper.TASK_TYPE);
 			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
+			TaskTyp type = TaskTyp.get( id);
 			AQuestTask task = quest.createQuestTask( type, name);
-			task.mDesc.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+			task.mDescr.mValue = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 			task.accept( this, null);
 //			if (result.size() > 0) {
 //				task.addRequirement( result.get( result.size() - 1));

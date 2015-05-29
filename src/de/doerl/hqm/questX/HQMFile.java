@@ -15,7 +15,7 @@ import de.doerl.hqm.ui.EditMain;
 public class HQMFile implements IWriter {
 	FileVersion mVersion;
 	String mPassCode;
-	String mDesc;
+	String mDescr;
 	QuestSet[] mQuestSets;
 	Reputation[] mReputations;
 	Vector<Quest> mQuests;
@@ -26,10 +26,10 @@ public class HQMFile implements IWriter {
 			mPassCode = is.readString( DataBitHelper.PASS_CODE);
 		}
 		if (is.contains( FileVersion.LORE)) {
-			mDesc = is.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+			mDescr = is.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		}
 		else {
-			mDesc = "No description";
+			mDescr = "No description";
 		}
 		mQuestSets = QuestSet.read( is);
 		mReputations = Reputation.read( is);
@@ -138,7 +138,7 @@ public class HQMFile implements IWriter {
 		if (mPassCode != null) {
 			out.print( "passcode", mPassCode);
 		}
-		out.print( "decription", mDesc);
+		out.print( "decription", mDescr);
 		out.print( "questSets", mQuestSets);
 		out.println();
 		out.print( "reputations", mReputations);
