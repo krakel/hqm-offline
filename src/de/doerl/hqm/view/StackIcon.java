@@ -19,18 +19,17 @@ class StackIcon implements Icon {
 	private double mZoom;
 
 	public StackIcon( AStack stk, double zoom) {
-		this( StackIcon.ICON_BACK, null, 0.6);
-		mText = stk != null ? stk.countOf() : null;
+		this( StackIcon.ICON_BACK, null, 0.6, stk != null ? stk.countOf() : null);
 	}
 
-	public StackIcon( Image back, Image img, double zoom) {
+	public StackIcon( Image img, double zoom, String txt) {
+		this( StackIcon.ICON_BACK, img, zoom, txt);
+	}
+
+	public StackIcon( Image back, Image img, double zoom, String txt) {
 		mBack = back;
 		mImage = img != null ? img : ResourceManager.getImageUI( "hqm.unknown");
 		mZoom = zoom;
-	}
-
-	public StackIcon( String txt, Image img, double zoom) {
-		this( StackIcon.ICON_BACK, img, zoom);
 		mText = txt;
 	}
 

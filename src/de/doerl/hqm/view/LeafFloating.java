@@ -50,7 +50,7 @@ public class LeafFloating extends JPanel {
 	private void updateIcons( Runnable cb) {
 		removeAll();
 		if (RequirementIsEmpty.get( mTask)) {
-			add( new LeafIcon( new StackIcon( "0%", null, 0.8)));
+			add( new LeafIcon( new StackIcon( null, 0.8, "0%")));
 			add( Box.createHorizontalStrut( 3));
 		}
 		else {
@@ -68,7 +68,7 @@ public class LeafFloating extends JPanel {
 		protected Object doRequirement( ARequirement req, Runnable cb) {
 			AStack stk = req.getStack().mValue;
 			Image img = ImageLoader.getImage( stk.getKey(), cb);
-			add( new LeafIcon( new StackIcon( "0%", img, 0.8)));
+			add( new LeafIcon( new StackIcon( img, 0.8, "0%")));
 			add( Box.createHorizontalStrut( 3));
 			return null;
 		}

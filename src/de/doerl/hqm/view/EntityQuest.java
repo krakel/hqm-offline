@@ -70,7 +70,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	public EntityQuest( FQuest quest, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
 		mQuest = quest;
-		StackIcon icon = new StackIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( quest), 1.0);
+		StackIcon icon = new StackIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( quest), 1.0, null);
 		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, new LeafIcon( icon));
 		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, new LeafButton( "Claim reward"));
 		mBoxList.setCellRenderer( new TaskListRenderer());
@@ -494,96 +494,6 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
-//	private final class TaskUpdate extends AHQMWorker<Object, Object> {
-//		private TaskUpdate() {
-//		}
-//
-//		@Override
-//		public Object forLocation( FLocation loc, Object p) {
-//			JComponent locBox = leafBoxHorizontal( 54);
-//			locBox.add( new LeafIcon( new StackIcon( loc.mIcon.mValue, 0.6)));
-//			locBox.add( Box.createHorizontalStrut( GAP));
-//			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
-//			dataBox.add( new LeafLabel( loc.mName.mValue, true));
-//			dataBox.add( new LeafLabel( String.format( "Dimension %d, [%d radius]", loc.mDim.mValue, loc.mRadius.mValue)));
-//			dataBox.add( new LeafLabel( String.format( "(%d, %d, %d)", loc.mX.mValue, loc.mY.mValue, loc.mZ.mValue)));
-//			locBox.add( dataBox);
-//			mTaskInfo.add( locBox);
-//			mTaskInfo.add( Box.createVerticalStrut( GAP));
-//			return null;
-//		}
-//
-//		@Override
-//		public Object forMob( FMob mob, Object p) {
-//			JComponent mobBox = leafBoxHorizontal( 54);
-//			mobBox.add( new LeafIcon( new StackIcon( mob.mIcon.mValue, 0.6)));
-//			mobBox.add( Box.createHorizontalStrut( GAP));
-//			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
-//			dataBox.add( new LeafLabel( mob.mMob.mValue, true));
-//			dataBox.add( new LeafLabel( "0[0%] killed"));
-//			dataBox.add( new LeafLabel( String.format( "Kill a total of %d", mob.mKills.mValue)));
-//			mobBox.add( dataBox);
-//			mTaskInfo.add( mobBox);
-//			mTaskInfo.add( Box.createVerticalStrut( GAP));
-//			return null;
-//		}
-//
-//		@Override
-//		public Object forSetting( FSetting rs, Object p) {
-//			JComponent repBox = leafBoxHorizontal( 54);
-////			repBox.add( Box.createHorizontalStrut( GAP));
-//			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
-////			dataBox.add( leafTitle( rs.mMob.mValue));
-////			dataBox.add( leafLabel( "0[0%] killed"));
-////			dataBox.add( leafLabel( String.format( "Kill a total of %d", mob.mKills.mValue)));
-////			mobBox.add( dataBox);
-//			dataBox.add( new LeafReputation( rs));
-//			dataBox.add( new LeafLabel( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral.mValue, 0)));
-//			repBox.add( dataBox);
-//			mTaskInfo.add( repBox);
-//			mTaskInfo.add( Box.createVerticalStrut( GAP));
-//			return null;
-//		}
-//
-//		@Override
-//		public Object forTaskDeath( FQuestTaskDeath task, Object p) {
-//			int deaths = task.mDeaths.mValue;
-//			String text = String.format( "You've died 0 of %d %s", deaths, deaths <= 1 ? "time" : "times");
-//			mTaskInfo.add( new LeafLabel( text));
-//			mTaskInfo.add( Box.createVerticalGlue());
-//			return null;
-//		}
-//
-//		@Override
-//		public Object forTaskLocation( FQuestTaskLocation task, Object p) {
-//			task.forEachLocation( this, p);
-//			mTaskInfo.add( Box.createVerticalGlue());
-//			return null;
-//		}
-//
-//		@Override
-//		public Object forTaskMob( FQuestTaskMob task, Object p) {
-//			task.forEachMob( this, p);
-//			mTaskInfo.add( Box.createVerticalGlue());
-//			return null;
-//		}
-//
-//		@Override
-//		public Object forTaskReputationKill( FQuestTaskReputationKill task, Object p) {
-//			int kills = task.mKills.mValue;
-//			String text = String.format( "You've killed 0 of %d %s", kills, kills <= 1 ? "player" : "players");
-//			mTaskInfo.add( new LeafLabel( text));
-//			mTaskInfo.add( Box.createVerticalGlue());
-//			return null;
-//		}
-//
-//		@Override
-//		public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
-//			task.forEachSetting( this, p);
-//			mTaskInfo.add( Box.createVerticalGlue());
-//			return null;
-//		}
-//	}
 	private final class TitleAction extends ABundleAction {
 		private static final long serialVersionUID = -4857945141280262728L;
 

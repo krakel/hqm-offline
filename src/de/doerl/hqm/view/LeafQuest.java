@@ -67,7 +67,7 @@ class LeafQuest extends JLabel {
 		String key = mType.getKey( mQuest.isBig());
 		Image back = ResourceManager.getImageUI( key);
 		Image img = stk != null ? ImageLoader.getImage( stk.getKey(), cb) : null;
-		setIcon( new StackIcon( back, img, 0.6));
+		setIcon( new StackIcon( back, img, 0.6, null));
 	}
 
 	private void updateType( Type type) {
