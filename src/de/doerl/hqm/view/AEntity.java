@@ -3,7 +3,6 @@ package de.doerl.hqm.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -33,6 +32,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * 170, ZOOM * 234);
 	static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, 14);
 	static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, 18);
+	static final Font FONT_STACK = new Font( "SansSerif", Font.PLAIN | Font.BOLD, 14);
 	static final Color SELECTED = new Color( 0xAAAAAA);
 	static final Color UNSELECTED = new Color( 0x404040);
 	private static int sColValue;
@@ -42,8 +42,8 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		super( layout, true);
 		mCtrl = ctrl;
 		setOpaque( true);
-		setMinimumSize( new Dimension( VIEW_SIZE));
-		setPreferredSize( new Dimension( VIEW_SIZE));
+		setMinimumSize( VIEW_SIZE.getSize());
+		setPreferredSize( VIEW_SIZE.getSize());
 //		setMaximumSize( new Dimension( min));
 	}
 
@@ -150,15 +150,6 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		if (axis == BoxLayout.Y_AXIS) {
 			result.setAlignmentX( LEFT_ALIGNMENT);
 		}
-		result.setOpaque( false);
-		result.setBorder( null);
-		return result;
-	}
-
-	protected static JComponent leafBoxFloat( int heigh) {
-		JComponent result = (JComponent) Box.createVerticalStrut( heigh);
-		result.setLayout( new FlowLayout( FlowLayout.LEFT, 0, GAP / 2));
-		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);
 		result.setBorder( null);
 		return result;

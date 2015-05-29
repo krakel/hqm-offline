@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -25,23 +24,15 @@ import de.doerl.hqm.Tuple2;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.AStack;
-import de.doerl.hqm.base.FLocation;
-import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskDeath;
-import de.doerl.hqm.base.FQuestTaskItemsConsume;
-import de.doerl.hqm.base.FQuestTaskItemsConsumeQDS;
-import de.doerl.hqm.base.FQuestTaskItemsCrafting;
-import de.doerl.hqm.base.FQuestTaskItemsDetect;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReward;
-import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
@@ -55,6 +46,7 @@ import de.doerl.hqm.utils.Utils;
 public class EntityQuest extends AEntity<FQuest> {
 	private static final long serialVersionUID = -5707664232506407627L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuest.class.getName());
+	private static final TaskBoxEmpty BOX_EMPTY = new TaskBoxEmpty();
 	private FQuest mQuest;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mTitleAction = new TitleAction();
@@ -62,17 +54,18 @@ public class EntityQuest extends AEntity<FQuest> {
 	private ABundleAction mRewardAction = new RewardAction();
 	private ABundleAction mChoiceAction = new ChoiceAction();
 	private ABundleAction mTaskNameAction = new TaskNameAction();
-	private ABundleAction mTaskDescAction = new TaskDescriptionAction();
+	private ABundleAction mTaskDescAction = new TaskDescAction();
+	private ABundleAction mTaskListAction = new TaskListAction();
 	private ABundleAction mTaskAddAction = new TaskAddAction();
 	private ABundleAction mTaskDeleteAction = new TaskDeleteAction();
 	private LeafTextField mTitle = new LeafTextField( true);
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafStacks mRewardList;
 	private LeafStacks mChoiceList;
-	private LeafList<AQuestTask> mTasks = new LeafList<>();
 	private LeafTextBox mTaskDesc = new LeafTextBox();
-	private JComponent mTaskInfo = leafBoxVertical( 240);
-	private volatile AQuestTask mActiv;
+	private Box mBoxContainer = Box.createHorizontalBox();
+	private LeafList<ATaskBox> mBoxList = new LeafList<>();
+	private volatile ATaskBox mActiv = BOX_EMPTY;
 
 	public EntityQuest( FQuest quest, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
@@ -80,17 +73,18 @@ public class EntityQuest extends AEntity<FQuest> {
 		StackIcon icon = new StackIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( quest), 1.0);
 		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, new LeafIcon( icon));
 		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, new LeafButton( "Claim reward"));
-		mTasks.setCellRenderer( new TaskListRenderer());
+		mBoxList.setCellRenderer( new TaskListRenderer());
+		mBoxContainer.setAlignmentX( LEFT_ALIGNMENT);
 		createLeafs();
 		update();
-		updateActive( TaskFirst.get( mQuest));
-		mTasks.addMouseListener( new MouseAdapter() {
+		updateActive( getFirstBox());
+		mBoxList.addMouseListener( new MouseAdapter() {
 			@Override
 			public void mouseClicked( MouseEvent evt) {
 				try {
-					AQuestTask task = mTasks.getSelectedValue();
-					if (task != null) {
-						SwingUtilities.invokeLater( new TaskListMouseAction( task));
+					ATaskBox box = mBoxList.getSelectedValue();
+					if (box != null) {
+						SwingUtilities.invokeLater( new TaskListMouseAction( box));
 					}
 				}
 				catch (ClassCastException ex) {
@@ -111,6 +105,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTool.addSeparator();
 		mTool.add( mTaskNameAction);
 		mTool.add( mTaskDescAction);
+		mTool.add( mTaskListAction);
 		mTool.addSeparator();
 		mTool.add( mTaskAddAction);
 		mTool.add( mTaskDeleteAction);
@@ -127,7 +122,7 @@ public class EntityQuest extends AEntity<FQuest> {
 			ABase base = event.mBase;
 			if (mQuest.equals( base.getHierarchy())) {
 				update();
-				updateActive( (AQuestTask) base);
+				updateActive( findBoxOf( (AQuestTask) base));
 			}
 		}
 		catch (ClassCastException ex) {
@@ -149,7 +144,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		ABase base = event.mBase;
 		if (mQuest.equals( base.getHierarchy())) {
 			update();
-			updateActive( TaskFirst.get( mQuest));
+			updateActive( getFirstBox());
 		}
 	}
 
@@ -159,7 +154,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( leafScoll( mDesc, 100));
 		leaf.add( Box.createVerticalStrut( GAP));
-		leaf.add( leafScoll( mTasks, 50));
+		leaf.add( leafScoll( mBoxList, 50));
 		leaf.add( Box.createVerticalGlue());
 		leaf.add( new LeafLabel( "Rewards", true));
 		leaf.add( mRewardList);
@@ -170,14 +165,30 @@ public class EntityQuest extends AEntity<FQuest> {
 
 	@Override
 	protected void createRight( JPanel leaf) {
-		leaf.add( leafScoll( mTaskDesc, 80));
+		leaf.add( leafScoll( mTaskDesc, 160));
 		leaf.add( Box.createVerticalStrut( GAP));
-		leaf.add( mTaskInfo);
+		leaf.add( mBoxContainer);
+	}
+
+	private ATaskBox findBoxOf( AQuestTask task) {
+		DefaultListModel<ATaskBox> model = mBoxList.getModel();
+		for (int i = 0; i < model.size(); ++i) {
+			ATaskBox box = model.elementAt( i);
+			if (Utils.equals( box.getTask(), task)) {
+				return box;
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public FQuest getBase() {
 		return mQuest;
+	}
+
+	public ATaskBox getFirstBox() {
+		DefaultListModel<ATaskBox> model = mBoxList.getModel();
+		return model.size() > 0 ? model.elementAt( 0) : null;
 	}
 
 	@Override
@@ -188,7 +199,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	private void update() {
 		mTitle.setText( mQuest.mName.mValue);
 		mDesc.setText( mQuest.mDescr.mValue);
-		TaskListUpdate.get( mQuest, mTasks.getModel());
+		TaskBoxUpdate.get( mQuest, mCtrl, mBoxList.getModel());
 		mRewardList.update();
 		mChoiceList.update();
 	}
@@ -199,24 +210,30 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTaskDeleteAction.setEnabled( enabled);
 	}
 
-	public void updateActive( AQuestTask task) {
-		if (task == null) {
+	private void updateActive( ATaskBox box) {
+		mActiv.removeClickListener( mTaskListAction);
+		if (box == null || BOX_EMPTY.equals( box)) {
 			mTaskDesc.setText( null);
-			mTasks.clearSelection();
-			mTaskInfo.removeAll();
-			mTaskInfo.add( Box.createHorizontalGlue());
+			mBoxList.clearSelection();
+			mBoxContainer.removeAll();
+			mBoxContainer.add( BOX_EMPTY);
 			updateActions( false);
-			mActiv = null;
+			updateTaskAction( false);
+			mActiv = BOX_EMPTY;
 		}
 		else {
-			mTaskDesc.setText( task.mDescr.mValue);
-			mTasks.setSelectedValue( task, true);
-			mTaskInfo.removeAll();
-			TaskUpdate.get( task, mTaskInfo);
-			mTaskInfo.add( Box.createHorizontalGlue());
+			mTaskDesc.setText( box.getTask().mDescr.mValue);
+			mBoxList.setSelectedValue( box, true);
+			mBoxContainer.removeAll();
+			mBoxContainer.add( box);
 			updateActions( true);
-			mActiv = task;
+			updateTaskAction( true);
+			mActiv = box;
 		}
+		mActiv.addClickListener( mTaskListAction);
+		mActiv.update();
+		mBoxContainer.revalidate();
+		mBoxContainer.repaint();
 	}
 
 	private void updateStacks( Vector<FParameterStack> param, Vector<AStack> stks) {
@@ -231,6 +248,10 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
+	private void updateTaskAction( boolean enabled) {
+		mTaskListAction.setEnabled( enabled);
+	}
+
 	private final class ChoiceAction extends ABundleAction {
 		private static final long serialVersionUID = 3689054802238865168L;
 
@@ -240,7 +261,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			Vector<AStack> result = DialogListStacks.update( mQuest.mChoices, mCtrl.getFrame());
+			Vector<AStack> result = DialogListStacks.updateA( mQuest.mChoices, mCtrl.getFrame());
 			if (result != null) {
 				updateStacks( mQuest.mChoices, result);
 				mCtrl.fireChanged( mQuest);
@@ -301,7 +322,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			Vector<AStack> result = DialogListStacks.update( mQuest.mRewards, mCtrl.getFrame());
+			Vector<AStack> result = DialogListStacks.updateA( mQuest.mRewards, mCtrl.getFrame());
 			if (result != null) {
 				updateStacks( mQuest.mRewards, result);
 				mCtrl.fireChanged( mQuest);
@@ -326,6 +347,54 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
+	private static class TaskBoxUpdate extends AHQMWorker<Object, DefaultListModel<ATaskBox>> {
+		private static final TaskBoxUpdate WORKER = new TaskBoxUpdate();
+
+		private TaskBoxUpdate() {
+		}
+
+		public static void get( FQuest quest, EditController ctrl, DefaultListModel<ATaskBox> model) {
+			model.clear();
+			quest.forEachQuestTask( WORKER, model);
+		}
+
+		@Override
+		protected Object doTaskItems( AQuestTaskItems task, DefaultListModel<ATaskBox> model) {
+			model.addElement( new TaskBoxRequire( task));
+			return null;
+		}
+
+		@Override
+		public Object forTaskDeath( FQuestTaskDeath task, DefaultListModel<ATaskBox> model) {
+			model.addElement( new TaskBoxDeath( task));
+			return null;
+		}
+
+		@Override
+		public Object forTaskLocation( FQuestTaskLocation task, DefaultListModel<ATaskBox> model) {
+			model.addElement( new TaskBoxLocation( task));
+			return null;
+		}
+
+		@Override
+		public Object forTaskMob( FQuestTaskMob task, DefaultListModel<ATaskBox> model) {
+			model.addElement( new TaskBoxMob( task));
+			return null;
+		}
+
+		@Override
+		public Object forTaskReputationKill( FQuestTaskReputationKill task, DefaultListModel<ATaskBox> model) {
+			model.addElement( new TaskBoxReputationKill( task));
+			return null;
+		}
+
+		@Override
+		public Object forTaskReputationTarget( FQuestTaskReputationTarget task, DefaultListModel<ATaskBox> model) {
+			model.addElement( new TaskBoxReputationTarget( task));
+			return null;
+		}
+	}
+
 	private final class TaskDeleteAction extends ABundleAction {
 		private static final long serialVersionUID = 7223654325808174399L;
 
@@ -336,58 +405,60 @@ public class EntityQuest extends AEntity<FQuest> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (WarnDialogs.askDelete( mCtrl.getFrame())) {
-				mCtrl.questTaskDelete( mActiv);
-				mCtrl.fireRemoved( mActiv);
+				mCtrl.questTaskDelete( mActiv.getTask());
+				mCtrl.fireRemoved( mActiv.getTask());
 			}
 		}
 	}
 
-	private final class TaskDescriptionAction extends ABundleAction {
+	private final class TaskDescAction extends ABundleAction {
 		private static final long serialVersionUID = -8367056239473171639L;
 
-		public TaskDescriptionAction() {
+		public TaskDescAction() {
 			super( "entity.textbox");
 		}
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.mDescr.mValue, mCtrl.getFrame());
+				String result = DialogTextBox.update( mActiv.getTask().mDescr.mValue, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.mDescr.mValue = result;
+					mActiv.getTask().mDescr.mValue = result;
 					mCtrl.fireChanged( mQuest);
 				}
 			}
 		}
 	}
 
-	private static class TaskFirst extends AHQMWorker<AQuestTask, Object> {
-		private static final TaskFirst WORKER = new TaskFirst();
+	private final class TaskListAction extends ABundleAction {
+		private static final long serialVersionUID = 4960049088097085011L;
 
-		public static AQuestTask get( FQuest quest) {
-			return quest.forEachQuestTask( WORKER, null);
+		public TaskListAction() {
+			super( "entity.require");
 		}
 
 		@Override
-		protected AQuestTask doTask( AQuestTask task, Object p) {
-			return task;
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv.onAction( mCtrl.getFrame())) {
+				mCtrl.fireChanged( mQuest);
+			}
 		}
 	}
 
 	private final class TaskListMouseAction implements Runnable {
-		private AQuestTask mTask;
+		private ATaskBox mBox;
 
-		public TaskListMouseAction( AQuestTask task) {
-			mTask = task;
+		public TaskListMouseAction( ATaskBox box) {
+			mBox = box;
 		}
 
 		@Override
 		public void run() {
-			updateActive( mTask);
+			updateActive( mBox);
 		}
 	}
 
-	private static class TaskListRenderer extends JPanel implements ListCellRenderer<AQuestTask> {
+	private static class TaskListRenderer extends JPanel implements ListCellRenderer<ATaskBox> {
 		private static final long serialVersionUID = 9081558438188872705L;
 		private JLabel mTitle = new LeafLabel( UNSELECTED, "", true);
 
@@ -397,33 +468,10 @@ public class EntityQuest extends AEntity<FQuest> {
 			setOpaque( false);
 		}
 
-		public Component getListCellRendererComponent( JList<? extends AQuestTask> list, AQuestTask qs, int index, boolean isSelected, boolean cellHasFocus) {
-			mTitle.setText( qs.mName.mValue);
+		public Component getListCellRendererComponent( JList<? extends ATaskBox> list, ATaskBox box, int index, boolean isSelected, boolean cellHasFocus) {
+			mTitle.setText( box.getTask().mName.mValue);
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			return this;
-		}
-	}
-
-	private static class TaskListUpdate extends AHQMWorker<Object, DefaultListModel<AQuestTask>> {
-		private static final TaskListUpdate WORKER = new TaskListUpdate();
-
-		private TaskListUpdate() {
-		}
-
-		public static void get( FQuest quest, DefaultListModel<AQuestTask> model) {
-			model.clear();
-			quest.forEachQuestTask( WORKER, model);
-		}
-
-		@Override
-		protected Object doBase( ABase base, DefaultListModel<AQuestTask> model) {
-			return null;
-		}
-
-		@Override
-		protected Object doTask( AQuestTask task, DefaultListModel<AQuestTask> model) {
-			model.addElement( task);
-			return null;
 		}
 	}
 
@@ -437,155 +485,105 @@ public class EntityQuest extends AEntity<FQuest> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.mName.mValue, mCtrl.getFrame());
+				String result = DialogTextField.update( mActiv.getTask().mName.mValue, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.mName.mValue = result;
+					mActiv.getTask().mName.mValue = result;
 					mCtrl.fireChanged( mQuest);
 				}
 			}
 		}
 	}
 
-	private static class TaskUpdate extends AHQMWorker<Object, JComponent> {
-		private static final TaskUpdate WORKER = new TaskUpdate();
-
-		private TaskUpdate() {
-		}
-
-		public static void get( AQuestTask task, JComponent comp) {
-			task.accept( WORKER, comp);
-		}
-
-		@Override
-		protected Object doRequirement( ARequirement req, JComponent comp) {
-			comp.add( new LeafIcon( new StackIcon( req.getStack().mValue)));
-			comp.add( Box.createHorizontalStrut( 3));
-			return null;
-		}
-
-		@Override
-		protected Object doTaskItems( AQuestTaskItems task, JComponent comp) {
-			JComponent itemBox = leafBoxFloat( 3 * (ICON_SIZE + GAP));
-			comp.add( itemBox);
-			task.forEachRequirement( this, itemBox);
-			comp.add( Box.createVerticalGlue());
-			return null;
-		}
-
-		@Override
-		public Object forLocation( FLocation loc, JComponent comp) {
-			JComponent locBox = leafBoxHorizontal( 54);
-			locBox.add( new LeafIcon( new StackIcon( loc.mIcon.mValue)));
-			locBox.add( Box.createHorizontalStrut( GAP));
-			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
-			dataBox.add( new LeafLabel( loc.mName.mValue, true));
-			dataBox.add( new LeafLabel( String.format( "Dimension %d, [%d radius]", loc.mDim.mValue, loc.mRadius.mValue)));
-			dataBox.add( new LeafLabel( String.format( "(%d, %d, %d)", loc.mX.mValue, loc.mY.mValue, loc.mZ.mValue)));
-			locBox.add( dataBox);
-			comp.add( locBox);
-			comp.add( Box.createVerticalStrut( GAP));
-			return null;
-		}
-
-		@Override
-		public Object forMob( FMob mob, JComponent comp) {
-			JComponent mobBox = leafBoxHorizontal( 54);
-			mobBox.add( new LeafIcon( new StackIcon( mob.mIcon.mValue)));
-			mobBox.add( Box.createHorizontalStrut( GAP));
-			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
-			dataBox.add( new LeafLabel( mob.mMob.mValue, true));
-			dataBox.add( new LeafLabel( "0[0%] killed"));
-			dataBox.add( new LeafLabel( String.format( "Kill a total of %d", mob.mKills.mValue)));
-			mobBox.add( dataBox);
-			comp.add( mobBox);
-			comp.add( Box.createVerticalStrut( GAP));
-			return null;
-		}
-
-		@Override
-		public Object forSetting( FSetting rs, JComponent comp) {
-			JComponent repBox = leafBoxHorizontal( 54);
-//			repBox.add( Box.createHorizontalStrut( GAP));
-			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
-//			dataBox.add( leafTitle( rs.mMob.mValue));
-//			dataBox.add( leafLabel( "0[0%] killed"));
-//			dataBox.add( leafLabel( String.format( "Kill a total of %d", mob.mKills.mValue)));
+//	private final class TaskUpdate extends AHQMWorker<Object, Object> {
+//		private TaskUpdate() {
+//		}
+//
+//		@Override
+//		public Object forLocation( FLocation loc, Object p) {
+//			JComponent locBox = leafBoxHorizontal( 54);
+//			locBox.add( new LeafIcon( new StackIcon( loc.mIcon.mValue, 0.6)));
+//			locBox.add( Box.createHorizontalStrut( GAP));
+//			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
+//			dataBox.add( new LeafLabel( loc.mName.mValue, true));
+//			dataBox.add( new LeafLabel( String.format( "Dimension %d, [%d radius]", loc.mDim.mValue, loc.mRadius.mValue)));
+//			dataBox.add( new LeafLabel( String.format( "(%d, %d, %d)", loc.mX.mValue, loc.mY.mValue, loc.mZ.mValue)));
+//			locBox.add( dataBox);
+//			mTaskInfo.add( locBox);
+//			mTaskInfo.add( Box.createVerticalStrut( GAP));
+//			return null;
+//		}
+//
+//		@Override
+//		public Object forMob( FMob mob, Object p) {
+//			JComponent mobBox = leafBoxHorizontal( 54);
+//			mobBox.add( new LeafIcon( new StackIcon( mob.mIcon.mValue, 0.6)));
+//			mobBox.add( Box.createHorizontalStrut( GAP));
+//			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
+//			dataBox.add( new LeafLabel( mob.mMob.mValue, true));
+//			dataBox.add( new LeafLabel( "0[0%] killed"));
+//			dataBox.add( new LeafLabel( String.format( "Kill a total of %d", mob.mKills.mValue)));
 //			mobBox.add( dataBox);
-			dataBox.add( new LeafReputation( rs));
-			dataBox.add( new LeafLabel( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral.mValue, 0)));
-			repBox.add( dataBox);
-			comp.add( repBox);
-			comp.add( Box.createVerticalStrut( GAP));
-			return null;
-		}
-
-		@Override
-		public Object forTaskDeath( FQuestTaskDeath task, JComponent comp) {
-			int deaths = task.mDeaths.mValue;
-			String text = String.format( "You've died 0 of %d %s", deaths, deaths <= 1 ? "time" : "times");
-			comp.add( new LeafLabel( text));
-			comp.add( Box.createVerticalGlue());
-			return null;
-		}
-
-		@Override
-		public Object forTaskItemsConsume( FQuestTaskItemsConsume task, JComponent comp) {
-			doTaskItems( task, comp);
-			comp.add( AEntity.leafButtons( new LeafButton( "Manual submit"), new LeafButton( "Select task")));
-			return null;
-		}
-
-		@Override
-		public Object forTaskItemsConsumeQDS( FQuestTaskItemsConsumeQDS task, JComponent comp) {
-			doTaskItems( task, comp);
-			comp.add( AEntity.leafButtons( new LeafButton( "Manual submit"), new LeafButton( "Select task")));
-			return null;
-		}
-
-		@Override
-		public Object forTaskItemsCrafting( FQuestTaskItemsCrafting task, JComponent comp) {
-			doTaskItems( task, comp);
-			return null;
-		}
-
-		@Override
-		public Object forTaskItemsDetect( FQuestTaskItemsDetect task, JComponent comp) {
-			doTaskItems( task, comp);
-			comp.add( AEntity.leafButtons( (JLabel) new LeafButton( "Manual detect")));
-			return null;
-		}
-
-		@Override
-		public Object forTaskLocation( FQuestTaskLocation task, JComponent comp) {
-			task.forEachLocation( this, comp);
-			comp.add( Box.createVerticalGlue());
-			return null;
-		}
-
-		@Override
-		public Object forTaskMob( FQuestTaskMob task, JComponent comp) {
-			task.forEachMob( this, comp);
-			comp.add( Box.createVerticalGlue());
-			return null;
-		}
-
-		@Override
-		public Object forTaskReputationKill( FQuestTaskReputationKill task, JComponent comp) {
-			int kills = task.mKills.mValue;
-			String text = String.format( "You've killed 0 of %d %s", kills, kills <= 1 ? "player" : "players");
-			comp.add( new LeafLabel( text));
-			comp.add( Box.createVerticalGlue());
-			return null;
-		}
-
-		@Override
-		public Object forTaskReputationTarget( FQuestTaskReputationTarget task, JComponent comp) {
-			task.forEachSetting( this, comp);
-			comp.add( Box.createVerticalGlue());
-			return null;
-		}
-	}
-
+//			mTaskInfo.add( mobBox);
+//			mTaskInfo.add( Box.createVerticalStrut( GAP));
+//			return null;
+//		}
+//
+//		@Override
+//		public Object forSetting( FSetting rs, Object p) {
+//			JComponent repBox = leafBoxHorizontal( 54);
+////			repBox.add( Box.createHorizontalStrut( GAP));
+//			JComponent dataBox = leafBox( BoxLayout.Y_AXIS);
+////			dataBox.add( leafTitle( rs.mMob.mValue));
+////			dataBox.add( leafLabel( "0[0%] killed"));
+////			dataBox.add( leafLabel( String.format( "Kill a total of %d", mob.mKills.mValue)));
+////			mobBox.add( dataBox);
+//			dataBox.add( new LeafReputation( rs));
+//			dataBox.add( new LeafLabel( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral.mValue, 0)));
+//			repBox.add( dataBox);
+//			mTaskInfo.add( repBox);
+//			mTaskInfo.add( Box.createVerticalStrut( GAP));
+//			return null;
+//		}
+//
+//		@Override
+//		public Object forTaskDeath( FQuestTaskDeath task, Object p) {
+//			int deaths = task.mDeaths.mValue;
+//			String text = String.format( "You've died 0 of %d %s", deaths, deaths <= 1 ? "time" : "times");
+//			mTaskInfo.add( new LeafLabel( text));
+//			mTaskInfo.add( Box.createVerticalGlue());
+//			return null;
+//		}
+//
+//		@Override
+//		public Object forTaskLocation( FQuestTaskLocation task, Object p) {
+//			task.forEachLocation( this, p);
+//			mTaskInfo.add( Box.createVerticalGlue());
+//			return null;
+//		}
+//
+//		@Override
+//		public Object forTaskMob( FQuestTaskMob task, Object p) {
+//			task.forEachMob( this, p);
+//			mTaskInfo.add( Box.createVerticalGlue());
+//			return null;
+//		}
+//
+//		@Override
+//		public Object forTaskReputationKill( FQuestTaskReputationKill task, Object p) {
+//			int kills = task.mKills.mValue;
+//			String text = String.format( "You've killed 0 of %d %s", kills, kills <= 1 ? "player" : "players");
+//			mTaskInfo.add( new LeafLabel( text));
+//			mTaskInfo.add( Box.createVerticalGlue());
+//			return null;
+//		}
+//
+//		@Override
+//		public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
+//			task.forEachSetting( this, p);
+//			mTaskInfo.add( Box.createVerticalGlue());
+//			return null;
+//		}
+//	}
 	private final class TitleAction extends ABundleAction {
 		private static final long serialVersionUID = -4857945141280262728L;
 

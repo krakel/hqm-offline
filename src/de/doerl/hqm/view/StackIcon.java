@@ -18,7 +18,7 @@ class StackIcon implements Icon {
 	private String mText;
 	private double mZoom;
 
-	public StackIcon( AStack stk) {
+	public StackIcon( AStack stk, double zoom) {
 		this( StackIcon.ICON_BACK, null, 0.6);
 		mText = stk != null ? stk.countOf() : null;
 	}
@@ -53,7 +53,7 @@ class StackIcon implements Icon {
 			AEntity.drawCenteredImage( g2, c, mImage, mZoom);
 		}
 		if (mText != null) {
-			g2.setFont( AEntity.FONT_TITLE);
+			g2.setFont( AEntity.FONT_STACK);
 			g2.setColor( Color.BLACK);
 			AEntity.drawBottomLeftString( g2, c, mText);
 		}

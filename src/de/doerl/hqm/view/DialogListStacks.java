@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.BevelBorder;
 
+import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FParameterStack;
@@ -43,10 +44,22 @@ public class DialogListStacks extends ADialog {
 		addEscapeAction();
 	}
 
-	public static Vector<AStack> update( Vector<FParameterStack> value, Window owner) {
+	public static Vector<AStack> updateA( Vector<FParameterStack> value, Window owner) {
 		DialogListStacks dlg = new DialogListStacks( owner);
 		dlg.createMain();
-		dlg.updateMain( value);
+		dlg.updateMainA( value);
+		if (dlg.showDialog() == DialogResult.APPROVE) {
+			return dlg.getResult();
+		}
+		else {
+			return null;
+		}
+	}
+
+	public static Vector<AStack> updateB( Vector<ARequirement> value, Window owner) {
+		DialogListStacks dlg = new DialogListStacks( owner);
+		dlg.createMain();
+		dlg.updateMainB( value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
 			return dlg.getResult();
 		}
@@ -148,10 +161,17 @@ public class DialogListStacks extends ADialog {
 		mBtnChange.setEnabled( enabled);
 	}
 
-	private void updateMain( Vector<FParameterStack> value) {
+	private void updateMainA( Vector<FParameterStack> value) {
 		mModel.clear();
 		for (FParameterStack stk : value) {
 			mModel.addElement( stk.mValue);
+		}
+	}
+
+	private void updateMainB( Vector<ARequirement> value) {
+		mModel.clear();
+		for (ARequirement stk : value) {
+			mModel.addElement( stk.getStack().mValue);
 		}
 	}
 
@@ -165,7 +185,7 @@ public class DialogListStacks extends ADialog {
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon( null));
+			mIcon.setIcon( new StackIcon( null, 0.6));
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
 			add( mName);
@@ -173,7 +193,7 @@ public class DialogListStacks extends ADialog {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends AStack> list, AStack stk, int index, boolean isSelected, boolean cellHasFocus) {
-			mIcon.setIcon( new StackIcon( stk));
+			mIcon.setIcon( new StackIcon( stk, 0.6));
 			mName.setText( stk.getName());
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

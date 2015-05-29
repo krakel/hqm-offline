@@ -9,7 +9,7 @@ import de.doerl.hqm.utils.Utils;
 
 public abstract class AQuestTaskItems extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( AQuestTaskItems.class.getName());
-	private Vector<ARequirement> mRequirements = new Vector<>();
+	public Vector<ARequirement> mRequirements = new Vector<>();
 
 	AQuestTaskItems( FQuest parent, String name) {
 		super( parent, name);
