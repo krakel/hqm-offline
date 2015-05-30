@@ -34,7 +34,7 @@ public final class FItemRequirement extends ARequirement {
 	}
 
 	@Override
-	public AStack getStack() {
+	public FItemStack getStack() {
 		return mStack;
 	}
 }

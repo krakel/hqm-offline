@@ -9,6 +9,7 @@ import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ForgeHandler;
+import de.doerl.hqm.utils.mods.HardcoreHandler;
 
 public class EditManager {
 	private static final Logger LOGGER;
@@ -19,6 +20,7 @@ public class EditManager {
 		LOGGER = Logger.getLogger( EditManager.class.getName());
 		PreferenceManager.init();
 		ImageLoader.addHandler( new ForgeHandler());
+		ImageLoader.addHandler( new HardcoreHandler());
 		ImageLoader.SINGLETON.start();
 	}
 

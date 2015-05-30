@@ -1,28 +1,11 @@
 package de.doerl.hqm.utils.mods;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
 
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
-import de.doerl.hqm.utils.ResourceManager;
-import de.doerl.hqm.utils.Utils;
 
-public class ForgeHandler implements IHandler {
-	private static Logger LOGGER = Logger.getLogger( ForgeHandler.class.getName());
-	private static final String ITEMS = "assets/minecraft/textures/items";
-	private static final String BLOCKS = "assets/minecraft/textures/blocks";
+public class ForgeHandler extends AHandler {
 	private static HashMap<String, String> sNames;
 	static {
 		sNames = new HashMap<>();
@@ -388,38 +371,12 @@ public class ForgeHandler implements IHandler {
 //		sNames.put( "???", "wooden_pressure_plate%0");
 //		sNames.put( "???", "wooden_slab%0");
 	}
-	private HashMap<String, Image> mCache = new HashMap<>();
-	private File mJarFile;
 
 	public ForgeHandler() {
 	}
 
-	private String createFileName( String path) {
-		int p1 = path.lastIndexOf( '/');
-		int p2 = path.lastIndexOf( '.');
-		if (p1 < 0 || p2 <= p1) {
-			return null;
-		}
-		return path.substring( p1 + 1, p2);
-	}
-
-	private File getJarFile() {
-		String path = PreferenceManager.getString( BaseDefaults.MINECRAFT_DIR);
-		if (path != null) {
-			File src = new File( path);
-			if (src.isDirectory()) {
-				File[] arr = src.listFiles();
-				for (File curr : arr) {
-					if (JarFilter.isJar( curr)) {
-						return curr;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	private String getKey( String fileName) {
+	@Override
+	String getKey( String fileName) {
 		String name = sNames.get( fileName);
 		return name != null ? name : fileName;
 	}
@@ -430,91 +387,27 @@ public class ForgeHandler implements IHandler {
 	}
 
 	@Override
-	public Image load( String stk) {
-		if (mJarFile == null) {
-			mJarFile = getJarFile();
-			if (mJarFile == null) {
-				mJarFile = new File( "."); // only one try
-			}
-			else {
-				parseFile();
-			}
-		}
-		Image img = mCache.get( stk);
-		if (img == null) {
-			img = ResourceManager.stringImage( "fo" + mCache.size());
-			mCache.put( stk, img);
-		}
-		return img;
+	String getPath() {
+		return PreferenceManager.getString( BaseDefaults.MINECRAFT_DIR);
 	}
 
-	private void parseFile() {
-		JarFile jar = null;
-		try {
-			jar = new JarFile( mJarFile);
-			for (Enumeration<JarEntry> e = jar.entries(); e.hasMoreElements();) {
-				JarEntry entry = e.nextElement();
-				String name = entry.getName();
-				if (name.endsWith( ".mcmeta")) {
-				}
-				else if (name.startsWith( ITEMS)) {
-					putIf( jar, entry, name, false);
-				}
-				else if (name.startsWith( BLOCKS)) {
-					putIf( jar, entry, name, true);
-				}
-			}
-		}
-		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		finally {
-			try {
-				if (jar != null) {
-					jar.close();
-				}
-			}
-			catch (IOException ex) {
-			}
-		}
+	@Override
+	String getToken() {
+		return "fo";
 	}
 
-	private void putIf( JarFile jar, JarEntry entry, String name, boolean ignore) throws IOException {
-		String fileName = createFileName( name);
-		if (Utils.validString( fileName)) {
-			String key = getKey( fileName);
-			if (ignore && mCache.containsKey( key)) {
-//				Utils.log( LOGGER, Level.WARNING, "found double item name: {0}", key);
-			}
-			else {
-				Image img = readImage( jar, entry);
-				if (img != null) {
-					mCache.put( key, img);
-//					Utils.log( LOGGER, Level.WARNING, "found {0}", key);
-				}
-			}
-		}
+	@Override
+	boolean isBlock( String name) {
+		return name.startsWith( "assets/minecraft/textures/blocks");
 	}
 
-	private Image readImage( JarFile jar, JarEntry entry) throws IOException {
-		BufferedImage img = null;
-		InputStream is = null;
-		try {
-			is = jar.getInputStream( entry);
-			img = ImageIO.read( is);
-		}
-		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-			}
-			catch (Exception ex) {
-			}
-		}
-		return img;
+	@Override
+	boolean isItem( String name) {
+		return name.startsWith( "assets/minecraft/textures/items");
+	}
+
+	@Override
+	boolean isModFile( String name) {
+		return name.startsWith( "forge-");
 	}
 }

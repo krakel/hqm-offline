@@ -54,7 +54,7 @@ class LeafQuest extends JLabel {
 	}
 
 	private void updateBounds() {
-		boolean big = mQuest.isBig();
+		boolean big = mQuest.mBig;
 		int x = AEntity.ZOOM * mQuest.getX();
 		int y = AEntity.ZOOM * mQuest.getY();
 		int w = AEntity.ZOOM * ResourceManager.getW( big);
@@ -64,7 +64,7 @@ class LeafQuest extends JLabel {
 
 	private void updateIcon( Runnable cb) {
 		AStack stk = mQuest.mIcon;
-		String key = mType.getKey( mQuest.isBig());
+		String key = mType.getKey( mQuest.mBig);
 		Image back = ResourceManager.getImageUI( key);
 		Image img = ImageLoader.getImage( stk, cb);
 		setIcon( new StackIcon( back, img, 0.6, null));

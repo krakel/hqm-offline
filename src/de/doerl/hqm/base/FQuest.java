@@ -28,7 +28,7 @@ public final class FQuest extends ANamed {
 	public Vector<FQuest> mOptionLinks = new Vector<>();
 	public Vector<FQuest> mPosts = new Vector<>();
 	public FQuestSet mQuestSet;
-	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
+	public FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private Vector<AQuestTask> mTasks = new Vector<>();
 	private Vector<FReward> Reputation = new Vector<>();
 	private boolean mDeleted;
@@ -152,7 +152,7 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getX() {
-		if (isBig()) {
+		if (mBig) {
 			return mX;
 		}
 		else {
@@ -161,16 +161,12 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getY() {
-		if (isBig()) {
+		if (mBig) {
 			return mY;
 		}
 		else {
 			return mY + 1;
 		}
-	}
-
-	public boolean isBig() {
-		return mBig;
 	}
 
 	public boolean isDeleted() {

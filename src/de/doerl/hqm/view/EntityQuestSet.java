@@ -102,7 +102,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		activeUpdate( Type.BASE);
 		updateGroup( true);
 		updateQuest( enableQuest);
-		mBigAction.setSelected( activ.getQuest().isBig());
+		mBigAction.setSelected( activ.getQuest().mBig);
 	}
 
 	@Override
@@ -356,8 +356,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
-				quest.mBig = !quest.isBig();
-				mBigAction.setSelected( quest.isBig());
+				quest.mBig = !quest.mBig;
+				mBigAction.setSelected( quest.mBig);
 				mActiv.update( Type.BASE);
 				mCtrl.fireChanged( quest);
 			}

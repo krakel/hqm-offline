@@ -32,7 +32,7 @@ public final class FFluidRequirement extends ARequirement {
 	}
 
 	@Override
-	public AStack getStack() {
+	public FFluidStack getStack() {
 		return mStack;
 	}
 }
