@@ -22,6 +22,8 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import de.doerl.hqm.EditManager;
 import de.doerl.hqm.base.ABase;
@@ -33,6 +35,7 @@ import de.doerl.hqm.model.EditModel;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.ADialog.DialogResult;
+import de.doerl.hqm.ui.tree.ANode;
 import de.doerl.hqm.ui.tree.ElementTree;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
@@ -241,6 +244,27 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 				break;
 			default:
 		}
+	}
+
+	public FHqm getCurrent() {
+		TreePath path = mTree.getSelectionPath();
+		if (path != null) {
+			Object obj = path.getLastPathComponent();
+			if (obj != null) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) obj;
+				ANode user = (ANode) node.getUserObject();
+				return getHqm( user.getBase());
+			}
+		}
+		return null;
+	}
+
+	private FHqm getHqm( ABase base) {
+		ABase parent = base.getParent();
+		if (parent != null) {
+			return getHqm( parent);
+		}
+		return (FHqm) base;
 	}
 
 	public EditModel getModel() {

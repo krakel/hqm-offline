@@ -1,22 +1,22 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IStackWorker;
-import de.doerl.hqm.medium.FNbt;
+import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FItemStack extends AStack {
-	private FNbt mNBT;
+	private Nbt mNBT;
 	private String mItem;
 	private int mSize;
 	private int mDmg;
 	private String mKey;
 
-	public FItemStack( FNbt nbt) {
+	public FItemStack( Nbt nbt) {
 		mNBT = nbt;
 		mKey = getName() + "%" + getDamage();
 	}
 
-	public FItemStack( FNbt nbt, String item, int size, int dmg) {
+	public FItemStack( Nbt nbt, String item, int size, int dmg) {
 		mNBT = nbt;
 		mItem = item;
 		mSize = size;
@@ -78,7 +78,7 @@ public final class FItemStack extends AStack {
 	}
 
 	@Override
-	public FNbt getNBT() {
+	public Nbt getNBT() {
 		return mNBT;
 	}
 

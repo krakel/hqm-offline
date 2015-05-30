@@ -47,7 +47,7 @@ class OpenBit extends AOpenFile {
 				FHqm hqm = new FHqm( file.toURI());
 				InputStream is = MediumUtils.getSource( file);
 				if (Medium.readHqm( hqm, is, mCallback)) {
-					MediaManager.setProperty( hqm, Medium.HQM_PATH, file);
+					MediaManager.setProperty( hqm, Medium.HQM_PATH, file.toURI());
 					MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
 					mCallback.openHQMAction( hqm);
 				}

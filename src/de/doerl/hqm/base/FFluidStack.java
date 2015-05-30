@@ -1,14 +1,14 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IStackWorker;
-import de.doerl.hqm.medium.FNbt;
+import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FFluidStack extends AStack {
-	private FNbt mNBT;
+	private Nbt mNBT;
 	private String mKey;
 
-	public FFluidStack( FNbt nbt) {
+	public FFluidStack( Nbt nbt) {
 		mNBT = nbt;
 		mKey = getName() + "%" + getDamage();
 	}
@@ -54,7 +54,7 @@ public final class FFluidStack extends AStack {
 	}
 
 	@Override
-	public FNbt getNBT() {
+	public Nbt getNBT() {
 		return mNBT;
 	}
 

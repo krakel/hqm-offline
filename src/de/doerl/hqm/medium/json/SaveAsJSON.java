@@ -36,8 +36,7 @@ class SaveAsJSON extends ASaveAsFile {
 				File file = Medium.normalize( choose);
 				if (!file.exists() || mCallback.askOverwrite()) {
 					setLastHQM( file);
-					MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
-//					ANamed.rename( hqm, norm);
+					MediaManager.setProperty( hqm, Medium.JSON_PATH, file.toURI());
 					try {
 						OutputStream os = new FileOutputStream( file);
 						Medium.writeHQM( hqm, os, mCallback);

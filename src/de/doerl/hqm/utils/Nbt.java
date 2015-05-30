@@ -1,19 +1,17 @@
-package de.doerl.hqm.medium;
+package de.doerl.hqm.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 
-import de.doerl.hqm.utils.Helper;
+public class Nbt {
+	private byte[] mBytes;
+	private String mText;
 
-public final class FNbt {
-	byte[] mBytes;
-	String mText;
-
-	public FNbt( byte[] bytes) throws IOException {
-		mBytes = bytes;
-		mText = parse( decompress( bytes), 0);
+	public Nbt( byte[] bytes) throws IOException {
+		mBytes = decompress( bytes);
+		mText = parse( mBytes, 0);
 	}
 
 	private static byte[] decompress( byte[] bytes) {
@@ -45,14 +43,29 @@ public final class FNbt {
 
 	private static String parse( byte[] src, int pos) {
 		StringBuilder sb = new StringBuilder();
-		parseValues( sb, src, pos);
+		parseAll( sb, src, pos);
 		return sb.toString();
 	}
 
-	private static int parseByteArr( StringBuilder sb, byte[] src, int pos) {
+	private static int parseAll( StringBuilder sb, byte[] src, int pos) {
+		while (pos >= 0 && pos < src.length) {
+			int tag = Helper.getByte( src, pos);
+			pos += 1;
+			if (tag == 0) {
+				break;
+			}
+			pos = parseKey( sb, tag, src, pos);
+			pos = parseValue( sb, tag, src, pos);
+			if (pos < src.length) {
+				sb.append( ", ");
+			}
+		}
+		return pos;
+	}
+
+	private static int parseArrByte( StringBuilder sb, byte[] src, int pos) {
 		int count = Helper.getInt( src, pos);
 		pos += 4;
-		sb.append( "[");
 		for (int i = 0; i < count; ++i) {
 			if (i > 0) {
 				sb.append( ", ");
@@ -60,14 +73,12 @@ public final class FNbt {
 			sb.append( Helper.getByte( src, pos));
 			pos += 1;
 		}
-		sb.append( "]");
 		return pos;
 	}
 
-	private static int parseIntArr( StringBuilder sb, byte[] src, int pos) {
+	private static int parseArrInt( StringBuilder sb, byte[] src, int pos) {
 		int count = Helper.getInt( src, pos);
 		pos += 4;
-		sb.append( "[");
 		for (int i = 0; i < count; ++i) {
 			if (i > 0) {
 				sb.append( ", ");
@@ -75,7 +86,20 @@ public final class FNbt {
 			sb.append( Helper.getInt( src, pos));
 			pos += 4;
 		}
-		sb.append( "]");
+		return pos;
+	}
+
+	private static int parseArrList( StringBuilder sb, byte[] src, int pos) {
+		int tag = Helper.getByte( src, pos);
+		pos += 1;
+		int count = Helper.getInt( src, pos);
+		pos += 4;
+		for (int i = 0; i < count; ++i) {
+			if (i > 0) {
+				sb.append( ", ");
+			}
+			pos = parseValue( sb, tag, src, pos);
+		}
 		return pos;
 	}
 
@@ -95,25 +119,8 @@ public final class FNbt {
 				pos = parseString( sb, src, pos);
 				sb.append( "=");
 				break;
-			default: // End
-				break;
+			default:
 		}
-		return pos;
-	}
-
-	private static int parseListArr( StringBuilder sb, byte[] src, int pos) {
-		int tag = Helper.getByte( src, pos);
-		pos += 1;
-		int count = Helper.getInt( src, pos);
-		pos += 4;
-		sb.append( "[");
-		for (int i = 0; i < count; ++i) {
-			if (i > 0) {
-				sb.append( ", ");
-			}
-			pos = parseValue( sb, tag, src, pos);
-		}
-		sb.append( "]");
 		return pos;
 	}
 
@@ -124,118 +131,72 @@ public final class FNbt {
 		return pos + len;
 	}
 
-	private static void parseTag( StringBuilder sb, int tag) {
-		switch (tag) {
-			case 0: // End
-				sb.append( "END ");
-				break;
-			case 1: // Byte
-				sb.append( "BYTE ");
-				break;
-			case 2: // Short
-				sb.append( "SHORT ");
-				break;
-			case 3: // Int
-				sb.append( "INT ");
-				break;
-			case 4: // Long
-				sb.append( "LONG ");
-				break;
-			case 5: // Float
-				sb.append( "FLOAT ");
-				break;
-			case 6: // Double
-				sb.append( "DOUBLE ");
-				break;
-			case 7: // Byte-Array
-				sb.append( "BYTE-ARRAY ");
-				break;
-			case 8: // String
-				sb.append( "STRING ");
-				break;
-			case 9: // List
-				sb.append( "LIST ");
-				break;
-			case 10: // Compound
-				sb.append( "COMPOUND ");
-				break;
-			case 11: // Int-Array
-				sb.append( "INT-ARRAY ");
-				break;
-		}
-	}
-
 	private static int parseValue( StringBuilder sb, int tag, byte[] src, int pos) {
 		switch (tag) {
 			case 0: // End
+				sb.append( "END");
 				break;
 			case 1: // Byte
+				sb.append( "BYTE(");
 				sb.append( Helper.getByte( src, pos));
-				sb.append( ", ");
+				sb.append( ")");
 				pos += 1;
 				break;
 			case 2: // Short
+				sb.append( "SHORT(");
 				sb.append( Helper.getShort( src, pos));
-				sb.append( ", ");
+				sb.append( ")");
 				pos += 2;
 				break;
 			case 3: // Int
+				sb.append( "INT(");
 				sb.append( Helper.getInt( src, pos));
-				sb.append( ", ");
+				sb.append( ")");
 				pos += 4;
 				break;
 			case 4: // Long
+				sb.append( "LONG(");
 				sb.append( Helper.getLong( src, pos));
-				sb.append( ", ");
+				sb.append( ")");
 				pos += 8;
 				break;
 			case 5: // Float
+				sb.append( "FLOAT(");
 				sb.append( Helper.getFloat( src, pos));
-				sb.append( ", ");
+				sb.append( ")");
 				pos += 4;
 				break;
 			case 6: // Double
+				sb.append( "DOUBLE(");
 				sb.append( Helper.getDouble( src, pos));
-				sb.append( ", ");
+				sb.append( ")");
 				pos += 8;
 				break;
 			case 7: // Byte-Array
-				pos = parseByteArr( sb, src, pos);
-				sb.append( ", ");
+				sb.append( "BYTE-ARRAY[ ");
+				pos = parseArrByte( sb, src, pos);
+				sb.append( " ]");
 				break;
 			case 8: // String
+				sb.append( "STRING(");
 				pos = parseString( sb, src, pos);
-				sb.append( ", ");
+				sb.append( ")");
 				break;
 			case 9: // List
-				pos = parseListArr( sb, src, pos);
-				sb.append( ", ");
+				sb.append( "LIST[ ");
+				pos = parseArrList( sb, src, pos);
+				sb.append( " ]");
 				break;
 			case 10: // Compound
-				sb.append( "{ ");
-				pos = parseValues( sb, src, pos);
-				sb.append( "END } ");
+				sb.append( "COMPOUND{ ");
+				pos = parseAll( sb, src, pos);
+				sb.append( "END }");
 				break;
 			case 11: // Int-Array
-				pos = parseIntArr( sb, src, pos);
-				sb.append( ", ");
+				sb.append( "INT-ARRAY[ ");
+				pos = parseArrInt( sb, src, pos);
+				sb.append( " ]");
 				break;
-		}
-		return pos;
-	}
-
-	private static int parseValues( StringBuilder sb, byte[] src, int pos) {
-		while (pos >= 0 && pos < src.length) {
-			int tag = Helper.getByte( src, pos);
-			pos += 1;
-			if (tag == 0) {
-				break;
-			}
-			parseTag( sb, tag);
-			pos = parseKey( sb, tag, src, pos);
-//			sb.append( "(");
-			pos = parseValue( sb, tag, src, pos);
-//			sb.append( ")");
 		}
 		return pos;
 	}
@@ -262,9 +223,6 @@ public final class FNbt {
 
 	@Override
 	public String toString() {
-		if (mBytes != null) {
-			return mText;
-		}
-		return "NBTTagCompound";
+		return mText;
 	}
 }

@@ -48,7 +48,7 @@ public class EditCallback implements ICallback {
 
 	@Override
 	public boolean isModifiedHQM() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -77,6 +77,6 @@ public class EditCallback implements ICallback {
 
 	@Override
 	public FHqm updateHQM() {
-		return null;
+		return mFrame.getCurrent();
 	}
 }

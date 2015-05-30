@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IStackWorker;
-import de.doerl.hqm.medium.FNbt;
+import de.doerl.hqm.utils.Nbt;
 
 public abstract class AStack {
 	AStack() {
@@ -22,5 +22,5 @@ public abstract class AStack {
 
 	public abstract String getName();
 
-	public abstract FNbt getNBT();
+	public abstract Nbt getNBT();
 }

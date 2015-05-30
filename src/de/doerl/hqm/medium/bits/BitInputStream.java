@@ -6,9 +6,9 @@ import java.nio.charset.Charset;
 
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FItemStack;
-import de.doerl.hqm.medium.FNbt;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
+import de.doerl.hqm.utils.Nbt;
 
 class BitInputStream extends InputStream {
 	private static final Charset UTF_8 = Charset.forName( "UTF-8");
@@ -82,13 +82,13 @@ class BitInputStream extends InputStream {
 			return readRawItem( useSize);
 		}
 		else {
-			FNbt nbt = readNBT();
+			Nbt nbt = readNBT();
 			return nbt != null ? new FItemStack( nbt) : null;
 		}
 	}
 
 	public FFluidStack readFluidStack() {
-		FNbt nbt = readNBT();
+		Nbt nbt = readNBT();
 		return nbt != null ? new FFluidStack( nbt) : null;
 	}
 
@@ -109,7 +109,7 @@ class BitInputStream extends InputStream {
 		return readRawItem( false);
 	}
 
-	private FNbt readNBT() {
+	private Nbt readNBT() {
 		if (readBoolean()) {
 			byte bytes[] = new byte[readData( DataBitHelper.NBT_LENGTH)];
 			for (int i = 0; i < bytes.length; i++) {
@@ -117,7 +117,7 @@ class BitInputStream extends InputStream {
 			}
 			try {
 //				return CompressedStreamTools.func_152457_a( bytes, new NBTSizeTracker( 0x1fd8f0L));
-				return new FNbt( bytes);
+				return new Nbt( bytes);
 			}
 			catch (IOException ex) {
 				return null;
@@ -132,7 +132,7 @@ class BitInputStream extends InputStream {
 		String id = readRawItemID();
 		int size = useSize ? readData( DataBitHelper.SHORT) : 1;
 		int dmg = readData( DataBitHelper.SHORT);
-		FNbt nbt = readNBT();
+		Nbt nbt = readNBT();
 		return new FItemStack( nbt, id, size, dmg);
 	}
 

@@ -37,7 +37,9 @@ public class ElementTree extends JTree implements TreeSelectionListener {
 		MutableTreeNode node = model.getNode( hqm);
 		if (node != null) {
 			TreeNode[] arr = model.getPathToRoot( node);
-			expandPath( new TreePath( arr));
+			TreePath path = new TreePath( arr);
+			expandPath( path);
+			setSelectionPath( path);
 		}
 	}
 

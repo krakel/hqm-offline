@@ -5,7 +5,8 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
-import de.doerl.hqm.medium.FNbt;
+import de.doerl.hqm.utils.Helper;
+import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Security;
 import de.doerl.hqm.utils.Tabber;
 
@@ -79,6 +80,12 @@ class JsonWriter extends PrintWriter {
 		println();
 	}
 
+	public void print( String key, byte[] arr) {
+		printKey( key);
+		print( Helper.toHex( arr));
+		println();
+	}
+
 	public void print( String key, double value) {
 		printKey( key);
 		print( String.valueOf( value));
@@ -138,14 +145,14 @@ class JsonWriter extends PrintWriter {
 		mTabs.setNL();
 	}
 
-	public void printNBT( FNbt nbt) {
+	public void printNBT( Nbt nbt) {
 		print( '"');
 		print( nbt.toString());
 		print( '"');
 		println();
 	}
 
-	public void printNBT( String key, FNbt nbt) {
+	public void printNBT( String key, Nbt nbt) {
 		if (nbt != null) {
 			printKey( key);
 			printNBT( nbt);

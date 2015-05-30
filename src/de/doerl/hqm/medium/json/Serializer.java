@@ -85,7 +85,9 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 
 	@Override
 	public Object forFluidStack( FFluidStack stk, Object p) {
+		mDst.beginObject();
 		mDst.printNBT( FLUID_NBT, stk.getNBT());
+		mDst.endObject();
 		return null;
 	}
 
@@ -139,9 +141,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forItemStack( FItemStack stk, Object p) {
 		mDst.beginObject();
-		mDst.print( ITEM_NAME, stk.getItem());
-		mDst.print( ITEM_SIZE, stk.getCount());
-		mDst.print( ITEM_DMG, stk.getDamage());
+		mDst.print( ITEM_NAME, stk);
 		mDst.printNBT( ITEM_NBT, stk.getNBT());
 		mDst.endObject();
 		return null;
@@ -349,7 +349,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	}
 
 	private String toID( int idx, String name) {
-		return String.format( "%3d: %s", idx, name);
+		return String.format( "[%03d] %s", idx, name);
 	}
 
 	@Override
@@ -382,7 +382,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 			mDst.beginArray( key);
 			for (FQuest quest : arr) {
 				if (quest != null) {
-					mDst.print( toID( QuestIndex.get( quest), quest.mName));
+					mDst.printObj( toID( QuestIndex.get( quest), quest.mName));
 				}
 			}
 			mDst.endArray();
