@@ -26,7 +26,7 @@ class TaskBoxReputationKill extends ATaskBox {
 
 	@Override
 	public void update() {
-		int kills = mTask.mKills.mValue;
+		int kills = mTask.mKills;
 		mKills.setText( String.format( "You've killed 0 of %d %s", kills, kills <= 1 ? "player" : "players"));
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
@@ -18,7 +19,6 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
-import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
@@ -202,14 +202,14 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 			if (ri != null) {
 				ri.accept( this, mDst);
 			}
-			TriggerType tt = quest.mTriggerType.mValue;
+			TriggerType tt = quest.mTriggerType;
 			if (tt != null) {
 				mDst.print( "triggerType", tt);
 				if (tt.isUseTaskCount()) {
 					mDst.print( "triggerTasks", quest.mTriggerTasks);
 				}
 			}
-			if (quest.mReqUseModified.mValue) {
+			if (quest.mReqUseModified) {
 				mDst.print( "parentRequirementCount", quest.mReqCount);
 			}
 			writeTasks( quest);
@@ -235,7 +235,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.printKey( "repeatInfo");
 		mDst.beginObject();
 		mDst.print( "type", info.mType);
-		if (info.mType.mValue.isUseTime()) {
+		if (info.mType.isUseTime()) {
 			mDst.print( "total", info.mTotal);
 		}
 		mDst.endObject();
@@ -246,7 +246,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	public Object forReputation( FReputation rep, Object p) {
 		mDst.beginObject();
 		mDst.print( "name", rep.mName);
-		mDst.print( "id", rep.mID);
+		mDst.print( "id", rep.mID.intValue());
 		mDst.print( "neutral", rep.mNeutral);
 		writeMarkers( rep);
 		mDst.endObject();
@@ -404,10 +404,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.println();
 	}
 
-	private void writeStacks( Vector<FParameterStack> stacks, String key) {
+	private void writeStacks( Vector<AStack> stacks, String key) {
 		mDst.beginArray( key);
-		for (FParameterStack stk : stacks) {
-			stk.mValue.accept( this, null);
+		for (AStack stk : stacks) {
+			stk.accept( this, null);
 		}
 		mDst.endArray();
 		mDst.println();

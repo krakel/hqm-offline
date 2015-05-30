@@ -7,10 +7,10 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FGroup extends AMember<FGroup> {
 	public final FGroupCat mParentCategory;
-	public final FParameterInt mID = new FParameterInt( this);
-	public final FParameterInt mTierID = new FParameterInt( this);
-	public final FParameterInt mLimit = new FParameterInt( this);;
-	public final Vector<FParameterStack> mStacks = new Vector<>();
+	public int mID;
+	public int mTierID;
+	public int mLimit;
+	public Vector<AStack> mStacks = new Vector<>();
 
 	public FGroup( FGroupCat parent, String name) {
 		super( name);

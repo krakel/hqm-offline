@@ -14,18 +14,18 @@ public final class FHqm extends ABase {
 	private static final Logger LOGGER = Logger.getLogger( FHqm.class.getName());
 	private final FQuest mDeleted = new FQuest( this, "__DELETED__", true);
 	private FileVersion mVersion;
-	public final FParameterString mPassCode = new FParameterString( this);
-	public final FParameterString mDescr = new FParameterString( this);
 	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
 	public final FReputationCat mReputationCat = new FReputationCat( this);
 	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
 	public final FGroupCat mGroupCat = new FGroupCat( this);
+	public String mPassCode;
+	public String mDescr;
 	private Vector<FQuest> mQuests = new Vector<>();
 	private URI mURI;
 
 	public FHqm( URI uri) {
 		mURI = uri;
-		mDescr.mValue = "Hallo D:";
+		mDescr = "Hallo D:";
 	}
 
 	@Override

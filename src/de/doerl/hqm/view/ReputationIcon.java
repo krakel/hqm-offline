@@ -27,14 +27,14 @@ class ReputationIcon implements Icon {
 		int lowerValue;
 		boolean lowerOnMarker;
 		if (lower == null) {
-			lowerValue = Math.min( first.mMark.mValue, 0);
+			lowerValue = Math.min( first.mMark, 0);
 			lowerOnMarker = false;
 		}
 		else {
-			lowerValue = lower.mMark.mValue;
-			lowerOnMarker = Utils.equals( lower, first) && lower.mMark.mValue > 0;
-			if (Utils.equals( lower.mName.mValue, rs.mRep.mNeutral.mValue) && last.mMark.mValue < 0) {
-				lowerValue = last.mMark.mValue;
+			lowerValue = lower.mMark;
+			lowerOnMarker = Utils.equals( lower, first) && lower.mMark > 0;
+			if (Utils.equals( lower.mName, rs.mRep.mNeutral) && last.mMark < 0) {
+				lowerValue = last.mMark;
 				lowerOnMarker = true;
 //					lowerMovedInner = true;
 //					lowerMoved = true;
@@ -44,9 +44,9 @@ class ReputationIcon implements Icon {
 			}
 			else if (lowerValue <= 0) {
 				for (int i = 0; i < size; ++i) {
-					if (marker.get( i).mMark.mValue >= lowerValue) {
+					if (marker.get( i).mMark >= lowerValue) {
 						if (i > 0) {
-							lowerValue = marker.get( i - 1).mMark.mValue;
+							lowerValue = marker.get( i - 1).mMark;
 							if (i - 1 != 0) {
 //									lowerMovedInner = true;
 							}

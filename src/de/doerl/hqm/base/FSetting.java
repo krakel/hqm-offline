@@ -8,7 +8,7 @@ public final class FSetting extends ABase {
 	public FReputation mRep;
 	public FMarker mLower;
 	public FMarker mUpper;
-	public final FParameterBoolean mInverted = new FParameterBoolean( this);
+	public boolean mInverted;
 
 	public FSetting( FQuestTaskReputationTarget parent) {
 		mParentTask = parent;

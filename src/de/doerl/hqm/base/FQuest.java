@@ -14,20 +14,19 @@ import de.doerl.hqm.utils.Utils;
 public final class FQuest extends ANamed {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	public final FHqm mParentHQM;
-	public final FParameterString mDescr = new FParameterString( this);
-	public final FParameterInt mX = new FParameterInt( this);
-	public final FParameterInt mY = new FParameterInt( this);
-	public final FParameterBoolean mBig = new FParameterBoolean( this);
-	public final FParameterStack mIcon = new FParameterStack( this);
-	public final FParameterInt mTriggerTasks = new FParameterInt( this);
-	public final FParameterEnum<TriggerType> mTriggerType = new FParameterEnum<>( this);
-	public final FParameterBoolean mReqUseModified = new FParameterBoolean( this);
-	public final FParameterInt mReqCount = new FParameterInt( this);
-	public final Vector<FParameterStack> mRewards = new Vector<>();
-	public final Vector<FParameterStack> mChoices = new Vector<>();
-	public final Vector<FQuest> mRequirements = new Vector<>();
-	public final Vector<FQuest> mOptionLinks = new Vector<>();
-	public final Vector<FQuest> mPosts = new Vector<>();
+	public String mDescr;
+	public int mX, mY;
+	public boolean mBig;
+	public AStack mIcon;
+	public int mTriggerTasks;
+	public TriggerType mTriggerType = TriggerType.NONE;
+	public boolean mReqUseModified;
+	public int mReqCount;
+	public Vector<AStack> mRewards = new Vector<>();
+	public Vector<AStack> mChoices = new Vector<>();
+	public Vector<FQuest> mRequirements = new Vector<>();
+	public Vector<FQuest> mOptionLinks = new Vector<>();
+	public Vector<FQuest> mPosts = new Vector<>();
 	public FQuestSet mQuestSet;
 	private FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private Vector<AQuestTask> mTasks = new Vector<>();
@@ -37,13 +36,11 @@ public final class FQuest extends ANamed {
 	public FQuest( FHqm parent, String name) {
 		super( name);
 		mParentHQM = parent;
-		mTriggerType.mValue = TriggerType.NONE;
 	}
 
 	public FQuest( FHqm parent, String name, boolean deleted) {
 		super( name);
 		mParentHQM = parent;
-		mTriggerType.mValue = TriggerType.NONE;
 		mDeleted = deleted;
 	}
 
@@ -128,11 +125,11 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getCenterX() {
-		return getX() + ResourceManager.getW( mBig.mValue) / 2;
+		return getX() + ResourceManager.getW( mBig) / 2;
 	}
 
 	public int getCenterY() {
-		return getY() + ResourceManager.getH( mBig.mValue) / 2;
+		return getY() + ResourceManager.getH( mBig) / 2;
 	}
 
 	@Override
@@ -156,24 +153,24 @@ public final class FQuest extends ANamed {
 
 	public int getX() {
 		if (isBig()) {
-			return mX.mValue;
+			return mX;
 		}
 		else {
-			return mX.mValue + 1;
+			return mX + 1;
 		}
 	}
 
 	public int getY() {
 		if (isBig()) {
-			return mY.mValue;
+			return mY;
 		}
 		else {
-			return mY.mValue + 1;
+			return mY + 1;
 		}
 	}
 
 	public boolean isBig() {
-		return mBig.mValue;
+		return mBig;
 	}
 
 	public boolean isDeleted() {

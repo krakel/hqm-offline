@@ -63,7 +63,7 @@ class LeafQuest extends JLabel {
 	}
 
 	private void updateIcon( Runnable cb) {
-		AStack stk = mQuest.mIcon.mValue;
+		AStack stk = mQuest.mIcon;
 		String key = mType.getKey( mQuest.isBig());
 		Image back = ResourceManager.getImageUI( key);
 		Image img = ImageLoader.getImage( stk, cb);

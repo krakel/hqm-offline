@@ -4,7 +4,7 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.TaskTyp;
 
 public class FQuestTaskReputationKill extends AQuestTask {
-	public final FParameterInt mKills = new FParameterInt( this);
+	public int mKills;
 
 	public FQuestTaskReputationKill( FQuest parent, String name) {
 		super( parent, name);

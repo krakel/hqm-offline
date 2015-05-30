@@ -356,7 +356,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
-				quest.mBig.mValue = !quest.isBig();
+				quest.mBig = !quest.isBig();
 				mBigAction.setSelected( quest.isBig());
 				mActiv.update( Type.BASE);
 				mCtrl.fireChanged( quest);
@@ -499,8 +499,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			int dx = leaf.getX() + evt.getX() - mOldX;
 			int dy = leaf.getY() + evt.getY() - mOldY;
 			FQuest quest = leaf.getQuest();
-			quest.mX.mValue += dx / ZOOM;
-			quest.mY.mValue += dy / ZOOM;
+			quest.mX += dx / ZOOM;
+			quest.mY += dy / ZOOM;
 			mCtrl.fireChanged( quest);
 		}
 
@@ -627,7 +627,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 		@Override
 		public Object forQuestSet( FQuestSet set, Vector<String> arr) {
-			arr.add( set.mName.mValue);
+			arr.add( set.mName);
 			return null;
 		}
 	}
@@ -645,7 +645,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				Vector<String> names = QuestSetNames.get( quest.mParentHQM);
-				String result = DialogListNames.update( names, quest.mQuestSet.mName.mValue, mCtrl.getFrame());
+				String result = DialogListNames.update( names, quest.mQuestSet.mName, mCtrl.getFrame());
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( quest.mParentHQM, result);
 					if (set != null && Utils.different( quest.mQuestSet, set)) {

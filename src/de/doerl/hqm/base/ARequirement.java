@@ -23,5 +23,5 @@ public abstract class ARequirement extends ABase {
 
 	public abstract ItemPrecision getPrecision();
 
-	public abstract FParameterStack getStack();
+	public abstract AStack getStack();
 }

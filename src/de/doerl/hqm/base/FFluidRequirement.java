@@ -5,7 +5,7 @@ import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.ItemPrecision;
 
 public final class FFluidRequirement extends ARequirement {
-	private FParameterStack mStack = new FParameterStack( this);
+	public FFluidStack mStack;
 
 	public FFluidRequirement( AQuestTaskItems parent) {
 		super( parent);
@@ -18,8 +18,7 @@ public final class FFluidRequirement extends ARequirement {
 
 	@Override
 	public int getCount() {
-		AStack stk = mStack.mValue;
-		return stk != null ? stk.getCount() : 0;
+		return mStack != null ? mStack.getCount() : 0;
 	}
 
 	@Override
@@ -33,7 +32,7 @@ public final class FFluidRequirement extends ARequirement {
 	}
 
 	@Override
-	public FParameterStack getStack() {
+	public AStack getStack() {
 		return mStack;
 	}
 }

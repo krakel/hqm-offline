@@ -6,12 +6,11 @@ import de.doerl.hqm.quest.RepeatType;
 
 public final class FRepeatInfo extends ABase {
 	public final FQuest mParentQuest;
-	public final FParameterEnum<RepeatType> mType = new FParameterEnum<>( this);
-	public final FParameterInt mTotal = new FParameterInt( this);
+	public RepeatType mType = RepeatType.NONE;
+	public int mTotal;
 
 	public FRepeatInfo( FQuest parent) {
 		mParentQuest = parent;
-		mType.mValue = RepeatType.NONE;
 	}
 
 	@Override

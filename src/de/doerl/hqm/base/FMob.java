@@ -5,15 +5,15 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FMob extends ANamed {
 	public final FQuestTaskMob mParentTask;
-	public final FParameterStack mIcon = new FParameterStack( this);
-	public final FParameterString mMob = new FParameterString( this);
-	public final FParameterInt mKills = new FParameterInt( this);
-	public final FParameterBoolean mExact = new FParameterBoolean( this);
+	public AStack mIcon;
+	public String mMob;
+	public int mKills;
+	public boolean mExact;
 
 	public FMob( FQuestTaskMob parent, FItemStack icon, String name) {
 		super( name);
 		mParentTask = parent;
-		mIcon.mValue = icon;
+		mIcon = icon;
 	}
 
 	@Override

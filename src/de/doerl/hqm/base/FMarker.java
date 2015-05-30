@@ -5,7 +5,7 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FMarker extends ANamed implements Comparable<FMarker> {
 	public final FReputation mParentRep;
-	public final FParameterInt mMark = new FParameterInt( this);
+	public int mMark;
 
 	public FMarker( FReputation parent, String name) {
 		super( name);
@@ -18,7 +18,7 @@ public final class FMarker extends ANamed implements Comparable<FMarker> {
 	}
 
 	public int compareTo( FMarker other) {
-		return mMark.compareTo( other.mMark);
+		return Integer.compare( mMark, other.mMark);
 	}
 
 	@Override

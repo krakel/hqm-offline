@@ -25,7 +25,6 @@ import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AStack;
-import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskLocation;
@@ -47,7 +46,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	private static final long serialVersionUID = -5707664232506407627L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuest.class.getName());
 	private static final TaskBoxEmpty BOX_EMPTY = new TaskBoxEmpty();
-	private FQuest mQuest;
+	private final FQuest mQuest;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mTitleAction = new TitleAction();
 	private ABundleAction mDescAction = new DescriptionAction();
@@ -197,8 +196,8 @@ public class EntityQuest extends AEntity<FQuest> {
 	}
 
 	private void update() {
-		mTitle.setText( mQuest.mName.mValue);
-		mDesc.setText( mQuest.mDescr.mValue);
+		mTitle.setText( mQuest.mName);
+		mDesc.setText( mQuest.mDescr);
 		TaskBoxUpdate.get( mQuest, mCtrl, mBoxList.getModel());
 		mRewardList.update();
 		mChoiceList.update();
@@ -222,7 +221,7 @@ public class EntityQuest extends AEntity<FQuest> {
 			mActiv = BOX_EMPTY;
 		}
 		else {
-			mTaskDesc.setText( box.getTask().mDescr.mValue);
+			mTaskDesc.setText( box.getTask().mDescr);
 			mBoxList.setSelectedValue( box, true);
 			mBoxContainer.removeAll();
 			mBoxContainer.add( box);
@@ -236,13 +235,11 @@ public class EntityQuest extends AEntity<FQuest> {
 		mBoxContainer.repaint();
 	}
 
-	private void updateStacks( Vector<FParameterStack> param, Vector<AStack> stks) {
+	private void updateStacks( Vector<AStack> param, Vector<AStack> stks) {
 		param.clear();
 		for (int i = 0; i < stks.size(); i++) {
-			AStack itemStack = stks.get( i);
-			if (itemStack != null) {
-				FParameterStack stk = new FParameterStack( mQuest);
-				stk.mValue = itemStack;
+			AStack stk = stks.get( i);
+			if (stk != null) {
 				param.add( stk);
 			}
 		}
@@ -278,9 +275,9 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextBox.update( mQuest.mDescr.mValue, mCtrl.getFrame());
+			String result = DialogTextBox.update( mQuest.mDescr, mCtrl.getFrame());
 			if (result != null) {
-				mQuest.mDescr.mValue = result;
+				mQuest.mDescr = result;
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -303,10 +300,10 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public Object forReward( FReward rr, Object p) {
-			if (rr.mValue.mValue < 0) {
+			if (rr.mValue < 0) {
 				negative = true;
 			}
-			else if (rr.mValue.mValue > 0) {
+			else if (rr.mValue > 0) {
 				positive = true;
 			}
 			return null;
@@ -421,9 +418,9 @@ public class EntityQuest extends AEntity<FQuest> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.getTask().mDescr.mValue, mCtrl.getFrame());
+				String result = DialogTextBox.update( mActiv.getTask().mDescr, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.getTask().mDescr.mValue = result;
+					mActiv.getTask().mDescr = result;
 					mCtrl.fireChanged( mQuest);
 				}
 			}
@@ -469,7 +466,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 
 		public Component getListCellRendererComponent( JList<? extends ATaskBox> list, ATaskBox box, int index, boolean isSelected, boolean cellHasFocus) {
-			mTitle.setText( box.getTask().mName.mValue);
+			mTitle.setText( box.getTask().mName);
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			return this;
 		}
@@ -485,9 +482,9 @@ public class EntityQuest extends AEntity<FQuest> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.getTask().mName.mValue, mCtrl.getFrame());
+				String result = DialogTextField.update( mActiv.getTask().mName, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.getTask().mName.mValue = result;
+					mActiv.getTask().mName = result;
 					mCtrl.fireChanged( mQuest);
 				}
 			}
@@ -503,9 +500,9 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( mQuest.mName.mValue, mCtrl.getFrame());
+			String result = DialogTextField.update( mQuest.mName, mCtrl.getFrame());
 			if (result != null) {
-				mQuest.mName.mValue = result;
+				mQuest.mName = result;
 				mCtrl.fireChanged( mQuest);
 			}
 		}

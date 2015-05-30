@@ -5,9 +5,9 @@ import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.ItemPrecision;
 
 public final class FItemRequirement extends ARequirement {
-	public FParameterStack mStack = new FParameterStack( this);
-	public FParameterInt mRequired = new FParameterInt( this);
-	public final FParameterEnum<ItemPrecision> mPrecision = new FParameterEnum<ItemPrecision>( this);
+	public FItemStack mStack;
+	public int mRequired;
+	public ItemPrecision mPrecision;
 
 	public FItemRequirement( AQuestTaskItems parent) {
 		super( parent);
@@ -20,7 +20,7 @@ public final class FItemRequirement extends ARequirement {
 
 	@Override
 	public int getCount() {
-		return mRequired.mValue;
+		return mRequired;
 	}
 
 	@Override
@@ -30,11 +30,11 @@ public final class FItemRequirement extends ARequirement {
 
 	@Override
 	public ItemPrecision getPrecision() {
-		return mPrecision.mValue;
+		return mPrecision;
 	}
 
 	@Override
-	public FParameterStack getStack() {
+	public AStack getStack() {
 		return mStack;
 	}
 }

@@ -67,8 +67,8 @@ public class EditController implements IModelListener {
 
 	public FQuest questCreate( FQuestSet set, String name, int x, int y) {
 		FQuest quest = set.mParentCategory.mParentHQM.createQuest( name);
-		quest.mX.mValue = x;
-		quest.mY.mValue = y;
+		quest.mX = x;
+		quest.mY = y;
 		quest.mQuestSet = set;
 		return quest;
 	}

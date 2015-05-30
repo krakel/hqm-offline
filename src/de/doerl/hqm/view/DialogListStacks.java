@@ -23,7 +23,6 @@ import javax.swing.border.BevelBorder;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FItemStack;
-import de.doerl.hqm.base.FParameterStack;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 
@@ -44,7 +43,7 @@ public class DialogListStacks extends ADialog {
 		addEscapeAction();
 	}
 
-	public static Vector<AStack> updateA( Vector<FParameterStack> value, Window owner) {
+	public static Vector<AStack> updateA( Vector<AStack> value, Window owner) {
 		DialogListStacks dlg = new DialogListStacks( owner);
 		dlg.createMain();
 		dlg.updateMainA( value);
@@ -161,17 +160,17 @@ public class DialogListStacks extends ADialog {
 		mBtnChange.setEnabled( enabled);
 	}
 
-	private void updateMainA( Vector<FParameterStack> value) {
+	private void updateMainA( Vector<AStack> value) {
 		mModel.clear();
-		for (FParameterStack stk : value) {
-			mModel.addElement( stk.mValue);
+		for (AStack stk : value) {
+			mModel.addElement( stk);
 		}
 	}
 
 	private void updateMainB( Vector<ARequirement> value) {
 		mModel.clear();
 		for (ARequirement stk : value) {
-			mModel.addElement( stk.getStack().mValue);
+			mModel.addElement( stk.getStack());
 		}
 	}
 

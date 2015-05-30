@@ -26,7 +26,7 @@ class TaskBoxDeath extends ATaskBox {
 
 	@Override
 	public void update() {
-		int deaths = mTask.mDeaths.mValue;
+		int deaths = mTask.mDeaths;
 		mDeaths.setText( String.format( "You've died 0 of %d %s", deaths, deaths <= 1 ? "time" : "times"));
 	}
 }

@@ -6,18 +6,16 @@ import de.doerl.hqm.quest.Visibility;
 
 public final class FLocation extends ANamed {
 	public final FQuestTaskLocation mParentTask;
-	public final FParameterStack mIcon = new FParameterStack( this);
-	public final FParameterInt mX = new FParameterInt( this);
-	public final FParameterInt mY = new FParameterInt( this);
-	public final FParameterInt mZ = new FParameterInt( this);
-	public final FParameterInt mRadius = new FParameterInt( this);
-	public final FParameterEnum<Visibility> mVisibility = new FParameterEnum<>( this);
-	public final FParameterInt mDim = new FParameterInt( this);
+	public AStack mIcon;
+	public int mX, mY, mZ;
+	public int mRadius;
+	public int mDim;
+	public Visibility mVisibility;
 
 	public FLocation( FQuestTaskLocation parent, FItemStack icon, String name) {
 		super( name);
 		mParentTask = parent;
-		mIcon.mValue = icon;
+		mIcon = icon;
 	}
 
 	@Override

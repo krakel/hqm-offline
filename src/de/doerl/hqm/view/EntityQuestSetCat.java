@@ -38,7 +38,7 @@ import de.doerl.hqm.utils.Utils;
 class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private static final long serialVersionUID = -5930552368392528379L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
-	private FQuestSetCat mCategory;
+	private final FQuestSetCat mCategory;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mNameAction = new NameAction();
 	private ABundleAction mDescAction = new DescriptionAction();
@@ -175,7 +175,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 		else {
 			mTotal.setText( String.format( "%d quests in total", QuestSizeOf.get( qs)));
-			mDesc.setText( qs.mDescr.mValue);
+			mDesc.setText( qs.mDescr);
 			mScroll.setVisible( true);
 			mList.setSelectedValue( qs, true);
 			updateActions( true);
@@ -226,9 +226,9 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.mDescr.mValue, mCtrl.getFrame());
+				String result = DialogTextBox.update( mActiv.mDescr, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.mDescr.mValue = result;
+					mActiv.mDescr = result;
 					mCtrl.fireChanged( mCategory);
 				}
 			}
@@ -285,9 +285,9 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.mName.mValue, mCtrl.getFrame());
+				String result = DialogTextField.update( mActiv.mName, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.mName.mValue = result;
+					mActiv.mName = result;
 					mCtrl.fireChanged( mCategory);
 				}
 			}

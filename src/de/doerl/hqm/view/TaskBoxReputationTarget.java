@@ -75,7 +75,7 @@ class TaskBoxReputationTarget extends ATaskBox {
 //			AStack stk = value.mIcon.mValue;
 //			Image img = ImageLoader.getImage( stk.getKey(), cb);
 //			mIcon.setIcon( new StackIcon( img, 0.8, null));
-			mNeutral.setText( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral.mValue, 0));
+			mNeutral.setText( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral, 0));
 			return this;
 		}
 	}

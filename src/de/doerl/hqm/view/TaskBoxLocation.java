@@ -104,12 +104,12 @@ class TaskBoxLocation extends ATaskBox {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FLocation> list, FLocation loc, int index, boolean isSelected, boolean cellHasFocus) {
 			Runnable cb = null;
-			AStack stk = loc.mIcon.mValue;
+			AStack stk = loc.mIcon;
 			Image img = stk != null ? ImageLoader.getImage( stk, cb) : null;
 			mIcon.setIcon( new StackIcon( img, 0.8, null));
-			mName.setText( loc.mName.mValue);
-			mDimension.setText( String.format( "Dimension %d, [%d radius]", loc.mDim.mValue, loc.mRadius.mValue));
-			mCoorinate.setText( String.format( "(%d, %d, %d)", loc.mX.mValue, loc.mY.mValue, loc.mZ.mValue));
+			mName.setText( loc.mName);
+			mDimension.setText( String.format( "Dimension %d, [%d radius]", loc.mDim, loc.mRadius));
+			mCoorinate.setText( String.format( "(%d, %d, %d)", loc.mX, loc.mY, loc.mZ));
 			return this;
 		}
 	}

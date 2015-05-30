@@ -5,12 +5,12 @@ import de.doerl.hqm.quest.TaskTyp;
 
 public abstract class AQuestTask extends ANamed {
 	public final FQuest mParentQuest;
-	public final FParameterString mDescr = new FParameterString( this);
+	public String mDescr;
 
 	AQuestTask( FQuest parent, String name) {
 		super( name);
 		mParentQuest = parent;
-		mDescr.mValue = getTaskTyp().getDescr();
+		mDescr = getTaskTyp().getDescr();
 	}
 
 	@Override
