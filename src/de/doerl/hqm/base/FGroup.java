@@ -7,8 +7,7 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FGroup extends AMember<FGroup> {
 	public final FGroupCat mParentCategory;
-	public int mID;
-	public int mTierID;
+	public FGroupTier mTier;
 	public int mLimit;
 	public Vector<AStack> mStacks = new Vector<>();
 

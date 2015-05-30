@@ -88,8 +88,8 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	@Override
-	public T forGroupTier( FGroupTier gt, U p) {
-		return doMember( gt, p);
+	public T forGroupTier( FGroupTier tier, U p) {
+		return doMember( tier, p);
 	}
 
 	@Override

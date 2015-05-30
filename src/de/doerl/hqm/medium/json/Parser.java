@@ -7,9 +7,10 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmReader;
 
-class Parser implements IHqmReader {
+class Parser implements IHqmReader, IToken {
 //	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	public Parser( InputStream is) throws IOException {
+//		JsonWriter rdr = Json.createReader(is));
 	}
 
 	@Override

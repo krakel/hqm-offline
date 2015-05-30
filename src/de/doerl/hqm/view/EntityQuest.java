@@ -72,6 +72,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		StackIcon icon = new StackIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( quest), 1.0, null);
 		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, new LeafIcon( icon));
 		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, new LeafButton( "Claim reward"));
+		updateReputation();
 		mBoxList.setCellRenderer( new TaskListRenderer());
 		mBoxContainer.setAlignmentX( LEFT_ALIGNMENT);
 		createLeafs();
@@ -201,6 +202,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		TaskBoxUpdate.get( mQuest, mCtrl, mBoxList.getModel());
 		mRewardList.update();
 		mChoiceList.update();
+		updateReputation();
 	}
 
 	private void updateActions( boolean enabled) {
@@ -233,6 +235,10 @@ public class EntityQuest extends AEntity<FQuest> {
 		mActiv.update();
 		mBoxContainer.revalidate();
 		mBoxContainer.repaint();
+	}
+
+	private void updateReputation() {
+		mRewardList.setBtnVisible( !mQuest.Reputation.isEmpty());
 	}
 
 	private void updateStacks( Vector<AStack> param, Vector<AStack> stks) {
@@ -289,7 +295,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		public static Image get( FQuest quest) {
 			ReputationFactory worker = new ReputationFactory();
-			quest.forEachReputationReward( worker, null);
+			quest.forEachReward( worker, null);
 			if (worker.negative == worker.positive) {
 				return ResourceManager.getImageUI( "hqm.rep.norm");
 			}

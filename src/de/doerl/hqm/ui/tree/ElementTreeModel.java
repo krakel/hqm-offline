@@ -195,8 +195,8 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		}
 
 		@Override
-		public Object forGroupTier( FGroupTier gt, ElementTreeModel model) {
-			NodeFactory.get( gt, model);
+		public Object forGroupTier( FGroupTier tier, ElementTreeModel model) {
+			NodeFactory.get( tier, model);
 			return null;
 		}
 

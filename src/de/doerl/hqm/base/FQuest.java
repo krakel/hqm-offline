@@ -20,17 +20,16 @@ public final class FQuest extends ANamed {
 	public AStack mIcon;
 	public int mTriggerTasks;
 	public TriggerType mTriggerType = TriggerType.NONE;
-	public boolean mReqUseModified;
-	public int mReqCount;
+	public Integer mReqCount;
 	public Vector<AStack> mRewards = new Vector<>();
 	public Vector<AStack> mChoices = new Vector<>();
 	public Vector<FQuest> mRequirements = new Vector<>();
 	public Vector<FQuest> mOptionLinks = new Vector<>();
 	public Vector<FQuest> mPosts = new Vector<>();
+	public Vector<FReward> Reputation = new Vector<>();
 	public FQuestSet mQuestSet;
 	public FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	private Vector<AQuestTask> mTasks = new Vector<>();
-	private Vector<FReward> Reputation = new Vector<>();
 	private boolean mDeleted;
 
 	public FQuest( FHqm parent, String name) {
@@ -107,7 +106,7 @@ public final class FQuest extends ANamed {
 		return null;
 	}
 
-	public <T, U> T forEachReputationReward( IHQMWorker<T, U> worker, U p) {
+	public <T, U> T forEachReward( IHQMWorker<T, U> worker, U p) {
 		for (FReward disp : Reputation) {
 			try {
 				if (disp != null) {
@@ -145,10 +144,6 @@ public final class FQuest extends ANamed {
 	@Override
 	public FHqm getParent() {
 		return mParentHQM;
-	}
-
-	public FRepeatInfo getRepeatInfo() {
-		return mRepeatInfo;
 	}
 
 	public int getX() {

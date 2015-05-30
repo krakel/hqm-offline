@@ -36,9 +36,4 @@ public enum TaskTyp {
 	public String getTitle() {
 		return mTitle;
 	}
-
-	@Override
-	public String toString() {
-		return mTitle;
-	}
 }

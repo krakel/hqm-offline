@@ -35,7 +35,7 @@ public interface IHQMWorker<T, U> extends IWorker {
 
 	T forGroupCat( FGroupCat cat, U p);
 
-	T forGroupTier( FGroupTier gt, U p);
+	T forGroupTier( FGroupTier tier, U p);
 
 	T forGroupTierCat( FGroupTierCat cat, U p);
 

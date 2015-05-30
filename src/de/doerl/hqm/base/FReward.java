@@ -5,7 +5,7 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FReward extends ABase {
 	public final FQuest mParentQuest;
-	public int mRepID;
+	public FReputation mRep;
 	public int mValue;
 
 	public FReward( FQuest parent) {

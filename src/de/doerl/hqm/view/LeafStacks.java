@@ -47,6 +47,10 @@ class LeafStacks extends JPanel {
 		mHandler.removeClickListener( l);
 	}
 
+	public void setBtnVisible( boolean value) {
+		mBtn.setVisible( value);
+	}
+
 	public void update() {
 		updateIcons( mCallback);
 	}

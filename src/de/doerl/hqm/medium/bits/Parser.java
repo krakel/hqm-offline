@@ -41,6 +41,7 @@ import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
@@ -63,6 +64,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
+	private HashMap<Integer, FReputation> mReps = new HashMap<>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
@@ -197,14 +199,15 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		return null;
 	}
 
-	private void readGroup( FGroupCat set) {
+	private void readGroup( FGroupCat cat) {
 		int count = mSrc.readData( DataBitHelper.GROUP_COUNT);
 		for (int i = 0; i < count; ++i) {
-			int id = mSrc.contains( FileVersion.BAG_LIMITS) ? mSrc.readData( DataBitHelper.GROUP_COUNT) : i;
+			if (mSrc.contains( FileVersion.BAG_LIMITS)) {
+				mSrc.readData( DataBitHelper.GROUP_COUNT);
+			}
 			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-			FGroup grp = set.createMember( name);
-			grp.mID = id;
-			grp.mTierID = mSrc.readData( DataBitHelper.TIER_COUNT);
+			FGroup grp = cat.createMember( name);
+			grp.mTier = GroupTierOfIdx.get( cat.mParentHQM, mSrc.readData( DataBitHelper.TIER_COUNT));
 			readGroupItems( grp, grp.mStacks);
 			if (mSrc.contains( FileVersion.BAG_LIMITS) && mSrc.readBoolean()) {
 				grp.mLimit = mSrc.readData( DataBitHelper.LIMIT);
@@ -288,7 +291,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 				if (mSrc.contains( FileVersion.OPTION_LINKS) && mSrc.readBoolean()) {
 					mOptionLinks.put( member, mSrc.readIds( DataBitHelper.QUESTS));
 				}
-				FRepeatInfo info = member.getRepeatInfo();
+				FRepeatInfo info = member.mRepeatInfo;
 				if (mSrc.contains( FileVersion.REPEATABLE_QUESTS)) {
 					RepeatType type = RepeatType.get( mSrc.readData( DataBitHelper.REPEAT_TYPE));
 					info.mType = type;
@@ -304,16 +307,12 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 					}
 				}
 				if (mSrc.contains( FileVersion.PARENT_COUNT) && mSrc.readBoolean()) {
-					member.mReqUseModified = true;
 					member.mReqCount = mSrc.readData( DataBitHelper.QUESTS);
-				}
-				else {
-					member.mReqUseModified = false;
 				}
 				readTasks( member);
 				readQuestItems( member, member.mRewards);
 				readQuestItems( member, member.mChoices);
-				readReputationReward( member);
+				readRewards( member);
 			}
 			else {
 				hqm.addDeletedQuest();
@@ -335,29 +334,29 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 	}
 
-	private void readReputationReward( FQuest quest) {
+	private void readReputations( FReputationCat set) {
+		if (mSrc.contains( FileVersion.REPUTATION)) {
+			int count = mSrc.readData( DataBitHelper.REPUTATION);
+			for (int i = 0; i < count; ++i) {
+				Integer id = mSrc.readData( DataBitHelper.REPUTATION);
+				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
+				FReputation member = set.createMember( name);
+				member.mNeutral = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
+				readMarker( member);
+				mReps.put( id, member);
+			}
+		}
+	}
+
+	private void readRewards( FQuest quest) {
 		if (mSrc.contains( FileVersion.REPUTATION)) {
 			int count = mSrc.readData( DataBitHelper.REPUTATION_REWARD);
 			if (count > 0) {
 				for (int i = 0; i < count; i++) {
 					FReward reward = quest.createReputationReward();
-					reward.mRepID = mSrc.readData( DataBitHelper.REPUTATION);
+					reward.mRep = mReps.get( mSrc.readData( DataBitHelper.REPUTATION));
 					reward.mValue = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
 				}
-			}
-		}
-	}
-
-	private void readReputations( FReputationCat set) {
-		if (mSrc.contains( FileVersion.REPUTATION)) {
-			int count = mSrc.readData( DataBitHelper.REPUTATION);
-			for (int i = 0; i < count; ++i) {
-				int id = mSrc.readData( DataBitHelper.REPUTATION);
-				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-				FReputation member = set.createMember( name);
-				member.mID = id;
-				member.mNeutral = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-				readMarker( member);
 			}
 		}
 	}
