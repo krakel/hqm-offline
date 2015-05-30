@@ -107,14 +107,13 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	@Override
 	public Object forFluidRequirement( FFluidRequirement task, Object p) {
 		task.getStack().mValue = mSrc.readFluidStack();
-		task.mPrecision.mValue = ItemPrecision.PRECISE;
 		return null;
 	}
 
 	@Override
 	public Object forItemRequirement( FItemRequirement task, Object p) {
 		task.getStack().mValue = mSrc.readItemStack();
-		task.getRequired().mValue = mSrc.readData( DataBitHelper.TASK_REQUIREMENT);
+		task.mRequired.mValue = mSrc.readData( DataBitHelper.TASK_REQUIREMENT);
 		task.mPrecision.mValue = ItemPrecision.get( mSrc.readData( DataBitHelper.ITEM_PRECISION));
 		return null;
 	}

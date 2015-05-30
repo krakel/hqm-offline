@@ -78,7 +78,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
 		mDst.beginObject();
 		mDst.print( "fluid", fluid.getStack());
-		mDst.print( "precision", fluid.mPrecision);
 		mDst.endObject();
 		return null;
 	}
@@ -129,7 +128,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	public Object forItemRequirement( FItemRequirement item, Object p) {
 		mDst.beginObject();
 		mDst.print( "item", item.getStack());
-		mDst.print( "required", item.getRequired());
+		mDst.print( "required", item.mRequired);
 		mDst.print( "precision", item.mPrecision);
 		mDst.endObject();
 		return null;

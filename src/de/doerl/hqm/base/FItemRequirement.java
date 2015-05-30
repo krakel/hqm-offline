@@ -2,10 +2,12 @@ package de.doerl.hqm.base;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.quest.ItemPrecision;
 
 public final class FItemRequirement extends ARequirement {
-	private FParameterStack mStack = new FParameterStack( this);
-	private FParameterInt mRequired = new FParameterInt( this);
+	public FParameterStack mStack = new FParameterStack( this);
+	public FParameterInt mRequired = new FParameterInt( this);
+	public final FParameterEnum<ItemPrecision> mPrecision = new FParameterEnum<ItemPrecision>( this);
 
 	public FItemRequirement( AQuestTaskItems parent) {
 		super( parent);
@@ -17,12 +19,18 @@ public final class FItemRequirement extends ARequirement {
 	}
 
 	@Override
+	public int getCount() {
+		return mRequired.mValue;
+	}
+
+	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.ITEM_REQUIREMENT;
 	}
 
-	public FParameterInt getRequired() {
-		return mRequired;
+	@Override
+	public ItemPrecision getPrecision() {
+		return mPrecision.mValue;
 	}
 
 	@Override
