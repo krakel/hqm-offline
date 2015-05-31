@@ -8,9 +8,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import de.doerl.hqm.base.dispatch.IDispatcher;
-import de.doerl.hqm.base.dispatch.IWorker;
+import java.util.Iterator;
 
 class JsonReader {
 	private static final Charset UTF_8 = Charset.forName( "UTF-8");
@@ -136,88 +134,46 @@ class JsonReader {
 		return get( new BufferedReader( in));
 	}
 
-	public static final class FArray implements IJson {
-		ArrayList<IJson> mList = new ArrayList<>();
+	public static final class FArray implements IJson, Iterable<IJson> {
+		private ArrayList<IJson> mList = new ArrayList<>();
 
-		public FArray() {
+		FArray() {
 		}
 
-		@Override
-		public <T, U> T accept( IJsonWorker<T, U> w, U p) {
-			return w.forArray( this, p);
+		static FArray get( IJson json) {
+			if (json instanceof FArray) {
+				return (FArray) json;
+			}
+			else {
+				return null;
+			}
 		}
 
 		public void add( IJson json) {
 			mList.add( json);
 		}
+
+		public IJson get( int idx) {
+			return mList.get( idx);
+		}
+
+		@Override
+		public Iterator<IJson> iterator() {
+			return mList.iterator();
+		}
+
+		public int size() {
+			return mList.size();
+		}
 	}
 
 	public static final class FObject implements IJson {
-		HashMap<String, IJson> mMap = new HashMap<>();
+		private HashMap<String, IJson> mMap = new HashMap<>();
 
-		public FObject() {
+		FObject() {
 		}
 
-		public <T, U> T accept( IJsonWorker<T, U> w, U p) {
-			return w.forObject( this, p);
-		}
-
-		public void add( String key, IJson value) {
-			mMap.put( key, value);
-		}
-
-		public ArrayList<IJson> getArray( String key) {
-			IJson json = mMap.get( key);
-			if (json instanceof FArray) {
-				return ((FArray) json).mList;
-			}
-			else {
-				return null;
-			}
-		}
-
-		public boolean getBoolean( String key) {
-			Object obj = getValue( key);
-			if (obj instanceof Boolean) {
-				return ((Boolean) obj).booleanValue();
-			}
-			else {
-				return false;
-			}
-		}
-
-		public Double getDouble( String key) {
-			Object obj = getValue( key);
-			if (obj instanceof Double) {
-				return (Double) obj;
-			}
-			else {
-				return null;
-			}
-		}
-
-		public int getInt( String key) {
-			Integer obj = getInteger( key);
-			if (obj != null) {
-				return obj.intValue();
-			}
-			else {
-				return 0;
-			}
-		}
-
-		public Integer getInteger( String key) {
-			Object obj = getValue( key);
-			if (obj instanceof Integer) {
-				return (Integer) obj;
-			}
-			else {
-				return null;
-			}
-		}
-
-		public FObject getObject( String key) {
-			IJson json = mMap.get( key);
+		static FObject get( IJson json) {
 			if (json instanceof FObject) {
 				return (FObject) json;
 			}
@@ -226,120 +182,53 @@ class JsonReader {
 			}
 		}
 
-		public String getString( String key) {
-			Object obj = getValue( key);
-			if (obj != null) {
-				return String.valueOf( obj);
-			}
-			else {
-				return null;
-			}
+		public void add( String key, IJson value) {
+			mMap.put( key, value);
 		}
 
-		public Object getValue( String key) {
-			IJson json = mMap.get( key);
-			if (json instanceof FValue) {
-				return ((FValue) json).mObj;
-			}
-			else {
-				return null;
-			}
+		IJson getJson( String key) {
+			return mMap.get( key);
 		}
 	}
 
 	public static final class FValue implements IJson {
-		Object mObj;
+		private Object mObj;
 
-		public FValue( Object obj) {
+		FValue( Object obj) {
 			mObj = obj;
 		}
 
-		public <T, U> T accept( IJsonWorker<T, U> w, U p) {
-			return w.forValue( this, p);
+		static FValue get( IJson json) {
+			if (json instanceof FValue) {
+				return (FValue) json;
+			}
+			else {
+				return null;
+			}
 		}
 
-		@Override
-		public String toString() {
-			return String.valueOf( mObj);
-		}
-	}
-
-	public static interface IJson extends IDispatcher {
-		<T, U> T accept( IJsonWorker<T, U> w, U p);
-	}
-
-	public static interface IJsonWorker<T, U> extends IWorker {
-		T forArray( FArray arr, U p);
-
-		T forObject( FObject obj, U p);
-
-		T forValue( FValue val, U p);
-	}
-
-	public static class JSONofArray implements IJsonWorker<FArray, Object> {
-		private static final JSONofArray WORKER = new JSONofArray();
-
-		private JSONofArray() {
+		static boolean toBoolean( IJson json) {
+			Object obj = toValueObj( json);
+			if (obj instanceof Boolean) {
+				return (Boolean) obj;
+			}
+			else {
+				return false;
+			}
 		}
 
-		public static FArray get( IJson json) {
-			return json.accept( WORKER, null);
+		static Double toDouble( IJson json) {
+			Object obj = toValueObj( json);
+			if (obj instanceof Double) {
+				return (Double) obj;
+			}
+			else {
+				return null;
+			}
 		}
 
-		@Override
-		public FArray forArray( FArray arr, Object p) {
-			return arr;
-		}
-
-		@Override
-		public FArray forObject( FObject obj, Object p) {
-			return null;
-		}
-
-		@Override
-		public FArray forValue( FValue val, Object p) {
-			return null;
-		}
-	}
-
-	public static class JSONofObject implements IJsonWorker<FObject, Object> {
-		private static final JSONofObject WORKER = new JSONofObject();
-
-		private JSONofObject() {
-		}
-
-		public static FObject get( IJson json) {
-			return json.accept( WORKER, null);
-		}
-
-		@Override
-		public FObject forArray( FArray arr, Object p) {
-			return null;
-		}
-
-		@Override
-		public FObject forObject( FObject obj, Object p) {
-			return obj;
-		}
-
-		@Override
-		public FObject forValue( FValue val, Object p) {
-			return null;
-		}
-	}
-
-	public static class JSONofValue implements IJsonWorker<FValue, Object> {
-		private static final JSONofValue WORKER = new JSONofValue();
-
-		private JSONofValue() {
-		}
-
-		public static FValue get( IJson json) {
-			return json.accept( WORKER, null);
-		}
-
-		public static int getInt( IJson json) {
-			Integer obj = getInteger( json);
+		static int toInt( IJson json) {
+			Integer obj = toInteger( json);
 			if (obj != null) {
 				return obj.intValue();
 			}
@@ -348,8 +237,8 @@ class JsonReader {
 			}
 		}
 
-		public static Integer getInteger( IJson json) {
-			Object obj = get( json);
+		static Integer toInteger( IJson json) {
+			Object obj = toValueObj( json);
 			if (obj instanceof Integer) {
 				return (Integer) obj;
 			}
@@ -358,20 +247,32 @@ class JsonReader {
 			}
 		}
 
-		@Override
-		public FValue forArray( FArray arr, Object p) {
-			return null;
+		static String toString( IJson json) {
+			Object obj = toValueObj( json);
+			if (obj != null) {
+				return String.valueOf( obj);
+			}
+			else {
+				return null;
+			}
+		}
+
+		static Object toValueObj( IJson json) {
+			if (json instanceof FValue) {
+				return ((FValue) json).mObj;
+			}
+			else {
+				return null;
+			}
 		}
 
 		@Override
-		public FValue forObject( FObject obj, Object p) {
-			return null;
+		public String toString() {
+			return String.valueOf( mObj);
 		}
+	}
 
-		@Override
-		public FValue forValue( FValue val, Object p) {
-			return val;
-		}
+	public static interface IJson {
 	}
 
 	private static enum Token {
