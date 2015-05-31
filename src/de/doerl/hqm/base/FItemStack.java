@@ -1,10 +1,13 @@
 package de.doerl.hqm.base;
 
+import java.util.regex.Pattern;
+
 import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FItemStack extends AStack {
+	private static final Pattern PATTERN = Pattern.compile( "(.*) size\\((\\d*)\\) dmg\\((\\d*)\\)");
 	private Nbt mNBT;
 	private String mItem;
 	private int mSize;
@@ -22,6 +25,22 @@ public final class FItemStack extends AStack {
 		mSize = size;
 		mDmg = dmg;
 		mKey = getName() + "%" + getDamage();
+	}
+
+	private FItemStack( Nbt nbt, String[] vals) {
+		mNBT = nbt;
+		mItem = vals.length > 0 ? vals[0] : "unknown";
+		mSize = vals.length > 1 ? Utils.parseInteger( vals[1]) : 0;
+		mDmg = vals.length > 2 ? Utils.parseInteger( vals[2]) : 0;
+		mKey = getName() + "%" + getDamage();
+	}
+
+	public static FItemStack parse( String name) {
+		return new FItemStack( null, PATTERN.split( name));
+	}
+
+	public static FItemStack parse( String name, String nbt) {
+		return new FItemStack( Nbt.parse( nbt), PATTERN.split( name));
 	}
 
 	@Override

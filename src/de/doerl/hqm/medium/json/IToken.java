@@ -4,11 +4,11 @@ interface IToken {
 	static final String HQM_VERSION = "version";
 	static final String HQM_PASSCODE = "passcode";
 	static final String HQM_DECRIPTION = "decription";
-	static final String HQM_QUEST_SET_CAT = "questSetCat";
-	static final String HQM_REPUTATION_CAT = "reputationCat";
+	static final String HQM_QUEST_SET_CAT = "questSetCatalog";
+	static final String HQM_REPUTATION_CAT = "reputationCatalog";
 	static final String HQM_QUESTS = "quests";
-	static final String HQM_GROUP_TIER_CAT = "groupTierCat";
-	static final String HQM_GROUP_CAT = "groupCat";
+	static final String HQM_GROUP_TIER_CAT = "groupTierCatalog";
+	static final String HQM_GROUP_CAT = "groupCatalog";
 	//
 	static final String QUEST_SET_NAME = "name";
 	static final String QUEST_SET_DECR = "decription";
@@ -94,5 +94,6 @@ interface IToken {
 	static final String GROUP_ID = "id";
 	static final String GROUP_NAME = "name";
 	static final String GROUP_TIER = "tierID";
+	static final String GROUP_LIMIT = "limit";
 	static final String GROUP_STACKS = "stacks";
 }

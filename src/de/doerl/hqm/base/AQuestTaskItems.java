@@ -15,16 +15,25 @@ public abstract class AQuestTaskItems extends AQuestTask {
 		super( parent, name);
 	}
 
-	public ARequirement createRequirement( boolean type) {
-		ARequirement req = null;
-		if (type) {
-			req = new FItemRequirement( this);
-		}
-		else {
-			req = new FFluidRequirement( this);
-		}
+	public FFluidRequirement createFluidRequirement() {
+		FFluidRequirement req = new FFluidRequirement( this);
 		mRequirements.add( req);
 		return req;
+	}
+
+	public FItemRequirement createItemRequirement() {
+		FItemRequirement req = new FItemRequirement( this);
+		mRequirements.add( req);
+		return req;
+	}
+
+	public ARequirement createRequirement( boolean type) {
+		if (type) {
+			return createItemRequirement();
+		}
+		else {
+			return createFluidRequirement();
+		}
 	}
 
 	public <T, U> T forEachRequirement( IHQMWorker<T, U> worker, U p) {

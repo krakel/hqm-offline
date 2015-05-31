@@ -23,6 +23,53 @@ class JsonWriter extends PrintWriter {
 		super( out);
 	}
 
+	private static String escape( String s) {
+		StringBuffer sb = new StringBuffer();
+		int len = s.length();
+		for (int i = 0; i < len; ++i) {
+			char c = s.charAt( i);
+			switch (c) {
+				case '\b':
+					sb.append( "\\b");
+					break;
+				case '\f':
+					sb.append( "\\f");
+					break;
+				case '\n':
+					sb.append( "\\n");
+					break;
+				case '\r':
+					sb.append( "\\r");
+					break;
+				case '\t':
+					sb.append( "\\t");
+					break;
+				case '"':
+					sb.append( "\\\"");
+					break;
+				case '\\':
+					sb.append( "\\\\");
+					break;
+				case '/':
+					sb.append( "\\/");
+					break;
+				default:
+					if (c >= '\u0000' && c <= '\u001F' || c >= '\u007F' && c <= '\u009F' || c >= '\u2000' && c <= '\u20FF') {
+						String hex = Integer.toHexString( c);
+						sb.append( "\\u");
+						for (int j = hex.length(); j < 4; ++j) {
+							sb.append( '0');
+						}
+						sb.append( hex.toUpperCase());
+					}
+					else {
+						sb.append( c);
+					}
+			}
+		}
+		return sb.toString();
+	}
+
 	public void beginArray( String key) {
 		printKey( key);
 		print( "[");
@@ -161,7 +208,7 @@ class JsonWriter extends PrintWriter {
 
 	public void printObj( Object obj) {
 		print( '"');
-		printArr( obj.toString().getBytes( UTF_8));
+		print( escape( obj.toString()));
 		print( '"');
 		println();
 	}

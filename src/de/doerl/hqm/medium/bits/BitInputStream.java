@@ -115,13 +115,7 @@ class BitInputStream extends InputStream {
 			for (int i = 0; i < bytes.length; i++) {
 				bytes[i] = (byte) readByte();
 			}
-			try {
-//				return CompressedStreamTools.func_152457_a( bytes, new NBTSizeTracker( 0x1fd8f0L));
-				return new Nbt( bytes);
-			}
-			catch (IOException ex) {
-				return null;
-			}
+			return new Nbt( bytes);
 		}
 		else {
 			return null;

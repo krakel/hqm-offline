@@ -97,6 +97,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( GROUP_ID, GroupIndex.get( grp));
 		mDst.print( GROUP_NAME, grp.mName);
 		mDst.print( GROUP_TIER, toID( GroupTierIndex.get( grp.mTier), grp.mTier.mName));
+		mDst.print( GROUP_LIMIT, grp.mLimit);
 		writeStackArr( grp.mStacks, GROUP_STACKS);
 		mDst.endObject();
 		return null;
@@ -108,7 +109,12 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( GROUP_TIER_ID, GroupTierIndex.get( tier));
 		mDst.print( GROUP_TIER_NAME, tier.mName);
 		mDst.print( GROUP_TIER_COLOR, tier.mColorID);
-		mDst.print( GROUP_TIER_WEIGHTS, tier.mWeights);
+		mDst.beginArray( GROUP_TIER_WEIGHTS);
+		for (int w : tier.mWeights) {
+			mDst.print( String.valueOf( w));
+			mDst.println();
+		}
+		mDst.endArray();
 		mDst.endObject();
 		return null;
 	}
@@ -245,7 +251,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forReputation( FReputation rep, Object p) {
 		mDst.beginObject();
-		mDst.print( REPUTATION_ID, ReputationIndex.get( rep));
 		mDst.print( REPUTATION_NAME, rep.mName);
 		mDst.print( REPUTATION_NEUTRAL, rep.mNeutral);
 		writeMarkers( rep);

@@ -3,15 +3,22 @@ package de.doerl.hqm.utils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 public class Nbt {
+	private static final Logger LOGGER = Logger.getLogger( Nbt.class.getName());
 	private byte[] mBytes;
 	private String mText;
 
-	public Nbt( byte[] bytes) throws IOException {
+	public Nbt( byte[] bytes) {
 		mBytes = decompress( bytes);
 		mText = parse( mBytes, 0);
+	}
+
+	private Nbt( String nbt) {
+		mText = nbt;
 	}
 
 	private static byte[] decompress( byte[] bytes) {
@@ -26,7 +33,7 @@ public class Nbt {
 			}
 		}
 		catch (IOException ex) {
-			ex.printStackTrace();
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		finally {
 			if (is != null) {
@@ -34,7 +41,6 @@ public class Nbt {
 					is.close();
 				}
 				catch (IOException ex) {
-					ex.printStackTrace();
 				}
 			}
 		}
@@ -45,6 +51,13 @@ public class Nbt {
 		StringBuilder sb = new StringBuilder();
 		parseAll( sb, src, pos);
 		return sb.toString();
+	}
+
+	public static Nbt parse( String nbt) {
+		if (nbt != null) {
+			return new Nbt( nbt);
+		}
+		return null;
 	}
 
 	private static int parseAll( StringBuilder sb, byte[] src, int pos) {

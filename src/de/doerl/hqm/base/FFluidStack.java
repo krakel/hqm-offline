@@ -13,6 +13,10 @@ public final class FFluidStack extends AStack {
 		mKey = getName() + "%" + getDamage();
 	}
 
+	public static FFluidStack parse( String nbt) {
+		return new FFluidStack( Nbt.parse( nbt));
+	}
+
 	@Override
 	public <T, U> T accept( IStackWorker<T, U> w, U p) {
 		return w.forFluidStack( this, p);
