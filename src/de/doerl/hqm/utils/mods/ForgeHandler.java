@@ -5,7 +5,7 @@ import java.util.HashMap;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
 
-public class ForgeHandler extends AHandler {
+class ForgeHandler extends AHandler {
 	private static HashMap<String, String> sNames;
 	static {
 		sNames = new HashMap<>();
@@ -393,7 +393,7 @@ public class ForgeHandler extends AHandler {
 
 	@Override
 	String getToken() {
-		return "fo";
+		return "mf";
 	}
 
 	@Override

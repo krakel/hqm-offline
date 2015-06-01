@@ -18,7 +18,7 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.utils.ImageLoader;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 class TaskBoxMob extends ATaskBox {
 	private static final long serialVersionUID = 410081438393816262L;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import de.doerl.hqm.utils.ResourceManager;
 
-public class DummyHandler implements IHandler {
+class DummyHandler implements IHandler {
 	private HashMap<String, Image> mCache = new HashMap<>();
 	private String mName;
 	private String mToken;

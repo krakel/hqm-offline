@@ -8,8 +8,8 @@ import javax.swing.JLabel;
 
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FQuest;
-import de.doerl.hqm.utils.ImageLoader;
 import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 class LeafQuest extends JLabel {
 	private static final long serialVersionUID = -2797500791761791369L;

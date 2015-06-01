@@ -18,7 +18,7 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.utils.ImageLoader;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 class TaskBoxLocation extends ATaskBox {
 	private static final long serialVersionUID = -5352886896563883981L;

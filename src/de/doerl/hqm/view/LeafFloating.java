@@ -11,7 +11,7 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.utils.ImageLoader;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 public class LeafFloating extends JPanel {
 	private static final long serialVersionUID = 5193402879918959911L;

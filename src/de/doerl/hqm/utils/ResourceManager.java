@@ -179,7 +179,7 @@ public class ResourceManager {
 	}
 
 	public static Image stringImage( String value) {
-		return ImageManager.centerImage( value, 24);
+		return ImageManager.centerImage( value, 30);
 	}
 
 	private static class ErrorIcon implements Icon {

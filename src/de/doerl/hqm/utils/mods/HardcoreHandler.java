@@ -5,7 +5,7 @@ import java.util.HashMap;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
 
-public class HardcoreHandler extends AHandler {
+class HardcoreHandler extends AHandler {
 	private static HashMap<String, String> sNames;
 	static {
 		sNames = new HashMap<>();

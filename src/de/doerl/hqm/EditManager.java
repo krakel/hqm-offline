@@ -4,12 +4,10 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.doerl.hqm.utils.ImageLoader;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.mods.ForgeHandler;
-import de.doerl.hqm.utils.mods.HardcoreHandler;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 public class EditManager {
 	private static final Logger LOGGER;
@@ -19,9 +17,7 @@ public class EditManager {
 		LoggingManager.setOut( "console", System.out, "hqm.console.logLevel");
 		LOGGER = Logger.getLogger( EditManager.class.getName());
 		PreferenceManager.init();
-		ImageLoader.addHandler( new ForgeHandler());
-		ImageLoader.addHandler( new HardcoreHandler());
-		ImageLoader.SINGLETON.start();
+		ImageLoader.init();
 	}
 
 	private EditManager() {

@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.doerl.hqm.base.AStack;
-import de.doerl.hqm.utils.ImageLoader;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 class LeafStacks extends JPanel {
 	private static final long serialVersionUID = -2203511730691517504L;

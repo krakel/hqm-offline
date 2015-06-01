@@ -1,4 +1,4 @@
-package de.doerl.hqm.utils;
+package de.doerl.hqm.utils.mods;
 
 import java.awt.Image;
 import java.io.IOException;
@@ -10,8 +10,7 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.AStack;
-import de.doerl.hqm.utils.mods.DummyHandler;
-import de.doerl.hqm.utils.mods.IHandler;
+import de.doerl.hqm.utils.Utils;
 
 public class ImageLoader extends Thread {
 	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
@@ -53,6 +52,59 @@ public class ImageLoader extends Thread {
 			}
 		}
 		return img;
+	}
+
+	public static void init() {
+		addHandler( new AE2Handler());
+		addHandler( new AE2stuffHandler());
+		addHandler( new AgriCraftHandler());
+		addHandler( new AutomagyHandler());
+		addHandler( new AutopackagerHandler());
+		addHandler( new BagginsesHandler());
+		addHandler( new BiblioCraftHandler());
+		addHandler( new BiblioWoodsNaturaHandler());
+		addHandler( new BigReactorsHandler());
+		addHandler( new BloodMagicHandler());
+		addHandler( new BotaniaHandler());
+		addHandler( new CompactStorageHandler());
+		addHandler( new EnderTechHandler());
+		addHandler( new ExAstrisHandler());
+		addHandler( new ExNihiloHandler());
+		addHandler( new ExtraUtilitiesHandler());
+		addHandler( new ForbiddenMagicHandler());
+		addHandler( new ForestryHandler());
+		addHandler( new ForgeHandler());
+		addHandler( new GendustryHandler());
+		addHandler( new HardcoreHandler());
+		addHandler( new HarvestcraftHandler());
+		addHandler( new HeadCrumbsHandler());
+		addHandler( new IguanaTweaksHandler());
+		addHandler( new JabbaHandler());
+		addHandler( new MagicBeesHandler());
+		addHandler( new MineFactoryHandler());
+		addHandler( new NaturaHandler());
+		addHandler( new NodalMechanicsHandler());
+		addHandler( new ProgressiveHandler());
+		addHandler( new RainmakerHandler());
+		addHandler( new RefinedRelocationHandler());
+		addHandler( new RFwindmillHandler());
+		addHandler( new RouterRebornHandler());
+		addHandler( new SanguimancyHandler());
+		addHandler( new SolarFluxHandler());
+		addHandler( new StevesWorkshopHandler());
+		addHandler( new StorageDrawersHandler());
+		addHandler( new SuperCraftingHandler());
+		addHandler( new ThaumcraftHandler());
+		addHandler( new ThaumicEnergisticsHandler());
+		addHandler( new ThaumicHorizonsHandler());
+		addHandler( new ThermalCastingHandler());
+		addHandler( new ThermalDynamicsHandler());
+		addHandler( new ThermalExpansionHandler());
+		addHandler( new ThermalFoundationHandler());
+		addHandler( new TinkerHandler());
+		addHandler( new TravellersGearHandler());
+		addHandler( new WitchingGadgetsHandler());
+		SINGLETON.start();
 	}
 
 	private static void readImage( Request req) throws IOException {
