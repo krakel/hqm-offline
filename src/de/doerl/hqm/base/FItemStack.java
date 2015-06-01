@@ -1,5 +1,6 @@
 package de.doerl.hqm.base;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.doerl.hqm.base.dispatch.IStackWorker;
@@ -7,7 +8,7 @@ import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FItemStack extends AStack {
-	private static final Pattern PATTERN = Pattern.compile( "(.*) size\\((\\d*)\\) dmg\\((\\d*)\\)");
+	private static final Pattern PATTERN = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)"); //  "(.*) size\\((\\d*)\\) dmg\\((\\d*)\\)"
 	private Nbt mNBT;
 	private String mItem;
 	private int mSize;
@@ -19,6 +20,16 @@ public final class FItemStack extends AStack {
 		mKey = getName() + "%" + getDamage();
 	}
 
+	private FItemStack( Nbt nbt, Matcher mm) {
+		mNBT = nbt;
+		mm.find();
+		int size = mm.groupCount();
+		mItem = size > 1 ? mm.group( 1) : "unknown";
+		mSize = size > 2 ? Utils.parseInteger( mm.group( 2)) : 0;
+		mDmg = size > 3 ? Utils.parseInteger( mm.group( 3)) : 0;
+		mKey = getName() + "%" + getDamage();
+	}
+
 	public FItemStack( Nbt nbt, String item, int size, int dmg) {
 		mNBT = nbt;
 		mItem = item;
@@ -27,20 +38,25 @@ public final class FItemStack extends AStack {
 		mKey = getName() + "%" + getDamage();
 	}
 
-	private FItemStack( Nbt nbt, String[] vals) {
-		mNBT = nbt;
-		mItem = vals.length > 0 ? vals[0] : "unknown";
-		mSize = vals.length > 1 ? Utils.parseInteger( vals[1]) : 0;
-		mDmg = vals.length > 2 ? Utils.parseInteger( vals[2]) : 0;
-		mKey = getName() + "%" + getDamage();
-	}
-
 	public static FItemStack parse( String name) {
-		return new FItemStack( null, PATTERN.split( name));
+		if (name != null) {
+			return new FItemStack( null, PATTERN.matcher( name));
+		}
+		else {
+			return null;
+		}
 	}
 
 	public static FItemStack parse( String name, String nbt) {
-		return new FItemStack( Nbt.parse( nbt), PATTERN.split( name));
+		if (name != null) {
+			return new FItemStack( Nbt.parse( nbt), PATTERN.matcher( name));
+		}
+		else if (nbt != null) {
+			return new FItemStack( Nbt.parse( nbt));
+		}
+		else {
+			return null;
+		}
 	}
 
 	@Override

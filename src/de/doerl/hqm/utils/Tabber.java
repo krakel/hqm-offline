@@ -1,25 +1,23 @@
 package de.doerl.hqm.utils;
 
 public class Tabber {
+	private StringBuffer mBuffer = new StringBuffer();
+	private int mTabs;
 	private boolean mNL;
 	private boolean mComma;
-	private int[] mTabs = {
-		0
-	};
-	private String mText = "";
 
 	public void dec() {
-		if (mTabs[0] > 0) {
-			mTabs[0]--;
-			set();
+		if (mTabs > 0) {
+			mTabs--;
+			space();
 		}
-		setNLBlock();
+		nlBlock();
 	}
 
 	public void inc() {
-		mTabs[0]++;
-		set();
-		setNLBlock();
+		mTabs++;
+		space();
+		nlBlock();
 	}
 
 	public boolean isComma() {
@@ -30,45 +28,26 @@ public class Tabber {
 		return mNL;
 	}
 
-	public void pop() {
-		if (mTabs.length > 1) {
-			int[] old = mTabs;
-			mTabs = new int[old.length - 1];
-			System.arraycopy( old, 1, mTabs, 0, mTabs.length);
-			set();
-		}
-	}
-
-	public void push( int tabs) {
-		int[] old = mTabs;
-		mTabs = new int[old.length + 1];
-		System.arraycopy( old, 0, mTabs, 1, old.length);
-		mTabs[0] = tabs;
-		set();
-	}
-
-	private void set() {
-		StringBuffer sb = new StringBuffer();
-		for (int i = mTabs[0]; i > 0; --i) {
-//			sb.append( "\t");
-			sb.append( "   ");
-		}
-		mText = sb.toString();
-	}
-
-	public void setNL() {
+	public void nl() {
 		mNL = true;
 	}
 
-	private void setNLBlock() {
+	private void nlBlock() {
 		mNL = true;
 		mComma = false;
+	}
+
+	private void space() {
+		mBuffer.setLength( 0);
+		for (int i = mTabs; i > 0; --i) {
+			mBuffer.append( "   ");
+		}
 	}
 
 	@Override
 	public String toString() {
 		mComma = true;
 		mNL = false;
-		return mText;
+		return mBuffer.toString();
 	}
 }

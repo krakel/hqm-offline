@@ -23,7 +23,7 @@ public class ImageLoader extends Thread {
 	private ImageLoader() {
 		setName( "ImageLoader");
 		setPriority( NORM_PRIORITY - 1);
-		setDaemon( true);
+		setDaemon( false);
 	}
 
 	public static void addHandler( IHandler hdl) {

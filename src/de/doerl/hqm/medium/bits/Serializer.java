@@ -8,7 +8,7 @@ import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmWriter;
 
 class Serializer implements IHqmWriter {
-	public Serializer( OutputStream dst) throws IOException {
+	public Serializer( OutputStream out) throws IOException {
 	}
 
 	@Override
