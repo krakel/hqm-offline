@@ -7,7 +7,6 @@ import java.util.Vector;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.FFluidRequirement;
-import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
@@ -36,13 +35,12 @@ import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.utils.json.JsonWriter;
 
-class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStackWorker<Object, Object>, IToken {
+class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToken {
 	private JsonWriter mDst;
 
 	public Serializer( OutputStream os) throws IOException {
@@ -73,14 +71,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
 		mDst.beginObject();
 		mDst.print( REQUIREMENT_FLUID, fluid.getStack());
-		mDst.endObject();
-		return null;
-	}
-
-	@Override
-	public Object forFluidStack( FFluidStack stk, Object p) {
-		mDst.beginObject();
-		mDst.printIf( FLUID_NBT, stk.getNBT());
 		mDst.endObject();
 		return null;
 	}
@@ -129,15 +119,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.print( REQUIREMENT_ITEM, item.getStack());
 		mDst.print( REQUIREMENT_REQUIRED, item.mRequired);
 		mDst.print( REQUIREMENT_PRECISION, item.mPrecision);
-		mDst.endObject();
-		return null;
-	}
-
-	@Override
-	public Object forItemStack( FItemStack stk, Object p) {
-		mDst.beginObject();
-		mDst.print( ITEM_NAME, stk);
-		mDst.printIf( ITEM_NBT, stk.getNBT());
 		mDst.endObject();
 		return null;
 	}
@@ -408,7 +389,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		if (arr != null && !arr.isEmpty()) {
 			mDst.beginArray( key);
 			for (FItemStack stk : arr) {
-				stk.accept( this, null);
+				mDst.beginObject();
+				mDst.print( ITEM_NAME, stk);
+				mDst.printIf( ITEM_NBT, stk.getNBT());
+				mDst.endObject();
 			}
 			mDst.endArray();
 		}

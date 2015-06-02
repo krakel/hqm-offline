@@ -56,7 +56,7 @@ import de.doerl.hqm.utils.json.FValue;
 import de.doerl.hqm.utils.json.IJson;
 import de.doerl.hqm.utils.json.JsonReader;
 
-class Parser implements IHqmReader, IToken {
+class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
@@ -89,6 +89,99 @@ class Parser implements IHqmReader, IToken {
 
 	@Override
 	public void closeSrc() {
+	}
+
+	@Override
+	protected Object doTaskItems( AQuestTaskItems task, FObject obj) {
+		FArray arr = FArray.to( obj.get( IToken.TASK_REQUIREMENTS));
+		if (arr != null) {
+			for (IJson json : arr) {
+				FObject oo = FObject.to( json);
+				if (oo != null) {
+					String name = FValue.toString( oo.get( IToken.REQUIREMENT_ITEM));
+					if (name != null) {
+						FItemRequirement item = task.createItemRequirement();
+						item.mStack = FItemStack.parse( name);
+						item.mRequired = FValue.toInt( oo.get( IToken.REQUIREMENT_REQUIRED));
+						item.mPrecision = ItemPrecision.valueOf( FValue.toString( oo.get( IToken.REQUIREMENT_PRECISION)));
+					}
+					else {
+						FFluidRequirement fluid = task.createFluidRequirement();
+						fluid.mStack = FFluidStack.parse( FValue.toString( oo.get( IToken.REQUIREMENT_FLUID)));
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Object forTaskDeath( FQuestTaskDeath task, FObject obj) {
+		task.mDeaths = FValue.toInt( obj.get( IToken.TASK_DEATHS));
+		return null;
+	}
+
+	@Override
+	public Object forTaskLocation( FQuestTaskLocation task, FObject obj) {
+		FArray arr = FArray.to( obj.get( IToken.TASK_LOCATIONS));
+		if (arr != null) {
+			for (IJson json : arr) {
+				FObject oo = FObject.to( json);
+				if (oo != null) {
+					FItemStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.LOCATION_ICON)));
+					FLocation loc = task.createLocation( icon, FValue.toString( oo.get( IToken.LOCATION_NAME)));
+					loc.mX = FValue.toInt( oo.get( IToken.LOCATION_X));
+					loc.mY = FValue.toInt( oo.get( IToken.LOCATION_Y));
+					loc.mZ = FValue.toInt( oo.get( IToken.LOCATION_Z));
+					loc.mRadius = FValue.toInt( oo.get( IToken.LOCATION_RADIUS));
+					loc.mVisibility = Visibility.valueOf( FValue.toString( oo.get( IToken.LOCATION_VISIBLE)));
+					loc.mDim = FValue.toInt( oo.get( IToken.LOCATION_DIM));
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Object forTaskMob( FQuestTaskMob task, FObject obj) {
+		FArray arr = FArray.to( obj.get( IToken.TASK_MOBS));
+		if (arr != null) {
+			for (IJson json : arr) {
+				FObject oo = FObject.to( json);
+				if (oo != null) {
+					FItemStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.MOB_ICON)));
+					FMob mob = task.createMob( icon, FValue.toString( oo.get( IToken.MOB_NAME)));
+					mob.mMob = FValue.toString( oo.get( IToken.MOB_MOB2));
+					mob.mKills = FValue.toInt( oo.get( IToken.MOB_COUNT));
+					mob.mExact = FValue.toBoolean( oo.get( IToken.MOB_EXACT));
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Object forTaskReputationKill( FQuestTaskReputationKill task, FObject obj) {
+		task.mKills = FValue.toInt( obj.get( IToken.TASK_KILLS));
+		return null;
+	}
+
+	@Override
+	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, FObject obj) {
+		FArray arr = FArray.to( obj.get( IToken.TASK_SETTINGS));
+		if (arr != null) {
+			for (IJson json : arr) {
+				FObject oo = FObject.to( json);
+				if (oo != null) {
+					FSetting res = task.createSetting();
+					res.mRep = SettingOfIdx.get( task, parseID( FValue.toString( oo.get( IToken.SETTING_REPUTATION))));
+					res.mLower = MarkerOfIdx.get( res.mRep, parseID( FValue.toString( oo.get( IToken.SETTING_LOWER))));
+					res.mUpper = MarkerOfIdx.get( res.mRep, parseID( FValue.toString( oo.get( IToken.SETTING_UPPER))));
+					res.mInverted = FValue.toBoolean( oo.get( IToken.SETTING_INVERTED));
+				}
+			}
+		}
+		return null;
 	}
 
 	private void readGroup( FGroupCat cat, FArray arr) {
@@ -263,10 +356,10 @@ class Parser implements IHqmReader, IToken {
 	private void readStacks( Vector<FItemStack> param, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
-				FObject oo = FObject.to( json);
-				if (oo != null) {
-					String name = FValue.toString( oo.get( IToken.ITEM_NAME));
-					String nbt = FValue.toString( oo.get( IToken.ITEM_NBT));
+				FObject obj = FObject.to( json);
+				if (obj != null) {
+					String name = FValue.toString( obj.get( IToken.ITEM_NAME));
+					String nbt = FValue.toString( obj.get( IToken.ITEM_NBT));
 					param.add( FItemStack.parse( name, nbt));
 				}
 			}
@@ -281,7 +374,7 @@ class Parser implements IHqmReader, IToken {
 					TaskTyp type = TaskTyp.valueOf( FValue.toString( obj.get( IToken.TASK_TYPE)));
 					AQuestTask task = quest.createQuestTask( type, FValue.toString( obj.get( IToken.TASK_NAME)));
 					task.mDescr = FValue.toString( obj.get( IToken.TASK_DESC));
-					TaskWorker.get( task, obj);
+					task.accept( this, obj);
 				}
 			}
 		}
@@ -332,110 +425,6 @@ class Parser implements IHqmReader, IToken {
 					quest.mRequirements.add( req);
 				}
 			}
-		}
-	}
-
-	private static class TaskWorker extends AHQMWorker<Object, FObject> {
-		private static final TaskWorker WORKER = new TaskWorker();
-
-		private TaskWorker() {
-		}
-
-		public static void get( AQuestTask task, FObject obj) {
-			task.accept( WORKER, obj);
-		}
-
-		@Override
-		protected Object doTaskItems( AQuestTaskItems task, FObject obj) {
-			FArray arr = FArray.to( obj.get( IToken.TASK_REQUIREMENTS));
-			if (arr != null) {
-				for (IJson json : arr) {
-					FObject oo = FObject.to( json);
-					if (oo != null) {
-						String name = FValue.toString( oo.get( IToken.REQUIREMENT_ITEM));
-						if (name != null) {
-							FItemRequirement item = task.createItemRequirement();
-							item.mStack = FItemStack.parse( name);
-							item.mRequired = FValue.toInt( oo.get( IToken.REQUIREMENT_REQUIRED));
-							item.mPrecision = ItemPrecision.valueOf( FValue.toString( oo.get( IToken.REQUIREMENT_PRECISION)));
-						}
-						else {
-							FFluidRequirement fluid = task.createFluidRequirement();
-							fluid.mStack = FFluidStack.parse( FValue.toString( oo.get( IToken.REQUIREMENT_FLUID)));
-						}
-					}
-				}
-			}
-			return null;
-		}
-
-		@Override
-		public Object forTaskDeath( FQuestTaskDeath task, FObject obj) {
-			task.mDeaths = FValue.toInt( obj.get( IToken.TASK_DEATHS));
-			return null;
-		}
-
-		@Override
-		public Object forTaskLocation( FQuestTaskLocation task, FObject obj) {
-			FArray arr = FArray.to( obj.get( IToken.TASK_LOCATIONS));
-			if (arr != null) {
-				for (IJson json : arr) {
-					FObject oo = FObject.to( json);
-					if (oo != null) {
-						FItemStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.LOCATION_ICON)));
-						FLocation loc = task.createLocation( icon, FValue.toString( oo.get( IToken.LOCATION_NAME)));
-						loc.mX = FValue.toInt( oo.get( IToken.LOCATION_X));
-						loc.mY = FValue.toInt( oo.get( IToken.LOCATION_Y));
-						loc.mZ = FValue.toInt( oo.get( IToken.LOCATION_Z));
-						loc.mRadius = FValue.toInt( oo.get( IToken.LOCATION_RADIUS));
-						loc.mVisibility = Visibility.valueOf( FValue.toString( oo.get( IToken.LOCATION_VISIBLE)));
-						loc.mDim = FValue.toInt( oo.get( IToken.LOCATION_DIM));
-					}
-				}
-			}
-			return null;
-		}
-
-		@Override
-		public Object forTaskMob( FQuestTaskMob task, FObject obj) {
-			FArray arr = FArray.to( obj.get( IToken.TASK_MOBS));
-			if (arr != null) {
-				for (IJson json : arr) {
-					FObject oo = FObject.to( json);
-					if (oo != null) {
-						FItemStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.MOB_ICON)));
-						FMob mob = task.createMob( icon, FValue.toString( oo.get( IToken.MOB_NAME)));
-						mob.mMob = FValue.toString( oo.get( IToken.MOB_MOB2));
-						mob.mKills = FValue.toInt( oo.get( IToken.MOB_COUNT));
-						mob.mExact = FValue.toBoolean( oo.get( IToken.MOB_EXACT));
-					}
-				}
-			}
-			return null;
-		}
-
-		@Override
-		public Object forTaskReputationKill( FQuestTaskReputationKill task, FObject obj) {
-			task.mKills = FValue.toInt( obj.get( IToken.TASK_KILLS));
-			return null;
-		}
-
-		@Override
-		public Object forTaskReputationTarget( FQuestTaskReputationTarget task, FObject obj) {
-			FArray arr = FArray.to( obj.get( IToken.TASK_SETTINGS));
-			if (arr != null) {
-				for (IJson json : arr) {
-					FObject oo = FObject.to( json);
-					if (oo != null) {
-						FSetting res = task.createSetting();
-						res.mRep = SettingOfIdx.get( task, parseID( FValue.toString( oo.get( IToken.SETTING_REPUTATION))));
-						res.mLower = MarkerOfIdx.get( res.mRep, parseID( FValue.toString( oo.get( IToken.SETTING_LOWER))));
-						res.mUpper = MarkerOfIdx.get( res.mRep, parseID( FValue.toString( oo.get( IToken.SETTING_UPPER))));
-						res.mInverted = FValue.toBoolean( oo.get( IToken.SETTING_INVERTED));
-					}
-				}
-			}
-			return null;
 		}
 	}
 }

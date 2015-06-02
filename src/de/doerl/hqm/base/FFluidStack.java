@@ -1,6 +1,5 @@
 package de.doerl.hqm.base;
 
-import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Utils;
 
@@ -15,11 +14,6 @@ public final class FFluidStack extends AStack {
 
 	public static FFluidStack parse( String nbt) {
 		return new FFluidStack( Nbt.parse( nbt));
-	}
-
-	@Override
-	public <T, U> T accept( IStackWorker<T, U> w, U p) {
-		return w.forFluidStack( this, p);
 	}
 
 	@Override

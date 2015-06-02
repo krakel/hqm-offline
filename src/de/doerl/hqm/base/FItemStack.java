@@ -3,7 +3,6 @@ package de.doerl.hqm.base;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.doerl.hqm.base.dispatch.IStackWorker;
 import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Utils;
 
@@ -57,11 +56,6 @@ public final class FItemStack extends AStack {
 		else {
 			return null;
 		}
-	}
-
-	@Override
-	public <T, U> T accept( IStackWorker<T, U> w, U p) {
-		return w.forItemStack( this, p);
 	}
 
 	@Override

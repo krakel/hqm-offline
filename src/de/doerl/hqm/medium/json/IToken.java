@@ -81,7 +81,6 @@ interface IToken {
 	//
 	static final String ITEM_NAME = "item";
 	static final String ITEM_NBT = "itemNBT";
-	static final String FLUID_NBT = "fluidNBT";
 	//
 	static final String REWARD_REPUTATION = "reputation";
 	static final String REWARD_VALUE = "value";
