@@ -106,7 +106,7 @@ public enum DataBitHelper {
 	public int getMaximum() {
 		if (!mMaximum) {
 			mMaximum = true;
-			mCached = (int) Math.pow( 2D, mCount) - 1;
+			mCached = (1 << mCount) - 1;
 		}
 		return mCached;
 	}

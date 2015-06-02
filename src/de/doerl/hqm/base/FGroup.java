@@ -8,8 +8,8 @@ import de.doerl.hqm.quest.ElementTyp;
 public final class FGroup extends AMember<FGroup> {
 	public final FGroupCat mParentCategory;
 	public FGroupTier mTier;
-	public int mLimit;
-	public Vector<AStack> mStacks = new Vector<>();
+	public Integer mLimit;
+	public Vector<FItemStack> mStacks = new Vector<>();
 
 	public FGroup( FGroupCat parent, String name) {
 		super( name);

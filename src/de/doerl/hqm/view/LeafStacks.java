@@ -11,12 +11,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.doerl.hqm.base.AStack;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.utils.mods.ImageLoader;
 
 class LeafStacks extends JPanel {
 	private static final long serialVersionUID = -2203511730691517504L;
 	private ClickHandler mHandler = new ClickHandler();
-	private Vector<AStack> mList;
+	private Vector<FItemStack> mList;
 	private JLabel mBtn;
 	private Runnable mCallback = new Runnable() {
 		@Override
@@ -25,7 +26,7 @@ class LeafStacks extends JPanel {
 		}
 	};
 
-	public LeafStacks( int height, Vector<AStack> list, JLabel btn) {
+	public LeafStacks( int height, Vector<FItemStack> list, JLabel btn) {
 		mList = list;
 		mBtn = btn;
 		setLayout( new BoxLayout( this, BoxLayout.X_AXIS));

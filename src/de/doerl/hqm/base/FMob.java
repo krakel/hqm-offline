@@ -5,7 +5,7 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FMob extends ANamed {
 	public final FQuestTaskMob mParentTask;
-	public AStack mIcon;
+	public FItemStack mIcon;
 	public String mMob;
 	public int mKills;
 	public boolean mExact;

@@ -17,12 +17,12 @@ public final class FQuest extends ANamed {
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
-	public AStack mIcon;
+	public FItemStack mIcon;
 	public int mTriggerTasks;
 	public TriggerType mTriggerType = TriggerType.NONE;
 	public Integer mReqCount;
-	public Vector<AStack> mRewards = new Vector<>();
-	public Vector<AStack> mChoices = new Vector<>();
+	public Vector<FItemStack> mRewards = new Vector<>();
+	public Vector<FItemStack> mChoices = new Vector<>();
 	public Vector<FQuest> mRequirements = new Vector<>();
 	public Vector<FQuest> mOptionLinks = new Vector<>();
 	public Vector<FQuest> mPosts = new Vector<>();
@@ -89,8 +89,8 @@ public final class FQuest extends ANamed {
 		return reward;
 	}
 
-	public <T, U> T forEachQuestTask( IHQMWorker<T, U> worker, U p) {
-		for (AQuestTask disp : mTasks) {
+	public <T, U> T forEachReward( IHQMWorker<T, U> worker, U p) {
+		for (FReward disp : Reputation) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);
@@ -106,8 +106,8 @@ public final class FQuest extends ANamed {
 		return null;
 	}
 
-	public <T, U> T forEachReward( IHQMWorker<T, U> worker, U p) {
-		for (FReward disp : Reputation) {
+	public <T, U> T forEachTask( IHQMWorker<T, U> worker, U p) {
+		for (AQuestTask disp : mTasks) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);

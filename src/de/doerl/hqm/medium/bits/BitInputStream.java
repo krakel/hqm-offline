@@ -10,10 +10,10 @@ import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.Nbt;
 
-class BitInputStream extends InputStream {
+class BitInputStream {
 	private static final Charset UTF_8 = Charset.forName( "UTF-8");
-	private InputStream mInput;
 	public final FileVersion mVersion;
+	private InputStream mInput;
 	private int mBuffer;
 	private int mBits;
 
@@ -22,7 +22,6 @@ class BitInputStream extends InputStream {
 		mVersion = FileVersion.get( readByte());
 	}
 
-	@Override
 	public void close() throws IOException {
 		if (mInput != null) {
 			mInput.close();
@@ -33,7 +32,6 @@ class BitInputStream extends InputStream {
 		return mVersion.ordinal() >= other.ordinal();
 	}
 
-	@Override
 	public int read() throws IOException {
 		return mInput.read();
 	}
@@ -46,8 +44,8 @@ class BitInputStream extends InputStream {
 		return readData( DataBitHelper.BYTE);
 	}
 
-	public int readData( DataBitHelper bitCount) {
-		return readData( bitCount.getBitCount( mVersion));
+	public int readData( DataBitHelper bits) {
+		return readData( bits.getBitCount( mVersion));
 	}
 
 	private int readData( int count) {
@@ -77,36 +75,43 @@ class BitInputStream extends InputStream {
 		return result;
 	}
 
-	public FItemStack readFixedItemStack( boolean useSize) {
-		if (mVersion.contains( FileVersion.NO_ITEM_IDS_FIX)) {
-			return readRawItem( useSize);
-		}
-		else {
-			Nbt nbt = readNBT();
-			return nbt != null ? new FItemStack( nbt) : null;
-		}
-	}
-
 	public FFluidStack readFluidStack() {
 		Nbt nbt = readNBT();
 		return nbt != null ? new FFluidStack( nbt) : null;
 	}
 
 	public FItemStack readIconIf() {
-		return readBoolean() ? readRawItem( false) : null;
+		return readBoolean() ? readItemStack() : null;
 	}
 
-	public int[] readIds( DataBitHelper size) {
-		int count = readData( size);
+	public int[] readIds( DataBitHelper bits) {
+		int count = readData( bits);
 		int[] result = new int[count];
 		for (int i = 0; i < count; ++i) {
-			result[i] = readData( size);
+			result[i] = readData( bits);
 		}
 		return result;
 	}
 
 	public FItemStack readItemStack() {
-		return readRawItem( false);
+		String id = readRawItemID();
+		int dmg = readData( DataBitHelper.SHORT);
+		Nbt nbt = readNBT();
+		return new FItemStack( nbt, id, 1, dmg);
+	}
+
+	public FItemStack readItemStackFix() {
+		if (mVersion.contains( FileVersion.NO_ITEM_IDS_FIX)) {
+			String id = readRawItemID();
+			int size = readData( DataBitHelper.SHORT);
+			int dmg = readData( DataBitHelper.SHORT);
+			Nbt nbt = readNBT();
+			return new FItemStack( nbt, id, size, dmg);
+		}
+		else {
+			Nbt nbt = readNBT();
+			return nbt != null ? new FItemStack( nbt) : null;
+		}
 	}
 
 	private Nbt readNBT() {
@@ -120,14 +125,6 @@ class BitInputStream extends InputStream {
 		else {
 			return null;
 		}
-	}
-
-	private FItemStack readRawItem( boolean useSize) {
-		String id = readRawItemID();
-		int size = useSize ? readData( DataBitHelper.SHORT) : 1;
-		int dmg = readData( DataBitHelper.SHORT);
-		Nbt nbt = readNBT();
-		return new FItemStack( nbt, id, size, dmg);
 	}
 
 	private String readRawItemID() {

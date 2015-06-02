@@ -6,7 +6,6 @@ import java.util.Vector;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
@@ -37,13 +36,8 @@ import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.base.dispatch.GroupIndex;
-import de.doerl.hqm.base.dispatch.GroupTierIndex;
 import de.doerl.hqm.base.dispatch.IStackWorker;
-import de.doerl.hqm.base.dispatch.MarkerIndex;
-import de.doerl.hqm.base.dispatch.QuestIndex;
-import de.doerl.hqm.base.dispatch.QuestSetIndex;
-import de.doerl.hqm.base.dispatch.ReputationIndex;
+import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.utils.json.JsonWriter;
@@ -94,9 +88,9 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forGroup( FGroup grp, Object p) {
 		mDst.beginObject();
-		mDst.print( GROUP_ID, GroupIndex.get( grp));
+		mDst.print( GROUP_ID, IndexOf.getGroup( grp));
 		mDst.print( GROUP_NAME, grp.mName);
-		mDst.print( GROUP_TIER, toID( GroupTierIndex.get( grp.mTier), grp.mTier.mName));
+		mDst.print( GROUP_TIER, toID( IndexOf.getMember( grp.mTier), grp.mTier.mName));
 		mDst.print( GROUP_LIMIT, grp.mLimit);
 		writeStackArr( grp.mStacks, GROUP_STACKS);
 		mDst.endObject();
@@ -106,7 +100,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forGroupTier( FGroupTier tier, Object p) {
 		mDst.beginObject();
-		mDst.print( GROUP_TIER_ID, GroupTierIndex.get( tier));
+		mDst.print( GROUP_TIER_ID, IndexOf.getMember( tier));
 		mDst.print( GROUP_TIER_NAME, tier.mName);
 		mDst.print( GROUP_TIER_COLOR, tier.mColorID);
 		mDst.printArr( GROUP_TIER_WEIGHTS, tier.mWeights);
@@ -187,14 +181,14 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forQuest( FQuest quest, Object p) {
 		mDst.beginObject();
-		mDst.print( QUEST_ID, QuestIndex.get( quest));
+		mDst.print( QUEST_ID, IndexOf.getQuest( quest));
 		if (!quest.isDeleted()) {
 			mDst.print( QUEST_NAME, quest.mName);
 			mDst.print( QUEST_DESC, quest.mDescr);
 			mDst.print( QUEST_X, quest.mX);
 			mDst.print( QUEST_Y, quest.mY);
 			mDst.print( QUEST_BIG, quest.mBig);
-			mDst.print( QUEST_SET, toID( QuestSetIndex.get( quest.mQuestSet), quest.mQuestSet.mName));
+			mDst.print( QUEST_SET, toID( IndexOf.getMember( quest.mQuestSet), quest.mQuestSet.mName));
 			mDst.print( QUEST_ICON, quest.mIcon);
 			writeQuestArr( quest.mRequirements, QUEST_REQUIREMENTS);
 			writeQuestArr( quest.mOptionLinks, QUEST_OPTION_LINKS);
@@ -255,7 +249,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forReward( FReward rr, Object p) {
 		mDst.beginObject();
-		mDst.print( REWARD_REPUTATION, toID( ReputationIndex.get( rr.mRep), rr.mRep.mName));
+		mDst.print( REWARD_REPUTATION, toID( IndexOf.getReputation( rr.mRep), rr.mRep.mName));
 		mDst.print( REWARD_VALUE, rr.mValue);
 		mDst.endObject();
 		return null;
@@ -264,9 +258,9 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 	@Override
 	public Object forSetting( FSetting rs, Object p) {
 		mDst.beginObject();
-		mDst.print( SETTING_REPUTATION, toID( ReputationIndex.get( rs.mRep), rs.mRep.mName));
-		mDst.printIf( SETTING_LOWER, MarkerIndex.get( rs.mLower));
-		mDst.printIf( SETTING_UPPER, MarkerIndex.get( rs.mUpper));
+		mDst.print( SETTING_REPUTATION, toID( IndexOf.getReputation( rs.mRep), rs.mRep.mName));
+		mDst.printIf( SETTING_LOWER, IndexOf.getMarker( rs.mLower));
+		mDst.printIf( SETTING_UPPER, IndexOf.getMarker( rs.mUpper));
 		mDst.print( SETTING_INVERTED, rs.mInverted);
 		mDst.endObject();
 		return null;
@@ -379,7 +373,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 			mDst.beginArray( key);
 			for (FQuest quest : arr) {
 				if (quest != null) {
-					mDst.printValue( toID( QuestIndex.get( quest), quest.mName));
+					mDst.printValue( toID( IndexOf.getQuest( quest), quest.mName));
 				}
 			}
 			mDst.endArray();
@@ -410,10 +404,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 		mDst.endArray();
 	}
 
-	private void writeStackArr( Vector<AStack> arr, String key) {
+	private void writeStackArr( Vector<FItemStack> arr, String key) {
 		if (arr != null && !arr.isEmpty()) {
 			mDst.beginArray( key);
-			for (AStack stk : arr) {
+			for (FItemStack stk : arr) {
 				stk.accept( this, null);
 			}
 			mDst.endArray();
@@ -422,7 +416,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IStac
 
 	private void writeTasks( FQuest quest) {
 		mDst.beginArray( QUEST_TASKS);
-		quest.forEachQuestTask( this, mDst);
+		quest.forEachTask( this, mDst);
 		mDst.endArray();
 	}
 }

@@ -6,7 +6,7 @@ import de.doerl.hqm.quest.Visibility;
 
 public final class FLocation extends ANamed {
 	public final FQuestTaskLocation mParentTask;
-	public AStack mIcon;
+	public FItemStack mIcon;
 	public int mX, mY, mZ;
 	public int mRadius;
 	public int mDim;

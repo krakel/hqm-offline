@@ -26,7 +26,7 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.base.dispatch.QuestSetIndex;
+import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.GuiColor;
@@ -265,7 +265,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 
 		public Component getListCellRendererComponent( JList<? extends FQuestSet> list, FQuestSet qs, int index, boolean isSelected, boolean cellHasFocus) {
-			int idx = QuestSetIndex.get( qs) + 1;
+			int idx = IndexOf.getMember( qs) + 1;
 			mTitle.setText( String.format( "%d. %s", idx, qs.mName));
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			boolean enabled = QuestSetIsEnabled.get( qs);

@@ -43,12 +43,12 @@ public class DialogListStacks extends ADialog {
 		addEscapeAction();
 	}
 
-	public static Vector<AStack> updateA( Vector<AStack> value, Window owner) {
+	public static Vector<FItemStack> updateA( Vector<FItemStack> value, Window owner) {
 		DialogListStacks dlg = new DialogListStacks( owner);
 		dlg.createMain();
 		dlg.updateMainA( value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
-			return dlg.getResult();
+			return dlg.getResultA();
 		}
 		else {
 			return null;
@@ -60,7 +60,7 @@ public class DialogListStacks extends ADialog {
 		dlg.createMain();
 		dlg.updateMainB( value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
-			return dlg.getResult();
+			return dlg.getResultB();
 		}
 		else {
 			return null;
@@ -147,7 +147,15 @@ public class DialogListStacks extends ADialog {
 		});
 	}
 
-	private Vector<AStack> getResult() {
+	private Vector<FItemStack> getResultA() {
+		Vector<FItemStack> result = new Vector<>();
+		for (int i = 0; i < mModel.size(); ++i) {
+			result.add( (FItemStack) mModel.get( i));
+		}
+		return result;
+	}
+
+	private Vector<AStack> getResultB() {
 		Vector<AStack> result = new Vector<>();
 		for (int i = 0; i < mModel.size(); ++i) {
 			result.add( mModel.get( i));
@@ -160,9 +168,9 @@ public class DialogListStacks extends ADialog {
 		mBtnChange.setEnabled( enabled);
 	}
 
-	private void updateMainA( Vector<AStack> value) {
+	private void updateMainA( Vector<FItemStack> value) {
 		mModel.clear();
-		for (AStack stk : value) {
+		for (FItemStack stk : value) {
 			mModel.addElement( stk);
 		}
 	}

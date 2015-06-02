@@ -218,6 +218,10 @@ public class Nbt {
 		return mBytes;
 	}
 
+	public byte[] getCompressed() {
+		return null;
+	}
+
 	public String getValue( String key) {
 		int pos = mText.indexOf( key);
 		if (pos < 0) {

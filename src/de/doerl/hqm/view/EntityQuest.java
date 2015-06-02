@@ -24,7 +24,7 @@ import de.doerl.hqm.Tuple2;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.AStack;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskLocation;
@@ -241,10 +241,10 @@ public class EntityQuest extends AEntity<FQuest> {
 		mRewardList.setBtnVisible( !mQuest.Reputation.isEmpty());
 	}
 
-	private void updateStacks( Vector<AStack> param, Vector<AStack> stks) {
+	private void updateStacks( Vector<FItemStack> param, Vector<FItemStack> stks) {
 		param.clear();
 		for (int i = 0; i < stks.size(); i++) {
-			AStack stk = stks.get( i);
+			FItemStack stk = stks.get( i);
 			if (stk != null) {
 				param.add( stk);
 			}
@@ -264,7 +264,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			Vector<AStack> result = DialogListStacks.updateA( mQuest.mChoices, mCtrl.getFrame());
+			Vector<FItemStack> result = DialogListStacks.updateA( mQuest.mChoices, mCtrl.getFrame());
 			if (result != null) {
 				updateStacks( mQuest.mChoices, result);
 				mCtrl.fireChanged( mQuest);
@@ -325,7 +325,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			Vector<AStack> result = DialogListStacks.updateA( mQuest.mRewards, mCtrl.getFrame());
+			Vector<FItemStack> result = DialogListStacks.updateA( mQuest.mRewards, mCtrl.getFrame());
 			if (result != null) {
 				updateStacks( mQuest.mRewards, result);
 				mCtrl.fireChanged( mQuest);
@@ -358,7 +358,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		public static void get( FQuest quest, EditController ctrl, DefaultListModel<ATaskBox> model) {
 			model.clear();
-			quest.forEachQuestTask( WORKER, model);
+			quest.forEachTask( WORKER, model);
 		}
 
 		@Override

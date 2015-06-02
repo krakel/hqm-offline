@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
@@ -41,7 +40,7 @@ import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
-import de.doerl.hqm.base.dispatch.ReputationOfIdx;
+import de.doerl.hqm.base.dispatch.SettingOfIdx;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.FileVersion;
@@ -99,7 +98,7 @@ class Parser implements IHqmReader, IToken {
 				if (obj != null) {
 					FGroup grp = cat.createMember( FValue.toString( obj.get( IToken.GROUP_NAME)));
 					grp.mTier = GroupTierOfIdx.get( cat.mParentHQM, parseID( FValue.toString( obj.get( IToken.GROUP_TIER))));
-					grp.mLimit = FValue.toInt( obj.get( IToken.GROUP_LIMIT));
+					grp.mLimit = FValue.toIntObj( obj.get( IToken.GROUP_LIMIT));
 					readStacks( grp.mStacks, FArray.to( obj.get( IToken.GROUP_STACKS)));
 				}
 			}
@@ -236,7 +235,7 @@ class Parser implements IHqmReader, IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FReward reward = quest.createReputationReward();
-					reward.mRep = ReputationOfIdx.get( quest.mParentHQM, parseID( FValue.toString( obj.get( IToken.REWARD_REPUTATION))));
+					reward.mRep = SettingOfIdx.get( quest.mParentHQM, parseID( FValue.toString( obj.get( IToken.REWARD_REPUTATION))));
 					reward.mValue = FValue.toInt( obj.get( IToken.REWARD_VALUE));
 				}
 			}
@@ -261,20 +260,14 @@ class Parser implements IHqmReader, IToken {
 		}
 	}
 
-	private void readStacks( Vector<AStack> param, FArray arr) {
+	private void readStacks( Vector<FItemStack> param, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
 					String name = FValue.toString( oo.get( IToken.ITEM_NAME));
-					if (name != null) {
-						String nbt = FValue.toString( oo.get( IToken.ITEM_NBT));
-						param.add( FItemStack.parse( name, nbt));
-					}
-					else {
-						String nbt = FValue.toString( oo.get( IToken.FLUID_NBT));
-						param.add( FFluidStack.parse( nbt));
-					}
+					String nbt = FValue.toString( oo.get( IToken.ITEM_NBT));
+					param.add( FItemStack.parse( name, nbt));
 				}
 			}
 		}
@@ -435,7 +428,7 @@ class Parser implements IHqmReader, IToken {
 					FObject oo = FObject.to( json);
 					if (oo != null) {
 						FSetting res = task.createSetting();
-						res.mRep = ReputationOfIdx.get( task, parseID( FValue.toString( oo.get( IToken.SETTING_REPUTATION))));
+						res.mRep = SettingOfIdx.get( task, parseID( FValue.toString( oo.get( IToken.SETTING_REPUTATION))));
 						res.mLower = MarkerOfIdx.get( res.mRep, parseID( FValue.toString( oo.get( IToken.SETTING_LOWER))));
 						res.mUpper = MarkerOfIdx.get( res.mRep, parseID( FValue.toString( oo.get( IToken.SETTING_UPPER))));
 						res.mInverted = FValue.toBoolean( oo.get( IToken.SETTING_INVERTED));
