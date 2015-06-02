@@ -170,7 +170,7 @@ public class DialogListStacks extends ADialog {
 
 	private void updateMainA( Vector<FItemStack> value) {
 		mModel.clear();
-		for (FItemStack stk : value) {
+		for (AStack stk : value) {
 			mModel.addElement( stk);
 		}
 	}

@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
@@ -128,7 +129,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
-					FItemStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.LOCATION_ICON)));
+					AStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.LOCATION_ICON)));
 					FLocation loc = task.createLocation( icon, FValue.toString( oo.get( IToken.LOCATION_NAME)));
 					loc.mX = FValue.toInt( oo.get( IToken.LOCATION_X));
 					loc.mY = FValue.toInt( oo.get( IToken.LOCATION_Y));
@@ -149,7 +150,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
-					FItemStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.MOB_ICON)));
+					AStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.MOB_ICON)));
 					FMob mob = task.createMob( icon, FValue.toString( oo.get( IToken.MOB_NAME)));
 					mob.mMob = FValue.toString( oo.get( IToken.MOB_MOB2));
 					mob.mKills = FValue.toInt( oo.get( IToken.MOB_COUNT));

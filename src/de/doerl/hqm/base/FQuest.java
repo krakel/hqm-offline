@@ -17,7 +17,7 @@ public final class FQuest extends ANamed {
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
-	public FItemStack mIcon;
+	public AStack mIcon;
 	public int mTriggerTasks;
 	public TriggerType mTriggerType = TriggerType.NONE;
 	public Integer mReqCount;

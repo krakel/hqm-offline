@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupCat;
@@ -356,7 +357,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 
 	private void writeStacks( Vector<FItemStack> lst, DataBitHelper bits) {
 		mDst.writeData( lst.size(), bits);
-		for (FItemStack stk : lst) {
+		for (AStack stk : lst) {
 			mDst.writeItemStackFix( stk);
 		}
 	}

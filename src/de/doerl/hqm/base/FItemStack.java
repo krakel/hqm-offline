@@ -3,24 +3,22 @@ package de.doerl.hqm.base;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FItemStack extends AStack {
 	private static final Pattern PATTERN = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)"); //  "(.*) size\\((\\d*)\\) dmg\\((\\d*)\\)"
-	private Nbt mNBT;
 	private String mItem;
 	private int mSize;
 	private int mDmg;
 	private String mKey;
 
-	public FItemStack( Nbt nbt) {
-		mNBT = nbt;
+	public FItemStack( String nbt) {
+		super( nbt);
 		mKey = getName() + "%" + getDamage();
 	}
 
-	private FItemStack( Nbt nbt, Matcher mm) {
-		mNBT = nbt;
+	private FItemStack( String nbt, Matcher mm) {
+		super( nbt);
 		mm.find();
 		int size = mm.groupCount();
 		mItem = size > 1 ? mm.group( 1) : "unknown";
@@ -29,15 +27,15 @@ public final class FItemStack extends AStack {
 		mKey = getName() + "%" + getDamage();
 	}
 
-	public FItemStack( Nbt nbt, String item, int size, int dmg) {
-		mNBT = nbt;
+	public FItemStack( String nbt, String item, int size, int dmg) {
+		super( nbt);
 		mItem = item;
 		mSize = size;
 		mDmg = dmg;
 		mKey = getName() + "%" + getDamage();
 	}
 
-	public static FItemStack parse( String name) {
+	public static AStack parse( String name) {
 		if (name != null) {
 			return new FItemStack( null, PATTERN.matcher( name));
 		}
@@ -48,10 +46,10 @@ public final class FItemStack extends AStack {
 
 	public static FItemStack parse( String name, String nbt) {
 		if (name != null) {
-			return new FItemStack( Nbt.parse( nbt), PATTERN.matcher( name));
+			return new FItemStack( nbt, PATTERN.matcher( name));
 		}
 		else if (nbt != null) {
-			return new FItemStack( Nbt.parse( nbt));
+			return new FItemStack( nbt);
 		}
 		else {
 			return null;
@@ -63,11 +61,8 @@ public final class FItemStack extends AStack {
 		if (mItem != null) {
 			return mSize;
 		}
-		else if (mNBT != null) {
-			return Utils.parseInteger( mNBT.getValue( "Count"), 1);
-		}
 		else {
-			return 1;
+			return super.getCount();
 		}
 	}
 
@@ -76,11 +71,8 @@ public final class FItemStack extends AStack {
 		if (mItem != null) {
 			return mDmg;
 		}
-		else if (mNBT != null) {
-			return Utils.parseInteger( mNBT.getValue( "Damage"), 0);
-		}
 		else {
-			return 0;
+			return super.getDamage();
 		}
 	}
 
@@ -98,17 +90,9 @@ public final class FItemStack extends AStack {
 		if (mItem != null) {
 			return mItem;
 		}
-		else if (mNBT != null) {
-			return mNBT.getValue( "id");
-		}
 		else {
-			return "unknown";
+			return super.getName();
 		}
-	}
-
-	@Override
-	public Nbt getNBT() {
-		return mNBT;
 	}
 
 	@Override

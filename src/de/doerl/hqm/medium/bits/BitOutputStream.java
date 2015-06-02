@@ -3,12 +3,12 @@ package de.doerl.hqm.medium.bits;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidStack;
-import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
-import de.doerl.hqm.utils.Nbt;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.NbtWriter;
 
 class BitOutputStream {
 	private OutputStream mOutput;
@@ -87,10 +87,10 @@ class BitOutputStream {
 	}
 
 	public void writeFluidStack( FFluidStack stk) {
-		writeNBT( stk.getNBT());
+		writeNBT( NbtWriter.write( stk.getNBT()));
 	}
 
-	public void writeIconIf( FItemStack stk) {
+	public void writeIconIf( AStack stk) {
 		if (stk != null) {
 			writeBoolean( true);
 			writeItemStack( stk);
@@ -107,31 +107,30 @@ class BitOutputStream {
 		}
 	}
 
-	public void writeItemStack( FItemStack stk) {
+	public void writeItemStack( AStack stk) {
 		writeRawItemID( stk.getName());
 		writeData( stk.getDamage(), DataBitHelper.SHORT);
-		writeNBT( stk.getNBT());
+		writeNBT( NbtWriter.write( stk.getNBT()));
 	}
 
-	public void writeItemStackFix( FItemStack stk) {
+	public void writeItemStackFix( AStack stk) {
 		if (mVersion.contains( FileVersion.NO_ITEM_IDS_FIX)) {
 			writeRawItemID( stk.getName());
 			writeData( stk.getCount(), DataBitHelper.SHORT);
 			writeData( stk.getDamage(), DataBitHelper.SHORT);
-			writeNBT( stk.getNBT());
+			writeNBT( NbtWriter.write( stk.getNBT()));
 		}
 		else {
-			writeNBT( stk.getNBT());
+			writeNBT( NbtWriter.write( stk.getNBT()));
 		}
 	}
 
-	public void writeNBT( Nbt nbt) {
-		byte bytes[] = nbt != null ? nbt.getCompressed() : null;
-		if (bytes != null) {
+	public void writeNBT( byte[] nbt) {
+		if (nbt != null) {
 			writeBoolean( true);
-			writeData( bytes.length, DataBitHelper.NBT_LENGTH);
-			for (int i = 0; i < bytes.length; ++i) {
-				writeByte( bytes[i]);
+			writeData( nbt.length, DataBitHelper.NBT_LENGTH);
+			for (int i = 0; i < nbt.length; ++i) {
+				writeByte( nbt[i]);
 			}
 		}
 		else {

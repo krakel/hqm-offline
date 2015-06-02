@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
-import de.doerl.hqm.utils.Nbt;
+import de.doerl.hqm.utils.nbt.NbtReader;
 
 class BitInputStream {
 	private static final Charset UTF_8 = Charset.forName( "UTF-8");
@@ -76,11 +77,11 @@ class BitInputStream {
 	}
 
 	public FFluidStack readFluidStack() {
-		Nbt nbt = readNBT();
+		String nbt = readNBT();
 		return nbt != null ? new FFluidStack( nbt) : null;
 	}
 
-	public FItemStack readIconIf() {
+	public AStack readIconIf() {
 		return readBoolean() ? readItemStack() : null;
 	}
 
@@ -96,7 +97,7 @@ class BitInputStream {
 	public FItemStack readItemStack() {
 		String id = readRawItemID();
 		int dmg = readData( DataBitHelper.SHORT);
-		Nbt nbt = readNBT();
+		String nbt = readNBT();
 		return new FItemStack( nbt, id, 1, dmg);
 	}
 
@@ -105,22 +106,22 @@ class BitInputStream {
 			String id = readRawItemID();
 			int size = readData( DataBitHelper.SHORT);
 			int dmg = readData( DataBitHelper.SHORT);
-			Nbt nbt = readNBT();
+			String nbt = readNBT();
 			return new FItemStack( nbt, id, size, dmg);
 		}
 		else {
-			Nbt nbt = readNBT();
+			String nbt = readNBT();
 			return nbt != null ? new FItemStack( nbt) : null;
 		}
 	}
 
-	private Nbt readNBT() {
+	private String readNBT() {
 		if (readBoolean()) {
 			byte bytes[] = new byte[readData( DataBitHelper.NBT_LENGTH)];
 			for (int i = 0; i < bytes.length; i++) {
 				bytes[i] = (byte) readByte();
 			}
-			return new Nbt( bytes);
+			return NbtReader.read( bytes);
 		}
 		else {
 			return null;
