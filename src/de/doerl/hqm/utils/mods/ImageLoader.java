@@ -87,6 +87,7 @@ public class ImageLoader extends Thread {
 		addHandler( new ProgressiveHandler());
 		addHandler( new RainmakerHandler());
 		addHandler( new RefinedRelocationHandler());
+		addHandler( new RFtoolsHandler());
 		addHandler( new RFwindmillHandler());
 		addHandler( new RouterRebornHandler());
 		addHandler( new SanguimancyHandler());
