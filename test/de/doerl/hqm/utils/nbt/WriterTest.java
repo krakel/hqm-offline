@@ -85,4 +85,13 @@ public class WriterTest {
 		};
 		doTest( test, exp);
 	}
+
+	@Test
+	public void testParse8() {
+		String test = "=COMPOUND( Send=INT(800), Facing=BYTE(3), Energy=INT(2000000), Recv=INT(800), SideCache=BYTE-ARRAY( 1, 2, 2, 2, 2, 2 ), RSControl=BYTE(1) )";
+		byte[] exp = {
+			10, 0, 0, 3, 0, 4, 83, 101, 110, 100, 0, 0, 3, 32, 1, 0, 6, 70, 97, 99, 105, 110, 103, 3, 3, 0, 6, 69, 110, 101, 114, 103, 121, 0, 30, -124, -128, 3, 0, 4, 82, 101, 99, 118, 0, 0, 3, 32, 7, 0, 9, 83, 105, 100, 101, 67, 97, 99, 104, 101, 0, 0, 0, 6, 1, 2, 2, 2, 2, 2, 1, 0, 9, 82, 83, 67, 111, 110, 116, 114, 111, 108, 1, 0
+		};
+		doTest( test, exp);
+	}
 }

@@ -62,6 +62,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 		return null;
 	}
 
+	public void flush() throws IOException {
+		mDst.flush();
+	}
+
 	@Override
 	public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
 		mDst.writeBoolean( false);

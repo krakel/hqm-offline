@@ -267,7 +267,7 @@ public class JsonWriter {
 			mOut.print( '"');
 		}
 		else {
-			mOut.println( "null");
+			mOut.print( "null");
 		}
 	}
 }

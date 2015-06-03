@@ -99,6 +99,7 @@ public class Medium implements IMedium {
 	static void writeHQM( FHqm hqm, OutputStream os) throws IOException {
 		Serializer serializer = new Serializer( os);
 		serializer.writeDst( hqm);
+		serializer.flush();
 	}
 
 	@Override
