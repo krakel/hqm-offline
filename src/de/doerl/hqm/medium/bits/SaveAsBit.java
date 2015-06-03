@@ -14,7 +14,6 @@ import de.doerl.hqm.medium.ASaveAsFile;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
-import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
 class SaveAsBit extends ASaveAsFile {
@@ -29,7 +28,7 @@ class SaveAsBit extends ASaveAsFile {
 	public void action( Window frame) {
 		FHqm hqm = mCallback.updateHQM();
 		if (hqm != null) {
-			String pfad = getLastOpenDir( BaseDefaults.LAST_OPEN_DIR);
+			String pfad = getLastOpenDir();
 			JFileChooser chooser = createChooser( pfad);
 			chooser.setFileFilter( Medium.FILTER);
 			File choose = selectSaveDialog( frame, chooser);
@@ -37,11 +36,10 @@ class SaveAsBit extends ASaveAsFile {
 				File file = Medium.normalize( choose);
 				if (!file.exists() || mCallback.askOverwrite()) {
 					setLastHQM( file);
-					MediaManager.setProperty( hqm, Medium.HQM_PATH, file);
-//					ANamed.rename( hqm, norm);
 					try {
 						OutputStream os = new FileOutputStream( file);
 						if (Medium.writeHQM( hqm, os, mCallback)) {
+							MediaManager.setProperty( hqm, Medium.HQM_PATH, file);
 							MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
 							mCallback.savedHQMAction();
 						}

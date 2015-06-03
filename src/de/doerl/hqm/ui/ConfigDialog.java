@@ -9,7 +9,7 @@ import de.doerl.hqm.utils.BaseDefaults;
 class ConfigDialog extends ADialog {
 	private static final long serialVersionUID = 724962696459638751L;
 	private ConfigPath mMineDir = new ConfigPath( BaseDefaults.MINECRAFT_DIR, "config.mine.dir");
-	private ConfigPath mModDir = new ConfigPath( BaseDefaults.MOD_DIR, "config.mod.dir");
+	private ConfigPath mModDir = new ConfigPath( BaseDefaults.MODULE_DIR, "config.mod.dir");
 
 	private ConfigDialog( Window owner) {
 		super( owner);

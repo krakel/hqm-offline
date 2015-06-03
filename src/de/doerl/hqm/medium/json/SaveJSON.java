@@ -14,7 +14,6 @@ import de.doerl.hqm.medium.ASaveFile;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
-import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
 class SaveJSON extends ASaveFile {
@@ -30,7 +29,7 @@ class SaveJSON extends ASaveFile {
 		if (hqm != null) {
 			File src = (File) MediaManager.getProperty( hqm, Medium.JSON_PATH);
 			if (src == null) {
-				String pfad = getLastOpenDir( BaseDefaults.LAST_OPEN_DIR);
+				String pfad = getLastOpenDir();
 				JFileChooser chooser = createChooser( pfad);
 				chooser.setFileFilter( Medium.FILTER);
 				File choose = selectSaveDialog( frame, chooser);
@@ -38,6 +37,7 @@ class SaveJSON extends ASaveFile {
 					File file = Medium.normalize( choose);
 					if (!file.exists() || mCallback.askOverwrite()) {
 						setLastHQM( file);
+						MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
 						src = file;
 					}
 				}

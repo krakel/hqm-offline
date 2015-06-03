@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import de.doerl.hqm.base.FHqm;
-import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.Utils;
@@ -27,13 +25,11 @@ public class EditMain {
 
 	public static void createTest() {
 		try {
-			IMedium bit = MediaManager.get( "bit");
-			File src = new File( PATH_SRC);
-			InputStream is = MediumUtils.getSource( src);
-			FHqm hqm = bit.open( is, src, null);
-			IMedium json = MediaManager.get( "json");
-			OutputStream os = new FileOutputStream( PATH_DST);
-			json.save( os, hqm, null);
+			FHqm hqm = new FHqm( new File( PATH_SRC));
+			InputStream is = MediumUtils.getSource( hqm.getSource());
+			MediaManager.get( "bit").testLoad( hqm, is);
+			FileOutputStream os = new FileOutputStream( PATH_DST);
+			MediaManager.get( "json").testSave( hqm, os);
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();

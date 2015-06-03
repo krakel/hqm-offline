@@ -17,14 +17,14 @@ import de.doerl.hqm.utils.json.JsonWriter;
 
 public class BaseDefaults {
 	private static final Logger LOGGER = Logger.getLogger( BaseDefaults.class.getName());
-	public static final String FILE_OPEN_DIR = "file.open.directory";
+	public static final String STACKTRC = "stackTrace.enabled";
 	public static final String LAST_OPEN = "last.open";
 	public static final String LAST_OPEN_DIR = "last.open.dir";
-	public static final String STACKTRC = "stackTrace.enabled";
+	public static final String FILE_OPEN_DIR = "file.open.directory";
 	public static final String MINECRAFT_DIR = "minecraft.dir";
-	public static final String MOD_DIR = "mod.dir";
+	public static final String MODULE_DIR = "mod.dir";
 	private static final String[] KEYS = {
-		FILE_OPEN_DIR, LAST_OPEN, LAST_OPEN_DIR, STACKTRC, MINECRAFT_DIR, MOD_DIR
+		LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, MINECRAFT_DIR, MODULE_DIR
 	};
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
@@ -33,7 +33,7 @@ public class BaseDefaults {
 //		{ MOD_DIR, System.getProperty( "user.home") },
 		{ FILE_OPEN_DIR, System.getProperty( "user.home") },
 		{ LAST_OPEN, new String[0] },
-		{ LAST_OPEN_DIR, new String[0] }
+		{ LAST_OPEN_DIR, System.getProperty( "user.home") }
 	};
 	// @formatter:on
 	private BaseDefaults() {
@@ -42,7 +42,7 @@ public class BaseDefaults {
 	private static void check( PreferenceHash pref) {
 		pref.checkBool( STACKTRC);
 		pref.checkString( MINECRAFT_DIR);
-		pref.checkString( MOD_DIR);
+		pref.checkString( MODULE_DIR);
 		pref.checkString( FILE_OPEN_DIR);
 		pref.checkArray( LAST_OPEN);
 		pref.checkArray( LAST_OPEN_DIR);

@@ -15,7 +15,6 @@ import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.IMediumWorker;
 import de.doerl.hqm.medium.IRefreshListener;
-import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.Utils;
 
@@ -48,7 +47,6 @@ public class Medium implements IMedium {
 
 	static boolean writeHQM( FHqm hqm, OutputStream os, ICallback cb) {
 		try {
-			MediaManager.setProperty( hqm, JSON_PATH, hqm.getSource());
 			Serializer serializer = new Serializer( os);
 			try {
 				serializer.writeDst( hqm, cb);
@@ -90,25 +88,12 @@ public class Medium implements IMedium {
 	}
 
 	@Override
-	public FHqm open( InputStream is, File src, ICallback cb) {
-		try {
-			FHqm def = new FHqm( src);
-			readHqm( def, is, cb);
-			return def;
-		}
-		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		return null;
+	public void testLoad( FHqm hqm, InputStream is) {
+		readHqm( hqm, is, null);
 	}
 
 	@Override
-	public void save( OutputStream os, FHqm hqm, ICallback cb) {
-		try {
-			writeHQM( hqm, os, cb);
-		}
-		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
+	public void testSave( FHqm hqm, OutputStream os) {
+		writeHQM( hqm, os, null);
 	}
 }

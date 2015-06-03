@@ -36,12 +36,8 @@ public abstract class ADialogFile extends ABundleAction implements IRefreshListe
 		return PreferenceManager.getString( BaseDefaults.FILE_OPEN_DIR);
 	}
 
-	protected static String getLastOpenDir( String prop) {
-		int max = PreferenceManager.getArrayCount( prop);
-		if (max > 0) {
-			return PreferenceManager.getArrayString( prop, 0);
-		}
-		return getLastOpen();
+	protected static String getLastOpenDir() {
+		return PreferenceManager.getString( BaseDefaults.LAST_OPEN_DIR);
 	}
 
 	protected static File selectOpenDialog( Window frame, JFileChooser chooser) {
@@ -64,8 +60,7 @@ public abstract class ADialogFile extends ABundleAction implements IRefreshListe
 		PreferenceManager.addArrayString( BaseDefaults.LAST_OPEN, 0, uri);
 		String parent = file.getParent();
 		PreferenceManager.setString( BaseDefaults.FILE_OPEN_DIR, parent);
-		PreferenceManager.deleteArrayString( BaseDefaults.LAST_OPEN_DIR, parent);
-		PreferenceManager.addArrayString( BaseDefaults.LAST_OPEN_DIR, 0, parent);
+		PreferenceManager.setString( BaseDefaults.LAST_OPEN_DIR, parent);
 	}
 
 	protected static void setLastOpen( File file) {

@@ -24,7 +24,7 @@ class MineFactoryHandler extends AHandler {
 
 	@Override
 	String getPath() {
-		return PreferenceManager.getString( BaseDefaults.MOD_DIR);
+		return PreferenceManager.getString( BaseDefaults.MODULE_DIR);
 	}
 
 	@Override

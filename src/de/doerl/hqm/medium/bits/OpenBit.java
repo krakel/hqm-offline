@@ -15,7 +15,6 @@ import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
-import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
 class OpenBit extends AOpenFile {
@@ -38,7 +37,7 @@ class OpenBit extends AOpenFile {
 
 	@Override
 	public void action( Window frame) {
-		String pfad = getLastOpenDir( BaseDefaults.LAST_OPEN_DIR);
+		String pfad = getLastOpenDir();
 		JFileChooser chooser = createChooser( pfad);
 		chooser.setFileFilter( Medium.FILTER);
 		File file = selectOpenDialog( frame, chooser);
