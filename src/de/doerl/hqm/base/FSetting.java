@@ -29,6 +29,10 @@ public final class FSetting extends ABase {
 		return mParentTask;
 	}
 
+	public FHqm getHqm() {
+		return mParentTask.getHqm();
+	}
+
 	@Override
 	public FQuestTaskReputationTarget getParent() {
 		return mParentTask;

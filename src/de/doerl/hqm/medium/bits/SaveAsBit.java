@@ -25,6 +25,7 @@ class SaveAsBit extends ASaveAsFile {
 		super( "bit.saveAs", cb);
 	}
 
+	@Override
 	public void action( Window frame) {
 		FHqm hqm = mCallback.updateHQM();
 		if (hqm != null) {
@@ -40,9 +41,10 @@ class SaveAsBit extends ASaveAsFile {
 //					ANamed.rename( hqm, norm);
 					try {
 						OutputStream os = new FileOutputStream( file);
-						Medium.writeHQM( hqm, os, mCallback);
-						MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
-						mCallback.savedHQMAction();
+						if (Medium.writeHQM( hqm, os, mCallback)) {
+							MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
+							mCallback.savedHQMAction();
+						}
 					}
 					catch (Exception ex) {
 						Utils.logThrows( LOGGER, Level.WARNING, ex);

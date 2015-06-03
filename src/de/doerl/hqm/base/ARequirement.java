@@ -16,6 +16,10 @@ public abstract class ARequirement extends ABase {
 		return mParentTask;
 	}
 
+	public FHqm getHqm() {
+		return mParentTask.getHqm();
+	}
+
 	@Override
 	public AQuestTaskItems getParent() {
 		return mParentTask;

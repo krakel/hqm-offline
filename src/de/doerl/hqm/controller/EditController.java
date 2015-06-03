@@ -50,15 +50,18 @@ public class EditController implements IModelListener {
 	}
 
 	public void fireAdded( ABase base) {
+		base.getHqm().setModified( true);
 		mModel.fireBaseAdded( base);
 	}
 
 	public void fireChanged( ABase base) {
+		base.getHqm().setModified( true);
 		mModel.fireBaseChanged( base);
 	}
 
 	public void fireRemoved( ABase base) {
 		mModel.fireBaseRemoved( base);
+//		mModel.fireBaseActivate( base.getParent());
 	}
 
 	public Frame getFrame() {

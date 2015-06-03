@@ -13,17 +13,16 @@ public class WarnDialogs {
 		return JOptionPane.showConfirmDialog( owner, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
 	}
 
+	public static boolean askMissing( Window owner) {
+		String msg = ResourceManager.getString( "warn.missing.comment");
+		String title = ResourceManager.getString( "warn.missing.title");
+		return JOptionPane.showConfirmDialog( owner, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
+	}
+
 	public static boolean askOverwrite( Window owner) {
 		String msg = ResourceManager.getString( "warn.overwrite.comment");
 		String title = ResourceManager.getString( "warn.overwrite.title");
 		return JOptionPane.showConfirmDialog( owner, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
-	}
-
-	public static boolean warnMissing( Window owner) {
-		String msg = ResourceManager.getString( "warn.missing.comment");
-		String title = ResourceManager.getString( "warn.missing.title");
-		JOptionPane.showConfirmDialog( owner, msg, title, JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
-		return true;
 	}
 
 	public static boolean warnOk( Window owner) {

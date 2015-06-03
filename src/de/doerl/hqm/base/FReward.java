@@ -27,6 +27,10 @@ public final class FReward extends ABase {
 		return mParentQuest;
 	}
 
+	public FHqm getHqm() {
+		return mParentQuest.getHqm();
+	}
+
 	@Override
 	public FQuest getParent() {
 		return mParentQuest;

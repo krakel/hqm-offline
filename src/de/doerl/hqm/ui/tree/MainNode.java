@@ -19,6 +19,6 @@ class MainNode extends ANode {
 	@Override
 	public String toString() {
 		URI uri = mHqm.getURI();
-		return String.valueOf( uri != null ? uri.getPath() : "");
+		return String.valueOf( uri != null ? uri.getPath() : "new hqm");
 	}
 }

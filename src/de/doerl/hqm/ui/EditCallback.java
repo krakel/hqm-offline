@@ -48,7 +48,8 @@ public class EditCallback implements ICallback {
 
 	@Override
 	public boolean isModifiedHQM() {
-		return true;
+		FHqm hqm = mFrame.getCurrent();
+		return hqm != null && hqm.isModified();
 	}
 
 	@Override
@@ -70,8 +71,8 @@ public class EditCallback implements ICallback {
 	@Override
 	public void savedHQMAction() {
 //		mModel.getUndoable().getUndoMgr().markSaved();
-//		FHqm def = mModel.getHQM();
-//		DescriptionManager.changed( mModel.getDescription());
+		FHqm hqm = mFrame.getCurrent();
+		hqm.setModified( false);
 		fireActionUpdate();
 	}
 

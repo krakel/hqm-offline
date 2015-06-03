@@ -14,15 +14,6 @@ class NewAction extends ABundleAction {
 	}
 
 	public void actionPerformed( ActionEvent e) {
-//		DialogResult result = mFrame.getModifiedResult();
-//		switch (result) {
-//			case APPROVE:
-//				mFrame.saveHQM();
-//			case NO:
-////				FHqm hqm = new FHqm( null);
-//				EditFrame.createNew();
-//			default:
-//		}
 		FHqm hqm = new FHqm( null);
 		mFrame.getModel().loadHQM( hqm);
 		mFrame.showHqm( hqm);

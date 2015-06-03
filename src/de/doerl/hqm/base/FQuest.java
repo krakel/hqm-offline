@@ -142,6 +142,11 @@ public final class FQuest extends ANamed {
 	}
 
 	@Override
+	public FHqm getHqm() {
+		return mParentHQM;
+	}
+
+	@Override
 	public FHqm getParent() {
 		return mParentHQM;
 	}

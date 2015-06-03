@@ -5,7 +5,6 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
 
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -20,8 +19,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -41,7 +38,7 @@ import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.EditView;
 
-public class EditFrame extends JFrame implements ChangeListener, IModelListener {
+public class EditFrame extends JFrame implements IModelListener {
 	private static final long serialVersionUID = -2516074296297195438L;
 	private static final String BASE_TITLE = ResourceManager.getString( "hqm.editor.title");
 	private static final String FILE = "hqm.file";
@@ -51,7 +48,8 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 	private EditModel mModel = new EditModel();
 	private EditView mView;
 	private ElementTree mTree;
-	private Action mNewAction = new NewAction( this);
+	private NewAction mNewAction = new NewAction( this);
+	private CloseAction mCloseAction = new CloseAction( this);
 	private JLabel mStatusBar;
 	private EditCallback mCB;
 	private Box mTop = Box.createHorizontalBox();
@@ -65,6 +63,7 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 		mModel.addListener( mTree.getModel());
 		mModel.addListener( this);
 		mCB = new EditCallback( this);
+		mCB.addRefreshListener( mCloseAction);
 	}
 
 	private static JMenu createMenu( String name) {
@@ -120,19 +119,27 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 		if (base != null) {
 			JToolBar tool = mView.getToolBar( base);
 			SwingUtilities.invokeLater( new ToolUpdate( tool));
+			mCB.fireActionUpdate();
 		}
 	}
 
 	@Override
 	public void baseAdded( ModelEvent event) {
+		mCB.fireActionUpdate();
 	}
 
 	@Override
 	public void baseChanged( ModelEvent event) {
+		mCB.fireActionUpdate();
 	}
 
 	@Override
 	public void baseRemoved( ModelEvent event) {
+		ABase base = event.mBase;
+		if (base != null) {
+			SwingUtilities.invokeLater( new ToolUpdate( null));
+			mCB.fireActionUpdate();
+		}
 	}
 
 	private Box createContent() {
@@ -169,14 +176,15 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 	private JMenu createMenuFile() {
 		JMenu result = createMenu( FILE);
 		result.add( mNewAction);
-		result.addSeparator();
 		IMedium bit = MediaManager.get( "bit");
+		IMedium json = MediaManager.get( "json");
 		result.add( bit.getOpen( mCB));
+		result.add( json.getOpen( mCB));
+		result.add( mCloseAction);
+		result.addSeparator();
 		result.add( bit.getSave( mCB));
 		result.add( bit.getSaveAs( mCB));
 		result.addSeparator();
-		IMedium json = MediaManager.get( "json");
-		result.add( json.getOpen( mCB));
 		result.add( json.getSave( mCB));
 		result.add( json.getSaveAs( mCB));
 		result.addSeparator();
@@ -309,22 +317,17 @@ public class EditFrame extends JFrame implements ChangeListener, IModelListener 
 		mTree.showHqm( hqm);
 	}
 
-	@Override
-	public void stateChanged( ChangeEvent event) {
-		mCB.fireActionUpdate();
-//		mTable.getModel().fireTableDataChanged();
-	}
-
 	private void updateToolBar() {
 		mToolBar.add( mNewAction);
-		mToolBar.addSeparator();
 		IMedium bit = MediaManager.get( "bit");
+		IMedium json = MediaManager.get( "json");
 		mToolBar.add( bit.getOpen( mCB));
+		mToolBar.add( json.getOpen( mCB));
+		mToolBar.add( mCloseAction);
+		mToolBar.addSeparator();
 		mToolBar.add( bit.getSave( mCB));
 		mToolBar.add( bit.getSaveAs( mCB));
 		mToolBar.addSeparator();
-		IMedium json = MediaManager.get( "json");
-		mToolBar.add( json.getOpen( mCB));
 		mToolBar.add( json.getSave( mCB));
 		mToolBar.add( json.getSaveAs( mCB));
 		mToolBar.addSeparator( new Dimension( 80, 0));

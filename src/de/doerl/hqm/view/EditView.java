@@ -55,12 +55,14 @@ public class EditView extends JPanel implements IModelListener {
 	@Override
 	public void baseActivate( ModelEvent event) {
 		ABase base = event.mBase;
-		AEntity<?> ent = EntityFactory.get( base, this);
-		if (ent != null) {
-			SwingUtilities.invokeLater( new EntityActivate( ent));
-		}
-		else {
-			Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
+		if (base != null) {
+			AEntity<?> ent = EntityFactory.get( base, this);
+			if (ent != null) {
+				SwingUtilities.invokeLater( new EntityActivate( ent));
+			}
+			else {
+				Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
+			}
 		}
 	}
 

@@ -6,4 +6,8 @@ public abstract class ANamed extends ABase {
 	ANamed( String name) {
 		mName = name;
 	}
+
+	public FHqm getHqm() {
+		return getParent().getHqm();
+	}
 }

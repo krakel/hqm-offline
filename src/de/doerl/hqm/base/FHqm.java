@@ -22,6 +22,7 @@ public final class FHqm extends ABase {
 	public String mDescr;
 	private Vector<FQuest> mQuests = new Vector<>();
 	private URI mURI;
+	private boolean mModified;
 
 	public FHqm( URI uri) {
 		mURI = uri;
@@ -71,6 +72,11 @@ public final class FHqm extends ABase {
 	}
 
 	@Override
+	public FHqm getHqm() {
+		return this;
+	}
+
+	@Override
 	public ABase getParent() {
 		return null;
 	}
@@ -83,11 +89,19 @@ public final class FHqm extends ABase {
 		return mVersion;
 	}
 
+	public boolean isModified() {
+		return mModified;
+	}
+
 	public void removeQuest( FQuest quest) {
 		int pos = mQuests.indexOf( quest);
 		if (pos >= 0) {
 			mQuests.setElementAt( mDeleted, pos);
 		}
+	}
+
+	public void setModified( boolean value) {
+		mModified = value;
 	}
 
 	public void setVersion( FileVersion version) {

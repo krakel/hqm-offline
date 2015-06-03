@@ -46,18 +46,15 @@ class SaveJSON extends ASaveFile {
 			if (uri != null) {
 				try {
 					OutputStream os = new FileOutputStream( new File( uri));
-					Medium.writeHQM( hqm, os, mCallback);
-					MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
-					mCallback.savedHQMAction();
+					if (Medium.writeHQM( hqm, os, mCallback)) {
+						MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
+						mCallback.savedHQMAction();
+					}
 				}
 				catch (Exception ex) {
 					Utils.logThrows( LOGGER, Level.WARNING, ex);
 				}
 			}
 		}
-	}
-
-	public void run() {
-		setEnabled( mCallback.isModifiedHQM());
 	}
 }
