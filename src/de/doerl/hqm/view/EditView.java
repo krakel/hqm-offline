@@ -11,13 +11,17 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
-import de.doerl.hqm.base.ACategory;
-import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.AQuestTask;
+import de.doerl.hqm.base.FGroup;
+import de.doerl.hqm.base.FGroupCat;
+import de.doerl.hqm.base.FGroupTier;
+import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
+import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.IModelListener;
@@ -123,13 +127,52 @@ public class EditView extends JPanel implements IModelListener {
 		}
 
 		@Override
-		protected AEntity<? extends ABase> doCategory( ACategory<? extends ANamed> set, EditView view) {
+		protected AEntity<? extends ABase> doTask( AQuestTask task, EditView p) {
 			return null;
 		}
 
 		@Override
-		protected AEntity<? extends ABase> doTask( AQuestTask task, EditView p) {
-			return null;
+		public AEntity<? extends ABase> forGroup( FGroup grp, EditView view) {
+			AEntity<?> ent = view.mContent.get( grp);
+			if (ent == null) {
+				ent = new EntityGroup( grp, view.getController());
+				view.mContent.put( grp, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forGroupCat( FGroupCat cat, EditView view) {
+			AEntity<?> ent = view.mContent.get( cat);
+			if (ent == null) {
+				ent = new EntityGroupCat( cat, view.getController());
+				view.mContent.put( cat, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forGroupTier( FGroupTier tier, EditView view) {
+			AEntity<?> ent = view.mContent.get( tier);
+			if (ent == null) {
+				ent = new EntityGroupTier( tier, view.getController());
+				view.mContent.put( tier, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forGroupTierCat( FGroupTierCat cat, EditView view) {
+			AEntity<?> ent = view.mContent.get( cat);
+			if (ent == null) {
+				ent = new EntityGroupTierCat( cat, view.getController());
+				view.mContent.put( cat, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
 		}
 
 		@Override
@@ -173,6 +216,28 @@ public class EditView extends JPanel implements IModelListener {
 			AEntity<?> ent = view.mContent.get( cat);
 			if (ent == null) {
 				ent = new EntityQuestSetCat( cat, view.getController());
+				view.mContent.put( cat, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forReputation( FReputation rep, EditView view) {
+			AEntity<?> ent = view.mContent.get( rep);
+			if (ent == null) {
+				ent = new EntityReputation( rep, view.getController());
+				view.mContent.put( rep, ent);
+				view.mCtrl.addListener( ent);
+			}
+			return ent;
+		}
+
+		@Override
+		public AEntity<? extends ABase> forReputationCat( FReputationCat cat, EditView view) {
+			AEntity<?> ent = view.mContent.get( cat);
+			if (ent == null) {
+				ent = new EntityReputationCat( cat, view.getController());
 				view.mContent.put( cat, ent);
 				view.mCtrl.addListener( ent);
 			}
