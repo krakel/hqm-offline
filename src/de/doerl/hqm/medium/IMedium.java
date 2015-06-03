@@ -1,8 +1,8 @@
 package de.doerl.hqm.medium;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.dispatch.IDispatcher;
@@ -20,7 +20,7 @@ public interface IMedium extends IDispatcher {
 
 	IRefreshListener getSaveAs( ICallback cb);
 
-	FHqm open( InputStream is, URI uri, ICallback cb);
+	FHqm open( InputStream is, File src, ICallback cb);
 
 	void save( OutputStream os, FHqm hqm, ICallback cb);
 }

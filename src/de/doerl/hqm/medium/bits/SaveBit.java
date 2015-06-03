@@ -4,7 +4,6 @@ import java.awt.Window;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,8 +28,8 @@ class SaveBit extends ASaveFile {
 	public void action( Window frame) {
 		FHqm hqm = mCallback.updateHQM();
 		if (hqm != null) {
-			URI uri = (URI) MediaManager.getProperty( hqm, Medium.HQM_PATH);
-			if (uri == null) {
+			File src = (File) MediaManager.getProperty( hqm, Medium.HQM_PATH);
+			if (src == null) {
 				String pfad = getLastOpenDir( BaseDefaults.LAST_OPEN_DIR);
 				JFileChooser chooser = createChooser( pfad);
 				chooser.setFileFilter( Medium.FILTER);
@@ -40,13 +39,13 @@ class SaveBit extends ASaveFile {
 					if (!file.exists() || mCallback.askOverwrite()) {
 						setLastHQM( file);
 //						ANamed.rename( def, norm);
-						uri = file.toURI();
+						src = file;
 					}
 				}
 			}
-			if (uri != null) {
+			if (src != null) {
 				try {
-					OutputStream os = new FileOutputStream( new File( uri));
+					OutputStream os = new FileOutputStream( src);
 					if (Medium.writeHQM( hqm, os, mCallback)) {
 						MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
 						mCallback.savedHQMAction();

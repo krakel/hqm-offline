@@ -1,8 +1,8 @@
 package de.doerl.hqm.medium;
 
+import java.io.File;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import de.doerl.hqm.base.FHqm;
 public class WeakProperty {
 	private static WeakProperty sManager = new WeakProperty();
 	private ReferenceQueue<FHqm> sQueue = new ReferenceQueue<>();
-	private Map<URI, WeakInfo> sValues = new HashMap<>();
+	private Map<File, WeakInfo> sValues = new HashMap<>();
 
 	private WeakProperty() {
 	}
@@ -28,7 +28,7 @@ public class WeakProperty {
 		processQueue();
 		WeakInfo wi;
 		synchronized (sValues) {
-			URI uri = base.getURI();
+			File uri = base.getSource();
 			wi = sValues.get( uri);
 			if (wi == null) {
 				wi = new WeakInfo( uri, base, sQueue);
@@ -42,7 +42,7 @@ public class WeakProperty {
 		for (Reference<? extends FHqm> r = sQueue.poll(); r != null; r = sQueue.poll()) {
 			WeakInfo ref = (WeakInfo) r;
 			synchronized (sValues) {
-				sValues.remove( ref.getURI());
+				sValues.remove( ref.getSource());
 			}
 		}
 	}
@@ -50,7 +50,7 @@ public class WeakProperty {
 	protected void removeIntern( FHqm base) {
 		processQueue();
 		synchronized (sValues) {
-			sValues.remove( base.getURI());
+			sValues.remove( base.getSource());
 		}
 	}
 }

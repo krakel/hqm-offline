@@ -1,19 +1,19 @@
 package de.doerl.hqm.medium;
 
+import java.io.File;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.net.URI;
 import java.util.Hashtable;
 
 import de.doerl.hqm.base.FHqm;
 
 public class WeakInfo extends WeakReference<FHqm> {
 	private Hashtable<String, Object> mProperties = new Hashtable<String, Object>();
-	private URI mURI;
+	private File mSrc;
 
-	WeakInfo( URI name, FHqm id, ReferenceQueue<FHqm> q) {
+	WeakInfo( File name, FHqm id, ReferenceQueue<FHqm> q) {
 		super( id, q);
-		mURI = name;
+		mSrc = name;
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class WeakInfo extends WeakReference<FHqm> {
 		}
 		try {
 			WeakInfo other = (WeakInfo) obj;
-			if (!mURI.equals( other.mURI)) {
+			if (!mSrc.equals( other.mSrc)) {
 				return false;
 			}
 		}
@@ -40,13 +40,13 @@ public class WeakInfo extends WeakReference<FHqm> {
 		return mProperties.get( key);
 	}
 
-	public URI getURI() {
-		return mURI;
+	public File getSource() {
+		return mSrc;
 	}
 
 	@Override
 	public int hashCode() {
-		return mURI.hashCode();
+		return mSrc.hashCode();
 	}
 
 	public void set( String key, Object value) {

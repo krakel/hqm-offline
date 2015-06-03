@@ -317,6 +317,16 @@ public class Utils {
 		return "true".equalsIgnoreCase( value) || "false".equalsIgnoreCase( value);
 	}
 
+	public static boolean isIntegerString( String value) {
+		try {
+			Integer.parseInt( value);
+			return true;
+		}
+		catch (NumberFormatException ex) {
+		}
+		return false;
+	}
+
 	public static void log( Logger l, Level lvl, String msg, Object... os) {
 		if (l.isLoggable( lvl)) {
 			Object[] arr = new Object[os.length];

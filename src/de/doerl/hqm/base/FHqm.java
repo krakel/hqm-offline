@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.net.URI;
+import java.io.File;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,11 +21,11 @@ public final class FHqm extends ABase {
 	public String mPassCode;
 	public String mDescr;
 	private Vector<FQuest> mQuests = new Vector<>();
-	private URI mURI;
+	private File mSrc;
 	private boolean mModified;
 
-	public FHqm( URI uri) {
-		mURI = uri;
+	public FHqm( File src) {
+		mSrc = src;
 		mDescr = "Hallo D:";
 	}
 
@@ -81,8 +81,8 @@ public final class FHqm extends ABase {
 		return null;
 	}
 
-	public URI getURI() {
-		return mURI;
+	public File getSource() {
+		return mSrc;
 	}
 
 	public FileVersion getVersion() {

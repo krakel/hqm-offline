@@ -30,7 +30,7 @@ public class EditMain {
 			IMedium bit = MediaManager.get( "bit");
 			File src = new File( PATH_SRC);
 			InputStream is = MediumUtils.getSource( src);
-			FHqm hqm = bit.open( is, src.toURI(), null);
+			FHqm hqm = bit.open( is, src, null);
 			IMedium json = MediaManager.get( "json");
 			OutputStream os = new FileOutputStream( PATH_DST);
 			json.save( os, hqm, null);

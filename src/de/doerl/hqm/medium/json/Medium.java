@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +48,7 @@ public class Medium implements IMedium {
 
 	static boolean writeHQM( FHqm hqm, OutputStream os, ICallback cb) {
 		try {
-			MediaManager.setProperty( hqm, JSON_PATH, hqm.getURI());
+			MediaManager.setProperty( hqm, JSON_PATH, hqm.getSource());
 			Serializer serializer = new Serializer( os);
 			try {
 				serializer.writeDst( hqm, cb);
@@ -91,9 +90,9 @@ public class Medium implements IMedium {
 	}
 
 	@Override
-	public FHqm open( InputStream is, URI uri, ICallback cb) {
+	public FHqm open( InputStream is, File src, ICallback cb) {
 		try {
-			FHqm def = new FHqm( uri);
+			FHqm def = new FHqm( src);
 			readHqm( def, is, cb);
 			return def;
 		}

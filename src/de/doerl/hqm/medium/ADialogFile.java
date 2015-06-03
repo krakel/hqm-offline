@@ -59,7 +59,7 @@ public abstract class ADialogFile extends ABundleAction implements IRefreshListe
 	}
 
 	protected static void setLastHQM( File file) {
-		String uri = file.toURI().toString();
+		String uri = file.toString();
 		PreferenceManager.deleteArrayString( BaseDefaults.LAST_OPEN, uri);
 		PreferenceManager.addArrayString( BaseDefaults.LAST_OPEN, 0, uri);
 		String parent = file.getParent();

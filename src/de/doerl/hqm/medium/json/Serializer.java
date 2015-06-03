@@ -100,21 +100,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forHQM( FHqm hqm, Object p) {
-		mDst.beginObject();
-		mDst.print( HQM_VERSION, hqm.getVersion());
-		mDst.printIf( HQM_PASSCODE, hqm.mPassCode);
-		mDst.print( HQM_DECRIPTION, hqm.mDescr);
-		writeQuestSetCat( hqm.mQuestSetCat);
-		writeReputations( hqm.mReputationCat);
-		writeQuests( hqm);
-		writeGroupTiers( hqm.mGroupTierCat);
-		writeGroups( hqm.mGroupCat);
-		mDst.endObject();
-		return null;
-	}
-
-	@Override
 	public Object forItemRequirement( FItemRequirement item, Object p) {
 		mDst.beginObject();
 		mDst.print( REQUIREMENT_ITEM, item.getStack());
@@ -329,7 +314,16 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 
 	@Override
 	public void writeDst( FHqm hqm, ICallback cb) {
-		hqm.accept( this, null);
+		mDst.beginObject();
+		mDst.print( HQM_VERSION, hqm.getVersion());
+		mDst.printIf( HQM_PASSCODE, hqm.mPassCode);
+		mDst.print( HQM_DECRIPTION, hqm.mDescr);
+		writeQuestSetCat( hqm.mQuestSetCat);
+		writeReputations( hqm.mReputationCat);
+		writeQuests( hqm);
+		writeGroupTiers( hqm.mGroupTierCat);
+		writeGroups( hqm.mGroupCat);
+		mDst.endObject();
 	}
 
 	private void writeGroups( FGroupCat set) {

@@ -1,21 +1,13 @@
 package de.doerl.hqm.utils;
 
 import java.awt.Color;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class PreferenceObject {
-	private static final String COUNT_SUFFIX = ".count";
 	private static final String[] DUMMY_ARRAY = new String[0];
-	private static final char[] HEXDIGIT = {
-		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
-	};
 	private static final Logger LOGGER = Logger.getLogger( PreferenceObject.class.getName());
-	private static final String SPECIAL_SAVE_CHARS = "=: \t\r\n\f#!";
 	private Object mValue;
-	private boolean mSave;
 
 	PreferenceObject() {
 	}
@@ -41,58 +33,6 @@ class PreferenceObject {
 			}
 		}
 		return null;
-	}
-
-	static String saveConvert( String src, boolean esc) {
-		int len = src.length();
-		StringBuffer sb = new StringBuffer( len * 2);
-		for (int i = 0; i < len; ++i) {
-			char ch = src.charAt( i);
-			switch (ch) {
-				case ' ':
-					if (i == 0 || esc) {
-						sb.append( '\\');
-					}
-					sb.append( ' ');
-					break;
-				case '\\':
-					sb.append( '\\');
-					sb.append( '\\');
-					break;
-				case '\t':
-					sb.append( '\\');
-					sb.append( 't');
-					break;
-				case '\n':
-					sb.append( '\\');
-					sb.append( 'n');
-					break;
-				case '\r':
-					sb.append( '\\');
-					sb.append( 'r');
-					break;
-				case '\f':
-					sb.append( '\\');
-					sb.append( 'f');
-					break;
-				default:
-					if (ch < 0x0020 || ch > 0x007e) {
-						sb.append( '\\');
-						sb.append( 'u');
-						sb.append( HEXDIGIT[ch >> 12 & 0xF]);
-						sb.append( HEXDIGIT[ch >> 8 & 0xF]);
-						sb.append( HEXDIGIT[ch >> 4 & 0xF]);
-						sb.append( HEXDIGIT[ch & 0xF]);
-					}
-					else {
-						if (SPECIAL_SAVE_CHARS.indexOf( ch) != -1) {
-							sb.append( '\\');
-						}
-						sb.append( ch);
-					}
-			}
-		}
-		return sb.toString();
 	}
 
 	static String toString( Color val) {
@@ -202,15 +142,13 @@ class PreferenceObject {
 	}
 
 	public boolean getBool( boolean def) {
-		Integer value = parseInteger( mValue);
-		if (value != null) {
-			return value.intValue() != 0;
-		}
-		Boolean bool = parseBoolean( mValue);
-		return bool != null ? bool.booleanValue() : def;
+		return getBoolean( def).booleanValue();
 	}
 
 	public Boolean getBoolean( Boolean def) {
+		if (mValue instanceof Boolean) {
+			return (Boolean) mValue;
+		}
 		Integer value = parseInteger( mValue);
 		if (value != null) {
 			return Boolean.valueOf( value.intValue() != 0);
@@ -220,16 +158,21 @@ class PreferenceObject {
 	}
 
 	public Color getColor( Color def) {
+		if (mValue instanceof Color) {
+			return (Color) mValue;
+		}
 		Integer value = parseInteger( mValue);
 		return value != null ? new Color( value.intValue()) : def;
 	}
 
 	public int getInt( int def) {
-		Integer value = parseInteger( mValue);
-		return value != null ? value.intValue() : def;
+		return getInteger( def).intValue();
 	}
 
 	public Integer getInteger( Integer def) {
+		if (mValue instanceof Integer) {
+			return (Integer) mValue;
+		}
 		Integer value = parseInteger( mValue);
 		return value != null ? value : def;
 	}
@@ -244,10 +187,6 @@ class PreferenceObject {
 
 	public void incInteger() {
 		setInt( getInt( 0) + 1);
-	}
-
-	public boolean isSave() {
-		return mSave;
 	}
 
 	public void setArray( String[] val) {
@@ -277,16 +216,16 @@ class PreferenceObject {
 	}
 
 	public void setBool( boolean val) {
-		mValue = val ? "true" : "false";
+		mValue = val ? Boolean.TRUE : Boolean.FALSE;
 	}
 
 	public void setBoolean( Boolean val) {
-		mValue = val.toString();
+		mValue = val;
 	}
 
 	public void setColor( Color val) {
 		if (val != null) {
-			mValue = toString( val);
+			mValue = val;
 		}
 		else {
 			mValue = null;
@@ -294,19 +233,15 @@ class PreferenceObject {
 	}
 
 	public void setInt( int val) {
-		mValue = Integer.toString( val);
+		mValue = Integer.valueOf( val);
 	}
 
 	public void setInteger( Integer val) {
-		mValue = String.valueOf( val);
+		mValue = val;
 	}
 
 	void setObject( Object obj) {
 		mValue = obj;
-	}
-
-	void setSave( boolean value) {
-		mSave = value;
 	}
 
 	public void setString( String val) {
@@ -318,28 +253,5 @@ class PreferenceObject {
 		ToString sb = new ToString( this);
 		sb.appendMsg( "value", mValue);
 		return sb.toString();
-	}
-
-	public void write( BufferedWriter bw, Object key) throws IOException {
-		if (mValue == null) {
-			return;
-		}
-		if (mValue instanceof String[]) {
-			String[] old = getArray();
-			int size = 0;
-			for (int i = 0; i < old.length; ++i) {
-				bw.write( saveConvert( key.toString() + '.' + size, true) + " = " + saveConvert( old[i], false));
-				bw.newLine();
-				++size;
-			}
-			if (size > 0) {
-				bw.write( saveConvert( key.toString() + COUNT_SUFFIX, true) + " = " + size);
-				bw.newLine();
-			}
-		}
-		else {
-			bw.write( saveConvert( key.toString(), true) + " = " + saveConvert( mValue.toString(), false));
-			bw.newLine();
-		}
 	}
 }

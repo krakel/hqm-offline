@@ -44,11 +44,11 @@ class OpenJSON extends AOpenFile {
 		File file = selectOpenDialog( frame, chooser);
 		if (file != null && verifyLastPipeDef( file)) {
 			try {
-				FHqm hqm = new FHqm( file.toURI());
+				FHqm hqm = new FHqm( file);
 				InputStream is = MediumUtils.getSource( file);
 				boolean readHqm = Medium.readHqm( hqm, is, mCallback);
 				if (readHqm) {
-					MediaManager.setProperty( hqm, Medium.JSON_PATH, file.toURI());
+					MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
 					MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
 					mCallback.openHQMAction( hqm);
 				}

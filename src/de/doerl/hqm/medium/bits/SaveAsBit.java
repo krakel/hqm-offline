@@ -37,7 +37,7 @@ class SaveAsBit extends ASaveAsFile {
 				File file = Medium.normalize( choose);
 				if (!file.exists() || mCallback.askOverwrite()) {
 					setLastHQM( file);
-					MediaManager.setProperty( hqm, Medium.HQM_PATH, file.toURI());
+					MediaManager.setProperty( hqm, Medium.HQM_PATH, file);
 //					ANamed.rename( hqm, norm);
 					try {
 						OutputStream os = new FileOutputStream( file);

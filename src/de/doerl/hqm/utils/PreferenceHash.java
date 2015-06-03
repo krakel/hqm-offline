@@ -1,104 +1,14 @@
 package de.doerl.hqm.utils;
 
 import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class PreferenceHash extends HashMap<String, Object> {
-	private static final String COUNT_SUFFIX = ".count";
-	private static final String KEY_VALUE_SEPS = "=: \t\r\n\f";
 	private static final Logger LOGGER = Logger.getLogger( PreferenceHash.class.getName());
 	private static final long serialVersionUID = 5795682426715300638L;
-	private static final String STRICT_VALUE_SEPS = "=:";
-	private static final String WHITE_SPACE_CHARS = " \t\r\n\f";
-
-	private static boolean continueLine( String line) {
-		int slashCount = 0;
-		int index = line.length() - 1;
-		while (index >= 0 && line.charAt( index--) == '\\') {
-			slashCount++;
-		}
-		return slashCount % 2 == 1;
-	}
-
-	static String loadConvert( String src) {
-		int len = src.length();
-		StringBuffer sb = new StringBuffer( len);
-		for (int i = 0; i < len;) {
-			char ch = src.charAt( i++);
-			if (ch != '\\') {
-				sb.append( ch);
-				continue;
-			}
-			ch = src.charAt( i++);
-			switch (ch) {
-				case 't':
-					ch = '\t';
-					break;
-				case 'r':
-					ch = '\r';
-					break;
-				case 'n':
-					ch = '\n';
-					break;
-				case 'f':
-					ch = '\f';
-					break;
-				case 'u':
-					// Read the xxxx
-					int value = 0;
-					for (int j = 0; j < 4; ++j) {
-						ch = src.charAt( i++);
-						switch (ch) {
-							case '0':
-							case '1':
-							case '2':
-							case '3':
-							case '4':
-							case '5':
-							case '6':
-							case '7':
-							case '8':
-							case '9':
-								value = (value << 4) + ch - '0';
-								break;
-							case 'a':
-							case 'b':
-							case 'c':
-							case 'd':
-							case 'e':
-							case 'f':
-								value = (value << 4) + 10 + ch - 'a';
-								break;
-							case 'A':
-							case 'B':
-							case 'C':
-							case 'D':
-							case 'E':
-							case 'F':
-								value = (value << 4) + 10 + ch - 'A';
-								break;
-							default:
-								throw new IllegalArgumentException( "Malformed \\uxxxx encoding.");
-						}
-					}
-					ch = (char) value;
-					break;
-			}
-			sb.append( ch);
-		}
-		return sb.toString();
-	}
 
 	void addArrayString( String key, int pos, String value) {
 		getValue( key).addArrayString( pos, value);
@@ -285,97 +195,6 @@ class PreferenceHash extends HashMap<String, Object> {
 		getValue( key).incInteger();
 	}
 
-	synchronized void load( InputStream is) throws IOException {
-		BufferedReader in = new BufferedReader( new InputStreamReader( is, "8859_1"));
-		while (true) {
-			String line = in.readLine();
-			if (line == null) {
-				return;
-			}
-			int len = line.length();
-			if (len > 0) {
-				int start;
-				for (start = 0; start < len; start++) {
-					if (WHITE_SPACE_CHARS.indexOf( line.charAt( start)) == -1) {
-						break;
-					}
-				}
-				// Blank lines are ignored
-				if (start == len) {
-					continue;
-				}
-				// Continue lines that end in slashes if they are not comments
-				char firstChar = line.charAt( start);
-				if (firstChar != '#' && firstChar != '!') {
-					while (continueLine( line)) {
-						String nextLine = in.readLine();
-						if (nextLine == null) {
-							nextLine = "";
-						}
-						String loppedLine = line.substring( 0, len - 1);
-						// Advance beyond whitespace on new line
-						int startIndex;
-						for (startIndex = 0; startIndex < nextLine.length(); startIndex++) {
-							if (WHITE_SPACE_CHARS.indexOf( nextLine.charAt( startIndex)) == -1) {
-								break;
-							}
-						}
-						nextLine = nextLine.substring( startIndex, nextLine.length());
-						line = new String( loppedLine + nextLine);
-						len = line.length();
-					}
-					// Find separation between key and value
-					int separatorIndex;
-					for (separatorIndex = start; separatorIndex < len; separatorIndex++) {
-						char currentChar = line.charAt( separatorIndex);
-						if (currentChar == '\\') {
-							separatorIndex++;
-						}
-						else if (KEY_VALUE_SEPS.indexOf( currentChar) != -1) {
-							break;
-						}
-					}
-					// Skip over whitespace after key if any
-					int valueIndex;
-					for (valueIndex = separatorIndex; valueIndex < len; valueIndex++) {
-						if (WHITE_SPACE_CHARS.indexOf( line.charAt( valueIndex)) == -1) {
-							break;
-						}
-					}
-					// Skip over one non whitespace key value separators if any
-					if (valueIndex < len) {
-						if (STRICT_VALUE_SEPS.indexOf( line.charAt( valueIndex)) != -1) {
-							valueIndex++;
-						}
-					}
-					// Skip over white space after other separators if any
-					while (valueIndex < len) {
-						if (WHITE_SPACE_CHARS.indexOf( line.charAt( valueIndex)) == -1) {
-							break;
-						}
-						valueIndex++;
-					}
-					String key = line.substring( start, separatorIndex);
-					String value = separatorIndex < len ? line.substring( valueIndex, len) : "";
-					key = loadConvert( key);
-					if (!key.endsWith( COUNT_SUFFIX)) {
-						value = loadConvert( value);
-						try {
-							int pos = key.lastIndexOf( '.');
-							Integer.parseInt( key.substring( pos + 1));
-							key = key.substring( 0, pos);
-							addArrayString( key, value);
-						}
-						catch (Exception ex) {
-							setString( key, value);
-						}
-//						setSave( key, true);
-					}
-				}
-			}
-		}
-	}
-
 	synchronized void renameKey( String key, String oldKey) {
 		Object old = remove( oldKey);
 		if (old != null) {
@@ -440,10 +259,6 @@ class PreferenceHash extends HashMap<String, Object> {
 		getValue( key).setObject( val);
 	}
 
-	void setSave( String key, boolean value) {
-		getValue( key).setSave( value);
-	}
-
 	boolean setString( String key, String val) {
 		PreferenceObject pref = getValue( key);
 		if (Utils.different( val, pref.getString( null))) {
@@ -451,24 +266,5 @@ class PreferenceHash extends HashMap<String, Object> {
 			return true;
 		}
 		return false;
-	}
-
-	void store( OutputStream out, String header) throws IOException {
-		BufferedWriter bw = new BufferedWriter( new OutputStreamWriter( out, "8859_1"));
-		if (header != null) {
-			bw.write( "# " + header);
-			bw.newLine();
-		}
-		bw.write( "# " + new Date().toString());
-		bw.newLine();
-		synchronized (this) {
-			for (String key : keySet()) {
-				if (BaseDefaults.isKeyForSave( key)) {
-					getValue( key).write( bw, key);
-				}
-			}
-		}
-		bw.write( '\n');
-		bw.flush();
 	}
 }
