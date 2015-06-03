@@ -1,6 +1,5 @@
 package de.doerl.hqm.medium;
 
-import java.io.File;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Hashtable;
@@ -9,9 +8,9 @@ import de.doerl.hqm.base.FHqm;
 
 public class WeakInfo extends WeakReference<FHqm> {
 	private Hashtable<String, Object> mProperties = new Hashtable<String, Object>();
-	private File mSrc;
+	private Object mSrc;
 
-	WeakInfo( File name, FHqm id, ReferenceQueue<FHqm> q) {
+	WeakInfo( Object name, FHqm id, ReferenceQueue<FHqm> q) {
 		super( id, q);
 		mSrc = name;
 	}
@@ -40,7 +39,7 @@ public class WeakInfo extends WeakReference<FHqm> {
 		return mProperties.get( key);
 	}
 
-	public File getSource() {
+	public Object getSource() {
 		return mSrc;
 	}
 

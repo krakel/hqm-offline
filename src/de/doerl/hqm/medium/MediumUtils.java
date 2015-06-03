@@ -5,8 +5,34 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import de.doerl.hqm.utils.Utils;
 
 public class MediumUtils {
+	private static final Logger LOGGER = Logger.getLogger( MediumUtils.class.getName());
+	private static final int MAX_BACKUP = 3;
+
+	public static void createBackup( File src) {
+		if (src != null) {
+			File olderFile = new File( src.getAbsolutePath() + ".old" + MAX_BACKUP);
+			for (int i = MAX_BACKUP - 1; i > 0; --i) {
+				if (olderFile.exists()) {
+					olderFile.delete();
+				}
+				File oldFile = new File( src.getAbsolutePath() + ".old" + i);
+				if (oldFile.exists() && !oldFile.renameTo( olderFile)) {
+					Utils.log( LOGGER, Level.WARNING, "cannot rename older file {0}", src.getName());
+				}
+				olderFile = oldFile;
+			}
+			if (src.exists() && !src.renameTo( olderFile)) {
+				Utils.log( LOGGER, Level.WARNING, "cannot rename old file {0}", src.getName());
+			}
+		}
+	}
+
 	public static InputStream getSource( File src) throws IOException {
 		if (!src.exists()) {
 			throw new IOException( "SOURCE does not exist: " + src);
@@ -18,9 +44,7 @@ public class MediumUtils {
 			fis.read( buff);
 		}
 		finally {
-			if (fis != null) {
-				fis.close();
-			}
+			Utils.closeIgnore( fis);
 		}
 		return new ByteArrayInputStream( buff);
 	}

@@ -14,6 +14,7 @@ import de.doerl.hqm.medium.ASaveFile;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.MediaManager;
+import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.Utils;
 
 class SaveJSON extends ASaveFile {
@@ -43,15 +44,19 @@ class SaveJSON extends ASaveFile {
 				}
 			}
 			if (src != null) {
+				OutputStream os = null;
 				try {
-					OutputStream os = new FileOutputStream( src);
-					if (Medium.writeHQM( hqm, os, mCallback)) {
-						MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
-						mCallback.savedHQMAction();
-					}
+					MediumUtils.createBackup( src);
+					os = new FileOutputStream( src);
+					Medium.writeHQM( hqm, os);
+					MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
+					mCallback.savedHQMAction();
 				}
 				catch (Exception ex) {
 					Utils.logThrows( LOGGER, Level.WARNING, ex);
+				}
+				finally {
+					Utils.closeIgnore( os);
 				}
 			}
 		}

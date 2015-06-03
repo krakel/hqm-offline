@@ -73,6 +73,7 @@ public class EditCallback implements ICallback {
 //		mModel.getUndoable().getUndoMgr().markSaved();
 		FHqm hqm = mFrame.getCurrent();
 		hqm.setModified( false);
+		mModel.fireBaseChanged( hqm);
 		fireActionUpdate();
 	}
 

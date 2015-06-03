@@ -1,6 +1,5 @@
 package de.doerl.hqm.base;
 
-import java.io.File;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,7 +9,7 @@ import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.Utils;
 
-public final class FHqm extends ABase {
+public final class FHqm extends ANamed {
 	private static final Logger LOGGER = Logger.getLogger( FHqm.class.getName());
 	private final FQuest mDeleted = new FQuest( this, "__DELETED__", true);
 	private FileVersion mVersion;
@@ -21,11 +20,10 @@ public final class FHqm extends ABase {
 	public String mPassCode;
 	public String mDescr;
 	private Vector<FQuest> mQuests = new Vector<>();
-	private File mSrc;
 	private boolean mModified;
 
-	public FHqm( File src) {
-		mSrc = src;
+	public FHqm( String name) {
+		super( name);
 		mDescr = "Hallo D:";
 	}
 
@@ -79,10 +77,6 @@ public final class FHqm extends ABase {
 	@Override
 	public ABase getParent() {
 		return null;
-	}
-
-	public File getSource() {
-		return mSrc;
 	}
 
 	public FileVersion getVersion() {

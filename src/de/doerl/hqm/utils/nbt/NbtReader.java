@@ -34,13 +34,7 @@ public class NbtReader {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		finally {
-			if (is != null) {
-				try {
-					is.close();
-				}
-				catch (IOException ex) {
-				}
-			}
+			Utils.closeIgnore( is);
 		}
 		return dst.toByteArray();
 	}

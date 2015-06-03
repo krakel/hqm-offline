@@ -42,7 +42,6 @@ import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.SettingOfIdx;
-import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.ItemPrecision;
@@ -62,10 +61,10 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
-	private IJson mJson;
+	private JsonReader mSrc;
 
 	public Parser( InputStream is) throws IOException {
-		mJson = JsonReader.read( is);
+		mSrc = new JsonReader( is);
 	}
 
 	private static int parseID( String s) {
@@ -86,10 +85,6 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			mPosts.put( id, p);
 		}
 		p.add( quest);
-	}
-
-	@Override
-	public void closeSrc() {
 	}
 
 	@Override
@@ -337,20 +332,26 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 	}
 
 	@Override
-	public void readSrc( FHqm hqm, ICallback cb) {
-		FObject obj = FObject.to( mJson);
-		if (obj != null) {
-			hqm.setVersion( FileVersion.valueOf( FValue.toString( obj.get( IToken.HQM_VERSION))));
-			hqm.mPassCode = FValue.toString( obj.get( IToken.HQM_PASSCODE));
-			hqm.mDescr = FValue.toString( obj.get( IToken.HQM_DECRIPTION));
-			readQuestSetCat( hqm.mQuestSetCat, FArray.to( obj.get( IToken.HQM_QUEST_SET_CAT)));
-			readReputations( hqm.mReputationCat, FArray.to( obj.get( IToken.HQM_REPUTATION_CAT)));
-			readQuests( hqm, FArray.to( obj.get( IToken.HQM_QUESTS)));
-			readGroupTiers( hqm.mGroupTierCat, FArray.to( obj.get( IToken.HQM_GROUP_TIER_CAT)));
-			readGroup( hqm.mGroupCat, FArray.to( obj.get( IToken.HQM_GROUP_CAT)));
-			updateRequirements( hqm);
-			updateOptionLinks( hqm);
-			updatePosts( hqm);
+	public void readSrc( FHqm hqm) {
+		try {
+			IJson json = mSrc.doAll();
+			FObject obj = FObject.to( json);
+			if (obj != null) {
+				hqm.setVersion( FileVersion.valueOf( FValue.toString( obj.get( IToken.HQM_VERSION))));
+				hqm.mPassCode = FValue.toString( obj.get( IToken.HQM_PASSCODE));
+				hqm.mDescr = FValue.toString( obj.get( IToken.HQM_DECRIPTION));
+				readQuestSetCat( hqm.mQuestSetCat, FArray.to( obj.get( IToken.HQM_QUEST_SET_CAT)));
+				readReputations( hqm.mReputationCat, FArray.to( obj.get( IToken.HQM_REPUTATION_CAT)));
+				readQuests( hqm, FArray.to( obj.get( IToken.HQM_QUESTS)));
+				readGroupTiers( hqm.mGroupTierCat, FArray.to( obj.get( IToken.HQM_GROUP_TIER_CAT)));
+				readGroup( hqm.mGroupCat, FArray.to( obj.get( IToken.HQM_GROUP_CAT)));
+				updateRequirements( hqm);
+				updateOptionLinks( hqm);
+				updatePosts( hqm);
+			}
+		}
+		catch (IOException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 	}
 

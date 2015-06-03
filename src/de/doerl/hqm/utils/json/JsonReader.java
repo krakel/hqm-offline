@@ -13,29 +13,15 @@ public class JsonReader {
 		mParser = new Tokenizer( in);
 	}
 
-	private static IJson read( BufferedReader in) throws IOException {
-		try {
-			JsonReader rdr = new JsonReader( in);
-			return rdr.doAll();
-		}
-		finally {
-			try {
-				in.close();
-			}
-			catch (IOException ex) {
-			}
-		}
+	public JsonReader( InputStream in) throws IOException {
+		this( new BufferedReader( new InputStreamReader( in, "UTF-8")));
 	}
 
-	public static IJson read( InputStream in) throws IOException {
-		return read( new InputStreamReader( in, "UTF-8"));
+	public JsonReader( Reader in) throws IOException {
+		this( new BufferedReader( in));
 	}
 
-	public static IJson read( Reader in) throws IOException {
-		return read( new BufferedReader( in));
-	}
-
-	private IJson doAll() throws IOException {
+	public IJson doAll() throws IOException {
 		switch (mParser.nextToken()) {
 			case EOF:
 				return new FValue( "");

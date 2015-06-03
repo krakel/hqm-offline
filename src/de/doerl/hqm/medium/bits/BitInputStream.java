@@ -23,12 +23,6 @@ class BitInputStream {
 		mVersion = FileVersion.get( readByte());
 	}
 
-	public void close() throws IOException {
-		if (mInput != null) {
-			mInput.close();
-		}
-	}
-
 	public boolean contains( FileVersion other) {
 		return mVersion.ordinal() >= other.ordinal();
 	}

@@ -98,13 +98,7 @@ abstract class AHandler implements IHandler {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		finally {
-			try {
-				if (jar != null) {
-					jar.close();
-				}
-			}
-			catch (IOException ex) {
-			}
+			Utils.closeIgnore( jar);
 		}
 	}
 
@@ -136,13 +130,7 @@ abstract class AHandler implements IHandler {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-			}
-			catch (Exception ex) {
-			}
+			Utils.closeIgnore( is);
 		}
 		return img;
 	}

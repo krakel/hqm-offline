@@ -37,7 +37,6 @@ import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
-import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.utils.json.JsonWriter;
 
@@ -46,11 +45,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 
 	public Serializer( OutputStream os) throws IOException {
 		mDst = new JsonWriter( os);
-	}
-
-	@Override
-	public void closeDst() {
-		mDst.close();
 	}
 
 	private void doTask( AQuestTask task) {
@@ -66,6 +60,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		task.forEachRequirement( this, mDst);
 		mDst.endArray();
 		mDst.endObject();
+	}
+
+	public void flushDst() {
+		mDst.flush();
 	}
 
 	@Override
@@ -313,7 +311,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public void writeDst( FHqm hqm, ICallback cb) {
+	public void writeDst( FHqm hqm) {
 		mDst.beginObject();
 		mDst.print( HQM_VERSION, hqm.getVersion());
 		mDst.printIf( HQM_PASSCODE, hqm.mPassCode);

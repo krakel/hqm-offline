@@ -30,7 +30,6 @@ public class OpenFile extends AOpenFile {
 	public void action( Window frame) {
 		String path = getLastOpen();
 		JFileChooser chooser = createChooser( path);
-//		chooser.setFileFilter( null);
 		File file = selectOpenDialog( frame, chooser);
 		if (file != null) {
 			verifyLastOpen( file);

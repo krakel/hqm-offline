@@ -1,7 +1,5 @@
 package de.doerl.hqm.ui.tree;
 
-import java.io.File;
-
 import de.doerl.hqm.base.FHqm;
 
 class MainNode extends ANode {
@@ -18,7 +16,6 @@ class MainNode extends ANode {
 
 	@Override
 	public String toString() {
-		File src = mHqm.getSource();
-		return String.valueOf( src != null ? src.getPath() : "new hqm");
+		return mHqm.mName != null ? mHqm.mName : "new hqm";
 	}
 }

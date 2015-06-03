@@ -11,6 +11,7 @@ import java.util.Vector;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.ui.EditMain;
+import de.doerl.hqm.utils.Utils;
 
 public class HQMFile implements IWriter {
 	FileVersion mVersion;
@@ -72,9 +73,7 @@ public class HQMFile implements IWriter {
 			fis.read( buff);
 		}
 		finally {
-			if (fis != null) {
-				fis.close();
-			}
+			Utils.closeIgnore( fis);
 		}
 		return new BitInputStream( new ByteArrayInputStream( buff));
 	}
@@ -87,9 +86,7 @@ public class HQMFile implements IWriter {
 		//			cf.writeTo( out);
 		//		}
 		//		finally {
-		//			if (out != null) {
-		//				out.close();
-		//			}
+		//			Utils.closeIgnore( out);
 		//		}
 	}
 
@@ -101,9 +98,7 @@ public class HQMFile implements IWriter {
 			result = new HQMFile( os);
 		}
 		finally {
-			if (os != null) {
-				os.close();
-			}
+			Utils.closeIgnore( os);
 		}
 		return result;
 	}
@@ -120,14 +115,7 @@ public class HQMFile implements IWriter {
 			ex.printStackTrace();
 		}
 		finally {
-			if (os != null) {
-				try {
-					os.close();
-				}
-				catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
+			Utils.closeIgnore( os);
 		}
 	}
 

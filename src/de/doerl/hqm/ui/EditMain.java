@@ -25,8 +25,9 @@ public class EditMain {
 
 	public static void createTest() {
 		try {
-			FHqm hqm = new FHqm( new File( PATH_SRC));
-			InputStream is = MediumUtils.getSource( hqm.getSource());
+			File src = new File( PATH_SRC);
+			FHqm hqm = new FHqm( SOURCE);
+			InputStream is = MediumUtils.getSource( src);
 			MediaManager.get( "bit").testLoad( hqm, is);
 			FileOutputStream os = new FileOutputStream( PATH_DST);
 			MediaManager.get( "json").testSave( hqm, os);

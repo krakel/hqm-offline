@@ -33,13 +33,7 @@ public class NbtWriter {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		finally {
-			if (os != null) {
-				try {
-					os.close();
-				}
-				catch (IOException ex) {
-				}
-			}
+			Utils.closeIgnore( os);
 		}
 		return dst.toByteArray();
 	}

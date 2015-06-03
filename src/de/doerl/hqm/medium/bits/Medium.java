@@ -24,42 +24,81 @@ public class Medium implements IMedium {
 	public static final String MEDIUM = "bit";
 	public static final String HQM_PATH = "hqm_path";
 
+	static String nameOfOriginal( File src) {
+		String name = src.getName();
+		if (!"quests.hqm".equals( name)) {
+			return null;
+		}
+		File p1 = src.getParentFile();
+		if (p1 == null || !"hqm".equals( p1.getName())) {
+			return null;
+		}
+		File p2 = p1.getParentFile();
+		if (p2 == null || !"config".equals( p2.getName())) {
+			return null;
+		}
+		File p3 = p2.getParentFile();
+		if (p3 == null) {
+			return null;
+		}
+		return p3.getName();
+	}
+
 	static File normalize( File choose) {
 		return MediumUtils.normalize( choose, ".hqm");
 	}
 
-	static boolean readHqm( FHqm hqm, InputStream is, ICallback cb) {
-		try {
-			Parser parser = new Parser( is);
-			try {
-				parser.readSrc( hqm, cb);
-				return true;
+	static File protectOriginal( File src) {
+		if ("quests.hqm".equals( src.getName()) && src.exists()) {
+			File protect = new File( src.getParentFile(), "quests.hqm.orig");
+			if (protect.exists()) {
+				return null;
 			}
-			finally {
-				parser.closeSrc();
+			if (src.renameTo( protect)) {
+				return protect;
 			}
+			Utils.log( LOGGER, Level.SEVERE, "cannot rename original hqm file {0}", src);
 		}
-		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		return false;
+		return null;
 	}
 
-	static boolean writeHQM( FHqm hqm, OutputStream os, ICallback cb) {
-		try {
-			Serializer serializer = new Serializer( os);
-			try {
-				serializer.writeDst( hqm, cb);
-				return true;
+	static void readHqm( FHqm hqm, InputStream is) throws IOException {
+		Parser parser = new Parser( is);
+		parser.readSrc( hqm);
+	}
+
+	static void restoreOriginal( File old) {
+		if (old != null && old.exists()) {
+			File orig = new File( old.getParentFile(), "quests.hqm");
+			if (orig.exists()) {
+				orig.delete();
 			}
-			finally {
-				serializer.closeDst();
+			if (!old.renameTo( orig)) {
+				Utils.log( LOGGER, Level.SEVERE, "cannot restore original hqm file {0}", old);
 			}
 		}
-		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
+	}
+
+	static File suggest( String name) {
+		return name != null ? new File( name + ".hqm") : null;
+	}
+
+	static String toName( File src) {
+		if (src == null) {
+			return "unknown";
 		}
-		return false;
+		String orig = nameOfOriginal( src);
+		if (orig != null) {
+			return orig;
+		}
+		String name = src.getName();
+		int pos = name.lastIndexOf( '.');
+		return pos < 0 ? name : name.substring( 0, pos);
+	}
+
+	static void writeHQM( FHqm hqm, OutputStream os) throws IOException {
+		Serializer serializer = new Serializer( os);
+		serializer.writeDst( hqm);
 	}
 
 	@Override
@@ -88,12 +127,12 @@ public class Medium implements IMedium {
 	}
 
 	@Override
-	public void testLoad( FHqm hqm, InputStream is) {
-		readHqm( hqm, is, null);
+	public void testLoad( FHqm hqm, InputStream is) throws IOException {
+		readHqm( hqm, is);
 	}
 
 	@Override
-	public void testSave( FHqm hqm, OutputStream os) {
-		writeHQM( hqm, os, null);
+	public void testSave( FHqm hqm, OutputStream os) throws IOException {
+		writeHQM( hqm, os);
 	}
 }

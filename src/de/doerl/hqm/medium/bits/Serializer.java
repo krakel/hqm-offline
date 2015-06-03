@@ -34,21 +34,17 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.SizeOf;
-import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.TriggerType;
 
 class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
+//	private static final Logger LOGGER = Logger.getLogger( Serializer.class.getName());
 	private BitOutputStream mDst;
 
 	public Serializer( OutputStream out) throws IOException {
 		mDst = new BitOutputStream( out);
-	}
-
-	@Override
-	public void closeDst() {
 	}
 
 	protected Object doTask( AQuestTask task) {
@@ -270,7 +266,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 	}
 
 	@Override
-	public void writeDst( FHqm hqm, ICallback cb) {
+	public void writeDst( FHqm hqm) {
 		mDst.setVersion( hqm.getVersion());
 		if (mDst.contains( FileVersion.LOCK)) {
 			mDst.writeString( hqm.mPassCode, DataBitHelper.PASS_CODE);

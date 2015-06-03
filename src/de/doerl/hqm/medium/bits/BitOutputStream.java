@@ -20,12 +20,6 @@ class BitOutputStream {
 		mOutput = out;
 	}
 
-	public void close() throws IOException {
-		if (mOutput != null) {
-			mOutput.close();
-		}
-	}
-
 	public boolean contains( FileVersion other) {
 		return mVersion.ordinal() >= other.ordinal();
 	}

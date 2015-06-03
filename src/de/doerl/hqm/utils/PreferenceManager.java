@@ -164,9 +164,7 @@ public class PreferenceManager {
 				BaseDefaults.hashLoad( in, sPrefs);
 			}
 			finally {
-				if (in != null) {
-					in.close();
-				}
+				Utils.closeIgnore( in);
 			}
 		}
 		catch (IOException ex) {
@@ -195,9 +193,7 @@ public class PreferenceManager {
 					BaseDefaults.hashStore( out, sPrefs);
 				}
 				finally {
-					if (out != null) {
-						out.close();
-					}
+					Utils.closeIgnore( out);
 				}
 				if (oldFile != null) {
 					oldFile.delete();

@@ -7,6 +7,8 @@ import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
@@ -103,6 +105,16 @@ public class Utils {
 				log( SELF_LOGGER, Level.WARNING, "Utils.integer.max");
 				System.setProperty( name, Integer.toString( max));
 			}
+		}
+	}
+
+	public static void closeIgnore( Closeable stream) {
+		try {
+			if (stream != null) {
+				stream.close();
+			}
+		}
+		catch (IOException ex) {
 		}
 	}
 

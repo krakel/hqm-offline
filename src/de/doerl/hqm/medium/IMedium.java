@@ -1,5 +1,6 @@
 package de.doerl.hqm.medium;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -19,7 +20,7 @@ public interface IMedium extends IDispatcher {
 
 	IRefreshListener getSaveAs( ICallback cb);
 
-	void testLoad( FHqm hqm, InputStream is);
+	void testLoad( FHqm hqm, InputStream is) throws IOException;
 
-	void testSave( FHqm hqm, OutputStream os);
+	void testSave( FHqm hqm, OutputStream os) throws IOException;
 }

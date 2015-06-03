@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 
 import de.doerl.hqm.utils.Helper;
+import de.doerl.hqm.utils.Utils;
 
 public class NBTTagCompound {
 	byte[] mBytes;
@@ -31,14 +32,7 @@ public class NBTTagCompound {
 			ex.printStackTrace();
 		}
 		finally {
-			if (is != null) {
-				try {
-					is.close();
-				}
-				catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
+			Utils.closeIgnore( os);
 		}
 		return os.toByteArray();
 	}

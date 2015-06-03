@@ -118,7 +118,8 @@ public class BaseDefaults {
 	}
 
 	static void hashLoad( FileInputStream in, PreferenceHash prefs) throws IOException {
-		IJson mJson = JsonReader.read( in);
+		JsonReader rdr = new JsonReader( in);
+		IJson mJson = rdr.doAll();
 		FObject obj = FObject.to( mJson);
 		if (obj != null) {
 			for (String key : obj) {
@@ -174,6 +175,6 @@ public class BaseDefaults {
 			}
 		}
 		dst.endObject();
-		dst.close();
+		dst.flush();
 	}
 }

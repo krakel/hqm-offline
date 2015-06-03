@@ -58,14 +58,6 @@ public class JsonWriter {
 		}
 	}
 
-	public void close() {
-		if (mTabs.isNL()) {
-			mOut.write( NL);
-		}
-		mOut.flush();
-		mOut.close();
-	}
-
 	public void endArray() {
 		mTabs.dec();
 		checkNL();
@@ -78,6 +70,13 @@ public class JsonWriter {
 		checkNL();
 		mOut.print( "}");
 		writeNL();
+	}
+
+	public void flush() {
+		if (mTabs.isNL()) {
+			mOut.write( NL);
+		}
+		mOut.flush();
 	}
 
 	public void print( String key, boolean value) {

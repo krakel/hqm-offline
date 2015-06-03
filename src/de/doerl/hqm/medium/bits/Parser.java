@@ -46,7 +46,6 @@ import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.SettingOfIdx;
-import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.DataBitHelper;
@@ -83,18 +82,6 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			mPosts.put( req, p);
 		}
 		p.add( quest);
-	}
-
-	@Override
-	public void closeSrc() {
-		try {
-			if (mSrc != null) {
-				mSrc.close();
-			}
-		}
-		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
 	}
 
 	private void doItemTask( AQuestTaskItems task) {
@@ -342,7 +329,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		}
 	}
 
-	public void readSrc( FHqm hqm, ICallback cb) {
+	public void readSrc( FHqm hqm) {
 		hqm.setVersion( mSrc.mVersion);
 		if (mSrc.contains( FileVersion.LOCK)) {
 			hqm.mPassCode = mSrc.readString( DataBitHelper.PASS_CODE);

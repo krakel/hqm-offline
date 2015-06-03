@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -16,10 +14,9 @@ import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.IMediumWorker;
 import de.doerl.hqm.medium.IRefreshListener;
 import de.doerl.hqm.medium.MediumUtils;
-import de.doerl.hqm.utils.Utils;
 
 public class Medium implements IMedium {
-	private static final Logger LOGGER = Logger.getLogger( Medium.class.getName());
+//	private static final Logger LOGGER = Logger.getLogger( Medium.class.getName());
 	public static final FileFilter FILTER = new FileNameExtensionFilter( "JSON file", "json");
 	public static final String MEDIUM = "json";
 	public static final String JSON_PATH = "json_path";
@@ -28,38 +25,28 @@ public class Medium implements IMedium {
 		return MediumUtils.normalize( choose, ".json");
 	}
 
-	static boolean readHqm( FHqm hqm, InputStream is, ICallback cb) {
-		try {
-			Parser parser = new Parser( is);
-			try {
-				parser.readSrc( hqm, cb);
-				return true;
-			}
-			finally {
-				parser.closeSrc();
-			}
-		}
-		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		return false;
+	static void readHqm( FHqm hqm, InputStream is) throws IOException {
+		Parser parser = new Parser( is);
+		parser.readSrc( hqm);
 	}
 
-	static boolean writeHQM( FHqm hqm, OutputStream os, ICallback cb) {
-		try {
-			Serializer serializer = new Serializer( os);
-			try {
-				serializer.writeDst( hqm, cb);
-				return true;
-			}
-			finally {
-				serializer.closeDst();
-			}
+	static File suggest( String name) {
+		return name != null ? new File( name + ".json") : null;
+	}
+
+	static String toName( File src) {
+		if (src == null) {
+			return "unknown";
 		}
-		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		return false;
+		String name = src.getName();
+		int pos = name.lastIndexOf( '.');
+		return pos < 0 ? name : name.substring( 0, pos);
+	}
+
+	static void writeHQM( FHqm hqm, OutputStream os) throws IOException {
+		Serializer serializer = new Serializer( os);
+		serializer.writeDst( hqm);
+		serializer.flushDst();
 	}
 
 	@Override
@@ -88,12 +75,12 @@ public class Medium implements IMedium {
 	}
 
 	@Override
-	public void testLoad( FHqm hqm, InputStream is) {
-		readHqm( hqm, is, null);
+	public void testLoad( FHqm hqm, InputStream is) throws IOException {
+		readHqm( hqm, is);
 	}
 
 	@Override
-	public void testSave( FHqm hqm, OutputStream os) {
-		writeHQM( hqm, os, null);
+	public void testSave( FHqm hqm, OutputStream os) throws IOException {
+		writeHQM( hqm, os);
 	}
 }
