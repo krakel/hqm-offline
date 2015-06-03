@@ -47,14 +47,19 @@ public class NbtWriter {
 	public static byte[] write( String src) {
 		if (src != null) {
 			try {
-				NbtWriter wrt = new NbtWriter( src);
-				byte[] res = wrt.doAll();
+				byte[] res = write0( src);
 				return compress( res);
 			}
 			catch (IOException ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
 			}
 		}
 		return null;
+	}
+
+	static byte[] write0( String src) throws IOException {
+		NbtWriter wrt = new NbtWriter( src);
+		return wrt.doAll();
 	}
 
 	private byte[] doAll() throws IOException {
@@ -63,7 +68,7 @@ public class NbtWriter {
 				return new byte[0];
 			case EQUAL:
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				doCompound( os);
+				doPair( os);
 				doEOF();
 				return os.toByteArray();
 			default:
@@ -77,12 +82,17 @@ public class NbtWriter {
 		boolean loop = false;
 		do {
 			switch (mParser.nextToken()) {
-				case LEFT_BRACKET:
-					doValue( inner, tag);
+				case COMMA:
+					doValue( inner, tag, mParser.nextValue());
 					++size;
-					loop = doNext();
+					loop = true;
 					break;
 				case RIGHT_BRACKET:
+					String val = mParser.nextValue();
+					if (!"".equals( val)) {
+						doValue( inner, tag, val);
+						++size;
+					}
 					loop = false;
 					break;
 				default:
@@ -94,36 +104,70 @@ public class NbtWriter {
 		os.write( inner.toByteArray());
 	}
 
-	private void doArrList( ByteArrayOutputStream os) throws IOException {
-		int tag = getTag();
-		os.write( tag);
-		doArray( os, tag);
-	}
-
 	private void doCompound( ByteArrayOutputStream os) throws IOException {
 		boolean loop = false;
 		do {
-			String name = mParser.nextValue();
-			writeString( os, name);
 			switch (mParser.nextToken()) {
-				case LEFT_BRACKET:
-					int tag = getTag();
-					os.write( tag);
-					doValue( os, tag);
+				case EQUAL:
+					doPair( os);
 					loop = doNext();
 					break;
+				case RIGHT_BRACKET:
+					loop = false;
+					break;
 				default:
-					throw new IOException( "wrong nbt pair");
+					throw new IOException( "wrong start pair");
 			}
 		}
 		while (loop);
-		os.write( 0);
 	}
 
 	private void doEOF() throws IOException {
 		if (mParser.nextToken() != Token.EOF) {
 			throw new IOException( "wrong eof");
 		}
+	}
+
+	private void doList( ByteArrayOutputStream os) throws IOException {
+		ByteArrayOutputStream inner = new ByteArrayOutputStream();
+		int size = 0;
+		int tag = 0;
+		boolean loop = false;
+		do {
+			switch (mParser.nextToken()) {
+				case LEFT_BRACKET:
+					tag = getTag();
+					switch (tag) {
+						case 7: // Byte-Array
+							doArray( inner, 1);
+							break;
+						case 9: // List
+							doList( inner);
+							break;
+						case 10: // Compound
+							doCompound( inner);
+							writeByte( inner, 0);
+							break;
+						case 11: // Int-Array
+							doArray( inner, 3);
+							break;
+						default:
+							doValueEnd( inner, tag);
+					}
+					++size;
+					loop = doNext(); // COMMA
+					break;
+				case RIGHT_BRACKET:
+					loop = false;
+					break;
+				default:
+					throw new IOException( "wrong byte array");
+			}
+		}
+		while (loop);
+		writeByte( os, tag);
+		writeInt( os, size);
+		os.write( inner.toByteArray());
 	}
 
 	private boolean doNext() throws IOException {
@@ -134,55 +178,77 @@ public class NbtWriter {
 			case EOF:
 				return false;
 			default:
-				throw new IOException( "wrong nbt pair");
+				throw new IOException( "wrong end pair");
 		}
 	}
 
-	private void doValue( ByteArrayOutputStream os, int tag) throws IOException {
-		switch (mParser.nextToken()) {
-			case EQUAL:
-				doCompound( os);
+	private void doPair( ByteArrayOutputStream os) throws IOException {
+		String name = mParser.nextValue();
+		int tag = doValueBegin();
+		writeByte( os, tag);
+		writeKey( os, name);
+		switch (tag) {
+			case 7: // Byte-Array
+				doArray( os, 1);
 				break;
-			case RIGHT_BRACKET:
-				switch (tag) {
-					case 1: // Byte
-						writeByte( os, Byte.parseByte( mParser.nextValue()));
-						break;
-					case 2: // Short
-						writeShort( os, Short.parseShort( mParser.nextValue()));
-						break;
-					case 3: // Int
-						writeInt( os, Integer.parseInt( mParser.nextValue()));
-						break;
-					case 4: // Long
-						writeLong( os, Long.parseLong( mParser.nextValue()));
-						break;
-					case 5: // Float
-						writeInt( os, Float.floatToIntBits( Float.parseFloat( mParser.nextValue())));
-						break;
-					case 6: // Double
-						writeLong( os, Double.doubleToLongBits( Double.parseDouble( mParser.nextValue())));
-						break;
-					case 7: // Byte-Array
-						doArray( os, 1);
-						break;
-					case 8: // String
-						writeString( os, mParser.nextValue());
-						break;
-					case 9: // List
-						doArrList( os);
-						break;
-					case 10: // Compound
-						break;
-					case 11: // Int-Array
-						doArray( os, 3);
-						break;
-					default:
-						throw new IOException( "wrong nbt tag");
-				}
+			case 9: // List
+				doList( os);
+				break;
+			case 10: // Compound
+				doCompound( os);
+				writeByte( os, 0);
+				break;
+			case 11: // Int-Array
+				doArray( os, 3);
 				break;
 			default:
-				throw new IOException( "wrong nbt pair");
+				doValueEnd( os, tag);
+		}
+	}
+
+	private void doValue( ByteArrayOutputStream os, int tag, String val) throws IOException {
+		switch (tag) {
+			case 1: // Byte
+				writeByte( os, Byte.parseByte( val));
+				break;
+			case 2: // Short
+				writeShort( os, Short.parseShort( val));
+				break;
+			case 3: // Int
+				writeInt( os, Integer.parseInt( val));
+				break;
+			case 4: // Long
+				writeLong( os, Long.parseLong( val));
+				break;
+			case 5: // Float
+				writeInt( os, Float.floatToIntBits( Float.parseFloat( val)));
+				break;
+			case 6: // Double
+				writeLong( os, Double.doubleToLongBits( Double.parseDouble( val)));
+				break;
+			case 8: // String
+				writeString( os, val);
+				break;
+			default:
+				throw new IOException( "wrong value tag");
+		}
+	}
+
+	private int doValueBegin() throws IOException {
+		if (mParser.nextToken() == Token.LEFT_BRACKET) {
+			return getTag();
+		}
+		else {
+			throw new IOException( "wrong start value");
+		}
+	}
+
+	private void doValueEnd( ByteArrayOutputStream os, int tag) throws IOException {
+		if (mParser.nextToken() == Token.RIGHT_BRACKET) {
+			doValue( os, tag, mParser.nextValue());
+		}
+		else {
+			throw new IOException( "wrong end value");
 		}
 	}
 
@@ -236,6 +302,12 @@ public class NbtWriter {
 		writeShort( os, val);
 	}
 
+	private void writeKey( ByteArrayOutputStream os, String val) throws IOException {
+		byte[] bb = val.getBytes();
+		writeShort( os, bb.length);
+		os.write( bb);
+	}
+
 	private void writeLong( ByteArrayOutputStream os, long val) {
 		writeInt( os, (int) (val >> 32));
 		writeInt( os, (int) val);
@@ -247,8 +319,14 @@ public class NbtWriter {
 	}
 
 	private void writeString( ByteArrayOutputStream os, String val) throws IOException {
-		int len = val.length();
-		writeShort( os, len);
-		os.write( val.getBytes());
+		byte[] bb = val.getBytes();
+		int len = bb.length - 2;
+		if (len >= 0) {
+			writeShort( os, len);
+			os.write( bb, 1, len);
+		}
+		else {
+			throw new IOException( "wrong string");
+		}
 	}
 }

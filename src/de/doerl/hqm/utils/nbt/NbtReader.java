@@ -19,7 +19,7 @@ public class NbtReader {
 		mSrc = src;
 	}
 
-	private static byte[] decompress( byte[] bytes) {
+	static byte[] decompress( byte[] bytes) {
 		ByteArrayOutputStream dst = new ByteArrayOutputStream();
 		GZIPInputStream is = null;
 		try {
@@ -47,23 +47,29 @@ public class NbtReader {
 
 	public static String read( byte[] bytes) {
 		byte[] src = decompress( bytes);
+		return read0( src);
+	}
+
+	static String read0( byte[] src) {
 		NbtReader rdr = new NbtReader( src);
 		rdr.doAll( 0);
 		return rdr.toString();
 	}
 
 	private int doAll( int pos) {
+		boolean comma = false;
 		while (pos >= 0 && pos < mSrc.length) {
 			int tag = Helper.getByte( mSrc, pos);
 			pos += 1;
 			if (tag == 0) {
 				break;
 			}
-			pos = doKey( tag, pos);
-			pos = doValue( tag, pos);
-			if (tag != 10 && pos < mSrc.length) {
+			if (comma) {
 				mSB.append( ", ");
 			}
+			pos = doKey( tag, pos);
+			pos = doValue( tag, pos);
+			comma = true;
 		}
 		return pos;
 	}
@@ -94,9 +100,7 @@ public class NbtReader {
 		return pos;
 	}
 
-	private int doArrList( int pos) {
-		int tag = Helper.getByte( mSrc, pos);
-		pos += 1;
+	private int doArrList( int pos, int tag) {
 		int count = Helper.getInt( mSrc, pos);
 		pos += 4;
 		for (int i = 0; i < count; ++i) {
@@ -129,10 +133,21 @@ public class NbtReader {
 		return pos;
 	}
 
+	private int doList( int pos) {
+		int tag = Helper.getByte( mSrc, pos);
+		pos += 1;
+//		mSB.append( String.format( "LIST-%d( ", tag));
+		mSB.append( "LIST( ");
+		pos = doArrList( pos, tag);
+		mSB.append( " )");
+		return pos;
+	}
+
 	private int doString( int pos) {
 		int len = Helper.getShort( mSrc, pos);
 		pos += 2;
-		mSB.append( Helper.getString( mSrc, pos, len));
+		String str = Helper.getString( mSrc, pos, len);
+		mSB.append( str.replace( "'", "\\'"));
 		return pos + len;
 	}
 
@@ -182,14 +197,12 @@ public class NbtReader {
 				mSB.append( " )");
 				break;
 			case 8: // String
-				mSB.append( "STRING(");
+				mSB.append( "STRING('");
 				pos = doString( pos);
-				mSB.append( ")");
+				mSB.append( "')");
 				break;
 			case 9: // List
-				mSB.append( "LIST( ");
-				pos = doArrList( pos);
-				mSB.append( " )");
+				pos = doList( pos);
 				break;
 			case 10: // Compound
 				mSB.append( "COMPOUND( ");

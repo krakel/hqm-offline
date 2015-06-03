@@ -22,6 +22,9 @@ class Tokenizer {
 		while (true) {
 			char c = getNext();
 			switch (c) {
+				case '\'':
+					readString();
+					break;
 				case '=':
 					return Token.EQUAL;
 				case ',':
@@ -38,6 +41,15 @@ class Tokenizer {
 	}
 
 	public String nextValue() {
-		return mIn.substring( mStart, mPos).trim();
+		return mIn.substring( mStart, mPos - 1).trim();
+	}
+
+	private void readString() {
+		int l = 0;
+		int c = getNext();
+		while (c >= 0 && (l == '\\' || c != '\'')) {
+			l = c;
+			c = getNext();
+		}
 	}
 }

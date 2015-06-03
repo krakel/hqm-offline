@@ -15,7 +15,7 @@ public class BaseDefaults {
 	};
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
-		{ STACKTRC, Boolean.FALSE },
+		{ STACKTRC, Boolean.TRUE },
 //		{ MINECRAFT_DIR, System.getProperty( "user.home") },
 //		{ MOD_DIR, System.getProperty( "user.home") },
 		{ FILE_OPEN_DIR, System.getProperty( "user.home") },
