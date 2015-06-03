@@ -1,5 +1,7 @@
 package de.doerl.hqm.ui.tree;
 
+import java.net.URI;
+
 import de.doerl.hqm.base.FHqm;
 
 class MainNode extends ANode {
@@ -16,6 +18,7 @@ class MainNode extends ANode {
 
 	@Override
 	public String toString() {
-		return String.valueOf( mHqm.getURI().getPath());
+		URI uri = mHqm.getURI();
+		return String.valueOf( uri != null ? uri.getPath() : "");
 	}
 }

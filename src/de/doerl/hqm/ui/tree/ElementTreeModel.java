@@ -9,6 +9,7 @@ import javax.swing.tree.MutableTreeNode;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
+import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FGroup;
@@ -60,6 +61,12 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 
 	MutableTreeNode createNode( MutableTreeNode parent, ANode elem) {
 		MutableTreeNode node = new ElementTreeNode( elem);
+		insertNodeInto( node, parent, parent.getChildCount());
+		return node;
+	}
+
+	MutableTreeNode createNode( MutableTreeNode parent, ANode elem, boolean allowsChildren) {
+		MutableTreeNode node = new ElementTreeNode( elem, allowsChildren);
 		insertNodeInto( node, parent, parent.getChildCount());
 		return node;
 	}
@@ -136,11 +143,20 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		}
 
 		@Override
+		protected MutableTreeNode doMember( AMember<? extends ANamed> member, ElementTreeModel model) {
+			return doNamed( member, model, false);
+		}
+
+		@Override
 		protected MutableTreeNode doNamed( ANamed named, ElementTreeModel model) {
+			return doNamed( named, model, true);
+		}
+
+		private MutableTreeNode doNamed( ANamed named, ElementTreeModel model, boolean allowsChildren) {
 			MutableTreeNode node = model.getNode( named);
 			if (node == null) {
 				MutableTreeNode parent = named.getHierarchy().accept( this, model);
-				node = model.createNode( parent, new NamedNode( named));
+				node = model.createNode( parent, new NamedNode( named), allowsChildren);
 			}
 			return node;
 		}
@@ -157,12 +173,12 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 
 		@Override
 		public MutableTreeNode forQuest( FQuest quest, ElementTreeModel model) {
-			MutableTreeNode node = model.getNode( quest);
-			if (node == null) {
-				MutableTreeNode parent = quest.mQuestSet.accept( this, model);
-				node = model.createNode( parent, new NamedNode( quest));
-			}
-			return node;
+			return doNamed( quest, model, false);
+		}
+
+		@Override
+		public MutableTreeNode forQuestSet( FQuestSet set, ElementTreeModel model) {
+			return doNamed( set, model, true);
 		}
 	}
 
