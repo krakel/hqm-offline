@@ -88,7 +88,7 @@ class EntityHQM extends AEntity<FHqm> {
 		private static final long serialVersionUID = -8367056239473171639L;
 
 		public TextBoxAction() {
-			super( "entity.textbox");
+			super( "entity.hqm.desc");
 			setEnabled( true);
 		}
 

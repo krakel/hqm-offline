@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
@@ -45,6 +46,7 @@ public class EditView extends JPanel implements IModelListener {
 		setOpaque( false);
 //		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 		setCenter( mEmpty);
+		ToolTipManager.sharedInstance().setDismissDelay( Integer.MAX_VALUE);
 	}
 
 	private static GridBagConstraints createConstraints() {

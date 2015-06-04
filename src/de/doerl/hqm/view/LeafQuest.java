@@ -3,11 +3,14 @@ package de.doerl.hqm.view;
 import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
+import javax.swing.ToolTipManager;
 
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FQuest;
+import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.mods.ImageLoader;
 
@@ -33,6 +36,7 @@ class LeafQuest extends JLabel {
 		setOpaque( false);
 		setBorder( null);
 		addMouseListener( mHandler);
+		ToolTipManager.sharedInstance().registerComponent( this);
 	}
 
 	public void addClickListener( ActionListener l) {
@@ -41,6 +45,38 @@ class LeafQuest extends JLabel {
 
 	public FQuest getQuest() {
 		return mQuest;
+	}
+
+	@Override
+	public String getToolTipText( MouseEvent event) {
+		StringBuffer sb = new StringBuffer();
+		sb.append( "<html><body bgcolor=#202020 text=#FFFFFF>");
+		sb.append( String.format( "<div align=center>%s<br>", mQuest.mName));
+		if (!mQuest.isFree()) {
+			sb.append( "<div align=left style='color:#808080'>Locked Quest<br>");
+		}
+		int s1 = mQuest.mRequirements.size();
+		if (s1 > 0) {
+			sb.append( String.format( "<div align=left style='color:#808080'>Requires %d Quest%s to be completed.<br>", s1, s1 > 1 ? "s" : ""));
+			sb.append( String.format( "<div align=left style='color:#FFC0CB'>Requires %d Quest%s to be completed elsewhere.<br>", 0, ""));
+		}
+		int s2 = SizeOf.getTasks( mQuest);
+		if (s2 > 0) {
+			sb.append( String.format( "<div align=left style='color:#00FFFF'>0/%d completed tasks.<br>", s2));
+		}
+		else {
+			sb.append( "<div align=left style='color:#FF0000'>This quest has no tasks!<br>");
+		}
+//		sb.append( "<table border=\"1\">");
+//		sb.append( "<tr><th>data type</th><th>type</th><th>port name</th></tr>");
+//		sb.append( "<tr><td>");
+//		sb.append( mQuest.mName);
+//		sb.append( "</td><td>input</td><td>");
+//		sb.append( "&nbsp;");
+//		sb.append( "</td></tr>");
+//		sb.append( "</table>");
+		sb.append( "</body></html>");
+		return sb.toString();
 	}
 
 	public void removeClickListener( ActionListener l) {

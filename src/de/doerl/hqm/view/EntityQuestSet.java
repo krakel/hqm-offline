@@ -373,7 +373,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		private static final long serialVersionUID = -3157466864218507113L;
 
 		public BigAction() {
-			super( "entity.big");
+			super( "entity.set.big");
 		}
 
 		@Override
@@ -392,7 +392,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		private static final long serialVersionUID = -433615690858042140L;
 
 		public DeleteAction() {
-			super( "entity.delete");
+			super( "entity.set.delete");
 			setEnabled( false);
 		}
 
@@ -412,7 +412,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		private static final long serialVersionUID = 4609401482942817956L;
 
 		public GridAction() {
-			super( "entity.grid");
+			super( "entity.set.grid");
 		}
 
 		@Override
@@ -428,7 +428,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		private static final long serialVersionUID = -8667850457674712679L;
 
 		public GroupAddAction() {
-			super( "entity.add");
+			super( "entity.set.add");
 		}
 
 		@Override
@@ -447,7 +447,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		private static final long serialVersionUID = 4085273836792762289L;
 
 		public GroupLinkAction() {
-			super( "entity.link");
+			super( "entity.set.link");
 		}
 
 		@Override
@@ -466,7 +466,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		private static final long serialVersionUID = -3157466864218507113L;
 
 		public GroupMoveAction() {
-			super( "entity.move");
+			super( "entity.set.move");
 		}
 
 		@Override
@@ -687,7 +687,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		private static final long serialVersionUID = -2650359366196052333L;
 
 		public SetAction() {
-			super( "entity.questSet");
+			super( "entity.set.down");
 			setEnabled( false);
 		}
 

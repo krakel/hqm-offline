@@ -259,7 +259,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = 3689054802238865168L;
 
 		public ChoiceAction() {
-			super( "entity.choice");
+			super( "entity.quest.choice");
 		}
 
 		@Override
@@ -276,7 +276,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = 2951694398168767124L;
 
 		public DescriptionAction() {
-			super( "entity.textbox");
+			super( "entity.quest.desc");
 		}
 
 		@Override
@@ -320,7 +320,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = -5444059797669279335L;
 
 		public RewardAction() {
-			super( "entity.reward");
+			super( "entity.quest.reward");
 		}
 
 		@Override
@@ -337,7 +337,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = 6724759221568885874L;
 
 		public TaskAddAction() {
-			super( "entity.add");
+			super( "entity.quest.add");
 		}
 
 		@Override
@@ -402,7 +402,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = 7223654325808174399L;
 
 		public TaskDeleteAction() {
-			super( "entity.delete");
+			super( "entity.quest.delete");
 		}
 
 		@Override
@@ -418,7 +418,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = -8367056239473171639L;
 
 		public TaskDescAction() {
-			super( "entity.textbox");
+			super( "entity.task.desc");
 		}
 
 		@Override
@@ -437,7 +437,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = 4960049088097085011L;
 
 		public TaskListAction() {
-			super( "entity.require");
+			super( "entity.quest.require");
 		}
 
 		@Override
@@ -482,7 +482,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = -3873930852720932846L;
 
 		public TaskNameAction() {
-			super( "entity.textfield");
+			super( "entity.task.title");
 		}
 
 		@Override
@@ -501,7 +501,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = -4857945141280262728L;
 
 		public TitleAction() {
-			super( "entity.textfield");
+			super( "entity.quest.title");
 		}
 
 		@Override

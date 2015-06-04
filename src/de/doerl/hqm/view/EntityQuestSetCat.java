@@ -187,7 +187,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		private static final long serialVersionUID = 6724759221568885874L;
 
 		public AddAction() {
-			super( "entity.add");
+			super( "entity.setcat.add");
 		}
 
 		@Override
@@ -204,7 +204,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		private static final long serialVersionUID = 7223654325808174399L;
 
 		public DeleteAction() {
-			super( "entity.delete");
+			super( "entity.setcat.delete");
 		}
 
 		@Override
@@ -220,7 +220,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		private static final long serialVersionUID = -8367056239473171639L;
 
 		public DescriptionAction() {
-			super( "entity.textbox");
+			super( "entity.setcat.desc");
 		}
 
 		@Override
@@ -279,7 +279,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		private static final long serialVersionUID = -3873930852720932846L;
 
 		public NameAction() {
-			super( "entity.textfield");
+			super( "entity.setcat.title");
 		}
 
 		@Override
