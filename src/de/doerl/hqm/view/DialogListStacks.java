@@ -83,9 +83,11 @@ public class DialogListStacks extends ADialog {
 		Box result = Box.createVerticalBox();
 		result.setAlignmentY( TOP_ALIGNMENT);
 		result.setPreferredSize( new Dimension( 230, 100));
+		result.setMaximumSize( new Dimension( 230, 100));
+		result.setMinimumSize( new Dimension( 230, 100));
 		mField.setFont( AEntity.FONT_NORMAL);
-		mField.setPreferredSize( new Dimension( 200, 2 * getFont().getSize()));
-		mField.setMaximumSize( new Dimension( Short.MAX_VALUE, 2 * getFont().getSize()));
+		mField.setPreferredSize( new Dimension( 230, 2 * getFont().getSize()));
+		mField.setMaximumSize( new Dimension( 230, 2 * getFont().getSize()));
 		mField.setAlignmentX( LEFT_ALIGNMENT);
 		result.add( mField);
 		result.add( Box.createVerticalStrut( GAP));
@@ -96,10 +98,12 @@ public class DialogListStacks extends ADialog {
 
 	@Override
 	protected void createMain() {
+		mMain.setPreferredSize( new Dimension( 450, 200));
 		mList = new JList<AStack>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
 		mList.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED));
 		mList.setCellRenderer( new Renderer());
+		mList.setMinimumSize( new Dimension( 100, 20));
 		mList.setPreferredSize( new Dimension( 200, 200));
 		mList.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
 		mMain.add( mList);

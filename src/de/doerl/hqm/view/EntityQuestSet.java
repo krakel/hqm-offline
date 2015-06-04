@@ -38,6 +38,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private FQuestSet mSet;
 	private LeafAbsolute mLeaf = new LeafAbsolute();
 	private JToolBar mTool = EditFrame.createToolBar();
+	private ABundleAction mNameAction = new NameAction();
 	private AToggleAction mGroupAdd = new GroupAddAction();
 	private AToggleAction mGroupMove = new GroupMoveAction();
 	private AToggleAction mGroupLink = new GroupLinkAction();
@@ -59,6 +60,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( createToggleButton( mGroupMove));
 		mTool.add( createToggleButton( mGroupLink));
 		mTool.addSeparator();
+		mTool.add( mNameAction);
 		mTool.add( createToggleButton( mBigAction));
 		mTool.add( mSetAction);
 		mTool.add( mDeleteAction);
@@ -247,6 +249,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	}
 
 	private void enableQuest( boolean value) {
+		mNameAction.setEnabled( value);
 		mBigAction.setEnabled( value);
 		mSetAction.setEnabled( value);
 		mDeleteAction.setEnabled( value);
@@ -704,6 +707,26 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 						quest.mQuestSet = set;
 						mCtrl.fireAdded( quest);
 					}
+				}
+			}
+		}
+	}
+
+	private final class NameAction extends ABundleAction {
+		private static final long serialVersionUID = -4857945141280262728L;
+
+		public NameAction() {
+			super( "entity.quest.title");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				FQuest quest = mActiv.getQuest();
+				String result = DialogTextField.update( quest.mName, mCtrl.getFrame());
+				if (result != null) {
+					quest.mName = result;
+					mCtrl.fireChanged( quest);
 				}
 			}
 		}

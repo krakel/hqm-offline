@@ -48,7 +48,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	private static final TaskBoxEmpty BOX_EMPTY = new TaskBoxEmpty();
 	private final FQuest mQuest;
 	private JToolBar mTool = EditFrame.createToolBar();
-	private ABundleAction mTitleAction = new TitleAction();
+	private ABundleAction mNameAction = new NameAction();
 	private ABundleAction mDescAction = new DescriptionAction();
 	private ABundleAction mRewardAction = new RewardAction();
 	private ABundleAction mChoiceAction = new ChoiceAction();
@@ -92,12 +92,12 @@ public class EntityQuest extends AEntity<FQuest> {
 				}
 			}
 		});
-		mTitle.addClickListener( mTitleAction);
+		mTitle.addClickListener( mNameAction);
 		mDesc.addClickListener( mDescAction);
 		mTaskDesc.addClickListener( mTaskDescAction);
 		mRewardList.addClickListener( mRewardAction);
 		mChoiceList.addClickListener( mChoiceAction);
-		mTool.add( mTitleAction);
+		mTool.add( mNameAction);
 		mTool.add( mDescAction);
 		mTool.addSeparator();
 		mTool.add( mRewardAction);
@@ -174,7 +174,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		DefaultListModel<ATaskBox> model = mBoxList.getModel();
 		for (int i = 0; i < model.size(); ++i) {
 			ATaskBox box = model.elementAt( i);
-			if (Utils.equals( box.getTask(), task)) {
+			if (Utils.equals0( box.getTask(), task)) {
 				return box;
 			}
 		}
@@ -284,6 +284,23 @@ public class EntityQuest extends AEntity<FQuest> {
 			String result = DialogTextBox.update( mQuest.mDescr, mCtrl.getFrame());
 			if (result != null) {
 				mQuest.mDescr = result;
+				mCtrl.fireChanged( mQuest);
+			}
+		}
+	}
+
+	private final class NameAction extends ABundleAction {
+		private static final long serialVersionUID = -4857945141280262728L;
+
+		public NameAction() {
+			super( "entity.quest.title");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			String result = DialogTextField.update( mQuest.mName, mCtrl.getFrame());
+			if (result != null) {
+				mQuest.mName = result;
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -493,23 +510,6 @@ public class EntityQuest extends AEntity<FQuest> {
 					mActiv.getTask().mName = result;
 					mCtrl.fireChanged( mQuest);
 				}
-			}
-		}
-	}
-
-	private final class TitleAction extends ABundleAction {
-		private static final long serialVersionUID = -4857945141280262728L;
-
-		public TitleAction() {
-			super( "entity.quest.title");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( mQuest.mName, mCtrl.getFrame());
-			if (result != null) {
-				mQuest.mName = result;
-				mCtrl.fireChanged( mQuest);
 			}
 		}
 	}

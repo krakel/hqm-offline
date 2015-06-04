@@ -289,7 +289,7 @@ public class EditFrame extends JFrame implements IModelListener {
 	private void init() {
 		setTitle( null);
 		setLocale( Locale.getDefault());
-		setSize( new Dimension( 1000, 600));
+		setSize( new Dimension( 950, 600));
 		setDefaultCloseOperation( DO_NOTHING_ON_CLOSE);
 		createPopupMenu();
 		updateToolBar();

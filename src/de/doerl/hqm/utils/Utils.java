@@ -184,6 +184,10 @@ public class Utils {
 		return obj2 == null;
 	}
 
+	public static <T> boolean equals0( T obj1, T obj2) {
+		return obj1 == obj2 || obj1 != null && obj1.equals( obj2);
+	}
+
 	public static Window findRoot( Component c) {
 		if (c == null) {
 			return null;
