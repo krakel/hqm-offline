@@ -35,11 +35,13 @@ public class EditView extends JPanel implements IModelListener {
 	private HashMap<ABase, AEntity<?>> mContent = new HashMap<>();
 	private EditController mCtrl;
 	private AEntity<?> mEmpty;
+	private volatile AEntity<?> mActive;
 
 	public EditView( EditController ctrl) {
 		setLayout( new GridBagLayout());
 		mCtrl = ctrl;
 		mEmpty = new EntityEmpty( ctrl);
+		mActive = mEmpty;
 		setOpaque( false);
 //		setBorder( BorderFactory.createLineBorder( Color.MAGENTA));
 		setCenter( mEmpty);
@@ -79,7 +81,7 @@ public class EditView extends JPanel implements IModelListener {
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
 		AEntity<?> ent = mContent.remove( base);
-		if (ent != null) {
+		if (ent != null && ent.equals( mActive)) {
 			mCtrl.removeListener( ent);
 			SwingUtilities.invokeLater( new EntityRemove( ent));
 		}
@@ -98,6 +100,7 @@ public class EditView extends JPanel implements IModelListener {
 	}
 
 	private void setCenter( AEntity<?> ent) {
+		mActive = ent;
 		removeAll();
 		add( ent, GBC);
 		validate();

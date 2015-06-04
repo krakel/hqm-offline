@@ -136,7 +136,7 @@ public class EditFrame extends JFrame implements IModelListener {
 	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
-		if (base != null) {
+		if (base instanceof FHqm) {
 			SwingUtilities.invokeLater( new ToolUpdate( null));
 			mCB.fireActionUpdate();
 		}
