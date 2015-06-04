@@ -124,11 +124,11 @@ public final class FQuest extends ANamed {
 	}
 
 	public int getCenterX() {
-		return getX() + ResourceManager.getW( mBig) / 2;
+		return mX + ResourceManager.getW5( mBig);
 	}
 
 	public int getCenterY() {
-		return getY() + ResourceManager.getH( mBig) / 2;
+		return mY + ResourceManager.getH5( mBig);
 	}
 
 	@Override
@@ -149,24 +149,6 @@ public final class FQuest extends ANamed {
 	@Override
 	public FHqm getParent() {
 		return mParentHQM;
-	}
-
-	public int getX() {
-		if (mBig) {
-			return mX;
-		}
-		else {
-			return mX + 1;
-		}
-	}
-
-	public int getY() {
-		if (mBig) {
-			return mY;
-		}
-		else {
-			return mY + 1;
-		}
 	}
 
 	public boolean isDeleted() {

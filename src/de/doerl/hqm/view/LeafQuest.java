@@ -53,10 +53,10 @@ class LeafQuest extends JLabel {
 		updateIcon( mCallback);
 	}
 
-	private void updateBounds() {
+	public void updateBounds() {
 		boolean big = mQuest.mBig;
-		int x = AEntity.ZOOM * mQuest.getX();
-		int y = AEntity.ZOOM * mQuest.getY();
+		int x = AEntity.ZOOM * mQuest.mX;
+		int y = AEntity.ZOOM * mQuest.mY;
 		int w = AEntity.ZOOM * ResourceManager.getW( big);
 		int h = AEntity.ZOOM * ResourceManager.getH( big);
 		setBounds( x, y, w, h);
@@ -68,6 +68,12 @@ class LeafQuest extends JLabel {
 		Image back = ResourceManager.getImageUI( key);
 		Image img = ImageLoader.getImage( stk, cb);
 		setIcon( new StackIcon( back, img, 0.6, null));
+	}
+
+	public void updateLocation() {
+		int x = AEntity.ZOOM * mQuest.mX;
+		int y = AEntity.ZOOM * mQuest.mY;
+		setLocation( x, y);
 	}
 
 	private void updateType( Type type) {
@@ -86,6 +92,7 @@ class LeafQuest extends JLabel {
 		NORM( "hqm.quest.norm", "hqm.quest.big"),
 		DARK( "hqm.dark.norm", "hqm.dark.big"),
 		BASE( "hqm.base.norm", "hqm.base.big"),
+		LINK( "hqm.link.norm", "hqm.link.big"),
 		PREF( "hqm.pref.norm", "hqm.pref.big"),
 		POST( "hqm.post.norm", "hqm.post.big");
 		private String mBigKey;

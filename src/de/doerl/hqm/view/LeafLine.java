@@ -28,7 +28,7 @@ class LeafLine extends JPanel {
 		int y1 = AEntity.ZOOM * from.getCenterY();
 		int x2 = AEntity.ZOOM * to.getCenterX();
 		int y2 = AEntity.ZOOM * to.getCenterY();
-		init( x1, y1, x2, y2);
+		updateBounds( x1, y1, x2, y2);
 	}
 
 	public FQuest getFrom() {
@@ -37,16 +37,6 @@ class LeafLine extends JPanel {
 
 	public FQuest getTo() {
 		return mTo;
-	}
-
-	public void init( int x1, int y1, int x2, int y2) {
-		mDX = x1 - x2;
-		mDY = y1 - y2;
-		int x = Math.min( x1, x2);
-		int y = Math.min( y1, y2) - LINE_SIZE / 2;
-		int width = Math.max( Math.abs( mDX), LINE_SIZE);
-		int height = Math.max( Math.abs( mDY), LINE_SIZE);
-		setBounds( x, y, width, height);
 	}
 
 	@Override
@@ -81,5 +71,15 @@ class LeafLine extends JPanel {
 				g2.drawLine( LINE_SIZE / 2, 0, LINE_SIZE / 2, Math.abs( mDY));
 			}
 		}
+	}
+
+	public void updateBounds( int x1, int y1, int x2, int y2) {
+		mDX = x1 - x2;
+		mDY = y1 - y2;
+		int x = Math.min( x1, x2);
+		int y = Math.min( y1, y2) - LINE_SIZE / 2;
+		int width = Math.max( Math.abs( mDX), LINE_SIZE);
+		int height = Math.max( Math.abs( mDY), LINE_SIZE);
+		setBounds( x, y, width, height);
 	}
 }

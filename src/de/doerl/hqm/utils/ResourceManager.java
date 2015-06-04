@@ -45,6 +45,10 @@ public class ResourceManager {
 		return big ? 37 : 30;
 	}
 
+	public static int getH5( boolean big) {
+		return big ? 18 : 15;
+	}
+
 	public static Icon getIcon( String name) {
 		try {
 			URL url = ResourceManager.class.getResource( ICON_DIR + name);
@@ -114,6 +118,10 @@ public class ResourceManager {
 		return big ? 31 : 25;
 	}
 
+	public static int getW5( boolean big) {
+		return big ? 15 : 12;
+	}
+
 	public static void init() {
 		ImageManager.makeIcon( "Tree.expandedIcon", "collaps.gif");
 		ImageManager.makeIcon( "Tree.collapsedIcon", "expand.gif");
@@ -138,11 +146,13 @@ public class ResourceManager {
 		//
 		ImageManager.makeImage( "hqm.dark.norm", "hqm.quest.norm", 0.6F, 0.6F, 0.6F);
 		ImageManager.makeImage( "hqm.base.norm", "hqm.quest.norm", 0.6F, 1F, 0.6F);
+		ImageManager.makeImage( "hqm.link.norm", "hqm.quest.norm", 0.6F, 1F, 1F);
 		ImageManager.makeImage( "hqm.pref.norm", "hqm.quest.norm", 0.6F, 0.6F, 1F);
 		ImageManager.makeImage( "hqm.post.norm", "hqm.quest.norm", 1F, 0.6F, 0.6F);
 		//
 		ImageManager.makeImage( "hqm.dark.big", "hqm.quest.big", 0.6F, 0.6F, 0.6F);
 		ImageManager.makeImage( "hqm.base.big", "hqm.quest.big", 0.6F, 1F, 0.6F);
+		ImageManager.makeImage( "hqm.link.big", "hqm.quest.big", 0.6F, 1F, 1F);
 		ImageManager.makeImage( "hqm.pref.big", "hqm.quest.big", 0.6F, 0.6F, 1F);
 		ImageManager.makeImage( "hqm.post.big", "hqm.quest.big", 1F, 0.6F, 0.6F);
 		//

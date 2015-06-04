@@ -41,6 +41,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private AToggleAction mGroupMove = new GroupMoveAction();
 	private AToggleAction mGroupLink = new GroupLinkAction();
 	private AToggleAction mBigAction = new BigAction();
+	private AToggleAction mGridAction = new GridAction();
 	private ABundleAction mSetAction = new SetAction();
 	private ABundleAction mDeleteAction = new DeleteAction();
 	private MouseAdapter mLeafQuestHandler = new LeafQuestHandler();
@@ -61,6 +62,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mSetAction);
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
+		mTool.add( mGridAction);
+		mTool.addSeparator();
 		mLeaf.addMouseListener( new AddHandler());
 		updateGroup( false);
 		updateQuest( false);
@@ -69,19 +72,31 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 	private void activeUpdate( Type type) {
 		if (mActiv != null) {
-			mActiv.update( type);
 			FQuest quest = mActiv.getQuest();
+			boolean link = false;
 			for (FQuest req : quest.mRequirements) {
+				if (Utils.different( quest.mQuestSet, req.mQuestSet)) {
+					link = true;
+				}
 				LeafQuest lq = getLeafQuest( req);
 				if (lq != null) {
 					lq.update( type == Type.BASE ? Type.PREF : Type.NORM);
 				}
 			}
 			for (FQuest req : quest.mPosts) {
+				if (Utils.different( quest.mQuestSet, req.mQuestSet)) {
+					link = true;
+				}
 				LeafQuest lq = getLeafQuest( req);
 				if (lq != null) {
 					lq.update( type == Type.BASE ? Type.POST : Type.NORM);
 				}
+			}
+			if (type == Type.BASE) {
+				mActiv.update( link ? Type.LINK : type);
+			}
+			else {
+				mActiv.update( type);
 			}
 		}
 	}
@@ -332,8 +347,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void mouseClicked( MouseEvent evt) {
 			if (mGroupAdd.isSelected()) {
-				int x = evt.getX() / AEntity.ZOOM - ResourceManager.getW( false) / 2;
-				int y = evt.getY() / AEntity.ZOOM - ResourceManager.getH( false) / 2;
+				int x = mLeaf.stepX( evt.getX()) / AEntity.ZOOM - ResourceManager.getW5( false);
+				int y = mLeaf.stepY( evt.getY()) / AEntity.ZOOM - ResourceManager.getH5( false);
 				FQuest quest = mCtrl.questCreate( mSet, "Unnamed", x, y);
 				createLeafQuest( quest);
 				activSet( getLeafQuest( quest), false);
@@ -380,6 +395,22 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				mCtrl.questDelete( quest);
 				mCtrl.fireRemoved( quest);
 			}
+		}
+	}
+
+	private final class GridAction extends AToggleAction {
+		private static final long serialVersionUID = 4609401482942817956L;
+
+		public GridAction() {
+			super( "entity.grid");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			boolean sel = mGridAction.isSelected();
+			mLeaf.setGrid( sel);
+			mLeaf.repaint();
+			mGridAction.setSelected( !sel);
 		}
 	}
 
@@ -444,8 +475,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void mouseDragged( MouseEvent evt) {
 			try {
 				if (mGroupMove.isSelected()) {
-					LeafQuest leaf = (LeafQuest) evt.getSource();
-					moveDrag( leaf, evt);
+					LeafQuest lq = (LeafQuest) evt.getSource();
+					moveDrag( lq, evt);
 				}
 			}
 			catch (ClassCastException ex) {
@@ -457,8 +488,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void mousePressed( MouseEvent evt) {
 			try {
 				if (mGroupMove.isSelected()) {
-					LeafQuest leaf = (LeafQuest) evt.getSource();
-					moveBegin( leaf, evt);
+					LeafQuest lq = (LeafQuest) evt.getSource();
+					moveBegin( lq, evt);
 				}
 			}
 			catch (ClassCastException ex) {
@@ -470,9 +501,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void mouseReleased( MouseEvent evt) {
 			try {
 				if (mGroupMove.isSelected()) {
-					LeafQuest leaf = (LeafQuest) evt.getSource();
-					moveDrag( leaf, evt);
-					moveEnd( leaf, evt);
+					LeafQuest lq = (LeafQuest) evt.getSource();
+					moveEnd( lq, evt);
 				}
 			}
 			catch (ClassCastException ex) {
@@ -480,49 +510,57 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			}
 		}
 
-		private void moveBegin( LeafQuest leaf, MouseEvent evt) {
-			mOldX = leaf.getX() + evt.getX();
-			mOldY = leaf.getY() + evt.getY();
+		private void moveBegin( LeafQuest lq, MouseEvent evt) {
+			mOldX = lq.getX() + evt.getX();
+			mOldY = lq.getY() + evt.getY();
 		}
 
-		private void moveDrag( LeafQuest leaf, MouseEvent evt) {
-			int dx = leaf.getX() + evt.getX() - mOldX;
-			int dy = leaf.getY() + evt.getY() - mOldY;
-			FQuest quest = leaf.getQuest();
-			int x = ZOOM * quest.getX() + dx;
-			int y = ZOOM * quest.getY() + dy;
-			leaf.setLocation( x, y);
-			moveLines( quest, dx, dy);
+		private void moveDrag( LeafQuest lq, MouseEvent evt) {
+			FQuest quest = lq.getQuest();
+			int x = mLeaf.stepX( ZOOM * quest.mX + lq.getX() + evt.getX() - mOldX);
+			int y = mLeaf.stepY( ZOOM * quest.mY + lq.getY() + evt.getY() - mOldY);
+			x /= ZOOM;
+			x *= ZOOM;
+			y /= ZOOM;
+			y *= ZOOM;
+			moveLines( quest, x, y);
+			lq.setLocation( x, y);
 		}
 
-		private void moveEnd( LeafQuest leaf, MouseEvent evt) {
-			int dx = leaf.getX() + evt.getX() - mOldX;
-			int dy = leaf.getY() + evt.getY() - mOldY;
-			FQuest quest = leaf.getQuest();
-			quest.mX += dx / ZOOM;
-			quest.mY += dy / ZOOM;
+		private void moveEnd( LeafQuest lq, MouseEvent evt) {
+			FQuest quest = lq.getQuest();
+			int x = mLeaf.stepX( ZOOM * quest.mX + lq.getX() + evt.getX() - mOldX);
+			int y = mLeaf.stepY( ZOOM * quest.mY + lq.getY() + evt.getY() - mOldY);
+			x /= ZOOM;
+			x *= ZOOM;
+			y /= ZOOM;
+			y *= ZOOM;
+			moveLines( quest, x, y);
+			quest.mX = x / ZOOM;
+			quest.mY = y / ZOOM;
+			lq.updateLocation();
 			mCtrl.fireChanged( quest);
 		}
 
-		private void moveLines( FQuest quest, int dx, int dy) {
+		private void moveLines( FQuest quest, int x, int y) {
 			for (Component cc : mLeaf.getComponents()) {
 				if (cc instanceof LeafLine) {
 					LeafLine ll = (LeafLine) cc;
 					FQuest from = ll.getFrom();
 					FQuest to = ll.getTo();
 					if (Utils.equals( quest, from)) {
-						int x1 = AEntity.ZOOM * from.getCenterX() + dx;
-						int y1 = AEntity.ZOOM * from.getCenterY() + dy;
-						int x2 = AEntity.ZOOM * to.getCenterX();
-						int y2 = AEntity.ZOOM * to.getCenterY();
-						ll.init( x1, y1, x2, y2);
+						int x1 = x + ZOOM * ResourceManager.getW5( quest.mBig);
+						int y1 = y + ZOOM * ResourceManager.getH5( quest.mBig);
+						int x2 = ZOOM * to.getCenterX();
+						int y2 = ZOOM * to.getCenterY();
+						ll.updateBounds( x1, y1, x2, y2);
 					}
 					if (Utils.equals( quest, to)) {
-						int x1 = AEntity.ZOOM * from.getCenterX();
-						int y1 = AEntity.ZOOM * from.getCenterY();
-						int x2 = AEntity.ZOOM * to.getCenterX() + dx;
-						int y2 = AEntity.ZOOM * to.getCenterY() + dy;
-						ll.init( x1, y1, x2, y2);
+						int x1 = ZOOM * from.getCenterX();
+						int y1 = ZOOM * from.getCenterY();
+						int x2 = x + ZOOM * ResourceManager.getW5( quest.mBig);
+						int y2 = y + ZOOM * ResourceManager.getH5( quest.mBig);
+						ll.updateBounds( x1, y1, x2, y2);
 					}
 				}
 			}
