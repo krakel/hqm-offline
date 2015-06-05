@@ -2,10 +2,12 @@ package de.doerl.hqm.base;
 
 import java.util.Vector;
 
+import de.doerl.hqm.base.dispatch.IDispatcher;
+import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.utils.ToString;
 
-public abstract class ABase implements IBase {
+public abstract class ABase implements IDispatcher {
 	ABase() {
 	}
 
@@ -74,9 +76,13 @@ public abstract class ABase implements IBase {
 		}
 	}
 
+	public abstract <T, U> T accept( IHQMWorker<T, U> w, U p);
+
 	public abstract ElementTyp getElementTyp();
 
 	public abstract ABase getHierarchy();
+
+	public abstract FHqm getHqm();
 
 	public abstract ABase getParent();
 
