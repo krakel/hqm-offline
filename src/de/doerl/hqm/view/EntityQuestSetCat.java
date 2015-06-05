@@ -44,6 +44,8 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private ABundleAction mDescAction = new DescriptionAction();
 	private ABundleAction mAddAction = new AddAction();
 	private ABundleAction mDeleteAction = new DeleteAction();
+	private ABundleAction mMoveUpAction = new MoveUpAction();
+	private ABundleAction mMoveDownAction = new MoveDownAction();
 	private LeafList<FQuestSet> mList = new LeafList<>();
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafLabel mTotal = new LeafLabel( GuiColor.BLACK.getColor(), "");
@@ -77,8 +79,11 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		mTool.add( mDescAction);
 		mTool.addSeparator();
 		mTool.add( mAddAction);
+		mTool.add( mMoveUpAction);
+		mTool.add( mMoveDownAction);
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
+		updateMoveActions();
 	}
 
 	@Override
@@ -92,6 +97,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			if (mCategory.equals( base.getHierarchy())) {
 				update();
 				updateActive( (FQuestSet) base, true);
+				updateMoveActions();
 			}
 		}
 		catch (ClassCastException ex) {
@@ -104,6 +110,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		if (mCategory.equals( event.mBase)) {
 			update();
 			updateActive( mActiv, false);
+			updateMoveActions();
 		}
 	}
 
@@ -113,6 +120,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		if (mCategory.equals( base.getHierarchy())) {
 			update();
 			updateActive( QuestSetFirst.get( mCategory), true);
+			updateMoveActions();
 		}
 	}
 
@@ -183,6 +191,25 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
+	private void updateMoveActions() {
+		if (mActiv == null) {
+			mMoveUpAction.setEnabled( false);
+			mMoveDownAction.setEnabled( false);
+		}
+		else if (mActiv.isFirst()) {
+			mMoveUpAction.setEnabled( false);
+			mMoveDownAction.setEnabled( true);
+		}
+		else if (mActiv.isLast()) {
+			mMoveUpAction.setEnabled( true);
+			mMoveDownAction.setEnabled( false);
+		}
+		else {
+			mMoveUpAction.setEnabled( true);
+			mMoveDownAction.setEnabled( true);
+		}
+	}
+
 	private final class AddAction extends ABundleAction {
 		private static final long serialVersionUID = 6724759221568885874L;
 
@@ -245,6 +272,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		@Override
 		public void run() {
 			updateActive( mQS, true);
+			updateMoveActions();
 		}
 	}
 
@@ -272,6 +300,38 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			mComplete.setText( enabled ? "0% Completed" : "Locked");
 			mComplete.setEnabled( enabled);
 			return this;
+		}
+	}
+
+	private final class MoveDownAction extends ABundleAction {
+		private static final long serialVersionUID = -4792849231706543388L;
+
+		public MoveDownAction() {
+			super( "entity.setcat.moveDown");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				mActiv.moveDown();
+				mCtrl.fireChanged( mActiv.mParentCategory);
+			}
+		}
+	}
+
+	private final class MoveUpAction extends ABundleAction {
+		private static final long serialVersionUID = 6791409995069306038L;
+
+		public MoveUpAction() {
+			super( "entity.setcat.moveUp");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				mActiv.moveUp();
+				mCtrl.fireChanged( mActiv.mParentCategory);
+			}
 		}
 	}
 

@@ -19,7 +19,7 @@ public final class FHqm extends ANamed {
 	public final FGroupCat mGroupCat = new FGroupCat( this);
 	public String mPassCode;
 	public String mDescr;
-	private Vector<FQuest> mQuests = new Vector<>();
+	final Vector<FQuest> mQuests = new Vector<>();
 	private boolean mModified;
 
 	public FHqm( String name) {
@@ -85,13 +85,6 @@ public final class FHqm extends ANamed {
 
 	public boolean isModified() {
 		return mModified;
-	}
-
-	public void removeQuest( FQuest quest) {
-		int pos = mQuests.indexOf( quest);
-		if (pos >= 0) {
-			mQuests.setElementAt( mDeleted, pos);
-		}
 	}
 
 	public void setModified( boolean value) {

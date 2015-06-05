@@ -10,7 +10,7 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuestTaskReputationTarget extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( FQuestTaskReputationTarget.class.getName());
-	private Vector<FSetting> mSettings = new Vector<>();
+	final Vector<FSetting> mSettings = new Vector<>();
 
 	public FQuestTaskReputationTarget( FQuest parent, String name) {
 		super( parent, name);

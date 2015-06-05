@@ -46,6 +46,8 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private AToggleAction mGridAction = new GridAction();
 	private ABundleAction mSetAction = new SetAction();
 	private ABundleAction mDeleteAction = new DeleteAction();
+	private ABundleAction mMoveUpAction = new MoveUpAction();
+	private ABundleAction mMoveDownAction = new MoveDownAction();
 	private MouseAdapter mLeafQuestHandler = new LeafQuestHandler();
 	private MouseAdapter mLeafMouseHandler = new LeafMouseHandler();
 	private volatile LeafQuest mActiv;
@@ -63,6 +65,9 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mNameAction);
 		mTool.add( createToggleButton( mBigAction));
 		mTool.add( mSetAction);
+//		mTool.addSeparator();
+//		mTool.add( mMoveUpAction);
+//		mTool.add( mMoveDownAction);
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
 		mTool.add( mGridAction);
@@ -70,6 +75,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mLeaf.addMouseListener( new AddHandler());
 		enableGroup( false);
 		enableQuest( false);
+		updateMoveActions();
 		selectGroupNothing();
 	}
 
@@ -109,6 +115,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mActiv = null;
 		enableGroup( false);
 		enableQuest( false);
+		updateMoveActions();
 		selectGroupNothing();
 	}
 
@@ -119,6 +126,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		enableGroup( true);
 		enableQuest( enableQuest);
 		mBigAction.setSelected( activ.getQuest().mBig);
+		updateMoveActions();
 	}
 
 	@Override
@@ -353,6 +361,25 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mGroupAdd.setSelected( false);
 		mGroupMove.setSelected( false);
 		mGroupLink.setSelected( false);
+	}
+
+	private void updateMoveActions() {
+		if (mActiv == null) {
+			mMoveUpAction.setEnabled( false);
+			mMoveDownAction.setEnabled( false);
+		}
+		else if (mActiv.getQuest().isFirst()) {
+			mMoveUpAction.setEnabled( false);
+			mMoveDownAction.setEnabled( true);
+		}
+		else if (mActiv.getQuest().isLast()) {
+			mMoveUpAction.setEnabled( true);
+			mMoveDownAction.setEnabled( false);
+		}
+		else {
+			mMoveUpAction.setEnabled( true);
+			mMoveDownAction.setEnabled( true);
+		}
 	}
 
 	private final class AddHandler extends MouseAdapter {
@@ -644,6 +671,58 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
+	private final class MoveDownAction extends ABundleAction {
+		private static final long serialVersionUID = -132595603876180464L;
+
+		public MoveDownAction() {
+			super( "entity.set.moveDown");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				mActiv.getQuest().moveDown();
+				mCtrl.fireChanged( mActiv.getQuest().mParentHQM);
+			}
+		}
+	}
+
+	private final class MoveUpAction extends ABundleAction {
+		private static final long serialVersionUID = 176343661597363424L;
+
+		public MoveUpAction() {
+			super( "entity.set.moveUp");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				mActiv.getQuest().moveUp();
+				mCtrl.fireChanged( mActiv.getQuest().mParentHQM);
+			}
+		}
+	}
+
+	private final class NameAction extends ABundleAction {
+		private static final long serialVersionUID = -4857945141280262728L;
+
+		public NameAction() {
+			super( "entity.set.title");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				FQuest quest = mActiv.getQuest();
+				String result = DialogTextField.update( quest.mName, mCtrl.getFrame());
+				if (result != null) {
+					quest.mName = result;
+					mCtrl.fireChanged( quest);
+				}
+			}
+		}
+	}
+
 	private static class QuestFactory extends AHQMWorker<Object, Object> {
 		private EntityQuestSet mEntity;
 		private FQuestSet mSet;
@@ -707,26 +786,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 						quest.mQuestSet = set;
 						mCtrl.fireAdded( quest);
 					}
-				}
-			}
-		}
-	}
-
-	private final class NameAction extends ABundleAction {
-		private static final long serialVersionUID = -4857945141280262728L;
-
-		public NameAction() {
-			super( "entity.quest.title");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null) {
-				FQuest quest = mActiv.getQuest();
-				String result = DialogTextField.update( quest.mName, mCtrl.getFrame());
-				if (result != null) {
-					quest.mName = result;
-					mCtrl.fireChanged( quest);
 				}
 			}
 		}

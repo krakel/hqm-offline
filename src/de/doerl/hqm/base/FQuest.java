@@ -11,7 +11,7 @@ import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
-public final class FQuest extends ANamed {
+public final class FQuest extends ANamed implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	public final FHqm mParentHQM;
 	public String mDescr;
@@ -21,15 +21,15 @@ public final class FQuest extends ANamed {
 	public int mTriggerTasks;
 	public TriggerType mTriggerType = TriggerType.NONE;
 	public Integer mReqCount;
-	public Vector<FItemStack> mRewards = new Vector<>();
-	public Vector<FItemStack> mChoices = new Vector<>();
-	public Vector<FQuest> mRequirements = new Vector<>();
-	public Vector<FQuest> mOptionLinks = new Vector<>();
-	public Vector<FQuest> mPosts = new Vector<>();
-	public Vector<FReward> Reputation = new Vector<>();
+	public final Vector<FItemStack> mRewards = new Vector<>();
+	public final Vector<FItemStack> mChoices = new Vector<>();
+	public final Vector<FQuest> mRequirements = new Vector<>();
+	public final Vector<FQuest> mOptionLinks = new Vector<>();
+	public final Vector<FQuest> mPosts = new Vector<>();
+	public final Vector<FReward> Reputation = new Vector<>();
 	public FQuestSet mQuestSet;
 	public FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
-	private Vector<AQuestTask> mTasks = new Vector<>();
+	final Vector<AQuestTask> mTasks = new Vector<>();
 	private boolean mDeleted;
 
 	public FQuest( FHqm parent, String name) {
@@ -155,18 +155,31 @@ public final class FQuest extends ANamed {
 		return mDeleted;
 	}
 
+	@Override
+	public boolean isFirst() {
+		return ABase.isFirst( mParentHQM.mQuests, this);
+	}
+
 	public boolean isFree() {
 		return mRequirements.isEmpty();
 	}
 
-	public void remove() {
-		mParentHQM.removeQuest( this);
+	@Override
+	public boolean isLast() {
+		return ABase.isLast( mParentHQM.mQuests, this);
 	}
 
-	public void removeTask( AQuestTask task) {
-		int pos = mTasks.indexOf( task);
-		if (pos >= 0) {
-			mTasks.setElementAt( null, pos);
-		}
+	@Override
+	public void moveDown() {
+		ABase.moveDown( mParentHQM.mQuests, this);
+	}
+
+	@Override
+	public void moveUp() {
+		ABase.moveUp( mParentHQM.mQuests, this);
+	}
+
+	public void remove() {
+		ABase.remove( mParentHQM.mQuests, this);
 	}
 }

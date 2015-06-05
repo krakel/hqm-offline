@@ -12,8 +12,8 @@ import de.doerl.hqm.utils.Utils;
 public final class FReputation extends AMember<FReputation> {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
 	public final FReputationCat mParentCategory;
+	public final Vector<FMarker> mMarker = new Vector<>();
 	public String mNeutral;
-	public Vector<FMarker> mMarker = new Vector<>();
 
 	public FReputation( FReputationCat parent, String name) {
 		super( name);

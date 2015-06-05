@@ -57,6 +57,8 @@ public class EntityQuest extends AEntity<FQuest> {
 	private ABundleAction mTaskListAction = new TaskListAction();
 	private ABundleAction mTaskAddAction = new TaskAddAction();
 	private ABundleAction mTaskDeleteAction = new TaskDeleteAction();
+	private ABundleAction mTaskMoveUpAction = new TaskMoveUpAction();
+	private ABundleAction mTaskMoveDownAction = new TaskMoveDownAction();
 	private LeafTextField mTitle = new LeafTextField( true);
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafStacks mRewardList;
@@ -108,8 +110,11 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTool.add( mTaskListAction);
 		mTool.addSeparator();
 		mTool.add( mTaskAddAction);
+		mTool.add( mTaskMoveUpAction);
+		mTool.add( mTaskMoveDownAction);
 		mTool.add( mTaskDeleteAction);
 		mTool.addSeparator();
+		updateMoveActions();
 	}
 
 	@Override
@@ -123,6 +128,7 @@ public class EntityQuest extends AEntity<FQuest> {
 			if (mQuest.equals( base.getHierarchy())) {
 				update();
 				updateActive( findBoxOf( (AQuestTask) base));
+				updateMoveActions();
 			}
 		}
 		catch (ClassCastException ex) {
@@ -136,6 +142,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		if (Utils.equals( base, mQuest)) {
 			update();
 			updateActive( mActiv);
+			updateMoveActions();
 		}
 	}
 
@@ -145,6 +152,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		if (mQuest.equals( base.getHierarchy())) {
 			update();
 			updateActive( getFirstBox());
+			updateMoveActions();
 		}
 	}
 
@@ -174,7 +182,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		DefaultListModel<ATaskBox> model = mBoxList.getModel();
 		for (int i = 0; i < model.size(); ++i) {
 			ATaskBox box = model.elementAt( i);
-			if (Utils.equals0( box.getTask(), task)) {
+			if (Utils.equals( box.getTask(), task)) {
 				return box;
 			}
 		}
@@ -235,6 +243,26 @@ public class EntityQuest extends AEntity<FQuest> {
 		mActiv.update();
 		mBoxContainer.revalidate();
 		mBoxContainer.repaint();
+	}
+
+	private void updateMoveActions() {
+		AQuestTask task = mActiv.getTask();
+		if (task == null) {
+			mTaskMoveUpAction.setEnabled( false);
+			mTaskMoveDownAction.setEnabled( false);
+		}
+		else if (task.isFirst()) {
+			mTaskMoveUpAction.setEnabled( false);
+			mTaskMoveDownAction.setEnabled( true);
+		}
+		else if (task.isLast()) {
+			mTaskMoveUpAction.setEnabled( true);
+			mTaskMoveDownAction.setEnabled( false);
+		}
+		else {
+			mTaskMoveUpAction.setEnabled( true);
+			mTaskMoveDownAction.setEnabled( true);
+		}
 	}
 
 	private void updateReputation() {
@@ -354,7 +382,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = 6724759221568885874L;
 
 		public TaskAddAction() {
-			super( "entity.quest.add");
+			super( "entity.taks.add");
 		}
 
 		@Override
@@ -419,14 +447,15 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = 7223654325808174399L;
 
 		public TaskDeleteAction() {
-			super( "entity.quest.delete");
+			super( "entity.task.delete");
 		}
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (WarnDialogs.askDelete( mCtrl.getFrame())) {
-				mCtrl.questTaskDelete( mActiv.getTask());
-				mCtrl.fireRemoved( mActiv.getTask());
+			AQuestTask task = mActiv.getTask();
+			if (task != null && WarnDialogs.askDelete( mCtrl.getFrame())) {
+				mCtrl.questTaskDelete( task);
+				mCtrl.fireRemoved( task);
 			}
 		}
 	}
@@ -440,10 +469,11 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.getTask().mDescr, mCtrl.getFrame());
+			AQuestTask task = mActiv.getTask();
+			if (task != null) {
+				String result = DialogTextBox.update( task.mDescr, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.getTask().mDescr = result;
+					task.mDescr = result;
 					mCtrl.fireChanged( mQuest);
 				}
 			}
@@ -475,6 +505,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		@Override
 		public void run() {
 			updateActive( mBox);
+			updateMoveActions();
 		}
 	}
 
@@ -495,6 +526,40 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
+	private final class TaskMoveDownAction extends ABundleAction {
+		private static final long serialVersionUID = -6462637624253468303L;
+
+		public TaskMoveDownAction() {
+			super( "entity.task.moveDown");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			AQuestTask task = mActiv.getTask();
+			if (task != null) {
+				task.moveDown();
+				mCtrl.fireChanged( task.mParentQuest);
+			}
+		}
+	}
+
+	private final class TaskMoveUpAction extends ABundleAction {
+		private static final long serialVersionUID = 6459945568446758606L;
+
+		public TaskMoveUpAction() {
+			super( "entity.task.moveUp");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			AQuestTask task = mActiv.getTask();
+			if (task != null) {
+				task.moveUp();
+				mCtrl.fireChanged( task.mParentQuest);
+			}
+		}
+	}
+
 	private final class TaskNameAction extends ABundleAction {
 		private static final long serialVersionUID = -3873930852720932846L;
 
@@ -504,10 +569,11 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.getTask().mName, mCtrl.getFrame());
+			AQuestTask task = mActiv.getTask();
+			if (task != null) {
+				String result = DialogTextField.update( task.mName, mCtrl.getFrame());
 				if (result != null) {
-					mActiv.getTask().mName = result;
+					task.mName = result;
 					mCtrl.fireChanged( mQuest);
 				}
 			}

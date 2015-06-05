@@ -10,7 +10,7 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuestTaskMob extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( FQuestTaskMob.class.getName());
-	private Vector<FMob> mMobs = new Vector<>();
+	final Vector<FMob> mMobs = new Vector<>();
 
 	public FQuestTaskMob( FQuest parent, String name) {
 		super( parent, name);

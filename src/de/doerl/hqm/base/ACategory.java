@@ -10,20 +10,20 @@ import de.doerl.hqm.utils.Utils;
 public abstract class ACategory<E extends ANamed> extends ABase {
 	private static final Logger LOGGER = Logger.getLogger( ACategory.class.getName());
 	public final FHqm mParentHQM;
-	private Vector<E> mArr = new Vector<E>();
+	final Vector<AMember<?>> mArr = new Vector<>();
 
 	ACategory( FHqm parent) {
 		mParentHQM = parent;
 	}
 
-	void addMember( E member) {
+	void addMember( AMember<?> member) {
 		mArr.add( member);
 	}
 
 	public abstract E createMember( String name);
 
 	public <T, U> T forEachMember( IHQMWorker<T, U> worker, U p) {
-		for (E disp : mArr) {
+		for (AMember<?> disp : mArr) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);
@@ -53,12 +53,5 @@ public abstract class ACategory<E extends ANamed> extends ABase {
 	@Override
 	public FHqm getParent() {
 		return mParentHQM;
-	}
-
-	void removeMember( AMember<?> member) {
-		int pos = mArr.indexOf( member);
-		if (pos >= 0) {
-			mArr.setElementAt( null, pos);
-		}
 	}
 }

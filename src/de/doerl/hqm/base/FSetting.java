@@ -3,7 +3,7 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FSetting extends ABase {
+public final class FSetting extends ABase implements IElement {
 	public final FQuestTaskReputationTarget mParentTask;
 	public FReputation mRep;
 	public FMarker mLower;
@@ -36,5 +36,30 @@ public final class FSetting extends ABase {
 	@Override
 	public FQuestTaskReputationTarget getParent() {
 		return mParentTask;
+	}
+
+	@Override
+	public boolean isFirst() {
+		return ABase.isFirst( mParentTask.mSettings, this);
+	}
+
+	@Override
+	public boolean isLast() {
+		return ABase.isLast( mParentTask.mSettings, this);
+	}
+
+	@Override
+	public void moveDown() {
+		ABase.moveDown( mParentTask.mSettings, this);
+	}
+
+	@Override
+	public void moveUp() {
+		ABase.moveUp( mParentTask.mSettings, this);
+	}
+
+	@Override
+	public void remove() {
+		ABase.remove( mParentTask.mSettings, this);
 	}
 }

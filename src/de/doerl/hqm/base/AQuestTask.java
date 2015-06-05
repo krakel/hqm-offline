@@ -3,7 +3,7 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.TaskTyp;
 
-public abstract class AQuestTask extends ANamed {
+public abstract class AQuestTask extends ANamed implements IElement {
 	public final FQuest mParentQuest;
 	public String mDescr;
 
@@ -30,7 +30,26 @@ public abstract class AQuestTask extends ANamed {
 
 	public abstract TaskTyp getTaskTyp();
 
+	public boolean isFirst() {
+		return ABase.isFirst( mParentQuest.mTasks, this);
+	}
+
+	@Override
+	public boolean isLast() {
+		return ABase.isLast( mParentQuest.mTasks, this);
+	}
+
+	@Override
+	public void moveDown() {
+		ABase.moveDown( mParentQuest.mTasks, this);
+	}
+
+	@Override
+	public void moveUp() {
+		ABase.moveUp( mParentQuest.mTasks, this);
+	}
+
 	public void remove() {
-		mParentQuest.removeTask( this);
+		ABase.remove( mParentQuest.mTasks, this);
 	}
 }
