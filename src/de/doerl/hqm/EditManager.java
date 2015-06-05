@@ -1,5 +1,6 @@
 package de.doerl.hqm;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,10 +14,11 @@ public class EditManager {
 	private static final Logger LOGGER;
 	static {
 		Locale.setDefault( Locale.ENGLISH);
+		PreferenceManager.init();
 		LoggingManager.init();
+		LoggingManager.setOut( "file", getLogFile(), "hqm.file.logLevel");
 		LoggingManager.setOut( "console", System.out, "hqm.console.logLevel");
 		LOGGER = Logger.getLogger( EditManager.class.getName());
-		PreferenceManager.init();
 		ImageLoader.init();
 	}
 
@@ -24,6 +26,10 @@ public class EditManager {
 	}
 
 	public static void closeEditor() {
+	}
+
+	public static File getLogFile() {
+		return new File( System.getProperty( "hqm.pref.dir"), "hqm" + Utils.getDateString() + ".log");
 	}
 
 	public static void init() {

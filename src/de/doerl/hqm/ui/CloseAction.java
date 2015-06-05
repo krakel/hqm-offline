@@ -27,10 +27,7 @@ public class CloseAction extends ABundleAction implements IRefreshListener, Runn
 	public void actionPerformed( ActionEvent e) {
 		FHqm hqm = mFrame.getCurrent();
 		if (hqm != null) {
-			if (!hqm.isModified()) {
-				mFrame.getModel().removeHQM( hqm);
-			}
-			else if (WarnDialogs.askMissing( mFrame)) {
+			if (EditFrame.canClose( hqm, mFrame)) {
 				mFrame.getModel().removeHQM( hqm);
 			}
 		}

@@ -1,12 +1,12 @@
 package de.doerl.hqm.utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Filter;
-import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -18,7 +18,7 @@ public class LoggingManager {
 	public static final Logger ROOT;
 	public static final String ROOT_LOGGER = "de.doerl.hqm";
 	private static Filter sFilter = null;
-	private static Map<Object, Handler> sHandler = new HashMap<>();
+	private static Map<Object, LogHandler> sHandler = new HashMap<>();
 	static {
 		ROOT = createRootLogger( ROOT_LOGGER, BUNDLE_HQM);
 		Runtime.getRuntime().addShutdownHook( new Thread() {
@@ -26,16 +26,52 @@ public class LoggingManager {
 			public void run() {
 				ROOT.setLevel( Level.OFF);
 				synchronized (sHandler) {
-					for (Handler hdl : sHandler.values()) {
-						if (hdl != null) {
-							ROOT.removeHandler( hdl);
-							hdl.setFilter( null);
-							hdl.close();
-						}
+					for (LogHandler hdl : sHandler.values()) {
+						closeHandler( hdl);
 					}
 				}
 			}
 		});
+	}
+
+	private static void addHandler( Object key, String lvlProp, LogHandler hdl) {
+		hdl.setFilter( sFilter);
+		try {
+			String level = null;
+			if (lvlProp != null) {
+				level = System.getProperty( lvlProp);
+			}
+			if (level != null) {
+				hdl.setLevel( Level.parse( level));
+			}
+			else {
+				hdl.setLevel( Level.ALL);
+			}
+		}
+		catch (Exception ex) {
+			System.err.println( "Error LoggingManager: " + ex.getMessage());
+			hdl.setLevel( Level.OFF);
+		}
+		sHandler.put( key, hdl);
+		ROOT.addHandler( hdl);
+	}
+
+	private static void closeHandler( LogHandler hdl) {
+		if (hdl != null) {
+			ROOT.removeHandler( hdl);
+			hdl.setFilter( null);
+			hdl.close();
+			File dst = hdl.getDst();
+			if (dst != null && dst.exists() && dst.length() == 0) {
+				dst.delete();
+			}
+		}
+	}
+
+	private static void closeHandler1( Object key) {
+		synchronized (sHandler) {
+			closeHandler( sHandler.remove( key));
+		}
 	}
 
 	private static Logger createRootLogger( String name, String bundle) {
@@ -94,11 +130,15 @@ public class LoggingManager {
 
 	public static void setOut( Object key, File dst, String lvlProp) {
 		try {
-			File parrent = dst.getParentFile();
-			if (parrent != null && !parrent.exists()) {
-				parrent.mkdir();
+			closeHandler1( key);
+			if (dst != null) {
+				File parrent = dst.getParentFile();
+				if (parrent != null && !parrent.exists()) {
+					parrent.mkdir();
+				}
+				LogHandler hdl = new LogHandler( dst);
+				addHandler( key, lvlProp, hdl);
 			}
-			setOut( key, new FileOutputStream( dst), lvlProp);
 		}
 		catch (Exception ex) {
 			System.err.println( "error LoggingManager: " + ex.getMessage());
@@ -106,42 +146,27 @@ public class LoggingManager {
 	}
 
 	public static void setOut( Object key, OutputStream out, String lvlProp) {
-		Handler hdl;
-		synchronized (sHandler) {
-			hdl = sHandler.remove( key);
-		}
-		if (hdl != null) {
-			ROOT.removeHandler( hdl);
-			hdl.setFilter( null);
-			hdl.close();
-		}
+		closeHandler1( key);
 		if (out != null) {
-			hdl = new LogHandler( out, new SingleLineFormatter());
-			hdl.setFilter( sFilter);
-			try {
-				String level = null;
-				if (lvlProp != null) {
-					level = System.getProperty( lvlProp);
-				}
-				if (level != null) {
-					hdl.setLevel( Level.parse( level));
-				}
-				else {
-					hdl.setLevel( Level.ALL);
-				}
-			}
-			catch (Exception ex) {
-				System.err.println( "Error LoggingManager: " + ex.getMessage());
-				hdl.setLevel( Level.OFF);
-			}
-			sHandler.put( key, hdl);
-			ROOT.addHandler( hdl);
+			LogHandler hdl = new LogHandler( out);
+			addHandler( key, lvlProp, hdl);
 		}
 	}
 
 	private static class LogHandler extends StreamHandler {
-		public LogHandler( OutputStream out, Formatter formatter) {
-			super( out, formatter);
+		private File mDst;
+
+		public LogHandler( File dst) throws FileNotFoundException {
+			super( new FileOutputStream( dst), new SingleLineFormatter());
+			mDst = dst;
+		}
+
+		public LogHandler( OutputStream out) {
+			super( out, new SingleLineFormatter());
+		}
+
+		public File getDst() {
+			return mDst;
 		}
 
 		@Override

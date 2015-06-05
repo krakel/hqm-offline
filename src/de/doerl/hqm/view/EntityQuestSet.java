@@ -782,6 +782,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( quest.mParentHQM, result);
 					if (set != null && Utils.different( quest.mQuestSet, set)) {
+						activRemove();
 						mCtrl.fireRemoved( quest);
 						quest.mQuestSet = set;
 						mCtrl.fireAdded( quest);

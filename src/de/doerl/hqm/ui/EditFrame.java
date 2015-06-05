@@ -2,6 +2,7 @@ package de.doerl.hqm.ui;
 
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
 
@@ -31,7 +32,6 @@ import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.model.EditModel;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
-import de.doerl.hqm.ui.ADialog.DialogResult;
 import de.doerl.hqm.ui.tree.ANode;
 import de.doerl.hqm.ui.tree.ElementTree;
 import de.doerl.hqm.utils.ResourceManager;
@@ -64,6 +64,10 @@ public class EditFrame extends JFrame implements IModelListener {
 		mModel.addListener( this);
 		mCB = new EditCallback( this);
 		mCB.addRefreshListener( mCloseAction);
+	}
+
+	static boolean canClose( FHqm hqm, Window owner) {
+		return !hqm.isModified() || WarnDialogs.askMissing( owner);
 	}
 
 	private static JMenu createMenu( String name) {
@@ -239,18 +243,8 @@ public class EditFrame extends JFrame implements IModelListener {
 
 	@Override
 	public void dispose() {
-		DialogResult result = getModifiedResult();
-		switch (result) {
-			case APPROVE:
-//				save();
-//				if (!mCB.isModifiedPipeDef()) {
-				super.dispose();
-//				}
-				break;
-			case NO:
-				super.dispose();
-				break;
-			default:
+		if (CloseWorker.get( this)) {
+			super.dispose();
 		}
 	}
 
@@ -277,13 +271,6 @@ public class EditFrame extends JFrame implements IModelListener {
 
 	public EditModel getModel() {
 		return mModel;
-	}
-
-	DialogResult getModifiedResult() {
-//		if (mCB.isModifiedPipeDef()) {
-//			return new ModifiedDialog().showDialog( this);
-//		}
-		return DialogResult.NO;
 	}
 
 	private void init() {
