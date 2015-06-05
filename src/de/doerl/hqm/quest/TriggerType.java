@@ -24,6 +24,15 @@ public enum TriggerType {
 		return values[idx];
 	}
 
+	public static TriggerType parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return NONE;
+		}
+	}
+
 	public boolean isUseTaskCount() {
 		return mUseTaskCount;
 	}

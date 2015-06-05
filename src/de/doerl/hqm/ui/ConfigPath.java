@@ -14,14 +14,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
-class ConfigPath extends JPanel {
+class ConfigPath extends AConfigControl {
 	private static final long serialVersionUID = -3966232057993858800L;
 	private static final Logger LOGGER = Logger.getLogger( ConfigPath.class.getName());
 	private JButton mButton = new JButton( "...");
@@ -40,6 +39,7 @@ class ConfigPath extends JPanel {
 		initComponent( lbl);
 	}
 
+	@Override
 	public void applyChange() {
 		PreferenceManager.setString( mProperty, mText.getText());
 	}
@@ -74,6 +74,7 @@ class ConfigPath extends JPanel {
 		mButton.addActionListener( new PathSelectAction( mText));
 	}
 
+	@Override
 	public void initControl() {
 		mText.setText( PreferenceManager.getString( mProperty));
 //		mCheck.setSelected( PreferenceManager.getString( mProperty) != null);

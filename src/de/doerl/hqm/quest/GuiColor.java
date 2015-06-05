@@ -40,6 +40,15 @@ public enum GuiColor {
 		return values[idx];
 	}
 
+	public static GuiColor parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return BLACK;
+		}
+	}
+
 	public Color getColor() {
 		return mColor;
 	}

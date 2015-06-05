@@ -29,6 +29,15 @@ public enum TaskTyp {
 		return values[idx];
 	}
 
+	public static TaskTyp parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return TASK_ITEMS_CONSUME;
+		}
+	}
+
 	public String getDescr() {
 		return mDescr;
 	}

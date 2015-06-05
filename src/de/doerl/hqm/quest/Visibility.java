@@ -14,4 +14,13 @@ public enum Visibility {
 		}
 		return values[idx];
 	}
+
+	public static Visibility parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return FULL;
+		}
+	}
 }

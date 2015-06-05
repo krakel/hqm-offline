@@ -20,4 +20,13 @@ public enum BagTier {
 	public static int[] newArray() {
 		return new int[values().length];
 	}
+
+	public static BagTier parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return BASIC;
+		}
+	}
 }

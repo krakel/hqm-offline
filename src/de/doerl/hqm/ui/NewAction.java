@@ -3,6 +3,8 @@ package de.doerl.hqm.ui;
 import java.awt.event.ActionEvent;
 
 import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.quest.FileVersion;
+import de.doerl.hqm.utils.PreferenceManager;
 
 class NewAction extends ABundleAction {
 	private static final long serialVersionUID = -44344993759630964L;
@@ -15,6 +17,8 @@ class NewAction extends ABundleAction {
 
 	public void actionPerformed( ActionEvent e) {
 		FHqm hqm = new FHqm( null);
+		String pref = PreferenceManager.getString( "config.version");
+		hqm.setVersion( FileVersion.parse( pref));
 		mFrame.getModel().loadHQM( hqm);
 		mFrame.showHqm( hqm);
 	}

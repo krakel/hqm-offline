@@ -19,4 +19,13 @@ public enum ItemPrecision {
 		}
 		return values[idx];
 	}
+
+	public static ItemPrecision parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return PRECISE;
+		}
+	}
 }

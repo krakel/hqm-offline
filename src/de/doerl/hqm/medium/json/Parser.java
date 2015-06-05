@@ -99,7 +99,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 						FItemRequirement item = task.createItemRequirement();
 						item.mStack = FItemStack.parse( name);
 						item.mRequired = FValue.toInt( oo.get( IToken.REQUIREMENT_REQUIRED));
-						item.mPrecision = ItemPrecision.valueOf( FValue.toString( oo.get( IToken.REQUIREMENT_PRECISION)));
+						item.mPrecision = ItemPrecision.parse( FValue.toString( oo.get( IToken.REQUIREMENT_PRECISION)));
 					}
 					else {
 						FFluidRequirement fluid = task.createFluidRequirement();
@@ -130,7 +130,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 					loc.mY = FValue.toInt( oo.get( IToken.LOCATION_Y));
 					loc.mZ = FValue.toInt( oo.get( IToken.LOCATION_Z));
 					loc.mRadius = FValue.toInt( oo.get( IToken.LOCATION_RADIUS));
-					loc.mVisibility = Visibility.valueOf( FValue.toString( oo.get( IToken.LOCATION_VISIBLE)));
+					loc.mVisibility = Visibility.parse( FValue.toString( oo.get( IToken.LOCATION_VISIBLE)));
 					loc.mDim = FValue.toInt( oo.get( IToken.LOCATION_DIM));
 				}
 			}
@@ -243,7 +243,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 
 	private void readQuestInfo( FRepeatInfo info, FObject obj) {
 		if (obj != null) {
-			info.mType = RepeatType.valueOf( FValue.toString( obj.get( IToken.REPEAT_INFO_TYPE)));
+			info.mType = RepeatType.parse( FValue.toString( obj.get( IToken.REPEAT_INFO_TYPE)));
 			if (info.mType.isUseTime()) {
 				info.mTotal = FValue.toInt( obj.get( IToken.REPEAT_INFO_TOTAL));
 			}
@@ -277,8 +277,8 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 						readQuestInfo( quest.mRepeatInfo, FObject.to( obj.get( IToken.QUEST_REPEAT_INFO)));
 						String trigger = FValue.toString( obj.get( IToken.QUEST_TRIGGER_TYPE));
 						if (trigger != null) {
-							quest.mTriggerType = TriggerType.valueOf( trigger);
-							if (TriggerType.valueOf( trigger).isUseTaskCount()) {
+							quest.mTriggerType = TriggerType.parse( trigger);
+							if (quest.mTriggerType.isUseTaskCount()) {
 								quest.mTriggerTasks = FValue.toInt( obj.get( IToken.QUEST_TRIGGER_TASKS));
 							}
 						}
@@ -337,7 +337,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			IJson json = mSrc.doAll();
 			FObject obj = FObject.to( json);
 			if (obj != null) {
-				hqm.setVersion( FileVersion.valueOf( FValue.toString( obj.get( IToken.HQM_VERSION))));
+				hqm.setVersion( FileVersion.parse( FValue.toString( obj.get( IToken.HQM_VERSION))));
 				hqm.mPassCode = FValue.toString( obj.get( IToken.HQM_PASSCODE));
 				hqm.mDescr = FValue.toString( obj.get( IToken.HQM_DECRIPTION));
 				readQuestSetCat( hqm.mQuestSetCat, FArray.to( obj.get( IToken.HQM_QUEST_SET_CAT)));
@@ -373,7 +373,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					TaskTyp type = TaskTyp.valueOf( FValue.toString( obj.get( IToken.TASK_TYPE)));
+					TaskTyp type = TaskTyp.parse( FValue.toString( obj.get( IToken.TASK_TYPE)));
 					AQuestTask task = quest.createQuestTask( type, FValue.toString( obj.get( IToken.TASK_NAME)));
 					task.mDescr = FValue.toString( obj.get( IToken.TASK_DESC));
 					task.accept( this, obj);

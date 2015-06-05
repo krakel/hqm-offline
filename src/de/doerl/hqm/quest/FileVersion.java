@@ -38,6 +38,15 @@ public enum FileVersion {
 		return values[values.length - 1];
 	}
 
+	public static FileVersion parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return last();
+		}
+	}
+
 	public boolean contains( FileVersion other) {
 		return ordinal() >= other.ordinal();
 	}

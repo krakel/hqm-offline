@@ -30,4 +30,13 @@ public enum ElementTyp {
 		}
 		return values[idx];
 	}
+
+	public static ElementTyp parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return null;
+		}
+	}
 }

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.json.FArray;
 import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.FValue;
@@ -23,14 +24,16 @@ public class BaseDefaults {
 	public static final String FILE_OPEN_DIR = "file.open.directory";
 	public static final String MINECRAFT_DIR = "minecraft.dir";
 	public static final String MODULE_DIR = "mod.dir";
+	public static final String FILE_VERSION = "version";
 	private static final String[] KEYS = {
-		LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, MINECRAFT_DIR, MODULE_DIR
+		LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, MINECRAFT_DIR, MODULE_DIR, FILE_VERSION
 	};
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
 		{ STACKTRC, Boolean.TRUE },
 //		{ MINECRAFT_DIR, System.getProperty( "user.home") },
 //		{ MOD_DIR, System.getProperty( "user.home") },
+		{ FILE_VERSION, FileVersion.last().toString() },
 		{ FILE_OPEN_DIR, System.getProperty( "user.home") },
 		{ LAST_OPEN, new String[0] },
 		{ LAST_OPEN_DIR, System.getProperty( "user.home") }
@@ -43,6 +46,7 @@ public class BaseDefaults {
 		pref.checkBool( STACKTRC);
 		pref.checkString( MINECRAFT_DIR);
 		pref.checkString( MODULE_DIR);
+		pref.checkString( FILE_VERSION);
 		pref.checkString( FILE_OPEN_DIR);
 		pref.checkArray( LAST_OPEN);
 		pref.checkArray( LAST_OPEN_DIR);

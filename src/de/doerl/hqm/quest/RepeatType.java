@@ -22,6 +22,15 @@ public enum RepeatType {
 		return values[idx];
 	}
 
+	public static RepeatType parse( String name) {
+		try {
+			return valueOf( name);
+		}
+		catch (Exception ex) {
+			return NONE;
+		}
+	}
+
 	public boolean isUseTime() {
 		return mUseTime;
 	}
