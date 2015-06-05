@@ -45,5 +45,6 @@ class DialogTextField extends ADialog {
 
 	private void updateMain( String value) {
 		mField.setText( value != null ? value : "");
+		mField.selectAll();
 	}
 }

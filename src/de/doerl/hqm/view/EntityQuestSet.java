@@ -386,12 +386,15 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void mouseClicked( MouseEvent evt) {
 			if (mGroupAdd.isSelected()) {
-				int x = mLeaf.stepX( evt.getX()) / AEntity.ZOOM - ResourceManager.getW5( false);
-				int y = mLeaf.stepY( evt.getY()) / AEntity.ZOOM - ResourceManager.getH5( false);
-				FQuest quest = mCtrl.questCreate( mSet, "Unnamed", x, y);
-				createLeafQuest( quest);
-				activSet( getLeafQuest( quest), false);
-				mCtrl.fireAdded( quest);
+				String result = DialogTextField.update( "Unnamed", mCtrl.getFrame());
+				if (result != null) {
+					int x = mLeaf.stepX( evt.getX()) / AEntity.ZOOM - ResourceManager.getW5( false);
+					int y = mLeaf.stepY( evt.getY()) / AEntity.ZOOM - ResourceManager.getH5( false);
+					FQuest quest = mCtrl.questCreate( mSet, result, x, y);
+					createLeafQuest( quest);
+					activSet( getLeafQuest( quest), false);
+					mCtrl.fireAdded( quest);
+				}
 			}
 			else {
 				activRemove();
