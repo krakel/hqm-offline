@@ -7,16 +7,13 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IRefreshListener;
 import de.doerl.hqm.medium.RefreshEvent;
-import de.doerl.hqm.model.EditModel;
 
 public class EditCallback implements ICallback {
 	private List<IRefreshListener> mRefreshListener = new ArrayList<>();
 	private EditFrame mFrame;
-	private EditModel mModel;
 
 	public EditCallback( EditFrame frame) {
 		mFrame = frame;
-		mModel = frame.getModel();
 	}
 
 	@Override
@@ -58,8 +55,9 @@ public class EditCallback implements ICallback {
 
 	@Override
 	public void openHQMAction( FHqm hqm) {
-		mModel.loadHQM( hqm);
+		mFrame.getModel().loadHQM( hqm);
 		mFrame.showHqm( hqm);
+		fireActionUpdate();
 //		mModel.getUndoable().getUndoMgr().fireChangeEvent();
 	}
 
@@ -73,7 +71,7 @@ public class EditCallback implements ICallback {
 //		mModel.getUndoable().getUndoMgr().markSaved();
 		FHqm hqm = mFrame.getCurrent();
 		hqm.setModified( false);
-		mModel.fireBaseChanged( hqm);
+		mFrame.getModel().fireBaseChanged( hqm);
 		fireActionUpdate();
 	}
 

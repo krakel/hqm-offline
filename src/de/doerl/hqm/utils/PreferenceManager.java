@@ -213,6 +213,11 @@ public class PreferenceManager {
 		firePreferenceChanged( key);
 	}
 
+	public static void setArraySize( String key, int size) {
+		sPrefs.setArraySize( key, size);
+		firePreferenceChanged( key);
+	}
+
 	public static void setArrayString( String key, int nr, String val) {
 		sPrefs.setArrayString( key, nr, val);
 		firePreferenceChanged( key);

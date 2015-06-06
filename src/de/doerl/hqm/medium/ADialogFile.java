@@ -58,6 +58,7 @@ public abstract class ADialogFile extends ABundleAction implements IRefreshListe
 		String uri = file.toString();
 		PreferenceManager.deleteArrayString( BaseDefaults.LAST_OPEN, uri);
 		PreferenceManager.addArrayString( BaseDefaults.LAST_OPEN, 0, uri);
+		PreferenceManager.setArraySize( BaseDefaults.LAST_OPEN, BaseDefaults.LAST_OPEN_MAX);
 		String parent = file.getParent();
 		PreferenceManager.setString( BaseDefaults.FILE_OPEN_DIR, parent);
 		PreferenceManager.setString( BaseDefaults.LAST_OPEN_DIR, parent);

@@ -1,9 +1,12 @@
 package de.doerl.hqm.medium.json;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -14,12 +17,31 @@ import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.IMediumWorker;
 import de.doerl.hqm.medium.IRefreshListener;
 import de.doerl.hqm.medium.MediumUtils;
+import de.doerl.hqm.utils.Utils;
 
 public class Medium implements IMedium {
-//	private static final Logger LOGGER = Logger.getLogger( Medium.class.getName());
+	private static final Logger LOGGER = Logger.getLogger( Medium.class.getName());
 	public static final FileFilter FILTER = new FileNameExtensionFilter( "JSON file", "json");
 	public static final String MEDIUM = "json";
 	public static final String JSON_PATH = "json_path";
+
+	static FHqm loadHqm( File file) {
+		InputStream is = null;
+		try {
+			String name = toName( file);
+			FHqm hqm = new FHqm( name);
+			is = new FileInputStream( file);
+			readHqm( hqm, is);
+			return hqm;
+		}
+		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.FINER, ex);
+		}
+		finally {
+			Utils.closeIgnore( is);
+		}
+		return null;
+	}
 
 	static File normalize( File choose) {
 		return MediumUtils.normalize( choose, ".json");
@@ -54,6 +76,10 @@ public class Medium implements IMedium {
 		return w.forMedium( this, p);
 	}
 
+	public String getIcon() {
+		return "json.gif";
+	}
+
 	@Override
 	public String getName() {
 		return MEDIUM;
@@ -72,6 +98,18 @@ public class Medium implements IMedium {
 	@Override
 	public IRefreshListener getSaveAs( ICallback cb) {
 		return new SaveAsJSON( cb);
+	}
+
+	@Override
+	public FHqm openHqm( File file) {
+		return loadHqm( file);
+	}
+
+	public IMedium parse( String val) {
+		if (val != null && val.toLowerCase().endsWith( ".json")) {
+			return this;
+		}
+		return null;
 	}
 
 	@Override

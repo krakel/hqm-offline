@@ -24,6 +24,24 @@ public class Medium implements IMedium {
 	public static final String MEDIUM = "bit";
 	public static final String HQM_PATH = "hqm_path";
 
+	static FHqm loadHqm( File file) {
+		InputStream is = null;
+		try {
+			String name = toName( file);
+			FHqm hqm = new FHqm( name);
+			is = MediumUtils.getSource( file);
+			readHqm( hqm, is);
+			return hqm;
+		}
+		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.FINER, ex);
+		}
+		finally {
+			Utils.closeIgnore( is);
+		}
+		return null;
+	}
+
 	static String nameOfOriginal( File src) {
 		String name = src.getName();
 		if (!"quests.hqm".equals( name)) {
@@ -108,6 +126,11 @@ public class Medium implements IMedium {
 	}
 
 	@Override
+	public String getIcon() {
+		return "hqm.gif";
+	}
+
+	@Override
 	public String getName() {
 		return MEDIUM;
 	}
@@ -125,6 +148,19 @@ public class Medium implements IMedium {
 	@Override
 	public IRefreshListener getSaveAs( ICallback cb) {
 		return new SaveAsBit( cb);
+	}
+
+	@Override
+	public FHqm openHqm( File file) {
+		return loadHqm( file);
+	}
+
+	@Override
+	public IMedium parse( String val) {
+		if (val != null && val.toLowerCase().endsWith( ".hqm")) {
+			return this;
+		}
+		return null;
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.tree.ANode;
 import de.doerl.hqm.ui.tree.ElementTree;
+import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.EditView;
@@ -41,10 +42,6 @@ import de.doerl.hqm.view.EditView;
 public class EditFrame extends JFrame implements IModelListener {
 	private static final long serialVersionUID = -2516074296297195438L;
 	private static final String BASE_TITLE = ResourceManager.getString( "hqm.editor.title");
-	private static final String FILE = "hqm.file";
-	private static final String EDIT = "hqm.edit";
-	private static final String HELP = "hqm.help";
-	private static final String POPUP = "hqm.popup";
 	private EditModel mModel = new EditModel();
 	private EditView mView;
 	private ElementTree mTree;
@@ -86,17 +83,18 @@ public class EditFrame extends JFrame implements IModelListener {
 	static EditFrame createNew() {
 		EditManager.init();
 		ResourceManager.init();
-		EditFrame result = new EditFrame();
-		result.init();
-		Utils.centerFrame( result);
-		result.addWindowListener( new WindowCloser());
-		result.setVisible( true);
-		return result;
+		EditFrame frame = new EditFrame();
+		frame.init();
+		Utils.centerFrame( frame);
+		frame.addWindowListener( new WindowCloser());
+		frame.setVisible( true);
+		frame.mCB.fireActionUpdate();
+		return frame;
 	}
 
 	protected static JPopupMenu createPopupMenu() {
 		JPopupMenu result = new JPopupMenu();
-		result.add( new JMenuItem( new ABundleAction( POPUP) {
+		result.add( new JMenuItem( new ABundleAction( "hqm.popup") {
 			private static final long serialVersionUID = 2766110645403746850L;
 
 			public void actionPerformed( ActionEvent ev) {
@@ -124,6 +122,9 @@ public class EditFrame extends JFrame implements IModelListener {
 			JToolBar tool = mView.getToolBar( base);
 			SwingUtilities.invokeLater( new ToolUpdate( tool));
 			mCB.fireActionUpdate();
+			if (base instanceof FHqm) {
+				showHqm( (FHqm) base);
+			}
 		}
 	}
 
@@ -147,76 +148,88 @@ public class EditFrame extends JFrame implements IModelListener {
 	}
 
 	private Box createContent() {
-		Box result = Box.createVerticalBox();
-		result.add( mTop);
-		result.add( createSplit());
-		result.add( createStatusBar());
-		return result;
+		Box box = Box.createVerticalBox();
+		box.add( mTop);
+		box.add( createSplit());
+		box.add( createStatusBar());
+		return box;
 	}
 
 	private JMenuBar createMenuBar() {
-		JMenuBar result = new JMenuBar();
-		result.setBackground( UIManager.getColor( "panel.background"));
-		result.add( createMenuFile());
-		result.add( createMenuEdit());
-		result.add( createMenuHelp());
-//		result.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
-		return result;
+		JMenuBar menu = new JMenuBar();
+		menu.setBackground( UIManager.getColor( "panel.background"));
+		menu.add( createMenuFile());
+		menu.add( createMenuEdit());
+		menu.add( createMenuHelp());
+//		menu.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
+		return menu;
 	}
 
 	private JMenu createMenuEdit() {
-		JMenu result = createMenu( EDIT);
-//		result.add( new CopyAction( mMaster));
-//		result.add( new CutAction( mMaster));
-//		result.add( new PasteAction( mMaster));
-//		result.addSeparator();
-//		result.add( new DeleteAction( mMaster));
-//		result.addSeparator();
-//		result.add( mModel.getUndoable().getUndoAction());
-//		result.add( mModel.getUndoable().getRedoAction());
-		return result;
+		JMenu menu = createMenu( "hqm.edit");
+//		menu.add( new CopyAction( mMaster));
+//		menu.add( new CutAction( mMaster));
+//		menu.add( new PasteAction( mMaster));
+//		menu.addSeparator();
+//		menu.add( new DeleteAction( mMaster));
+//		menu.addSeparator();
+//		menu.add( mModel.getUndoable().getUndoAction());
+//		menu.add( mModel.getUndoable().getRedoAction());
+		return menu;
 	}
 
 	private JMenu createMenuFile() {
-		JMenu result = createMenu( FILE);
-		result.add( mNewAction);
+		JMenu menu = createMenu( "hqm.file");
+		menu.add( mNewAction);
 		IMedium bit = MediaManager.get( "bit");
 		IMedium json = MediaManager.get( "json");
-		result.add( bit.getOpen( mCB));
-		result.add( json.getOpen( mCB));
-		result.add( mCloseAction);
-		result.addSeparator();
-		result.add( bit.getSave( mCB));
-		result.add( bit.getSaveAs( mCB));
-		result.addSeparator();
-		result.add( json.getSave( mCB));
-		result.add( json.getSaveAs( mCB));
-		result.addSeparator();
-//		result.add( new RestoreBackupAction( mBackup));
-//		result.add( new RestorePrevAction( mBackup));
-//		result.add( new RestoreNextAction( mBackup));
-//		result.addSeparator();
-//		result.add( new ConfigurationAction( this));
-//		result.addSeparator();
-		result.add( new ExitAction( this));
-		return result;
+		menu.add( bit.getOpen( mCB));
+		menu.add( json.getOpen( mCB));
+		menu.add( createMenuLastOpen());
+		menu.add( mCloseAction);
+		menu.addSeparator();
+		menu.add( bit.getSave( mCB));
+		menu.add( bit.getSaveAs( mCB));
+		menu.addSeparator();
+		menu.add( json.getSave( mCB));
+		menu.add( json.getSaveAs( mCB));
+		menu.addSeparator();
+//		menu.add( new RestoreBackupAction( mBackup));
+//		menu.add( new RestorePrevAction( mBackup));
+//		menu.add( new RestoreNextAction( mBackup));
+//		menu.addSeparator();
+//		menu.add( new ConfigurationAction( this));
+//		menu.addSeparator();
+		menu.add( new ExitAction( this));
+		return menu;
 	}
 
 	private JMenu createMenuHelp() {
-		JMenu result = createMenu( HELP);
-		result.add( new ConfigAction( this));
-//		result.addSeparator();
-		result.add( new AboutAction( this));
-		return result;
+		JMenu menu = createMenu( "hqm.help");
+		menu.add( new ConfigAction( this));
+//		menu.addSeparator();
+		menu.add( new AboutAction( this));
+		return menu;
+	}
+
+	private JMenuItem createMenuLastOpen() {
+		JMenu menu = createMenu( "hqm.last");
+		int max = BaseDefaults.LAST_OPEN_MAX;
+		for (int i = 0; i < max; ++i) {
+			OpenLastAction a = new OpenLastAction( i, mCB);
+			JMenuItem mi = menu.add( a);
+			a.setItem( mi); // poor
+		}
+		return menu;
 	}
 
 	private Box createSplit() {
-		Box result = Box.createHorizontalBox();
-		result.setAlignmentX( LEFT_ALIGNMENT);
-//		result.setBorder( BorderFactory.createLineBorder( Color.BLACK));
-		result.add( createSplitLeft());
-		result.add( mView);
-		return result;
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX( LEFT_ALIGNMENT);
+//		box.setBorder( BorderFactory.createLineBorder( Color.BLACK));
+		box.add( createSplitLeft());
+		box.add( mView);
+		return box;
 	}
 
 	private JComponent createSplitLeft() {
@@ -226,15 +239,15 @@ public class EditFrame extends JFrame implements IModelListener {
 	}
 
 	private JComponent createStatusBar() {
-		Box result = Box.createHorizontalBox();
-		result.setAlignmentX( LEFT_ALIGNMENT);
-		result.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX( LEFT_ALIGNMENT);
+		box.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
 		mStatusBar = new JLabel();
 		mStatusBar.setText( "???");
-		result.add( mStatusBar);
-		result.add( Box.createHorizontalGlue());
-		result.setPreferredSize( new Dimension( Short.MAX_VALUE, mStatusBar.getPreferredSize().height));
-		return result;
+		box.add( mStatusBar);
+		box.add( Box.createHorizontalGlue());
+		box.setPreferredSize( new Dimension( Short.MAX_VALUE, mStatusBar.getPreferredSize().height));
+		return box;
 	}
 
 	public void displayHelp( String text) {
@@ -246,6 +259,10 @@ public class EditFrame extends JFrame implements IModelListener {
 		if (CloseWorker.get( this)) {
 			super.dispose();
 		}
+	}
+
+	public EditCallback getCallback() {
+		return mCB;
 	}
 
 	public FHqm getCurrent() {

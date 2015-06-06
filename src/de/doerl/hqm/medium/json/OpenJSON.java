@@ -2,8 +2,6 @@ package de.doerl.hqm.medium.json;
 
 import java.awt.Window;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,21 +39,11 @@ class OpenJSON extends AOpenFile {
 		chooser.setFileFilter( Medium.FILTER);
 		File file = selectOpenDialog( frame, chooser);
 		if (file != null && verifyLastPipeDef( file)) {
-			InputStream is = null;
-			try {
-				String name = Medium.toName( file);
-				FHqm hqm = new FHqm( name);
-				is = new FileInputStream( file);
-				Medium.readHqm( hqm, is);
+			FHqm hqm = Medium.loadHqm( file);
+			if (hqm != null) {
 				MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
 				MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
 				mCallback.openHQMAction( hqm);
-			}
-			catch (Exception ex) {
-				Utils.logThrows( LOGGER, Level.FINER, ex);
-			}
-			finally {
-				Utils.closeIgnore( is);
 			}
 		}
 	}

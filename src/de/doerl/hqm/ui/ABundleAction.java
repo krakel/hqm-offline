@@ -12,8 +12,7 @@ import de.doerl.hqm.utils.ResourceManager;
 public abstract class ABundleAction extends AbstractAction {
 	public static final String DIALOGKEY = "DialogKey";
 	public static final String ENABLED = "Enabled";
-	public static final String EXECUTE = "Execute";
-	public static final String SELECTED = "Selected";
+	public static final String VISIBLE = "Visible";
 	public static final String SHORTNAME = "ShortName";
 	private static final String PAR = "->";
 	private static final char SEP = ';';

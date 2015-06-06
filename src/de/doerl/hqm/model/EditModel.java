@@ -97,6 +97,7 @@ public class EditModel {
 	public void removeHQM( FHqm hqm) {
 		mHQMs.remove( hqm);
 		fireBaseRemoved( hqm);
+		fireBaseActivate( null);
 	}
 
 	public void removeListener( IModelListener l) {

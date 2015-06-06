@@ -382,7 +382,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		private static final long serialVersionUID = 6724759221568885874L;
 
 		public TaskAddAction() {
-			super( "entity.taks.add");
+			super( "entity.task.add");
 		}
 
 		@Override

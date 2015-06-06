@@ -68,6 +68,10 @@ public class MediaManager {
 		return prop != null && Boolean.TRUE.equals( prop);
 	}
 
+	public static String parse( String name) {
+		return null;
+	}
+
 	public static void registerMedium( IMedium medium) {
 		if (medium != null && !sMedia.contains( medium)) {
 			sMedia.add( medium);

@@ -38,8 +38,8 @@ public class ElementTree extends JTree implements TreeSelectionListener {
 		if (node != null) {
 			TreeNode[] arr = model.getPathToRoot( node);
 			TreePath path = new TreePath( arr);
-			expandPath( path);
-			setSelectionPath( path);
+			this.expandPath( path);
+			this.setSelectionPath( path);
 		}
 	}
 

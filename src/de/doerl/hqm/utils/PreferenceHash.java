@@ -206,6 +206,10 @@ class PreferenceHash extends HashMap<String, Object> {
 		getValue( key).setArray( val);
 	}
 
+	void setArraySize( String key, int size) {
+		getValue( key).setArraySize( size);
+	}
+
 	void setArrayString( String key, int nr, String value) {
 		getValue( key).setArrayString( nr, value);
 	}

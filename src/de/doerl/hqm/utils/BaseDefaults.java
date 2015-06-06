@@ -20,6 +20,7 @@ public class BaseDefaults {
 	private static final Logger LOGGER = Logger.getLogger( BaseDefaults.class.getName());
 	public static final String STACKTRC = "stackTrace.enabled";
 	public static final String LAST_OPEN = "last.open";
+	public static final int LAST_OPEN_MAX = 10;
 	public static final String LAST_OPEN_DIR = "last.open.dir";
 	public static final String FILE_OPEN_DIR = "file.open.directory";
 	public static final String MINECRAFT_DIR = "minecraft.dir";

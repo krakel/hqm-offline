@@ -193,6 +193,16 @@ class PreferenceObject {
 		mValue = val;
 	}
 
+	public void setArraySize( int size) {
+		String[] old = getArray();
+		if (size < 0) {
+			size = 0;
+		}
+		String[] arr = new String[size];
+		System.arraycopy( old, 0, arr, 0, Math.min( size, old.length));
+		mValue = arr;
+	}
+
 	public void setArrayString( int nr, String value) {
 		String[] arr = getArray();
 		if (value != null) {

@@ -68,6 +68,9 @@ public class EditView extends JPanel implements IModelListener {
 				Utils.log( LOGGER, Level.WARNING, "missing AEntity for {0}", base);
 			}
 		}
+		else {
+			SwingUtilities.invokeLater( new EntityActivate( mEmpty));
+		}
 	}
 
 	@Override
