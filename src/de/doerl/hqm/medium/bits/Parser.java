@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupCat;
@@ -150,7 +149,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	public Object forTaskLocation( FQuestTaskLocation task, Object p) {
 		int count = mSrc.readData( DataBitHelper.TASK_LOCATION_COUNT);
 		for (int i = 0; i < count; i++) {
-			AStack icon = mSrc.readIconIf();
+			FItemStack icon = mSrc.readIconIf();
 			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
 			FLocation loc = task.createLocation( icon, name);
 			loc.mX = mSrc.readData( DataBitHelper.WORLD_COORDINATE);
@@ -167,7 +166,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	public Object forTaskMob( FQuestTaskMob task, Object p) {
 		int count = mSrc.readData( DataBitHelper.TASK_MOB_COUNT);
 		for (int i = 0; i < count; i++) {
-			AStack icon = mSrc.readIconIf();
+			FItemStack icon = mSrc.readIconIf();
 			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
 			FMob mob = task.createMob( icon, name);
 			mob.mMob = mSrc.readString( DataBitHelper.MOB_ID_LENGTH);

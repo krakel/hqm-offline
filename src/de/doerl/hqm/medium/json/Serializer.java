@@ -224,8 +224,12 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forSetting( FSetting rs, Object p) {
 		mDst.beginObject();
 		mDst.print( SETTING_REPUTATION, toID( IndexOf.getReputation( rs.mRep), rs.mRep.mName));
-		mDst.printIf( SETTING_LOWER, IndexOf.getMarker( rs.mLower));
-		mDst.printIf( SETTING_UPPER, IndexOf.getMarker( rs.mUpper));
+		if (rs.mLower != null) {
+			mDst.print( SETTING_LOWER, toID( IndexOf.getMarker( rs.mLower), rs.mLower.mName));
+		}
+		if (rs.mUpper != null) {
+			mDst.print( SETTING_UPPER, toID( IndexOf.getMarker( rs.mUpper), rs.mUpper.mName));
+		}
 		mDst.print( SETTING_INVERTED, rs.mInverted);
 		mDst.endObject();
 		return null;

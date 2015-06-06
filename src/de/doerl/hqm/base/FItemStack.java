@@ -6,36 +6,71 @@ import java.util.regex.Pattern;
 import de.doerl.hqm.utils.Utils;
 
 public final class FItemStack extends AStack {
-	private static final Pattern PATTERN = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)"); //  "(.*) size\\((\\d*)\\) dmg\\((\\d*)\\)"
-	private String mItem;
+	private static final Pattern PATTERN = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)");
+	private static final String OLD_ITEM = "id:";
+	private String mKey;
+	private String mName;
 	private int mSize;
 	private int mDmg;
-	private String mKey;
+
+	public FItemStack( int id, int size, int dmg) {
+		super( null);
+		mName = OLD_ITEM + String.valueOf( id);
+		mSize = size;
+		mDmg = dmg;
+		mKey = mName + "%" + mDmg;
+	}
 
 	public FItemStack( String nbt) {
 		super( nbt);
-		mKey = getName() + "%" + getDamage();
+		mName = OLD_ITEM + getValueID( "id", "0");
+		mSize = getValueInt( "Count", 1);
+		mDmg = getValueInt( "Damage", 0);
+		mKey = mName + "%" + mDmg;
+	}
+
+	public FItemStack( String item, int size, int dmg) {
+		super( null);
+		mName = item;
+		mSize = size;
+		mDmg = dmg;
+		mKey = mName + "%" + mDmg;
+	}
+
+	public FItemStack( String nbt, int id, int size, int dmg) {
+		super( nbt);
+		mName = "id:" + String.valueOf( id);
+		mSize = size;
+		mDmg = dmg;
+		mKey = mName + "%" + mDmg;
 	}
 
 	private FItemStack( String nbt, Matcher mm) {
 		super( nbt);
 		mm.find();
 		int size = mm.groupCount();
-		mItem = size > 1 ? mm.group( 1) : "unknown";
+		mName = size > 1 ? mm.group( 1) : "item:unknown";
 		mSize = size > 2 ? Utils.parseInteger( mm.group( 2)) : 0;
 		mDmg = size > 3 ? Utils.parseInteger( mm.group( 3)) : 0;
-		mKey = getName() + "%" + getDamage();
+		mKey = mName + "%" + mDmg;
 	}
 
 	public FItemStack( String nbt, String item, int size, int dmg) {
 		super( nbt);
-		mItem = item;
-		mSize = size;
-		mDmg = dmg;
-		mKey = getName() + "%" + getDamage();
+		if (item != null) {
+			mName = item;
+			mSize = size;
+			mDmg = dmg;
+		}
+		else {
+			mName = OLD_ITEM + getValueID( "id", "0");
+			mSize = getValueInt( "Count", 1);
+			mDmg = getValueInt( "Damage", 0);
+		}
+		mKey = mName + "%" + mDmg;
 	}
 
-	public static AStack parse( String name) {
+	public static FItemStack parse( String name) {
 		if (name != null) {
 			return new FItemStack( null, PATTERN.matcher( name));
 		}
@@ -58,26 +93,16 @@ public final class FItemStack extends AStack {
 
 	@Override
 	public int getCount() {
-		if (mItem != null) {
-			return mSize;
-		}
-		else {
-			return super.getCount();
-		}
+		return mSize;
 	}
 
 	@Override
 	public int getDamage() {
-		if (mItem != null) {
-			return mDmg;
-		}
-		else {
-			return super.getDamage();
-		}
+		return mDmg;
 	}
 
 	public String getItem() {
-		return mItem;
+		return mName;
 	}
 
 	@Override
@@ -87,16 +112,28 @@ public final class FItemStack extends AStack {
 
 	@Override
 	public String getName() {
-		if (mItem != null) {
-			return mItem;
+		return mName;
+	}
+
+	@Override
+	public String getNBT() {
+		if (mNBT != null) {
+			return mNBT;
+		}
+		else if (mKey.startsWith( OLD_ITEM)) {
+			int id = Utils.parseInteger( mName, 0);
+			return String.format( "=COMPOUND( id=SHORT(%d), Damage=SHORT(%d), Count=BYTE(%d) )", id, mDmg, mSize);
+		}
+		else if (mName != null) {
+			return null;
 		}
 		else {
-			return super.getName();
+			return "=COMPOUND(  )";
 		}
 	}
 
 	@Override
 	public String toString() {
-		return String.format( "%s size(%d) dmg(%d)", mItem, mSize, mDmg);
+		return String.format( "%s size(%d) dmg(%d)", mName, mSize, mDmg);
 	}
 }

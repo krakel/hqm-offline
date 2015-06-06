@@ -6,7 +6,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +23,6 @@ import de.doerl.hqm.Tuple2;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskLocation;
@@ -269,16 +267,6 @@ public class EntityQuest extends AEntity<FQuest> {
 		mRewardList.setBtnVisible( !mQuest.Reputation.isEmpty());
 	}
 
-	private void updateStacks( Vector<FItemStack> param, Vector<FItemStack> stks) {
-		param.clear();
-		for (int i = 0; i < stks.size(); i++) {
-			FItemStack stk = stks.get( i);
-			if (stk != null) {
-				param.add( stk);
-			}
-		}
-	}
-
 	private void updateTaskAction( boolean enabled) {
 		mTaskListAction.setEnabled( enabled);
 	}
@@ -292,9 +280,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			Vector<FItemStack> result = DialogListStacks.updateA( mQuest.mChoices, mCtrl.getFrame());
-			if (result != null) {
-				updateStacks( mQuest.mChoices, result);
+			if (DialogListStacks.update( mQuest.mChoices, mCtrl.getFrame())) {
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -370,9 +356,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			Vector<FItemStack> result = DialogListStacks.updateA( mQuest.mRewards, mCtrl.getFrame());
-			if (result != null) {
-				updateStacks( mQuest.mRewards, result);
+			if (DialogListStacks.update( mQuest.mRewards, mCtrl.getFrame())) {
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -408,7 +392,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		protected Object doTaskItems( AQuestTaskItems task, DefaultListModel<ATaskBox> model) {
-			model.addElement( new TaskBoxRequire( task));
+			model.addElement( new TaskBoxItems( task));
 			return null;
 		}
 

@@ -5,12 +5,12 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FMob extends ANamed implements IElement {
 	public final FQuestTaskMob mParentTask;
-	public AStack mIcon;
+	public FItemStack mIcon;
 	public String mMob;
 	public int mKills;
 	public boolean mExact;
 
-	public FMob( FQuestTaskMob parent, AStack icon, String name) {
+	public FMob( FQuestTaskMob parent, FItemStack icon, String name) {
 		super( name);
 		mParentTask = parent;
 		mIcon = icon;

@@ -6,13 +6,13 @@ import de.doerl.hqm.quest.Visibility;
 
 public final class FLocation extends ANamed implements IElement {
 	public final FQuestTaskLocation mParentTask;
-	public AStack mIcon;
+	public FItemStack mIcon;
 	public int mX, mY, mZ;
 	public int mRadius;
 	public int mDim;
 	public Visibility mVisibility;
 
-	public FLocation( FQuestTaskLocation parent, AStack icon, String name) {
+	public FLocation( FQuestTaskLocation parent, FItemStack icon, String name) {
 		super( name);
 		mParentTask = parent;
 		mIcon = icon;

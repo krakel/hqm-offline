@@ -3,7 +3,7 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.utils.Utils;
 
 public abstract class AStack {
-	private String mNBT;
+	protected String mNBT;
 
 	AStack( String nbt) {
 		mNBT = nbt;
@@ -14,38 +14,15 @@ public abstract class AStack {
 		return count > 1 ? Integer.toString( count) : null;
 	}
 
-	public int getCount() {
-		if (mNBT != null) {
-			return Utils.parseInteger( getValue( "Count"), 1);
-		}
-		else {
-			return 1;
-		}
-	}
+	public abstract int getCount();
 
-	public int getDamage() {
-		if (mNBT != null) {
-			return Utils.parseInteger( getValue( "Damage"), 0);
-		}
-		else {
-			return 0;
-		}
-	}
+	public abstract int getDamage();
 
 	public abstract String getKey();
 
-	public String getName() {
-		if (mNBT != null) {
-			return getValue( "id");
-		}
-		else {
-			return "unknown";
-		}
-	}
+	public abstract String getName();
 
-	public String getNBT() {
-		return mNBT;
-	}
+	public abstract String getNBT();
 
 	protected String getNbtStr() {
 		if (mNBT != null) {
@@ -56,7 +33,7 @@ public abstract class AStack {
 		}
 	}
 
-	protected String getValue( String key) {
+	private String getValue( String key) {
 		String text = mNBT.toString();
 		int pos = text.indexOf( key);
 		if (pos < 0) {
@@ -71,5 +48,39 @@ public abstract class AStack {
 			return "";
 		}
 		return text.substring( p1 + 1, p2);
+	}
+
+	protected String getValueID( String key, String def) {
+		if (mNBT != null) {
+			String str = getValue( key);
+			return str != null ? str : def;
+		}
+		else {
+			return def;
+		}
+	}
+
+	protected int getValueInt( String key, int def) {
+		if (mNBT != null) {
+			return Utils.parseInteger( getValue( key), def);
+		}
+		else {
+			return def;
+		}
+	}
+
+	protected String getValueStr( String key, String def) {
+		if (mNBT != null) {
+			String str = getValue( key);
+			if (str != null) {
+				return str.substring( 1, str.length() - 1);
+			}
+			else {
+				return def;
+			}
+		}
+		else {
+			return def;
+		}
 	}
 }

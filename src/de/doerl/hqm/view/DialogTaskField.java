@@ -17,7 +17,7 @@ class DialogTaskField extends ADialog {
 	private JComboBox<TaskTyp> mTypes = new JComboBox<>( TaskTyp.values());
 	private JTextField mField = new JTextField();
 
-	public DialogTaskField( Window owner) {
+	private DialogTaskField( Window owner) {
 		super( owner);
 		setThema( "edit.taskfield.thema");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);

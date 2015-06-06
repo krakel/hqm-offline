@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.DataBitHelper;
@@ -71,12 +70,21 @@ class BitInputStream {
 	}
 
 	public FFluidStack readFluidStack() {
-		String nbt = readNBT();
-		return nbt != null ? new FFluidStack( nbt) : null;
+		if (readBoolean()) {
+			return new FFluidStack( readNBT());
+		}
+		else {
+			return null;
+		}
 	}
 
-	public AStack readIconIf() {
-		return readBoolean() ? readItemStack() : null;
+	public FItemStack readIconIf() {
+		if (readBoolean()) {
+			return readItemStack();
+		}
+		else {
+			return null;
+		}
 	}
 
 	public int[] readIds( DataBitHelper bits) {
@@ -89,46 +97,62 @@ class BitInputStream {
 	}
 
 	public FItemStack readItemStack() {
-		String id = readRawItemID();
-		int dmg = readData( DataBitHelper.SHORT);
-		String nbt = readNBT();
-		return new FItemStack( nbt, id, 1, dmg);
+		return readItemStackDef( false);
+	}
+
+	private FItemStack readItemStackDef( boolean withSize) {
+		if (mVersion.contains( FileVersion.NO_ITEM_IDS)) {
+			return readItemStackName( withSize);
+		}
+		else {
+			return readItemStackID( withSize);
+		}
 	}
 
 	public FItemStack readItemStackFix() {
 		if (mVersion.contains( FileVersion.NO_ITEM_IDS_FIX)) {
-			String id = readRawItemID();
-			int size = readData( DataBitHelper.SHORT);
-			int dmg = readData( DataBitHelper.SHORT);
-			String nbt = readNBT();
-			return new FItemStack( nbt, id, size, dmg);
+			return readItemStackDef( true);
 		}
 		else {
-			String nbt = readNBT();
-			return nbt != null ? new FItemStack( nbt) : null;
+			if (readBoolean()) {
+				return new FItemStack( readNBT());
+			}
+			else {
+				return null;
+			}
+		}
+	}
+
+	private FItemStack readItemStackID( boolean withSize) {
+		int id = readData( DataBitHelper.SHORT);
+		int size = withSize ? readData( DataBitHelper.SHORT) : 1;
+		int dmg = readData( DataBitHelper.SHORT);
+		if (readBoolean()) {
+			return new FItemStack( readNBT(), id, size, dmg);
+		}
+		else {
+			return new FItemStack( id, size, dmg);
+		}
+	}
+
+	private FItemStack readItemStackName( boolean withSize) {
+		String name = readString( DataBitHelper.SHORT);
+		int size = withSize ? readData( DataBitHelper.SHORT) : 1;
+		int dmg = readData( DataBitHelper.SHORT);
+		if (readBoolean()) {
+			return new FItemStack( readNBT(), name, size, dmg);
+		}
+		else {
+			return new FItemStack( name, size, dmg);
 		}
 	}
 
 	private String readNBT() {
-		if (readBoolean()) {
-			byte bytes[] = new byte[readData( DataBitHelper.NBT_LENGTH)];
-			for (int i = 0; i < bytes.length; i++) {
-				bytes[i] = (byte) readByte();
-			}
-			return NbtReader.read( bytes);
+		byte bytes[] = new byte[readData( DataBitHelper.NBT_LENGTH)];
+		for (int i = 0; i < bytes.length; i++) {
+			bytes[i] = (byte) readByte();
 		}
-		else {
-			return null;
-		}
-	}
-
-	private String readRawItemID() {
-		if (mVersion.contains( FileVersion.NO_ITEM_IDS)) {
-			return readString( DataBitHelper.SHORT);
-		}
-		else {
-			return Integer.toString( readData( DataBitHelper.SHORT));
-		}
+		return NbtReader.read( bytes);
 	}
 
 	public String readString( DataBitHelper bits) {

@@ -2,15 +2,12 @@ package de.doerl.hqm.view;
 
 import java.awt.Window;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
 import javax.swing.Box;
 
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.ARequirement;
-import de.doerl.hqm.base.AStack;
 
-class TaskBoxRequire extends ATaskBox {
+class TaskBoxItems extends ATaskBox {
 	private static final long serialVersionUID = -2578865094375861527L;
 	private static final LeafButton BTN1 = new LeafButton( "Manual detect");
 	private static final LeafButton BTN2 = new LeafButton( "Manual submit");
@@ -18,7 +15,7 @@ class TaskBoxRequire extends ATaskBox {
 	private LeafFloating mFloating = new LeafFloating();
 	private AQuestTaskItems mTask;
 
-	public TaskBoxRequire( AQuestTaskItems task) {
+	public TaskBoxItems( AQuestTaskItems task) {
 		mTask = task;
 		add( AEntity.leafScoll( mFloating, HEIGHT));
 		add( Box.createVerticalStrut( AEntity.GAP));
@@ -46,12 +43,7 @@ class TaskBoxRequire extends ATaskBox {
 
 	@Override
 	public boolean onAction( Window owner) {
-		Vector<AStack> result = DialogListStacks.updateB( mTask.mRequirements, owner);
-		if (result != null) {
-			updateStacks( mTask.mRequirements, result);
-			return true;
-		}
-		return false;
+		return DialogListRequirements.update( mTask, owner);
 	}
 
 	@Override
@@ -62,15 +54,5 @@ class TaskBoxRequire extends ATaskBox {
 	@Override
 	public void update() {
 		mFloating.update( mTask);
-	}
-
-	private void updateStacks( Vector<ARequirement> param, Vector<AStack> stks) {
-		param.clear();
-		for (int i = 0; i < stks.size(); i++) {
-			AStack itemStack = stks.get( i);
-			if (itemStack != null) {
-				mTask.createRequirement( false);
-			}
-		}
 	}
 }

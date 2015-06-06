@@ -3,8 +3,8 @@ package de.doerl.hqm.medium.bits;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidStack;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.Utils;
@@ -68,26 +68,14 @@ class BitOutputStream {
 		mBits += count;
 	}
 
-	public <E extends Enum<E>> void writeEnum( Enum<E> data, E type) {
-		E[] values = type.getDeclaringClass().getEnumConstants();
-		writeEnum( data, values);
-	}
-
-	public <E extends Enum<E>> void writeEnum( Enum<E> data, E[] values) {
-		int length = values.length;
-		if (length > 0) {
-			writeData( data.ordinal(), Integer.bitCount( length) + 1);
-		}
-	}
-
 	public void writeFluidStack( FFluidStack stk) {
 		writeNBT( NbtWriter.write( stk.getNBT()));
 	}
 
-	public void writeIconIf( AStack stk) {
+	public void writeIconIf( FItemStack stk) {
 		if (stk != null) {
 			writeBoolean( true);
-			writeItemStack( stk);
+			writeItemStackDef( stk, false);
 		}
 		else {
 			writeBoolean( false);
@@ -101,22 +89,44 @@ class BitOutputStream {
 		}
 	}
 
-	public void writeItemStack( AStack stk) {
-		writeRawItemID( stk.getName());
-		writeData( stk.getDamage(), DataBitHelper.SHORT);
-		writeNBT( NbtWriter.write( stk.getNBT()));
+	public void writeItemStack( FItemStack stk) {
+		writeItemStackDef( stk, false);
 	}
 
-	public void writeItemStackFix( AStack stk) {
+	private void writeItemStackDef( FItemStack stk, boolean withSize) {
+		if (mVersion.contains( FileVersion.NO_ITEM_IDS)) {
+			writeItemStackName( stk, withSize);
+		}
+		else {
+			writeItemStackID( stk, withSize);
+		}
+	}
+
+	public void writeItemStackFix( FItemStack stk) {
 		if (mVersion.contains( FileVersion.NO_ITEM_IDS_FIX)) {
-			writeRawItemID( stk.getName());
-			writeData( stk.getCount(), DataBitHelper.SHORT);
-			writeData( stk.getDamage(), DataBitHelper.SHORT);
-			writeNBT( NbtWriter.write( stk.getNBT()));
+			writeItemStackDef( stk, true);
 		}
 		else {
 			writeNBT( NbtWriter.write( stk.getNBT()));
 		}
+	}
+
+	private void writeItemStackID( FItemStack stk, boolean withSize) {
+		writeData( Utils.parseInteger( stk.getName()), DataBitHelper.SHORT);
+		if (withSize) {
+			writeData( stk.getCount(), DataBitHelper.SHORT);
+		}
+		writeData( stk.getDamage(), DataBitHelper.SHORT);
+		writeNBT( NbtWriter.write( stk.getNBT()));
+	}
+
+	private void writeItemStackName( FItemStack stk, boolean withSize) {
+		writeString( stk.getName(), DataBitHelper.SHORT);
+		if (withSize) {
+			writeData( stk.getCount(), DataBitHelper.SHORT);
+		}
+		writeData( stk.getDamage(), DataBitHelper.SHORT);
+		writeNBT( NbtWriter.write( stk.getNBT()));
 	}
 
 	public void writeNBT( byte[] nbt) {
@@ -129,15 +139,6 @@ class BitOutputStream {
 		}
 		else {
 			writeBoolean( false);
-		}
-	}
-
-	private void writeRawItemID( String id) {
-		if (mVersion.contains( FileVersion.NO_ITEM_IDS)) {
-			writeString( id, DataBitHelper.SHORT);
-		}
-		else {
-			writeData( Utils.parseInteger( id), DataBitHelper.SHORT);
 		}
 	}
 

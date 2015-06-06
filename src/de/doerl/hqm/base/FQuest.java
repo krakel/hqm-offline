@@ -17,7 +17,7 @@ public final class FQuest extends ANamed implements IElement {
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
-	public AStack mIcon;
+	public FItemStack mIcon;
 	public int mTriggerTasks;
 	public TriggerType mTriggerType = TriggerType.NONE;
 	public Integer mReqCount;

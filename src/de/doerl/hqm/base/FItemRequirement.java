@@ -5,7 +5,7 @@ import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.ItemPrecision;
 
 public final class FItemRequirement extends ARequirement {
-	public AStack mStack;
+	public FItemStack mStack;
 	public int mRequired;
 	public ItemPrecision mPrecision;
 
@@ -34,7 +34,7 @@ public final class FItemRequirement extends ARequirement {
 	}
 
 	@Override
-	public AStack getStack() {
+	public FItemStack getStack() {
 		return mStack;
 	}
 }
