@@ -1,6 +1,5 @@
 package de.doerl.hqm.ui;
 
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -13,7 +12,6 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout.Group;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -59,11 +57,6 @@ public abstract class ADialog extends JDialog {
 		content.add( Box.createVerticalStrut( GAP));
 		content.add( new JSinkLine());
 		content.add( mSelect);
-	}
-
-	protected static void addComponent( Group hori, Group verti, Component c) {
-		hori.addComponent( c);
-		verti.addComponent( c);
 	}
 
 	public static void addKeyAction( JComponent comp, int cond, String key, Action a) {

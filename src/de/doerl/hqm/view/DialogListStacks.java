@@ -31,7 +31,7 @@ class DialogListStacks extends ADialogList {
 		values.clear();
 		for (int i = 0; i < mModel.size(); ++i) {
 			StackEntry e = mModel.get( i);
-			values.add( new FItemStack( e.mName, e.mCount, e.mDamage));
+			values.add( new FItemStack( e.getName(), e.mCount, e.mDamage));
 		}
 	}
 

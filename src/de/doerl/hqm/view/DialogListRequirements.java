@@ -41,13 +41,13 @@ class DialogListRequirements extends ADialogList {
 			StackEntry e = mModel.get( i);
 			if (e.mItem) {
 				FItemRequirement req = task.createItemRequirement();
-				req.mStack = new FItemStack( e.mName, 1, e.mDamage);
+				req.mStack = new FItemStack( e.getName(), 1, e.mDamage);
 				req.mRequired = e.mCount;
 				req.mPrecision = e.mPrecision;
 			}
 			else {
 				FFluidRequirement req = task.createFluidRequirement();
-				req.mStack = new FFluidStack( e.mName, e.mCount);
+				req.mStack = new FFluidStack( e.getName(), e.mCount);
 			}
 		}
 		return result;
