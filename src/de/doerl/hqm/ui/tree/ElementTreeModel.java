@@ -45,9 +45,9 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 
 	@Override
 	public void baseChanged( ModelEvent event) {
-		MutableTreeNode node = getNode( event.mBase);
-		if (node != null) {
-			nodeChanged( node);
+		ABase base = event.mBase;
+		if (base != null) {
+			ChangeFactory.get( base, this);
 		}
 	}
 
@@ -71,7 +71,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		return node;
 	}
 
-	private MutableTreeNode getChild( MutableTreeNode parent, ABase base) {
+	private DefaultMutableTreeNode getChild( MutableTreeNode parent, ABase base) {
 		if (base != null) {
 			for (int i = 0; i < parent.getChildCount(); ++i) {
 				try {
@@ -89,7 +89,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		return null;
 	}
 
-	MutableTreeNode getNode( ABase base) {
+	DefaultMutableTreeNode getNode( ABase base) {
 		MutableTreeNode parent = getParentNode( base);
 		if (parent != null && parent.getChildCount() > 0) {
 			return getChild( parent, base);
@@ -110,6 +110,38 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 	@Override
 	public DefaultMutableTreeNode getRoot() {
 		return (DefaultMutableTreeNode) super.getRoot();
+	}
+
+	private static class ChangeFactory extends AHQMWorker<Object, ElementTreeModel> {
+		private static final ChangeFactory WORKER = new ChangeFactory();
+
+		public ChangeFactory() {
+		}
+
+		public static void get( ABase base, ElementTreeModel model) {
+			base.accept( WORKER, model);
+		}
+
+		@Override
+		protected Object doBase( ABase base, ElementTreeModel model) {
+			DefaultMutableTreeNode node = model.getNode( base);
+			if (node != null) {
+				model.fireTreeNodesChanged( this, node.getPath(), null, null);
+			}
+			return null;
+		}
+
+		@Override
+		protected Object doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
+			DefaultMutableTreeNode node = model.getNode( cat);
+			if (node != null) {
+				model.fireTreeNodesChanged( this, node.getPath(), null, null);
+				node.removeAllChildren();
+				TreeFactory.get( cat, model);
+				model.fireTreeStructureChanged( this, node.getPath(), null, null);
+			}
+			return null;
+		}
 	}
 
 	private static class NodeFactory extends AHQMWorker<MutableTreeNode, ElementTreeModel> {
@@ -192,10 +224,14 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 			base.accept( WORKER, model);
 		}
 
+		public static void get( ACategory<? extends ANamed> cat, ElementTreeModel model) {
+			cat.forEachMember( WORKER, model);
+		}
+
 		@Override
-		protected Object doCategory( ACategory<? extends ANamed> set, ElementTreeModel model) {
-			NodeFactory.get( set, model);
-			set.forEachMember( this, model);
+		protected Object doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
+			NodeFactory.get( cat, model);
+			cat.forEachMember( this, model);
 			return null;
 		}
 
