@@ -49,9 +49,9 @@ public final class FItemStack extends AStack {
 		super( nbt);
 		mm.find();
 		int size = mm.groupCount();
-		mName = size > 1 ? mm.group( 1) : "item:unknown";
-		mSize = size > 2 ? Utils.parseInteger( mm.group( 2)) : 0;
-		mDmg = size > 3 ? Utils.parseInteger( mm.group( 3)) : 0;
+		mName = size > 0 ? mm.group( 1) : "item:unknown";
+		mSize = size > 1 ? Utils.parseInteger( mm.group( 2)) : 0;
+		mDmg = size > 2 ? Utils.parseInteger( mm.group( 3)) : 0;
 		mKey = mName + "%" + mDmg;
 	}
 

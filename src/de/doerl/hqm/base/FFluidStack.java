@@ -17,8 +17,8 @@ public final class FFluidStack extends AStack {
 		super( null);
 		mm.find();
 		int size = mm.groupCount();
-		mName = size > 1 ? mm.group( 1) : "fluid:unknown";
-		mSize = size > 2 ? Utils.parseInteger( mm.group( 2)) : 0;
+		mName = size > 0 ? mm.group( 1) : "fluid:unknown";
+		mSize = size > 1 ? Utils.parseInteger( mm.group( 2)) : 0;
 		mKey = mName + "%0";
 	}
 

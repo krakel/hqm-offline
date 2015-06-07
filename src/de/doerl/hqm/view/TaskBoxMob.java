@@ -107,7 +107,7 @@ class TaskBoxMob extends ATaskBox {
 			AStack stk = mob.mIcon;
 			Image img = ImageLoader.getImage( stk, cb);
 			mIcon.setIcon( new StackIcon( img, 0.8, null));
-			mName.setText( mob.mMob);
+			mName.setText( mob.mName);
 			mTotal.setText( String.format( "Kill a total of %d", mob.mKills));
 			return this;
 		}
