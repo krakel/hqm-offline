@@ -30,6 +30,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	static final int GAP = 8;
 	static final int ICON_SIZE = 36;
 	static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * 170, ZOOM * 234);
+	static final Font FONT_SMALL = new Font( "SansSerif", Font.PLAIN, 11);
 	static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, 14);
 	static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, 18);
 	static final Font FONT_STACK = new Font( "SansSerif", Font.PLAIN | Font.BOLD, 14);

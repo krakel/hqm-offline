@@ -205,18 +205,24 @@ public class DialogListSettings extends ADialogList<FSetting> {
 	private static class Renderer extends JPanel implements ListCellRenderer<FSetting> {
 		private static final long serialVersionUID = -430644712741965086L;
 		private LeafLabel mName = new LeafLabel( "Unknown");
+		private LeafLabel mInfo = new LeafLabel( "");
 
 		public Renderer() {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			mName.setAlignmentY( LEFT_ALIGNMENT);
+			mName.setFont( AEntity.FONT_STACK);
+			mInfo.setFont( AEntity.FONT_SMALL);
+			mName.setAlignmentX( LEFT_ALIGNMENT);
+			mInfo.setAlignmentX( LEFT_ALIGNMENT);
 			add( mName);
+			add( mInfo);
 		}
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FSetting> list, FSetting value, int index, boolean isSelected, boolean cellHasFocus) {
-			mName.setText( String.format( "%c %s (%s %s)", value.mInverted ? '-' : '+', value.mRep, String.valueOf( value.mLower), String.valueOf( value.mUpper)));
+			mName.setText( value.mRep.mName);
+			mInfo.setText( String.format( "%c [%s %s]", value.mInverted ? '-' : '+', String.valueOf( value.mLower), String.valueOf( value.mUpper)));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}

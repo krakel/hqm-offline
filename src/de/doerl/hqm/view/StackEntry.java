@@ -7,14 +7,14 @@ class StackEntry {
 	private String mName;
 	public String mIcon;
 	public int mCount;
-	public int mDamage;
+	public int mDmg;
 	private ItemPrecision mPrecision;
 
 	public StackEntry() {
 		mItem = true;
 		setName( "name");
 		mCount = 1;
-		mDamage = 0;
+		mDmg = 0;
 		setPrecision( ItemPrecision.PRECISE);
 	}
 
@@ -22,7 +22,7 @@ class StackEntry {
 		mItem = item;
 		setName( name);
 		mCount = count;
-		mDamage = dmg;
+		mDmg = dmg;
 		setPrecision( precition);
 	}
 
@@ -31,7 +31,7 @@ class StackEntry {
 		setName( name);
 		mIcon = icon;
 		mCount = count;
-		mDamage = dmg;
+		mDmg = dmg;
 		setPrecision( precition);
 	}
 

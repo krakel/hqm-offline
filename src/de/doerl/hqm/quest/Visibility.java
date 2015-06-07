@@ -1,15 +1,9 @@
 package de.doerl.hqm.quest;
 
 public enum Visibility {
-	FULL( '+'),
-	LOCATION( '~'),
-	NONE( '-');
-	private char mSymbol;
-
-	private Visibility( char symbol) {
-		mSymbol = symbol;
-	}
-
+	FULL,
+	LOCATION,
+	NONE;
 	public static Visibility get( int idx) {
 		Visibility[] values = values();
 		if (idx < 0) {
@@ -28,9 +22,5 @@ public enum Visibility {
 		catch (Exception ex) {
 			return FULL;
 		}
-	}
-
-	public char getSymbol() {
-		return mSymbol;
 	}
 }

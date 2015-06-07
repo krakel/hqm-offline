@@ -89,4 +89,9 @@ public final class FReputation extends AMember {
 	public void sort() {
 		Collections.sort( mMarker);
 	}
+
+	@Override
+	public String toString() {
+		return String.format( "%s[neutral %s]", mName, mNeutral);
+	}
 }

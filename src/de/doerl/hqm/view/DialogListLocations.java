@@ -195,6 +195,8 @@ class DialogListLocations extends ADialogList<FLocation> {
 		}
 
 		private Box createBox() {
+			mName.setFont( AEntity.FONT_STACK);
+			mInfo.setFont( AEntity.FONT_SMALL);
 			mName.setAlignmentX( LEFT_ALIGNMENT);
 			mInfo.setAlignmentX( LEFT_ALIGNMENT);
 			Box box = Box.createVerticalBox();
@@ -207,8 +209,8 @@ class DialogListLocations extends ADialogList<FLocation> {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FLocation> list, FLocation value, int index, boolean isSelected, boolean cellHasFocus) {
 			mIcon.setIcon( new StackIcon( value.mIcon, 0.6));
-			mName.setText( String.format( "%c(dim %d) %s", value.mVisibility.getSymbol(), value.mDim, value.mName));
-			mInfo.setText( String.format( "(%d, %d, %d)[radius %d]", value.mX, value.mY, value.mZ, value.mRadius));
+			mName.setText( value.mName);
+			mInfo.setText( String.format( "%s (dim %d) (%d, %d, %d)[radius %d]", value.mVisibility, value.mDim, value.mX, value.mY, value.mZ, value.mRadius));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}

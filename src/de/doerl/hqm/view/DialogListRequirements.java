@@ -70,7 +70,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			StackEntry e = mModel.get( i);
 			if (e.mItem) {
 				FItemRequirement req = task.createItemRequirement();
-				req.mStack = new FItemStack( e.getName(), 1, e.mDamage);
+				req.mStack = new FItemStack( e.getName(), 1, e.mDmg);
 				req.mRequired = e.mCount;
 				req.mPrecision = e.getPrecision();
 			}
@@ -134,7 +134,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 		public StackEntry changeElement( StackEntry entry) {
 			mName.setText( entry.getName());
 			mCount.setText( String.valueOf( entry.mCount));
-			mDmg.setSelectedIndex( entry.mDamage);
+			mDmg.setSelectedIndex( entry.mDmg);
 			mItem.setSelected( entry.mItem);
 			mPrec.setSelectedItem( entry.getPrecision());
 			return showEditor();
@@ -184,6 +184,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 		private static final long serialVersionUID = 5239073494468176719L;
 		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_BACK);
 		private LeafLabel mName = new LeafLabel( "Unknown");
+		private LeafLabel mInfo = new LeafLabel( "");
 
 		public Renderer() {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
@@ -193,13 +194,26 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			mIcon.setIcon( new StackIcon( null, 0.6));
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
-			add( mName);
+			add( createBox());
+		}
+
+		private Box createBox() {
+			mName.setFont( AEntity.FONT_STACK);
+			mInfo.setFont( AEntity.FONT_SMALL);
+			mName.setAlignmentX( LEFT_ALIGNMENT);
+			mInfo.setAlignmentX( LEFT_ALIGNMENT);
+			Box box = Box.createVerticalBox();
+			box.setAlignmentY( CENTER_ALIGNMENT);
+			box.add( mName);
+			box.add( mInfo);
+			return box;
 		}
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry value, int index, boolean isSelected, boolean cellHasFocus) {
 			mIcon.setIcon( new StackIcon( null, 0.6, String.valueOf( value.mCount)));
-			mName.setText( String.format( "(%c%2d) %s", value.getPrecision().getSymbol(), value.mDamage, value.getName()));
+			mName.setText( value.getName());
+			mInfo.setText( String.format( "%s, dmg %2d, count %d", value.getPrecision(), value.mDmg, value.mCount));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}

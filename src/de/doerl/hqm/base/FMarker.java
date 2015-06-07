@@ -60,4 +60,9 @@ public final class FMarker extends ANamed implements Comparable<FMarker>, IEleme
 	public void remove() {
 		ABase.remove( mParentRep.mMarker, this);
 	}
+
+	@Override
+	public String toString() {
+		return String.format( "%s(%d)", mName, mMark);
+	}
 }

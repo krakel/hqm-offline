@@ -167,23 +167,36 @@ class DialogListMobs extends ADialogList<FMob> {
 		private static final long serialVersionUID = -430644712741965086L;
 		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_BACK);
 		private LeafLabel mName = new LeafLabel( "Unknown");
+		private LeafLabel mInfo = new LeafLabel( "");
 
 		public Renderer() {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			mName.setAlignmentY( TOP_ALIGNMENT);
 			mIcon.setIcon( new StackIcon( null, 0.6));
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
-			add( mName);
+			add( createBox());
+		}
+
+		private Box createBox() {
+			mName.setFont( AEntity.FONT_STACK);
+			mInfo.setFont( AEntity.FONT_SMALL);
+			mName.setAlignmentX( LEFT_ALIGNMENT);
+			mInfo.setAlignmentX( LEFT_ALIGNMENT);
+			Box box = Box.createVerticalBox();
+			box.setAlignmentY( CENTER_ALIGNMENT);
+			box.add( mName);
+			box.add( mInfo);
+			return box;
 		}
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob value, int index, boolean isSelected, boolean cellHasFocus) {
 			Image img = ImageLoader.getImage( value.mIcon, null);
 			mIcon.setIcon( new StackIcon( img, 0.6, String.valueOf( value.mKills)));
-			mName.setText( String.format( "(%2s %s) %s x%d", value.mExact ? '!' : '~', value.mMob, value.mName, value.mKills));
+			mName.setText( value.mName);
+			mInfo.setText( String.format( "(%2s %s) x%d", value.mExact ? '!' : '~', value.mMob, value.mKills));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}

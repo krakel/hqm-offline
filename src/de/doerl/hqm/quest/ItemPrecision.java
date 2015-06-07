@@ -5,16 +5,10 @@
 package de.doerl.hqm.quest;
 
 public enum ItemPrecision {
-	PRECISE( '!'),
-	NBT_FUZZY( '+'),
-	FUZZY( '*'),
-	ORE_DICTIONARY( '~');
-	private char mSymbol;
-
-	private ItemPrecision( char symbol) {
-		mSymbol = symbol;
-	}
-
+	PRECISE,
+	NBT_FUZZY,
+	FUZZY,
+	ORE_DICTIONARY;
 	public static ItemPrecision get( int idx) {
 		ItemPrecision[] values = values();
 		if (idx < 0) {
@@ -33,9 +27,5 @@ public enum ItemPrecision {
 		catch (Exception ex) {
 			return PRECISE;
 		}
-	}
-
-	public char getSymbol() {
-		return mSymbol;
 	}
 }
