@@ -109,6 +109,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			mItem.setOpaque( false);
 			Insets in = mItem.getInsets();
 			mItem.setBorder( BorderFactory.createEmptyBorder( in.top, 0, in.bottom, in.right));
+			mCount.addKeyListener( new KeyAdaptorInterger());
 			createMain();
 		}
 
@@ -198,7 +199,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry value, int index, boolean isSelected, boolean cellHasFocus) {
 			mIcon.setIcon( new StackIcon( null, 0.6, String.valueOf( value.mCount)));
-			mName.setText( String.format( "(%s%2d) %s", value.getPrecision().getSymbol(), value.mDamage, value.getName()));
+			mName.setText( String.format( "(%c%2d) %s", value.getPrecision().getSymbol(), value.mDamage, value.getName()));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}

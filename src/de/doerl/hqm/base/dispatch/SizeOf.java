@@ -2,7 +2,6 @@ package de.doerl.hqm.base.dispatch;
 
 import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.AMember;
-import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
@@ -79,7 +78,7 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 	}
 
 	@Override
-	protected Object doMember( AMember<? extends ANamed> member, Object p) {
+	protected Object doMember( AMember member, Object p) {
 		++mResult;
 		return null;
 	}

@@ -39,7 +39,7 @@ class TaskBoxReputationTarget extends ATaskBox {
 
 	@Override
 	public boolean onAction( Window owner) {
-		return false;
+		return DialogListSettings.update( mTask, owner);
 	}
 
 	@Override

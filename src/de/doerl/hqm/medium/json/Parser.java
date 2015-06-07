@@ -40,7 +40,7 @@ import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
-import de.doerl.hqm.base.dispatch.SettingOfIdx;
+import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.ItemPrecision;
@@ -169,7 +169,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
 					FSetting res = task.createSetting();
-					res.mRep = SettingOfIdx.get( task, parseID( FValue.toString( oo.get( IToken.SETTING_REPUTATION))));
+					res.mRep = ReputationOfIdx.get( task, parseID( FValue.toString( oo.get( IToken.SETTING_REPUTATION))));
 					String low = FValue.toString( oo.get( IToken.SETTING_LOWER));
 					if (low != null) {
 						res.mLower = MarkerOfIdx.get( res.mRep, parseID( low));
@@ -329,7 +329,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FReward reward = quest.createReputationReward();
-					reward.mRep = SettingOfIdx.get( quest.mParentHQM, parseID( FValue.toString( obj.get( IToken.REWARD_REPUTATION))));
+					reward.mRep = ReputationOfIdx.get( quest.mParentHQM, parseID( FValue.toString( obj.get( IToken.REWARD_REPUTATION))));
 					reward.mValue = FValue.toInt( obj.get( IToken.REWARD_VALUE));
 				}
 			}

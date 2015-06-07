@@ -44,7 +44,7 @@ class TaskBoxLocation extends ATaskBox {
 
 	@Override
 	public boolean onAction( Window owner) {
-		return false;
+		return DialogListLocations.update( mTask, owner);
 	}
 
 	@Override

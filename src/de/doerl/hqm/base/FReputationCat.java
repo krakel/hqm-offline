@@ -1,5 +1,7 @@
 package de.doerl.hqm.base;
 
+import java.util.Vector;
+
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
@@ -18,6 +20,11 @@ public final class FReputationCat extends ACategory<FReputation> {
 		FReputation reward = new FReputation( this, name);
 		addMember( reward);
 		return reward;
+	}
+
+	@Override
+	public Vector<FReputation> getArr() {
+		return mArr;
 	}
 
 	@Override

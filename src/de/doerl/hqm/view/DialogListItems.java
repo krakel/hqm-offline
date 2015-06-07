@@ -82,6 +82,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 			for (int i = 0; i < 16; ++i) {
 				mDmg.addItem( String.valueOf( i));
 			}
+			mCount.addKeyListener( new KeyAdaptorInterger());
 			createMain();
 		}
 

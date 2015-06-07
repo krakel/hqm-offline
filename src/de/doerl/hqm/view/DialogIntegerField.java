@@ -5,29 +5,47 @@ import java.awt.Window;
 
 import javax.swing.JTextField;
 
+import de.doerl.hqm.base.FQuestTaskDeath;
+import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.utils.Utils;
 
-class DialogTextField extends ADialog {
+class DialogIntegerField extends ADialog {
 	private static final long serialVersionUID = -520943310358443074L;
 	private JTextField mField = new JTextField();
 
-	private DialogTextField( Window owner) {
+	private DialogIntegerField( Window owner) {
 		super( owner);
 		setTheme( "edit.textfield.theme");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
+		mField.addKeyListener( new KeyAdaptorInterger());
 	}
 
-	public static String update( String value, Window owner) {
-		DialogTextField dlg = new DialogTextField( owner);
+	public static boolean update( FQuestTaskDeath task, Window owner) {
+		DialogIntegerField dlg = new DialogIntegerField( owner);
 		dlg.createMain();
-		dlg.updateMain( value);
+		dlg.updateMain( String.valueOf( task.mDeaths));
 		if (dlg.showDialog() == DialogResult.APPROVE) {
-			return dlg.getText();
+			task.mDeaths = Utils.parseInteger( dlg.getText(), 1);
+			return true;
 		}
 		else {
-			return null;
+			return false;
+		}
+	}
+
+	public static boolean update( FQuestTaskReputationKill task, Window owner) {
+		DialogIntegerField dlg = new DialogIntegerField( owner);
+		dlg.createMain();
+		dlg.updateMain( String.valueOf( task.mKills));
+		if (dlg.showDialog() == DialogResult.APPROVE) {
+			task.mKills = Utils.parseInteger( dlg.getText(), 1);
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 

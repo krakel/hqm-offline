@@ -1,5 +1,7 @@
 package de.doerl.hqm.base;
 
+import java.util.Vector;
+
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.quest.ElementTyp;
@@ -22,6 +24,11 @@ public final class FQuestSetCat extends ACategory<FQuestSet> {
 			addMember( result);
 		}
 		return result;
+	}
+
+	@Override
+	public Vector<FQuestSet> getArr() {
+		return mArr;
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 		return doBase( cat, p);
 	}
 
-	protected T doMember( AMember<? extends ANamed> member, U p) {
+	protected T doMember( AMember member, U p) {
 		return doNamed( member, p);
 	}
 

@@ -44,7 +44,7 @@ import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
-import de.doerl.hqm.base.dispatch.SettingOfIdx;
+import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.DataBitHelper;
@@ -187,7 +187,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
 		for (int i = 0; i < count; i++) {
 			FSetting set = task.createSetting();
-			set.mRep = SettingOfIdx.get( task, mSrc.readData( DataBitHelper.REPUTATION));
+			set.mRep = ReputationOfIdx.get( task, mSrc.readData( DataBitHelper.REPUTATION));
 			set.mLower = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
 			set.mUpper = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
 			set.mInverted = mSrc.readBoolean();

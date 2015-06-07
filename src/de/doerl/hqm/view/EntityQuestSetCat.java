@@ -219,7 +219,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( null, mCtrl.getFrame());
+			String result = DialogTextField.update( "new", mCtrl.getFrame());
 			if (result != null) {
 				FQuestSet qs = mCtrl.questSetCreate( mCategory, result);
 				mCtrl.fireAdded( qs);

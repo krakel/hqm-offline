@@ -175,7 +175,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		}
 
 		@Override
-		protected MutableTreeNode doMember( AMember<? extends ANamed> member, ElementTreeModel model) {
+		protected MutableTreeNode doMember( AMember member, ElementTreeModel model) {
 			return doNamed( member, model, false);
 		}
 

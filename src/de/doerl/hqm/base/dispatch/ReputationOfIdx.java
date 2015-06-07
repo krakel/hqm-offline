@@ -5,10 +5,10 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
 
-public class SettingOfIdx extends AHQMWorker<FReputation, Object> {
+public class ReputationOfIdx extends AHQMWorker<FReputation, Object> {
 	private int mIndex;
 
-	private SettingOfIdx( int index) {
+	private ReputationOfIdx( int index) {
 		mIndex = index;
 	}
 
@@ -21,7 +21,7 @@ public class SettingOfIdx extends AHQMWorker<FReputation, Object> {
 	}
 
 	public static FReputation get( FReputationCat set, int idx) {
-		SettingOfIdx worker = new SettingOfIdx( idx);
+		ReputationOfIdx worker = new ReputationOfIdx( idx);
 		return set.forEachMember( worker, null);
 	}
 

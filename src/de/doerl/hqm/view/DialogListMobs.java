@@ -1,6 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
 
@@ -22,6 +23,7 @@ import javax.swing.ListCellRenderer;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 class DialogListMobs extends ADialogList<FMob> {
 	private static final long serialVersionUID = 7903951948404166751L;
@@ -46,8 +48,8 @@ class DialogListMobs extends ADialogList<FMob> {
 
 	private void updateMain( FQuestTaskMob task) {
 		mModel.clear();
-		for (FMob stk : task.mMobs) {
-			mModel.addElement( stk);
+		for (FMob mob : task.mMobs) {
+			mModel.addElement( mob);
 		}
 	}
 
@@ -68,7 +70,7 @@ class DialogListMobs extends ADialogList<FMob> {
 
 		@Override
 		public FMob addElement() {
-			return mTask.createMob( null, "unknown");
+			return mTask.createMob( null, "new");
 		}
 	}
 
@@ -88,6 +90,7 @@ class DialogListMobs extends ADialogList<FMob> {
 			mExact.setOpaque( false);
 			Insets in = mExact.getInsets();
 			mExact.setBorder( BorderFactory.createEmptyBorder( in.top, 0, in.bottom, in.right));
+			mKills.addKeyListener( new KeyAdaptorInterger());
 			createMain();
 		}
 
@@ -178,7 +181,8 @@ class DialogListMobs extends ADialogList<FMob> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob value, int index, boolean isSelected, boolean cellHasFocus) {
-			mIcon.setIcon( new StackIcon( null, 0.6, String.valueOf( value.mKills)));
+			Image img = ImageLoader.getImage( value.mIcon, null);
+			mIcon.setIcon( new StackIcon( img, 0.6, String.valueOf( value.mKills)));
 			mName.setText( String.format( "(%2s %s) %s x%d", value.mExact ? '!' : '~', value.mMob, value.mName, value.mKills));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

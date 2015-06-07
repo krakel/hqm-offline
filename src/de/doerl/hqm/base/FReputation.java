@@ -9,7 +9,7 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.utils.Utils;
 
-public final class FReputation extends AMember<FReputation> {
+public final class FReputation extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
 	public final FReputationCat mParentCategory;
 	public final Vector<FMarker> mMarker = new Vector<>();
@@ -59,8 +59,31 @@ public final class FReputation extends AMember<FReputation> {
 	}
 
 	@Override
-	public ACategory<FReputation> getParent() {
+	public FReputationCat getParent() {
 		return mParentCategory;
+	}
+
+	public boolean isFirst() {
+		return ABase.isFirst( mParentCategory.mArr, this);
+	}
+
+	@Override
+	public boolean isLast() {
+		return ABase.isLast( mParentCategory.mArr, this);
+	}
+
+	@Override
+	public void moveDown() {
+		ABase.moveDown( mParentCategory.mArr, this);
+	}
+
+	@Override
+	public void moveUp() {
+		ABase.moveUp( mParentCategory.mArr, this);
+	}
+
+	public void remove() {
+		ABase.remove( mParentCategory.mArr, this);
 	}
 
 	public void sort() {

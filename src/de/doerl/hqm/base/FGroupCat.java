@@ -1,5 +1,7 @@
 package de.doerl.hqm.base;
 
+import java.util.Vector;
+
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
@@ -18,6 +20,11 @@ public final class FGroupCat extends ACategory<FGroup> {
 		FGroup reward = new FGroup( this, name);
 		addMember( reward);
 		return reward;
+	}
+
+	@Override
+	public Vector<FGroup> getArr() {
+		return mArr;
 	}
 
 	@Override

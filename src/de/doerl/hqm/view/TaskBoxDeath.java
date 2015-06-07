@@ -21,7 +21,7 @@ class TaskBoxDeath extends ATaskBox {
 
 	@Override
 	public boolean onAction( Window owner) {
-		return false;
+		return DialogIntegerField.update( mTask, owner);
 	}
 
 	@Override

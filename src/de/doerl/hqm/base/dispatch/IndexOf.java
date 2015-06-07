@@ -2,7 +2,6 @@ package de.doerl.hqm.base.dispatch;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AMember;
-import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FQuest;
@@ -29,7 +28,7 @@ public class IndexOf extends AHQMWorker<Boolean, Object> {
 		return worker.mResult;
 	}
 
-	public static int getMember( AMember<?> member) {
+	public static int getMember( AMember member) {
 		IndexOf worker = new IndexOf( member);
 		member.getParent().forEachMember( worker, null);
 		return worker.mResult;
@@ -48,7 +47,7 @@ public class IndexOf extends AHQMWorker<Boolean, Object> {
 	}
 
 	@Override
-	protected Boolean doMember( AMember<? extends ANamed> member, Object p) {
+	protected Boolean doMember( AMember member, Object p) {
 		++mResult;
 		return Utils.equals( member, mBase) ? Boolean.TRUE : null;
 	}

@@ -5,7 +5,7 @@ import java.util.Vector;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FGroup extends AMember<FGroup> {
+public final class FGroup extends AMember {
 	public final FGroupCat mParentCategory;
 	public FGroupTier mTier;
 	public Integer mLimit;
@@ -32,7 +32,30 @@ public final class FGroup extends AMember<FGroup> {
 	}
 
 	@Override
-	public ACategory<FGroup> getParent() {
+	public FGroupCat getParent() {
 		return mParentCategory;
+	}
+
+	public boolean isFirst() {
+		return ABase.isFirst( mParentCategory.mArr, this);
+	}
+
+	@Override
+	public boolean isLast() {
+		return ABase.isLast( mParentCategory.mArr, this);
+	}
+
+	@Override
+	public void moveDown() {
+		ABase.moveDown( mParentCategory.mArr, this);
+	}
+
+	@Override
+	public void moveUp() {
+		ABase.moveUp( mParentCategory.mArr, this);
+	}
+
+	public void remove() {
+		ABase.remove( mParentCategory.mArr, this);
 	}
 }
