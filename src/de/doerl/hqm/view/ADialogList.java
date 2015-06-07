@@ -1,6 +1,5 @@
 package de.doerl.hqm.view;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -10,12 +9,10 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
@@ -23,20 +20,22 @@ import javax.swing.border.BevelBorder;
 
 import de.doerl.hqm.ui.ADialog;
 
-abstract class ADialogList extends ADialog {
+abstract class ADialogList<E> extends ADialog {
 	private static final long serialVersionUID = -3420390175859554647L;
-	protected DefaultListModel<StackEntry> mModel = new DefaultListModel<>();
-	private JList<StackEntry> mList;
+	protected DefaultListModel<E> mModel = new DefaultListModel<>();
+	private JList<E> mList;
 	private JButton mBtnAdd = new JButton( "Add");
 	private JButton mBtnChange = new JButton( "Change");
 	private JButton mBtnDelete = new JButton( "Delete");
 	private JButton mBtnUp = new JButton( "Up");
 	private JButton mBtnDown = new JButton( "Down");
-	private boolean mModus;
+	private ListCellRenderer<E> mRenderer;
+	private ADialogEdit<E> mEdit;
 
-	public ADialogList( Window owner, boolean modus) {
+	public ADialogList( Window owner, ListCellRenderer<E> renderer, ADialogEdit<E> edit) {
 		super( owner);
-		mModus = modus;
+		mRenderer = renderer;
+		mEdit = edit;
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
@@ -62,11 +61,15 @@ abstract class ADialogList extends ADialog {
 	}
 
 	@Override
-	protected void createMain() {
+	protected final void createMain() {
+		throw new UnsupportedOperationException( "use createMain(ICreator)");
+	}
+
+	protected void createMain( ICreator<E> creator) {
 		mMain.setPreferredSize( new Dimension( 450, 200));
-		mList = new JList<StackEntry>( mModel);
+		mList = new JList<E>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
-		mList.setCellRenderer( new Renderer( mModus));
+		mList.setCellRenderer( mRenderer);
 		mList.setVisibleRowCount( 5);
 		JScrollPane scroll = new JScrollPane( mList, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED));
@@ -78,7 +81,7 @@ abstract class ADialogList extends ADialog {
 		mList.addMouseListener( dbl);
 		mBtnUp.addActionListener( new EntryUpHandler());
 		mBtnDown.addActionListener( new EntryDownHandler());
-		mBtnAdd.addActionListener( new EntryAddHandler());
+		mBtnAdd.addActionListener( new EntryAddHandler( creator));
 		mBtnDelete.addActionListener( new EntryDeleteHandler());
 		ActionListener edit = new EntryChangeHandler();
 		mBtnChange.addActionListener( edit);
@@ -96,7 +99,7 @@ abstract class ADialogList extends ADialog {
 
 	private void updateSize( JComponent comp) {
 		comp.setMaximumSize( new Dimension( Short.MAX_VALUE, comp.getMinimumSize().height));
-	}
+	};
 
 	private final class ButtonUpdateHandler extends MouseAdapter {
 		@Override
@@ -106,9 +109,15 @@ abstract class ADialogList extends ADialog {
 	}
 
 	private final class EntryAddHandler implements ActionListener {
+		private ICreator<E> mCreator;
+
+		private EntryAddHandler( ICreator<E> creator) {
+			mCreator = creator;
+		}
+
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			StackEntry entry = DialogStack.update( (Window) getParent(), new StackEntry(), mModus);
+			E entry = mEdit.addElement( mCreator);
 			if (entry != null) {
 				mModel.addElement( entry);
 				mList.setSelectedValue( entry, true);
@@ -120,8 +129,8 @@ abstract class ADialogList extends ADialog {
 	private final class EntryChangeHandler implements ActionListener {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			StackEntry old = mList.getSelectedValue();
-			StackEntry entry = DialogStack.update( (Window) getParent(), old, mModus);
+			E old = mList.getSelectedValue();
+			E entry = mEdit.changeElement( old);
 			if (entry != null) {
 				int idx = mList.getSelectedIndex();
 				mModel.setElementAt( entry, idx);
@@ -132,7 +141,7 @@ abstract class ADialogList extends ADialog {
 	private final class EntryDeleteHandler implements ActionListener {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			StackEntry old = mList.getSelectedValue();
+			E old = mList.getSelectedValue();
 			if (old != null) {
 				mModel.removeElement( old);
 				updateBtn();
@@ -145,7 +154,7 @@ abstract class ADialogList extends ADialog {
 		public void actionPerformed( ActionEvent e) {
 			int idx = mList.getSelectedIndex() + 1;
 			if (idx > 0 && idx < mModel.getSize()) {
-				StackEntry old = mModel.remove( idx - 1);
+				E old = mModel.remove( idx - 1);
 				mModel.insertElementAt( old, idx);
 				mList.setSelectedIndex( idx);
 				updateBtn();
@@ -158,7 +167,7 @@ abstract class ADialogList extends ADialog {
 		public void actionPerformed( ActionEvent e) {
 			int idx = mList.getSelectedIndex();
 			if (idx > 0) {
-				StackEntry old = mModel.remove( idx);
+				E old = mModel.remove( idx);
 				mModel.insertElementAt( old, idx - 1);
 				mList.setSelectedIndex( idx - 1);
 				updateBtn();
@@ -166,40 +175,7 @@ abstract class ADialogList extends ADialog {
 		}
 	}
 
-	private final class Renderer extends JPanel implements ListCellRenderer<StackEntry> {
-		private static final long serialVersionUID = 5239073494468176719L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_BACK);
-		private LeafLabel mName = new LeafLabel( "Unknown");
-		private boolean mModus;
-
-		public Renderer( boolean modus) {
-			mModus = modus;
-			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
-			setOpaque( true);
-			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon( null, 0.6));
-			add( mIcon);
-			add( Box.createHorizontalStrut( 5));
-			add( mName);
-		}
-
-		@Override
-		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry entry, int index, boolean isSelected, boolean cellHasFocus) {
-			mIcon.setIcon( new StackIcon( null, 0.6, String.valueOf( entry.mCount)));
-			if (mModus) {
-				mName.setText( String.format( "(%s%2d) %s", entry.getPrecision().getSymbol(), entry.mDamage, entry.getName()));
-			}
-			else {
-				mName.setText( String.format( "(%2d) %s", entry.mDamage, entry.getName()));
-			}
-			if (isSelected) {
-				setBackground( list.getSelectionBackground());
-			}
-			else {
-				setBackground( list.getBackground());
-			}
-			return this;
-		}
+	protected static interface ICreator<E> {
+		E addElement();
 	}
 }

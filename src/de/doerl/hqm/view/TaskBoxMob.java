@@ -44,7 +44,7 @@ class TaskBoxMob extends ATaskBox {
 
 	@Override
 	public boolean onAction( Window owner) {
-		return false;
+		return DialogListMobs.update( mTask, owner);
 	}
 
 	@Override

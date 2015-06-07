@@ -14,7 +14,7 @@ class ConfigDialog extends ADialog {
 
 	private ConfigDialog( Window owner) {
 		super( owner);
-		setThema( "config.thema");
+		setTheme( "config.theme");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();

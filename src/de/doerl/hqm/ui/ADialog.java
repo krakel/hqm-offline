@@ -93,9 +93,9 @@ public abstract class ADialog extends JDialog {
 
 	protected abstract void createMain();
 
-	public void setThema( String thema) {
-		if (thema != null) {
-			setTitle( ResourceManager.getString( thema));
+	public void setTheme( String theme) {
+		if (theme != null) {
+			setTitle( ResourceManager.getString( theme));
 		}
 	}
 

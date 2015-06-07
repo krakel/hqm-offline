@@ -10,7 +10,7 @@ class AboutDialog extends ADialog {
 
 	private AboutDialog( Window owner) {
 		super( owner);
-		setThema( "about.thema");
+		setTheme( "about.theme");
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
 	}

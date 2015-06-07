@@ -280,7 +280,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (DialogListStacks.update( mQuest.mChoices, mCtrl.getFrame())) {
+			if (DialogListItems.update( mQuest.mChoices, mCtrl.getFrame())) {
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -356,7 +356,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (DialogListStacks.update( mQuest.mRewards, mCtrl.getFrame())) {
+			if (DialogListItems.update( mQuest.mRewards, mCtrl.getFrame())) {
 				mCtrl.fireChanged( mQuest);
 			}
 		}

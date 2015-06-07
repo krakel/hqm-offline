@@ -27,7 +27,7 @@ class DialogListNames extends ADialog {
 		super( owner);
 		mIgnore = ignore;
 		mOk.setEnabled( false);
-		setThema( "edit.list.thema");
+		setTheme( "edit.list.theme");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( mOk);
 		addEscapeAction();

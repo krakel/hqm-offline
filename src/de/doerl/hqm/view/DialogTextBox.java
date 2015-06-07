@@ -15,7 +15,7 @@ class DialogTextBox extends ADialog {
 
 	private DialogTextBox( Window owner) {
 		super( owner);
-		setThema( "edit.textbox.thema");
+		setTheme( "edit.textbox.theme");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
