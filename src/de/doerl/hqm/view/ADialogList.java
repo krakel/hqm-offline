@@ -13,12 +13,14 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.BevelBorder;
 
-import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.ui.ADialog;
 
 abstract class ADialogList extends ADialog {
@@ -28,26 +30,33 @@ abstract class ADialogList extends ADialog {
 	private JButton mBtnAdd = new JButton( "Add");
 	private JButton mBtnChange = new JButton( "Change");
 	private JButton mBtnDelete = new JButton( "Delete");
+	private JButton mBtnUp = new JButton( "Up");
+	private JButton mBtnDown = new JButton( "Down");
+	private boolean mModus;
 
-	public ADialogList( Window owner) {
+	public ADialogList( Window owner, boolean modus) {
 		super( owner);
+		mModus = modus;
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
-		mBtnAdd.setMaximumSize( null);
-		mBtnChange.setMaximumSize( null);
-		mBtnDelete.setMaximumSize( null);
+		updateSize( mBtnAdd);
+		updateSize( mBtnChange);
+		updateSize( mBtnDelete);
+		updateSize( mBtnUp);
+		updateSize( mBtnDown);
 	}
 
 	private Box createEdit() {
 		Box result = Box.createVerticalBox();
 		result.setAlignmentY( TOP_ALIGNMENT);
-//		result.setPreferredSize( new Dimension( 100, 100));
-//		result.setMaximumSize( new Dimension( 100, 100));
-//		result.setMinimumSize( new Dimension( 100, 100));
+		result.setMaximumSize( new Dimension( 50, Short.MAX_VALUE));
 		result.add( mBtnAdd);
 		result.add( mBtnChange);
 		result.add( mBtnDelete);
+		result.add( Box.createVerticalStrut( 20));
+		result.add( mBtnUp);
+		result.add( mBtnDown);
 		result.add( Box.createVerticalGlue());
 		return result;
 	}
@@ -57,66 +66,114 @@ abstract class ADialogList extends ADialog {
 		mMain.setPreferredSize( new Dimension( 450, 200));
 		mList = new JList<StackEntry>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
-		mList.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED));
-		mList.setCellRenderer( new Renderer());
-		mList.setMinimumSize( new Dimension( 100, 20));
-		mList.setPreferredSize( new Dimension( 200, 200));
-		mList.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
-		mMain.add( mList);
+		mList.setCellRenderer( new Renderer( mModus));
+		mList.setVisibleRowCount( 5);
+		JScrollPane scroll = new JScrollPane( mList, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED));
+		mMain.add( scroll);
 		mMain.add( Box.createHorizontalStrut( GAP));
 		mMain.add( createEdit());
-		mList.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent evt) {
-				StackEntry old = mList.getSelectedValue();
-				if (old != null) {
-					updateBtn( true);
-				}
-			}
-		});
-		mBtnDelete.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent evt) {
-				StackEntry old = mList.getSelectedValue();
-				if (old != null) {
-					mModel.removeElement( old);
-					updateBtn( false);
-				}
-			}
-		});
-		mBtnChange.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent evt) {
-				StackEntry old = mList.getSelectedValue();
-				StackEntry e = DialogStack.update( old, (Window) getParent());
-				if (e != null) {
-					int idx = mList.getSelectedIndex();
-					mModel.setElementAt( e, idx);
-				}
-			}
-		});
-		mBtnAdd.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed( ActionEvent evt) {
-				StackEntry e = DialogStack.update( new StackEntry(), (Window) getParent());
-				if (e != null) {
-					mModel.addElement( e);
-				}
-			}
-		});
+		ClickHandler dbl = new ClickHandler();
+		mList.addMouseListener( new ButtonUpdateHandler());
+		mList.addMouseListener( dbl);
+		mBtnUp.addActionListener( new EntryUpHandler());
+		mBtnDown.addActionListener( new EntryDownHandler());
+		mBtnAdd.addActionListener( new EntryAddHandler());
+		mBtnDelete.addActionListener( new EntryDeleteHandler());
+		ActionListener edit = new EntryChangeHandler();
+		mBtnChange.addActionListener( edit);
+		dbl.addClickListener( edit);
+		updateBtn();
 	}
 
-	private void updateBtn( boolean enabled) {
-		mBtnDelete.setEnabled( enabled);
-		mBtnChange.setEnabled( enabled);
+	private void updateBtn() {
+		int idx = mList.getSelectedIndex() + 1;
+		mBtnDelete.setEnabled( idx > 0);
+		mBtnChange.setEnabled( idx > 0);
+		mBtnUp.setEnabled( idx > 1);
+		mBtnDown.setEnabled( idx > 0 && idx < mModel.getSize());
+	}
+
+	private void updateSize( JComponent comp) {
+		comp.setMaximumSize( new Dimension( Short.MAX_VALUE, comp.getMinimumSize().height));
+	}
+
+	private final class ButtonUpdateHandler extends MouseAdapter {
+		@Override
+		public void mouseClicked( MouseEvent evt) {
+			updateBtn();
+		}
+	}
+
+	private final class EntryAddHandler implements ActionListener {
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			StackEntry entry = DialogStack.update( (Window) getParent(), new StackEntry(), mModus);
+			if (entry != null) {
+				mModel.addElement( entry);
+				mList.setSelectedValue( entry, true);
+				updateBtn();
+			}
+		}
+	}
+
+	private final class EntryChangeHandler implements ActionListener {
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			StackEntry old = mList.getSelectedValue();
+			StackEntry entry = DialogStack.update( (Window) getParent(), old, mModus);
+			if (entry != null) {
+				int idx = mList.getSelectedIndex();
+				mModel.setElementAt( entry, idx);
+			}
+		}
+	}
+
+	private final class EntryDeleteHandler implements ActionListener {
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			StackEntry old = mList.getSelectedValue();
+			if (old != null) {
+				mModel.removeElement( old);
+				updateBtn();
+			}
+		}
+	}
+
+	private final class EntryDownHandler implements ActionListener {
+		@Override
+		public void actionPerformed( ActionEvent e) {
+			int idx = mList.getSelectedIndex() + 1;
+			if (idx > 0 && idx < mModel.getSize()) {
+				StackEntry old = mModel.remove( idx - 1);
+				mModel.insertElementAt( old, idx);
+				mList.setSelectedIndex( idx);
+				updateBtn();
+			}
+		}
+	}
+
+	private final class EntryUpHandler implements ActionListener {
+		@Override
+		public void actionPerformed( ActionEvent e) {
+			int idx = mList.getSelectedIndex();
+			if (idx > 0) {
+				StackEntry old = mModel.remove( idx);
+				mModel.insertElementAt( old, idx - 1);
+				mList.setSelectedIndex( idx - 1);
+				updateBtn();
+			}
+		}
 	}
 
 	private final class Renderer extends JPanel implements ListCellRenderer<StackEntry> {
 		private static final long serialVersionUID = 5239073494468176719L;
 		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_BACK);
 		private LeafLabel mName = new LeafLabel( "Unknown");
+		private boolean mModus;
 
-		public Renderer() {
+		public Renderer( boolean modus) {
+			mModus = modus;
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
@@ -130,7 +187,12 @@ abstract class ADialogList extends ADialog {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry entry, int index, boolean isSelected, boolean cellHasFocus) {
 			mIcon.setIcon( new StackIcon( null, 0.6, String.valueOf( entry.mCount)));
-			mName.setText( entry.mName);
+			if (mModus) {
+				mName.setText( String.format( "(%s%2d) %s", entry.getPrecision().getSymbol(), entry.mDamage, entry.getName()));
+			}
+			else {
+				mName.setText( String.format( "(%2d) %s", entry.mDamage, entry.getName()));
+			}
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}
@@ -138,58 +200,6 @@ abstract class ADialogList extends ADialog {
 				setBackground( list.getBackground());
 			}
 			return this;
-		}
-	}
-
-	static class StackEntry {
-		public boolean mItem;
-		private String mName;
-		public String mIcon;
-		public int mCount;
-		public int mDamage;
-		public ItemPrecision mPrecision;
-
-		public StackEntry() {
-			mItem = true;
-			setName( "name");
-			mCount = 1;
-			mDamage = 0;
-			mPrecision = ItemPrecision.PRECISE;
-		}
-
-		public StackEntry( boolean item, String name, int count, int dmg, ItemPrecision precition) {
-			mItem = item;
-			setName( name);
-			mCount = count;
-			mDamage = dmg;
-			mPrecision = precition;
-		}
-
-		public StackEntry( boolean item, String name, String icon, int count, int dmg, ItemPrecision precition) {
-			mItem = item;
-			setName( name);
-			mIcon = icon;
-			mCount = count;
-			mDamage = dmg;
-			mPrecision = precition;
-		}
-
-		public String getName() {
-			return mName;
-		}
-
-		public void setName( String name) {
-			if (name.indexOf( ':') < 0) {
-				mName = "unknown:" + name;
-			}
-			else {
-				mName = name;
-			}
-		}
-
-		@Override
-		public String toString() {
-			return mName;
 		}
 	}
 }

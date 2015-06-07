@@ -18,7 +18,6 @@ import javax.swing.JTextField;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.view.ADialogList.StackEntry;
 
 class DialogStack extends ADialog {
 	private static final long serialVersionUID = 651515231606809783L;
@@ -27,9 +26,11 @@ class DialogStack extends ADialog {
 	private JTextField mCount = new JTextField();
 	private JComboBox<String> mDmg = new JComboBox<>();
 	private JComboBox<ItemPrecision> mPrec = new JComboBox<>( ItemPrecision.values());
+	private boolean mModus;
 
-	public DialogStack( Window owner) {
+	public DialogStack( Window owner, boolean modus) {
 		super( owner);
+		mModus = modus;
 		setThema( "edit.stack.thema");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
@@ -42,20 +43,8 @@ class DialogStack extends ADialog {
 		mItem.setBorder( BorderFactory.createEmptyBorder( in.top, 0, in.bottom, in.right));
 	}
 
-	public static StackEntry update( boolean item, String name, int size, int dmg, ItemPrecision pre, Window owner) {
-		DialogStack dlg = new DialogStack( owner);
-		dlg.createMain();
-		dlg.updateMain( item, name, size, dmg, pre);
-		if (dlg.showDialog() == DialogResult.APPROVE) {
-			return dlg.getResult();
-		}
-		else {
-			return null;
-		}
-	}
-
-	public static StackEntry update( StackEntry entry, Window owner) {
-		DialogStack dlg = new DialogStack( owner);
+	public static StackEntry update( Window owner, StackEntry entry, boolean modus) {
+		DialogStack dlg = new DialogStack( owner, modus);
 		dlg.createMain();
 		dlg.updateMain( entry);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
@@ -83,18 +72,19 @@ class DialogStack extends ADialog {
 		layout.setAutoCreateGaps( true);
 		SequentialGroup hori = layout.createSequentialGroup();
 		SequentialGroup vert = layout.createSequentialGroup();
-		//
 		ParallelGroup leftGrp = layout.createParallelGroup();
 		ParallelGroup rightGrp = layout.createParallelGroup();
-		//
-		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Item", mItem));
+		if (mModus) {
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Item", mItem));
+		}
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Name", mName));
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Size", mCount));
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Damage", mDmg));
-		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Precition", mPrec));
+		if (mModus) {
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Precition", mPrec));
+		}
 		hori.addGroup( leftGrp);
 		hori.addGroup( rightGrp);
-		//
 		layout.setHorizontalGroup( hori);
 		layout.setVerticalGroup( vert);
 		mMain.add( box);
@@ -106,19 +96,17 @@ class DialogStack extends ADialog {
 		return new StackEntry( mItem.isSelected(), mName.getText(), size, mDmg.getSelectedIndex(), prec);
 	}
 
-	private void updateMain( boolean item, String name, int size, int dmg, ItemPrecision pre) {
-		mItem.setSelected( item);
-		mName.setText( name);
-		mCount.setText( String.valueOf( size));
-		mDmg.setSelectedIndex( dmg);
-		mPrec.setSelectedItem( pre);
-	}
-
 	private void updateMain( StackEntry entry) {
-		mItem.setSelected( entry.mItem);
 		mName.setText( entry.getName());
 		mCount.setText( String.valueOf( entry.mCount));
 		mDmg.setSelectedIndex( entry.mDamage);
-		mPrec.setSelectedItem( entry.mPrecision);
+		if (mModus) {
+			mItem.setSelected( entry.mItem);
+			mPrec.setSelectedItem( entry.getPrecision());
+		}
+		else {
+			mItem.setSelected( true);
+			mPrec.setSelectedItem( ItemPrecision.PRECISE);
+		}
 	}
 }

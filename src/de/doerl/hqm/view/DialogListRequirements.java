@@ -16,7 +16,7 @@ class DialogListRequirements extends ADialogList {
 	private static final long serialVersionUID = 8338191508190847304L;
 
 	private DialogListRequirements( Window owner) {
-		super( owner);
+		super( owner, true);
 		setThema( "edit.require.thema");
 	}
 
@@ -25,32 +25,12 @@ class DialogListRequirements extends ADialogList {
 		dlg.createMain();
 		dlg.updateMain( task.mRequirements);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
-			dlg.getResult( task);
+			dlg.updateResult( task);
 			return true;
 		}
 		else {
 			return false;
 		}
-	}
-
-	private Vector<ARequirement> getResult( AQuestTaskItems task) {
-		Vector<ARequirement> require = task.mRequirements;
-		require.clear();
-		Vector<ARequirement> result = new Vector<>();
-		for (int i = 0; i < mModel.size(); ++i) {
-			StackEntry e = mModel.get( i);
-			if (e.mItem) {
-				FItemRequirement req = task.createItemRequirement();
-				req.mStack = new FItemStack( e.getName(), 1, e.mDamage);
-				req.mRequired = e.mCount;
-				req.mPrecision = e.mPrecision;
-			}
-			else {
-				FFluidRequirement req = task.createFluidRequirement();
-				req.mStack = new FFluidStack( e.getName(), e.mCount);
-			}
-		}
-		return result;
 	}
 
 	private void updateMain( Vector<ARequirement> value) {
@@ -60,5 +40,25 @@ class DialogListRequirements extends ADialogList {
 			boolean isItem = req.getElementTyp() == ElementTyp.ITEM_REQUIREMENT;
 			mModel.addElement( new StackEntry( isItem, stk.getName(), null, req.getCount(), stk.getDamage(), req.getPrecision()));
 		}
+	}
+
+	private Vector<ARequirement> updateResult( AQuestTaskItems task) {
+		Vector<ARequirement> require = task.mRequirements;
+		require.clear();
+		Vector<ARequirement> result = new Vector<>();
+		for (int i = 0; i < mModel.size(); ++i) {
+			StackEntry e = mModel.get( i);
+			if (e.mItem) {
+				FItemRequirement req = task.createItemRequirement();
+				req.mStack = new FItemStack( e.getName(), 1, e.mDamage);
+				req.mRequired = e.mCount;
+				req.mPrecision = e.getPrecision();
+			}
+			else {
+				FFluidRequirement req = task.createFluidRequirement();
+				req.mStack = new FFluidStack( e.getName(), e.mCount);
+			}
+		}
+		return result;
 	}
 }

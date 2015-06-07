@@ -391,6 +391,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 					int x = mLeaf.stepX( evt.getX()) / AEntity.ZOOM - ResourceManager.getW5( false);
 					int y = mLeaf.stepY( evt.getY()) / AEntity.ZOOM - ResourceManager.getH5( false);
 					FQuest quest = mCtrl.questCreate( mSet, result, x, y);
+					quest.mDescr = "Unnamed quest";
 					createLeafQuest( quest);
 					activSet( getLeafQuest( quest), false);
 					mCtrl.fireAdded( quest);

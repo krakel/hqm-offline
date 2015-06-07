@@ -48,7 +48,7 @@ class ClickHandler extends MouseAdapter {
 			}
 			else {
 				mOneClick = true;
-				TIMER.schedule( new SingleTask(), 500);
+				TIMER.schedule( new SingleTask(), 300);
 			}
 		}
 	}
