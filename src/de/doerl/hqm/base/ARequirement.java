@@ -12,10 +12,6 @@ public abstract class ARequirement extends ABase implements IElement {
 	public abstract int getCount();
 
 	@Override
-	public AQuestTaskItems getHierarchy() {
-		return mParentTask;
-	}
-
 	public FHqm getHqm() {
 		return mParentTask.getHqm();
 	}

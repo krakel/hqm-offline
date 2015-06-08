@@ -54,11 +54,6 @@ public final class FReputation extends AMember {
 	}
 
 	@Override
-	public ACategory<FReputation> getHierarchy() {
-		return mParentCategory;
-	}
-
-	@Override
 	public FReputationCat getParent() {
 		return mParentCategory;
 	}

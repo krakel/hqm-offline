@@ -2,22 +2,33 @@ package de.doerl.hqm.controller;
 
 import java.util.Vector;
 
+import de.doerl.hqm.Tuple2;
 import de.doerl.hqm.base.FQuest;
+import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
-class QuestRemoveDepent extends AHQMWorker<Object, FQuest> {
-	private EditController mController;
+class QuestRemoveDepent extends AHQMWorker<Object, Tuple2<FQuest, EditController>> {
+	private static final QuestRemoveDepent WORKER = new QuestRemoveDepent();
 
-	public QuestRemoveDepent( EditController ctrl) {
-		mController = ctrl;
+	private QuestRemoveDepent() {
+	}
+
+	public static void get( FQuest quest, EditController ctrl) {
+		quest.getParent().mParentCategory.forEachMember( WORKER, Tuple2.apply( quest, ctrl));
 	}
 
 	@Override
-	public Object forQuest( FQuest quest, FQuest req) {
-		remove( quest.mRequirements, req);
-		remove( quest.mOptionLinks, req);
-		mController.fireChanged( quest);
+	public Object forQuest( FQuest quest, Tuple2<FQuest, EditController> p) {
+		remove( quest.mRequirements, p._1);
+		remove( quest.mOptionLinks, p._1);
+		p._2.fireChanged( quest);
+		return null;
+	}
+
+	@Override
+	public Object forQuestSet( FQuestSet set, Tuple2<FQuest, EditController> p) {
+		set.forEachQuest( this, p);
 		return null;
 	}
 

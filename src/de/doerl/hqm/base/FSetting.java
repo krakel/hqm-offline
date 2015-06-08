@@ -25,10 +25,6 @@ public final class FSetting extends ABase implements IElement {
 	}
 
 	@Override
-	public FQuestTaskReputationTarget getHierarchy() {
-		return mParentTask;
-	}
-
 	public FHqm getHqm() {
 		return mParentTask.getHqm();
 	}

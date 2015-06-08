@@ -42,7 +42,6 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
-import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
@@ -63,6 +62,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
 	private HashMap<Integer, FReputation> mReps = new HashMap<>();
+	private Vector<FQuest> mQuests = new Vector<>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
@@ -239,24 +239,30 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		int count = mSrc.readData( DataBitHelper.QUESTS);
 		for (int i = 0; i < count; ++i) {
 			if (mSrc.readBoolean()) {
-				FQuest quest = hqm.createQuest( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
-				quest.mDescr = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
-				quest.mX = mSrc.readData( DataBitHelper.QUEST_POS_X);
-				quest.mY = mSrc.readData( DataBitHelper.QUEST_POS_Y);
-				quest.mBig = mSrc.readBoolean();
+				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
+				String descr = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+				int x = mSrc.readData( DataBitHelper.QUEST_POS_X);
+				int y = mSrc.readData( DataBitHelper.QUEST_POS_Y);
+				boolean big = mSrc.readBoolean();
+				FItemStack icon = null;
+				FQuestSet qs;
 				if (mSrc.contains( FileVersion.SETS)) {
 					int setID = mSrc.readData( DataBitHelper.QUEST_SETS);
-					FQuestSet qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
+					qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
 					if (qs == null) {
 						qs = hqm.mQuestSetCat.createMember( "--Missing--");
 					}
-					quest.mQuestSet = qs;
-					quest.mIcon = mSrc.readIconIf();
+					icon = mSrc.readIconIf();
 				}
 				else {
-					FQuestSet qs = hqm.mQuestSetCat.createMember( "--Default--");
-					quest.mQuestSet = qs;
+					qs = hqm.mQuestSetCat.createMember( "--Default--");
 				}
+				FQuest quest = qs.createQuest( name);
+				quest.mDescr = descr;
+				quest.mX = x;
+				quest.mY = y;
+				quest.mBig = big;
+				quest.mIcon = icon;
 				if (mSrc.readBoolean()) {
 					int[] ids = mSrc.readIds( DataBitHelper.QUESTS);
 					mRequirements.put( quest, ids);
@@ -282,9 +288,11 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 				readStacksIf( quest.mRewards, DataBitHelper.REWARDS);
 				readStacksIf( quest.mChoices, DataBitHelper.REWARDS);
 				readRewards( quest);
+				mQuests.add( quest);
 			}
 			else {
-				hqm.addDeletedQuest();
+				hqm.mQuestSetCat.mDeleted.addDeletedQuest();
+				mQuests.add( hqm.mQuestSetCat.mDeleted.mDeletedQuest);
 			}
 		}
 	}
@@ -388,7 +396,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			int[] ids = e.getValue();
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
-				FQuest req = QuestOfIdx.get( hqm, id);
+				FQuest req = mQuests.get( id);
 				if (req == null || req.isDeleted()) {
 					Utils.log( LOGGER, Level.WARNING, "missing OptionLink [{0}] {1} for {2}", i, id, quest.mName);
 				}
@@ -403,7 +411,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		for (Map.Entry<Integer, Vector<FQuest>> e : mPosts.entrySet()) {
 			int id = e.getKey();
 			Vector<FQuest> posts = e.getValue();
-			FQuest quest = QuestOfIdx.get( hqm, id);
+			FQuest quest = mQuests.get( id);
 			if (quest == null || quest.isDeleted()) {
 				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
 			}
@@ -419,7 +427,7 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 			int[] ids = e.getValue();
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
-				FQuest req = QuestOfIdx.get( hqm, id);
+				FQuest req = mQuests.get( id);
 				if (req == null || req.isDeleted()) {
 					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{0}] {1} for {2}", i, id, quest.mName);
 				}

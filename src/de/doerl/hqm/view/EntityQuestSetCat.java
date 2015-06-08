@@ -21,12 +21,12 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
-import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
+import de.doerl.hqm.base.dispatch.SizeOfQuests;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.GuiColor;
@@ -94,7 +94,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	public void baseAdded( ModelEvent event) {
 		try {
 			ABase base = event.mBase;
-			if (mCategory.equals( base.getHierarchy())) {
+			if (mCategory.equals( base.getParent())) {
 				update();
 				updateActive( (FQuestSet) base, true);
 				updateMoveActions();
@@ -117,7 +117,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
-		if (mCategory.equals( base.getHierarchy())) {
+		if (mCategory.equals( base.getParent())) {
 			update();
 			updateActive( QuestSetFirst.get( mCategory), true);
 			updateMoveActions();
@@ -174,7 +174,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			mActiv = null;
 		}
 		else if (toggel && Utils.equals( qs, mActiv)) {
-			mTotal.setText( String.format( "%d quests in total", QuestSizeOf.get( qs.mParentCategory)));
+			mTotal.setText( String.format( "%d quests in total", SizeOfQuests.get( qs.mParentCategory)));
 			mDesc.setText( null);
 			mScroll.setVisible( false);
 			mList.clearSelection();
@@ -182,7 +182,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			mActiv = null;
 		}
 		else {
-			mTotal.setText( String.format( "%d quests in total", QuestSizeOf.get( qs)));
+			mTotal.setText( String.format( "%d quests in total", SizeOfQuests.get( qs)));
 			mDesc.setText( qs.mDescr);
 			mScroll.setVisible( true);
 			mList.setSelectedValue( qs, true);
@@ -221,8 +221,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		public void actionPerformed( ActionEvent evt) {
 			String result = DialogTextField.update( "new", mCtrl.getFrame());
 			if (result != null) {
-				FQuestSet qs = mCtrl.questSetCreate( mCategory, result);
-				mCtrl.fireAdded( qs);
+				mCtrl.questSetCreate( mCategory, result);
 			}
 		}
 	}
@@ -238,7 +237,6 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		public void actionPerformed( ActionEvent evt) {
 			if (WarnDialogs.askDelete( mCtrl.getFrame())) {
 				mCtrl.questSetDelete( mActiv);
-				mCtrl.fireRemoved( mActiv);
 			}
 		}
 	}
@@ -370,19 +368,19 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private static class QuestSetIsEnabled extends AHQMWorker<Object, FQuestSet> {
+	private static class QuestSetIsEnabled extends AHQMWorker<Object, Object> {
 		private static final QuestSetIsEnabled WORKER = new QuestSetIsEnabled();
 
 		private QuestSetIsEnabled() {
 		}
 
 		public static boolean get( FQuestSet qs) {
-			return qs.mParentCategory.mParentHQM.forEachQuest( WORKER, qs) != null;
+			return qs.forEachQuest( WORKER, null) != null;
 		}
 
 		@Override
-		public Object forQuest( FQuest quest, FQuestSet set) {
-			if (Utils.equals( quest.mQuestSet, set) && quest.isFree()) {
+		public Object forQuest( FQuest quest, Object p) {
+			if (quest.isFree()) {
 				return Boolean.TRUE;
 			}
 			return null;
@@ -414,32 +412,31 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 	private static class QuestSizeOf extends AHQMWorker<Object, Object> {
 		private int mResult;
-		private FQuestSet mRef;
 
-		private QuestSizeOf( FQuestSet ref) {
-			mRef = ref;
-		}
-
-		public static int get( ACategory<FQuestSet> set) {
-			QuestSizeOf size = new QuestSizeOf( null);
-			set.mParentHQM.forEachQuest( size, null);
-			return size.mResult;
+		private QuestSizeOf() {
 		}
 
 		public static int get( FQuestSet qs) {
-			QuestSizeOf size = new QuestSizeOf( qs);
-			qs.mParentCategory.mParentHQM.forEachQuest( size, null);
+			QuestSizeOf size = new QuestSizeOf();
+			qs.forEachQuest( size, null);
+			return size.mResult;
+		}
+
+		public static int get( FQuestSetCat cat) {
+			QuestSizeOf size = new QuestSizeOf();
+			cat.forEachMember( size, null);
 			return size.mResult;
 		}
 
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
-			if (quest.isDeleted()) {
-				return null;
-			}
-			if (mRef == null || Utils.equals( quest.mQuestSet, mRef)) {
-				++mResult;
-			}
+			++mResult;
+			return null;
+		}
+
+		@Override
+		public Object forQuestSet( FQuestSet set, Object p) {
+			set.forEachQuest( this, p);
 			return null;
 		}
 	}

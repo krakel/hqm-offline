@@ -38,7 +38,6 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
-import de.doerl.hqm.base.dispatch.QuestOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
@@ -60,6 +59,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
+	private Vector<FQuest> mQuests = new Vector<>();
 	private JsonReader mSrc;
 
 	public Parser( InputStream is) throws IOException {
@@ -262,20 +262,20 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				if (obj != null) {
 					boolean isDelete = FValue.toBoolean( obj.get( IToken.QUEST_DELETED));
 					if (isDelete) {
-						hqm.addDeletedQuest();
+						hqm.mQuestSetCat.mDeleted.addDeletedQuest();
+						mQuests.add( hqm.mQuestSetCat.mDeleted.mDeletedQuest);
 					}
 					else {
-						FQuest quest = hqm.createQuest( FValue.toString( obj.get( IToken.QUEST_NAME)));
-						quest.mDescr = FValue.toString( obj.get( IToken.QUEST_DESC));
-						quest.mX = FValue.toInt( obj.get( IToken.QUEST_X));
-						quest.mY = FValue.toInt( obj.get( IToken.QUEST_Y));
-						quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));
 						int setID = parseID( FValue.toString( obj.get( IToken.QUEST_SET)));
 						FQuestSet qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
 						if (qs == null) {
 							qs = hqm.mQuestSetCat.createMember( "--Missing--");
 						}
-						quest.mQuestSet = qs;
+						FQuest quest = qs.createQuest( FValue.toString( obj.get( IToken.QUEST_NAME)));
+						quest.mDescr = FValue.toString( obj.get( IToken.QUEST_DESC));
+						quest.mX = FValue.toInt( obj.get( IToken.QUEST_X));
+						quest.mY = FValue.toInt( obj.get( IToken.QUEST_Y));
+						quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));
 						quest.mIcon = FItemStack.parse( FValue.toString( obj.get( IToken.QUEST_ICON)));
 						readQuestArr( quest, mRequirements, FArray.to( obj.get( IToken.QUEST_REQUIREMENTS)), true);
 						readQuestArr( quest, mOptionLinks, FArray.to( obj.get( IToken.QUEST_OPTION_LINKS)), false);
@@ -292,6 +292,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 						readStacks( quest.mRewards, FArray.to( obj.get( IToken.QUEST_REWARD)));
 						readStacks( quest.mChoices, FArray.to( obj.get( IToken.QUEST_CHOICE)));
 						readRewards( quest, FArray.to( obj.get( IToken.QUEST_REPUTATIONS)));
+						mQuests.add( quest);
 					}
 				}
 			}
@@ -329,7 +330,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FReward reward = quest.createReputationReward();
-					reward.mRep = ReputationOfIdx.get( quest.mParentHQM, parseID( FValue.toString( obj.get( IToken.REWARD_REPUTATION))));
+					reward.mRep = ReputationOfIdx.get( quest.getHqm(), parseID( FValue.toString( obj.get( IToken.REWARD_REPUTATION))));
 					reward.mValue = FValue.toInt( obj.get( IToken.REWARD_VALUE));
 				}
 			}
@@ -393,7 +394,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			int[] ids = e.getValue();
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
-				FQuest req = QuestOfIdx.get( hqm, id);
+				FQuest req = mQuests.get( id);
 				if (req == null || req.isDeleted()) {
 					Utils.log( LOGGER, Level.WARNING, "missing OptionLink [{0}] {1} for {2}", i, id, quest.mName);
 				}
@@ -408,7 +409,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 		for (Map.Entry<Integer, Vector<FQuest>> e : mPosts.entrySet()) {
 			int id = e.getKey();
 			Vector<FQuest> posts = e.getValue();
-			FQuest quest = QuestOfIdx.get( hqm, id);
+			FQuest quest = mQuests.get( id);
 			if (quest == null || quest.isDeleted()) {
 				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
 			}
@@ -424,7 +425,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			int[] ids = e.getValue();
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
-				FQuest req = QuestOfIdx.get( hqm, id);
+				FQuest req = mQuests.get( id);
 				if (req == null || req.isDeleted()) {
 					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{0}] {1} for {2}", i, id, quest.mName);
 				}

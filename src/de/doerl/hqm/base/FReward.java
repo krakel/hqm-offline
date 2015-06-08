@@ -23,10 +23,6 @@ public final class FReward extends ABase implements IElement {
 	}
 
 	@Override
-	public FQuest getHierarchy() {
-		return mParentQuest;
-	}
-
 	public FHqm getHqm() {
 		return mParentQuest.getHqm();
 	}

@@ -123,7 +123,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	public void baseAdded( ModelEvent event) {
 		try {
 			ABase base = event.mBase;
-			if (mQuest.equals( base.getHierarchy())) {
+			if (mQuest.equals( base.getParent())) {
 				update();
 				updateActive( findBoxOf( (AQuestTask) base));
 				updateMoveActions();
@@ -147,7 +147,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
-		if (mQuest.equals( base.getHierarchy())) {
+		if (mQuest.equals( base.getParent())) {
 			update();
 			updateActive( getFirstBox());
 			updateMoveActions();
@@ -373,8 +373,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		public void actionPerformed( ActionEvent evt) {
 			Tuple2<TaskTyp, String> result = DialogTaskField.update( null, null, mCtrl.getFrame());
 			if (result != null) {
-				AQuestTask task = mCtrl.questTaskCreate( mQuest, result._1, result._2);
-				mCtrl.fireAdded( task);
+				mCtrl.questTaskCreate( mQuest, result._1, result._2);
 			}
 		}
 	}
@@ -439,7 +438,6 @@ public class EntityQuest extends AEntity<FQuest> {
 			AQuestTask task = mActiv.getTask();
 			if (task != null && WarnDialogs.askDelete( mCtrl.getFrame())) {
 				mCtrl.questTaskDelete( task);
-				mCtrl.fireRemoved( task);
 			}
 		}
 	}

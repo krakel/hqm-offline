@@ -42,11 +42,6 @@ public abstract class ACategory<E extends AMember> extends ABase {
 	public abstract Vector<E> getArr();
 
 	@Override
-	public FHqm getHierarchy() {
-		return mParentHQM;
-	}
-
-	@Override
 	public FHqm getHqm() {
 		return mParentHQM;
 	}

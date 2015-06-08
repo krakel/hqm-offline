@@ -80,8 +80,6 @@ public abstract class ABase implements IDispatcher {
 
 	public abstract ElementTyp getElementTyp();
 
-	public abstract ABase getHierarchy();
-
 	public abstract FHqm getHqm();
 
 	public abstract ABase getParent();

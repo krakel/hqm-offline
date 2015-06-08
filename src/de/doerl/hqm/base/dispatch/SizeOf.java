@@ -5,7 +5,6 @@ import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
-import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
@@ -23,12 +22,6 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 	private SizeOf() {
 	}
 
-	public static int getCategories( ACategory<?> cat) {
-		SizeOf worker = new SizeOf();
-		cat.forEachMember( worker, null);
-		return worker.mResult;
-	}
-
 	public static int getLocations( FQuestTaskLocation task) {
 		SizeOf size = new SizeOf();
 		task.forEachLocation( size, null);
@@ -41,15 +34,15 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 		return size.mResult;
 	}
 
+	public static int getMember( ACategory<?> cat) {
+		SizeOf worker = new SizeOf();
+		cat.forEachMember( worker, null);
+		return worker.mResult;
+	}
+
 	public static int getMobs( FQuestTaskMob task) {
 		SizeOf size = new SizeOf();
 		task.forEachMob( size, null);
-		return size.mResult;
-	}
-
-	public static int getQuests( FHqm hqm) {
-		SizeOf size = new SizeOf();
-		hqm.forEachQuest( size, null);
 		return size.mResult;
 	}
 
@@ -109,12 +102,6 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 
 	@Override
 	public Object forMob( FMob mob, Object p) {
-		++mResult;
-		return null;
-	}
-
-	@Override
-	public Object forQuest( FQuest quest, Object p) {
 		++mResult;
 		return null;
 	}

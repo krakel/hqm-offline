@@ -125,8 +125,8 @@ public class DialogListSettings extends ADialogList<FSetting> {
 		@Override
 		public FSetting changeElement( FSetting entry) {
 			mRep.removeAllItems();
-			mRep.setModel( new RepModel( entry.mParentTask.mParentQuest.mParentHQM));
-			mRep.setSelectedIndex( IndexOf.getReputation( entry.mRep));
+			mRep.setModel( new RepModel( entry.getHqm()));
+			mRep.setSelectedIndex( IndexOf.getMember( entry.mRep));
 			mUpper.setSelectedIndex( IndexOf.getMarker( entry.mUpper));
 			mLower.setSelectedIndex( IndexOf.getMarker( entry.mLower));
 			mInverted.setSelected( entry.mInverted);

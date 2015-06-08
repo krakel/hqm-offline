@@ -199,15 +199,18 @@ public class EditView extends JPanel implements IModelListener {
 		@Override
 		public AEntity<? extends ABase> forQuest( FQuest quest, EditView view) {
 			if (quest.isDeleted()) {
+				Utils.log( LOGGER, Level.WARNING, "wrong quest {0}", quest);
 				return null;
 			}
-			AEntity<?> ent = view.mContent.get( quest);
-			if (ent == null) {
-				ent = new EntityQuest( quest, view.getController());
-				view.mContent.put( quest, ent);
-				view.mCtrl.addListener( ent);
+			else {
+				AEntity<?> ent = view.mContent.get( quest);
+				if (ent == null) {
+					ent = new EntityQuest( quest, view.getController());
+					view.mContent.put( quest, ent);
+					view.mCtrl.addListener( ent);
+				}
+				return ent;
 			}
-			return ent;
 		}
 
 		@Override

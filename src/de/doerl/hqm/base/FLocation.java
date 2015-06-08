@@ -29,11 +29,6 @@ public final class FLocation extends ANamed implements IElement {
 	}
 
 	@Override
-	public FQuestTaskLocation getHierarchy() {
-		return mParentTask;
-	}
-
-	@Override
 	public FQuestTaskLocation getParent() {
 		return mParentTask;
 	}

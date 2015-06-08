@@ -27,11 +27,6 @@ public final class FMob extends ANamed implements IElement {
 	}
 
 	@Override
-	public FQuestTaskMob getHierarchy() {
-		return mParentTask;
-	}
-
-	@Override
 	public FQuestTaskMob getParent() {
 		return mParentTask;
 	}

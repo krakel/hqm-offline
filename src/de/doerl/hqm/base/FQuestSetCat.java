@@ -7,6 +7,8 @@ import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FQuestSetCat extends ACategory<FQuestSet> {
+	public final FQuestSet mDeleted = new FQuestSet( this, "__DELETED__", true);
+
 	FQuestSetCat( FHqm parent) {
 		super( parent);
 	}

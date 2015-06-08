@@ -98,7 +98,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 	}
 
 	private MutableTreeNode getParentNode( ABase base) {
-		ABase parent = base != null ? base.getHierarchy() : null;
+		ABase parent = base != null ? base.getParent() : null;
 		if (parent != null) {
 			return getNode( parent);
 		}
@@ -158,7 +158,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		protected MutableTreeNode doBase( ABase base, ElementTreeModel model) {
 			MutableTreeNode node = model.getNode( base);
 			if (node == null) {
-				MutableTreeNode parent = base.getHierarchy().accept( this, model);
+				MutableTreeNode parent = base.getParent().accept( this, model);
 				node = model.createNode( parent, new BaseNode( base));
 			}
 			return node;
@@ -168,7 +168,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		protected MutableTreeNode doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
 			MutableTreeNode node = model.getNode( cat);
 			if (node == null) {
-				MutableTreeNode parent = cat.getHierarchy().accept( this, model);
+				MutableTreeNode parent = cat.getParent().accept( this, model);
 				node = model.createNode( parent, new CatNode( cat));
 			}
 			return node;
@@ -187,7 +187,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		private MutableTreeNode doNamed( ANamed named, ElementTreeModel model, boolean allowsChildren) {
 			MutableTreeNode node = model.getNode( named);
 			if (node == null) {
-				MutableTreeNode parent = named.getHierarchy().accept( this, model);
+				MutableTreeNode parent = named.getParent().accept( this, model);
 				node = model.createNode( parent, new NamedNode( named), allowsChildren);
 			}
 			return node;
@@ -257,7 +257,6 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 			NodeFactory.get( hqm, model);
 			hqm.mQuestSetCat.accept( this, model);
 			hqm.mReputationCat.accept( this, model);
-			hqm.forEachQuest( this, model);
 			hqm.mGroupTierCat.accept( this, model);
 			hqm.mGroupCat.accept( this, model);
 			return null;
@@ -265,15 +264,14 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 
 		@Override
 		public Object forQuest( FQuest quest, ElementTreeModel model) {
-			if (!quest.isDeleted()) {
-				NodeFactory.get( quest, model);
-			}
+			NodeFactory.get( quest, model);
 			return null;
 		}
 
 		@Override
 		public Object forQuestSet( FQuestSet set, ElementTreeModel model) {
 			NodeFactory.get( set, model);
+			set.forEachQuest( this, model);
 			return null;
 		}
 

@@ -13,7 +13,7 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuest extends ANamed implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
-	public final FHqm mParentHQM;
+	private FQuestSet mParentQuestSet;
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
@@ -27,20 +27,12 @@ public final class FQuest extends ANamed implements IElement {
 	public final Vector<FQuest> mOptionLinks = new Vector<>();
 	public final Vector<FQuest> mPosts = new Vector<>();
 	public final Vector<FReward> Reputation = new Vector<>();
-	public FQuestSet mQuestSet;
 	public FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	final Vector<AQuestTask> mTasks = new Vector<>();
-	private boolean mDeleted;
 
-	public FQuest( FHqm parent, String name) {
+	public FQuest( FQuestSet parent, String name) {
 		super( name);
-		mParentHQM = parent;
-	}
-
-	public FQuest( FHqm parent, String name, boolean deleted) {
-		super( name);
-		mParentHQM = parent;
-		mDeleted = deleted;
+		mParentQuestSet = parent;
 	}
 
 	@Override
@@ -137,27 +129,22 @@ public final class FQuest extends ANamed implements IElement {
 	}
 
 	@Override
-	public FQuestSet getHierarchy() {
-		return mQuestSet;
-	}
-
-	@Override
 	public FHqm getHqm() {
-		return mParentHQM;
+		return mParentQuestSet.getHqm();
 	}
 
 	@Override
-	public FHqm getParent() {
-		return mParentHQM;
+	public FQuestSet getParent() {
+		return mParentQuestSet;
 	}
 
 	public boolean isDeleted() {
-		return mDeleted;
+		return mParentQuestSet.isDeleted();
 	}
 
 	@Override
 	public boolean isFirst() {
-		return ABase.isFirst( mParentHQM.mQuests, this);
+		return ABase.isFirst( mParentQuestSet.mQuests, this);
 	}
 
 	public boolean isFree() {
@@ -166,20 +153,26 @@ public final class FQuest extends ANamed implements IElement {
 
 	@Override
 	public boolean isLast() {
-		return ABase.isLast( mParentHQM.mQuests, this);
+		return ABase.isLast( mParentQuestSet.mQuests, this);
 	}
 
 	@Override
 	public void moveDown() {
-		ABase.moveDown( mParentHQM.mQuests, this);
+		ABase.moveDown( mParentQuestSet.mQuests, this);
+	}
+
+	public void moveTo( FQuestSet set) {
+		remove();
+		mParentQuestSet = set;
+		set.add( this);
 	}
 
 	@Override
 	public void moveUp() {
-		ABase.moveUp( mParentHQM.mQuests, this);
+		ABase.moveUp( mParentQuestSet.mQuests, this);
 	}
 
 	public void remove() {
-		ABase.remove( mParentHQM.mQuests, this);
+		ABase.remove( mParentQuestSet.mQuests, this);
 	}
 }

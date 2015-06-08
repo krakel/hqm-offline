@@ -19,11 +19,6 @@ public abstract class AQuestTask extends ANamed implements IElement {
 	}
 
 	@Override
-	public FQuest getHierarchy() {
-		return mParentQuest;
-	}
-
-	@Override
 	public FQuest getParent() {
 		return mParentQuest;
 	}

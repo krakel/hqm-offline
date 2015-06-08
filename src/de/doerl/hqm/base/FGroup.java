@@ -27,11 +27,6 @@ public final class FGroup extends AMember {
 	}
 
 	@Override
-	public ACategory<FGroup> getHierarchy() {
-		return mParentCategory;
-	}
-
-	@Override
 	public FGroupCat getParent() {
 		return mParentCategory;
 	}
