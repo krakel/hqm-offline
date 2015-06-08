@@ -12,18 +12,12 @@ import de.doerl.hqm.utils.nbt.NbtReader;
 
 class BitInputStream {
 	private static final Charset UTF_8 = Charset.forName( "UTF-8");
-	public final FileVersion mVersion;
 	private InputStream mInput;
 	private int mBuffer;
 	private int mBits;
 
 	public BitInputStream( InputStream is) {
 		mInput = is;
-		mVersion = FileVersion.get( readByte());
-	}
-
-	public boolean contains( FileVersion other) {
-		return mVersion.ordinal() >= other.ordinal();
 	}
 
 	public int read() throws IOException {
@@ -31,15 +25,19 @@ class BitInputStream {
 	}
 
 	public boolean readBoolean() {
-		return readData( DataBitHelper.BOOLEAN) != 0;
+		return readData( DataBitHelper.BOOLEAN.getCount()) != 0;
 	}
 
 	public int readByte() {
-		return readData( DataBitHelper.BYTE);
+		return readData( DataBitHelper.BYTE.getCount());
 	}
 
 	public int readData( DataBitHelper bits) {
-		return readData( bits.getBitCount( mVersion));
+		return readData( bits.getCount());
+	}
+
+	public int readData( DataBitHelper bits, FileVersion version) {
+		return readData( bits.getBitCount( version));
 	}
 
 	private int readData( int count) {
@@ -78,40 +76,40 @@ class BitInputStream {
 		}
 	}
 
-	public FItemStack readIconIf() {
+	public FItemStack readIconIf( FileVersion version) {
 		if (readBoolean()) {
-			return readItemStack();
+			return readItemStack( version);
 		}
 		else {
 			return null;
 		}
 	}
 
-	public int[] readIds( DataBitHelper bits) {
-		int count = readData( bits);
+	public int[] readIds( DataBitHelper bits, FileVersion version) {
+		int count = readData( bits, version);
 		int[] result = new int[count];
 		for (int i = 0; i < count; ++i) {
-			result[i] = readData( bits);
+			result[i] = readData( bits, version);
 		}
 		return result;
 	}
 
-	public FItemStack readItemStack() {
-		return readItemStackDef( false);
+	public FItemStack readItemStack( FileVersion version) {
+		return readItemStackDef( false, version);
 	}
 
-	private FItemStack readItemStackDef( boolean withSize) {
-		if (mVersion.contains( FileVersion.NO_ITEM_IDS)) {
-			return readItemStackName( withSize);
+	private FItemStack readItemStackDef( boolean withSize, FileVersion version) {
+		if (version.contains( FileVersion.NO_ITEM_IDS)) {
+			return readItemStackName( withSize, version);
 		}
 		else {
 			return readItemStackID( withSize);
 		}
 	}
 
-	public FItemStack readItemStackFix() {
-		if (mVersion.contains( FileVersion.NO_ITEM_IDS_FIX)) {
-			return readItemStackDef( true);
+	public FItemStack readItemStackFix( FileVersion version) {
+		if (version.contains( FileVersion.NO_ITEM_IDS_FIX)) {
+			return readItemStackDef( true, version);
 		}
 		else {
 			if (readBoolean()) {
@@ -135,7 +133,7 @@ class BitInputStream {
 		}
 	}
 
-	private FItemStack readItemStackName( boolean withSize) {
+	private FItemStack readItemStackName( boolean withSize, FileVersion version) {
 		String name = readString( DataBitHelper.SHORT);
 		int size = withSize ? readData( DataBitHelper.SHORT) : 1;
 		int dmg = readData( DataBitHelper.SHORT);

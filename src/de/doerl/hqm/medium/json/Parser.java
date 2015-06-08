@@ -262,14 +262,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				if (obj != null) {
 					boolean isDelete = FValue.toBoolean( obj.get( IToken.QUEST_DELETED));
 					if (isDelete) {
-						hqm.mQuestSetCat.mDeleted.addDeletedQuest();
-						mQuests.add( hqm.mQuestSetCat.mDeleted.mDeletedQuest);
+						mQuests.add( hqm.mQuestSetCat.addDeletedQuest());
 					}
 					else {
 						int setID = parseID( FValue.toString( obj.get( IToken.QUEST_SET)));
 						FQuestSet qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
 						if (qs == null) {
-							qs = hqm.mQuestSetCat.createMember( "--Missing--");
+							qs = hqm.mQuestSetCat.createMember( "__Missing__");
 						}
 						FQuest quest = qs.createQuest( FValue.toString( obj.get( IToken.QUEST_NAME)));
 						quest.mDescr = FValue.toString( obj.get( IToken.QUEST_DESC));

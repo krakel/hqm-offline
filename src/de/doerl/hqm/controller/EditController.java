@@ -75,7 +75,7 @@ public class EditController implements IModelListener {
 	public void questDelete( FQuest quest) {
 		QuestRemoveDepent.get( quest, this);
 		fireRemoved( quest);
-		quest.moveTo( quest.getParent().mParentCategory.mDeleted);
+		quest.delete();
 	}
 
 	public void questMoveTo( FQuest quest, FQuestSet set) {

@@ -12,7 +12,6 @@ import de.doerl.hqm.utils.nbt.NbtWriter;
 
 class BitOutputStream {
 	private OutputStream mOutput;
-	private FileVersion mVersion = FileVersion.last();
 	private int mBuffer;
 	private int mBits;
 
@@ -20,20 +19,11 @@ class BitOutputStream {
 		mOutput = out;
 	}
 
-	public boolean contains( FileVersion other) {
-		return mVersion.ordinal() >= other.ordinal();
-	}
-
 	public void flush() throws IOException {
 		if (mBits > 0) {
 			mOutput.write( mBuffer);
 			mBits = 0;
 		}
-	}
-
-	public void setVersion( FileVersion version) {
-		mVersion = version;
-		writeData( version.ordinal(), DataBitHelper.BYTE);
 	}
 
 	public void writeBoolean( boolean data) {
@@ -72,10 +62,10 @@ class BitOutputStream {
 		writeNBT( NbtWriter.write( stk.getNBT()));
 	}
 
-	public void writeIconIf( FItemStack stk) {
+	public void writeIconIf( FItemStack stk, FileVersion version) {
 		if (stk != null) {
 			writeBoolean( true);
-			writeItemStackDef( stk, false);
+			writeItemStackDef( stk, false, version);
 		}
 		else {
 			writeBoolean( false);
@@ -89,12 +79,12 @@ class BitOutputStream {
 		}
 	}
 
-	public void writeItemStack( FItemStack stk) {
-		writeItemStackDef( stk, false);
+	public void writeItemStack( FItemStack stk, FileVersion version) {
+		writeItemStackDef( stk, version);
 	}
 
-	private void writeItemStackDef( FItemStack stk, boolean withSize) {
-		if (mVersion.contains( FileVersion.NO_ITEM_IDS)) {
+	private void writeItemStackDef( FItemStack stk, boolean withSize, FileVersion version) {
+		if (version.contains( FileVersion.NO_ITEM_IDS)) {
 			writeItemStackName( stk, withSize);
 		}
 		else {
@@ -102,9 +92,13 @@ class BitOutputStream {
 		}
 	}
 
-	public void writeItemStackFix( FItemStack stk) {
-		if (mVersion.contains( FileVersion.NO_ITEM_IDS_FIX)) {
-			writeItemStackDef( stk, true);
+	private void writeItemStackDef( FItemStack stk, FileVersion version) {
+		writeItemStackDef( stk, false, version);
+	}
+
+	public void writeItemStackFix( FItemStack stk, FileVersion version) {
+		if (version.contains( FileVersion.NO_ITEM_IDS_FIX)) {
+			writeItemStackDef( stk, true, version);
 		}
 		else {
 			writeNBT( NbtWriter.write( stk.getNBT()));

@@ -55,7 +55,7 @@ import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.quest.Visibility;
 import de.doerl.hqm.utils.Utils;
 
-class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
+class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private BitInputStream mSrc;
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
@@ -83,30 +83,30 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		p.add( quest);
 	}
 
-	private void doItemTask( AQuestTaskItems task) {
+	private void doItemTask( AQuestTaskItems task, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TASK_ITEM_COUNT);
 		for (int i = 0; i < count; ++i) {
 			ARequirement req = task.createRequirement( mSrc.readBoolean());
-			req.accept( this, null);
+			req.accept( this, version);
 		}
 	}
 
 	@Override
-	public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
+	public Object forFluidRequirement( FFluidRequirement fluid, FileVersion version) {
 		fluid.mStack = mSrc.readFluidStack();
 		return null;
 	}
 
 	@Override
-	public Object forItemRequirement( FItemRequirement item, Object p) {
-		item.mStack = mSrc.readItemStack();
+	public Object forItemRequirement( FItemRequirement item, FileVersion version) {
+		item.mStack = mSrc.readItemStack( version);
 		item.mRequired = mSrc.readData( DataBitHelper.TASK_REQUIREMENT);
 		item.mPrecision = ItemPrecision.get( mSrc.readData( DataBitHelper.ITEM_PRECISION));
 		return null;
 	}
 
 	@Override
-	public Object forRepeatInfo( FRepeatInfo info, Object p) {
+	public Object forRepeatInfo( FRepeatInfo info, FileVersion version) {
 		RepeatType type = RepeatType.get( mSrc.readData( DataBitHelper.REPEAT_TYPE));
 		info.mType = type;
 		if (type.isUseTime()) {
@@ -116,40 +116,40 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	}
 
 	@Override
-	public Object forTaskDeath( FQuestTaskDeath task, Object p) {
+	public Object forTaskDeath( FQuestTaskDeath task, FileVersion version) {
 		task.mDeaths = mSrc.readData( DataBitHelper.DEATHS);
 		return null;
 	}
 
 	@Override
-	public Object forTaskItemsConsume( FQuestTaskItemsConsume task, Object p) {
-		doItemTask( task);
+	public Object forTaskItemsConsume( FQuestTaskItemsConsume task, FileVersion version) {
+		doItemTask( task, version);
 		return null;
 	}
 
 	@Override
-	public Object forTaskItemsConsumeQDS( FQuestTaskItemsConsumeQDS task, Object p) {
-		doItemTask( task);
+	public Object forTaskItemsConsumeQDS( FQuestTaskItemsConsumeQDS task, FileVersion version) {
+		doItemTask( task, version);
 		return null;
 	}
 
 	@Override
-	public Object forTaskItemsCrafting( FQuestTaskItemsCrafting task, Object p) {
-		doItemTask( task);
+	public Object forTaskItemsCrafting( FQuestTaskItemsCrafting task, FileVersion version) {
+		doItemTask( task, version);
 		return null;
 	}
 
 	@Override
-	public Object forTaskItemsDetect( FQuestTaskItemsDetect task, Object p) {
-		doItemTask( task);
+	public Object forTaskItemsDetect( FQuestTaskItemsDetect task, FileVersion version) {
+		doItemTask( task, version);
 		return null;
 	}
 
 	@Override
-	public Object forTaskLocation( FQuestTaskLocation task, Object p) {
+	public Object forTaskLocation( FQuestTaskLocation task, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TASK_LOCATION_COUNT);
 		for (int i = 0; i < count; i++) {
-			FItemStack icon = mSrc.readIconIf();
+			FItemStack icon = mSrc.readIconIf( version);
 			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
 			FLocation loc = task.createLocation( icon, name);
 			loc.mX = mSrc.readData( DataBitHelper.WORLD_COORDINATE);
@@ -163,10 +163,10 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	}
 
 	@Override
-	public Object forTaskMob( FQuestTaskMob task, Object p) {
+	public Object forTaskMob( FQuestTaskMob task, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TASK_MOB_COUNT);
 		for (int i = 0; i < count; i++) {
-			FItemStack icon = mSrc.readIconIf();
+			FItemStack icon = mSrc.readIconIf( version);
 			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
 			FMob mob = task.createMob( icon, name);
 			mob.mMob = mSrc.readString( DataBitHelper.MOB_ID_LENGTH);
@@ -177,13 +177,13 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	}
 
 	@Override
-	public Object forTaskReputationKill( FQuestTaskReputationKill task, Object p) {
+	public Object forTaskReputationKill( FQuestTaskReputationKill task, FileVersion version) {
 		task.mKills = mSrc.readData( DataBitHelper.DEATHS);
 		return null;
 	}
 
 	@Override
-	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
+	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
 		for (int i = 0; i < count; i++) {
 			FSetting set = task.createSetting();
@@ -195,17 +195,17 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 		return null;
 	}
 
-	private void readGroup( FGroupCat cat) {
+	private void readGroup( FGroupCat cat, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.GROUP_COUNT);
 		for (int i = 0; i < count; ++i) {
-			if (mSrc.contains( FileVersion.BAG_LIMITS)) {
+			if (version.contains( FileVersion.BAG_LIMITS)) {
 				mSrc.readData( DataBitHelper.GROUP_COUNT);
 			}
 			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
 			FGroup grp = cat.createMember( name);
 			grp.mTier = GroupTierOfIdx.get( cat.mParentHQM, mSrc.readData( DataBitHelper.TIER_COUNT));
-			readStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS);
-			if (mSrc.contains( FileVersion.BAG_LIMITS) && mSrc.readBoolean()) {
+			readStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
+			if (version.contains( FileVersion.BAG_LIMITS) && mSrc.readBoolean()) {
 				grp.mLimit = mSrc.readData( DataBitHelper.LIMIT);
 			}
 		}
@@ -236,7 +236,8 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 	}
 
 	private void readQuests( FHqm hqm) {
-		int count = mSrc.readData( DataBitHelper.QUESTS);
+		FileVersion version = hqm.getVersion();
+		int count = mSrc.readData( DataBitHelper.QUESTS, version);
 		for (int i = 0; i < count; ++i) {
 			if (mSrc.readBoolean()) {
 				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
@@ -246,16 +247,16 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 				boolean big = mSrc.readBoolean();
 				FItemStack icon = null;
 				FQuestSet qs;
-				if (mSrc.contains( FileVersion.SETS)) {
+				if (version.contains( FileVersion.SETS)) {
 					int setID = mSrc.readData( DataBitHelper.QUEST_SETS);
 					qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
 					if (qs == null) {
-						qs = hqm.mQuestSetCat.createMember( "--Missing--");
+						qs = hqm.mQuestSetCat.createMember( "__Missing__");
 					}
-					icon = mSrc.readIconIf();
+					icon = mSrc.readIconIf( version);
 				}
 				else {
-					qs = hqm.mQuestSetCat.createMember( "--Default--");
+					qs = hqm.mQuestSetCat.createMember( "__Default__");
 				}
 				FQuest quest = qs.createQuest( name);
 				quest.mDescr = descr;
@@ -264,126 +265,126 @@ class Parser extends AHQMWorker<Object, Object> implements IHqmReader {
 				quest.mBig = big;
 				quest.mIcon = icon;
 				if (mSrc.readBoolean()) {
-					int[] ids = mSrc.readIds( DataBitHelper.QUESTS);
+					int[] ids = mSrc.readIds( DataBitHelper.QUESTS, version);
 					mRequirements.put( quest, ids);
 					addAllPosts( quest, ids);
 				}
-				if (mSrc.contains( FileVersion.OPTION_LINKS) && mSrc.readBoolean()) {
-					mOptionLinks.put( quest, mSrc.readIds( DataBitHelper.QUESTS));
+				if (version.contains( FileVersion.OPTION_LINKS) && mSrc.readBoolean()) {
+					mOptionLinks.put( quest, mSrc.readIds( DataBitHelper.QUESTS, version));
 				}
-				if (mSrc.contains( FileVersion.REPEATABLE_QUESTS)) {
-					quest.mRepeatInfo.accept( this, null);
+				if (version.contains( FileVersion.REPEATABLE_QUESTS)) {
+					quest.mRepeatInfo.accept( this, version);
 				}
-				if (mSrc.contains( FileVersion.TRIGGER_QUESTS)) {
+				if (version.contains( FileVersion.TRIGGER_QUESTS)) {
 					TriggerType type = TriggerType.get( mSrc.readData( DataBitHelper.TRIGGER_TYPE));
 					quest.mTriggerType = type;
 					if (type.isUseTaskCount()) {
 						quest.mTriggerTasks = mSrc.readData( DataBitHelper.TASKS);
 					}
 				}
-				if (mSrc.contains( FileVersion.PARENT_COUNT) && mSrc.readBoolean()) {
-					quest.mReqCount = mSrc.readData( DataBitHelper.QUESTS);
+				if (version.contains( FileVersion.PARENT_COUNT) && mSrc.readBoolean()) {
+					quest.mReqCount = mSrc.readData( DataBitHelper.QUESTS, version);
 				}
-				readTasks( quest);
-				readStacksIf( quest.mRewards, DataBitHelper.REWARDS);
-				readStacksIf( quest.mChoices, DataBitHelper.REWARDS);
-				readRewards( quest);
+				readTasks( quest, version);
+				readStacksIf( quest.mRewards, DataBitHelper.REWARDS, version);
+				readStacksIf( quest.mChoices, DataBitHelper.REWARDS, version);
+				if (version.contains( FileVersion.REPUTATION)) {
+					readRewards( quest);
+				}
 				mQuests.add( quest);
 			}
 			else {
-				hqm.mQuestSetCat.mDeleted.addDeletedQuest();
-				mQuests.add( hqm.mQuestSetCat.mDeleted.mDeletedQuest);
+				mQuests.add( hqm.mQuestSetCat.addDeletedQuest());
 			}
 		}
 	}
 
 	private void readQuestSetCat( FQuestSetCat cat) {
-		if (mSrc.contains( FileVersion.SETS)) {
-			int count = mSrc.readData( DataBitHelper.QUEST_SETS);
-			for (int i = 0; i < count; i++) {
-				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-				FQuestSet set = cat.createMember( name);
-				set.mDescr = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
-			}
-		}
-		else {
-			cat.createMember( "Automatically generated");
+		int count = mSrc.readData( DataBitHelper.QUEST_SETS);
+		for (int i = 0; i < count; i++) {
+			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
+			FQuestSet set = cat.createMember( name);
+			set.mDescr = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		}
 	}
 
 	private void readReputations( FReputationCat cat) {
-		if (mSrc.contains( FileVersion.REPUTATION)) {
-			int count = mSrc.readData( DataBitHelper.REPUTATION);
-			for (int i = 0; i < count; ++i) {
-				Integer id = mSrc.readData( DataBitHelper.REPUTATION);
-				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-				FReputation rep = cat.createMember( name);
-				rep.mNeutral = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-				readMarker( rep);
-				mReps.put( id, rep);
-			}
+		int count = mSrc.readData( DataBitHelper.REPUTATION);
+		for (int i = 0; i < count; ++i) {
+			Integer id = mSrc.readData( DataBitHelper.REPUTATION);
+			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
+			FReputation rep = cat.createMember( name);
+			rep.mNeutral = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
+			readMarker( rep);
+			mReps.put( id, rep);
 		}
 	}
 
 	private void readRewards( FQuest quest) {
-		if (mSrc.contains( FileVersion.REPUTATION)) {
-			int count = mSrc.readData( DataBitHelper.REPUTATION_REWARD);
-			for (int i = 0; i < count; i++) {
-				FReward reward = quest.createReputationReward();
-				reward.mRep = mReps.get( mSrc.readData( DataBitHelper.REPUTATION));
-				reward.mValue = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
-			}
+		int count = mSrc.readData( DataBitHelper.REPUTATION_REWARD);
+		for (int i = 0; i < count; i++) {
+			FReward reward = quest.createReputationReward();
+			reward.mRep = mReps.get( mSrc.readData( DataBitHelper.REPUTATION));
+			reward.mValue = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
 		}
 	}
 
 	public void readSrc( FHqm hqm) {
-		hqm.setVersion( mSrc.mVersion);
-		if (mSrc.contains( FileVersion.LOCK)) {
+		FileVersion version = FileVersion.get( mSrc.readByte());
+		hqm.setVersion( version);
+		if (version.contains( FileVersion.LOCK)) {
 			hqm.mPassCode = mSrc.readString( DataBitHelper.PASS_CODE);
 		}
-		if (mSrc.contains( FileVersion.LORE)) {
+		if (version.contains( FileVersion.LORE)) {
 			hqm.mDescr = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		}
 		else {
 			hqm.mDescr = "No description";
 		}
-		readQuestSetCat( hqm.mQuestSetCat);
-		readReputations( hqm.mReputationCat);
+		if (version.contains( FileVersion.SETS)) {
+			readQuestSetCat( hqm.mQuestSetCat);
+		}
+		else {
+			hqm.mQuestSetCat.createMember( "__Missing__");
+		}
+		if (version.contains( FileVersion.REPUTATION)) {
+			readReputations( hqm.mReputationCat);
+		}
 		readQuests( hqm);
-		if (mSrc.contains( FileVersion.BAGS)) {
+		if (version.contains( FileVersion.BAGS)) {
 			readGroupTiers( hqm.mGroupTierCat);
-			readGroup( hqm.mGroupCat);
+			readGroup( hqm.mGroupCat, version);
 		}
 		updateRequirements( hqm);
 		updateOptionLinks( hqm);
 		updatePosts( hqm);
 	}
 
-	private void readStacks( Vector<FItemStack> param, DataBitHelper bitCount) {
+	private void readStacks( Vector<FItemStack> param, DataBitHelper bitCount, FileVersion version) {
 		int count = mSrc.readData( bitCount);
 		for (int i = 0; i < count; ++i) {
-			FItemStack stk = mSrc.readItemStackFix();
+			FItemStack stk = mSrc.readItemStackFix( version);
 			if (stk != null) {
 				param.add( stk);
 			}
 		}
 	}
 
-	private void readStacksIf( Vector<FItemStack> param, DataBitHelper bitCount) {
+	private void readStacksIf( Vector<FItemStack> param, DataBitHelper bitCount, FileVersion version) {
 		if (mSrc.readBoolean()) {
-			readStacks( param, DataBitHelper.REWARDS);
+			readStacks( param, bitCount, version);
 		}
 	}
 
-	private void readTasks( FQuest quest) {
+	private void readTasks( FQuest quest, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TASKS);
 		for (int i = 0; i < count; ++i) {
-			int id = mSrc.readData( DataBitHelper.TASK_TYPE);
+			int id = mSrc.readData( DataBitHelper.TASK_TYPE, version);
 			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
 			TaskTyp type = TaskTyp.get( id);
 			AQuestTask task = quest.createQuestTask( type, name);
 			task.mDescr = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
-			task.accept( this, null);
+			task.accept( this, version);
 //			if (result.size() > 0) {
 //				task.addRequirement( result.get( result.size() - 1));
 //			}

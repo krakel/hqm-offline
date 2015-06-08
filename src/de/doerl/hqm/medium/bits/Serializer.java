@@ -77,13 +77,14 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 
 	@Override
 	public Object forGroup( FGroup grp, Object p) {
-		if (mDst.contains( FileVersion.BAG_LIMITS)) {
+		FileVersion version = grp.getHqm().getVersion();
+		if (version.contains( FileVersion.BAG_LIMITS)) {
 			mDst.writeData( IndexOf.getMember( grp), DataBitHelper.GROUP_COUNT);
 		}
 		mDst.writeString( grp.mName, DataBitHelper.QUEST_NAME_LENGTH);
 		mDst.writeData( IndexOf.getMember( grp.mTier), DataBitHelper.TIER_COUNT);
-		writeStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS);
-		if (mDst.contains( FileVersion.BAG_LIMITS)) {
+		writeStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
+		if (version.contains( FileVersion.BAG_LIMITS)) {
 			if (grp.mLimit != null) {
 				mDst.writeBoolean( true);
 				mDst.writeData( grp.mLimit, DataBitHelper.LIMIT);
@@ -109,7 +110,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 	@Override
 	public Object forItemRequirement( FItemRequirement item, Object p) {
 		mDst.writeBoolean( true);
-		mDst.writeItemStack( item.mStack);
+		mDst.writeItemStack( item.mStack, item.getHqm().getVersion());
 		mDst.writeData( item.mRequired, DataBitHelper.TASK_REQUIREMENT);
 		mDst.writeData( item.mPrecision.ordinal(), DataBitHelper.ITEM_PRECISION);
 		return null;
@@ -117,7 +118,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 
 	@Override
 	public Object forLocation( FLocation loc, Object p) {
-		mDst.writeIconIf( loc.mIcon);
+		mDst.writeIconIf( loc.mIcon, loc.getHqm().getVersion());
 		mDst.writeString( loc.mName, DataBitHelper.NAME_LENGTH);
 		mDst.writeData( loc.mX, DataBitHelper.WORLD_COORDINATE);
 		mDst.writeData( loc.mY, DataBitHelper.WORLD_COORDINATE);
@@ -137,7 +138,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 
 	@Override
 	public Object forMob( FMob mob, Object p) {
-		mDst.writeIconIf( mob.mIcon);
+		mDst.writeIconIf( mob.mIcon, mob.getHqm().getVersion());
 		mDst.writeString( mob.mName, DataBitHelper.NAME_LENGTH);
 		mDst.writeString( mob.mMob, DataBitHelper.MOB_ID_LENGTH);
 		mDst.writeData( mob.mKills, DataBitHelper.KILL_COUNT);
@@ -226,32 +227,34 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 
 	@Override
 	public void writeDst( FHqm hqm) {
-		mDst.setVersion( hqm.getVersion());
-		if (mDst.contains( FileVersion.LOCK)) {
+		mDst.writeData( hqm.getVersion().ordinal(), DataBitHelper.BYTE);
+		if (hqm.contains( FileVersion.LOCK)) {
 			mDst.writeString( hqm.mPassCode, DataBitHelper.PASS_CODE);
 		}
-		if (mDst.contains( FileVersion.LORE)) {
+		if (hqm.contains( FileVersion.LORE)) {
 			mDst.writeString( hqm.mDescr, DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		}
-		writeQuestSetCat( hqm.mQuestSetCat);
-		writeReputations( hqm.mReputationCat);
+		if (hqm.contains( FileVersion.SETS)) {
+			writeQuestSetCat( hqm.mQuestSetCat);
+		}
+		if (hqm.contains( FileVersion.REPUTATION)) {
+			writeReputations( hqm.mReputationCat);
+		}
 		writeQuests( hqm, hqm.mQuestSetCat);
-		writeGroupTiers( hqm.mGroupTierCat);
-		writeGroup( hqm.mGroupCat);
+		if (hqm.contains( FileVersion.BAGS)) {
+			writeGroupTiers( hqm.mGroupTierCat);
+			writeGroup( hqm.mGroupCat);
+		}
 	}
 
 	private void writeGroup( FGroupCat cat) {
-		if (mDst.contains( FileVersion.BAGS)) {
-			mDst.writeData( SizeOf.getMember( cat), DataBitHelper.GROUP_COUNT);
-			cat.forEachMember( this, null);
-		}
+		mDst.writeData( SizeOf.getMember( cat), DataBitHelper.GROUP_COUNT);
+		cat.forEachMember( this, null);
 	}
 
 	private void writeGroupTiers( FGroupTierCat cat) {
-		if (mDst.contains( FileVersion.BAGS)) {
-			mDst.writeData( SizeOf.getMember( cat), DataBitHelper.TIER_COUNT);
-			cat.forEachMember( this, null);
-		}
+		mDst.writeData( SizeOf.getMember( cat), DataBitHelper.TIER_COUNT);
+		cat.forEachMember( this, null);
 	}
 
 	private void writeIds( Vector<FQuest> lst, DataBitHelper bits) {
@@ -284,49 +287,80 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 		}
 	}
 
+	private void writeQuest( FQuest quest) {
+		mDst.writeBoolean( true);
+		mDst.writeString( quest.mName, DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( quest.mDescr, DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+		mDst.writeData( quest.mX, DataBitHelper.QUEST_POS_X);
+		mDst.writeData( quest.mY, DataBitHelper.QUEST_POS_Y);
+		mDst.writeBoolean( quest.mBig);
+		FileVersion version = quest.getHqm().getVersion();
+		if (version.contains( FileVersion.SETS)) {
+			mDst.writeData( IndexOf.getMember( quest.getParent()), DataBitHelper.QUEST_SETS);
+			mDst.writeIconIf( quest.mIcon, version);
+		}
+		writeIds( quest.mRequirements, DataBitHelper.QUESTS);
+		if (version.contains( FileVersion.OPTION_LINKS)) {
+			writeIds( quest.mOptionLinks, DataBitHelper.QUESTS);
+		}
+		if (version.contains( FileVersion.REPEATABLE_QUESTS)) {
+			quest.mRepeatInfo.accept( this, null);
+		}
+		if (version.contains( FileVersion.TRIGGER_QUESTS)) {
+			TriggerType type = quest.mTriggerType;
+			mDst.writeData( type.ordinal(), DataBitHelper.TRIGGER_TYPE);
+			if (type.isUseTaskCount()) {
+				mDst.writeData( quest.mTriggerTasks, DataBitHelper.TASKS);
+			}
+		}
+		if (version.contains( FileVersion.PARENT_COUNT)) {
+			if (quest.mReqCount != null) {
+				mDst.writeBoolean( true);
+				mDst.writeData( quest.mReqCount, DataBitHelper.QUESTS);
+			}
+			else {
+				mDst.writeBoolean( false);
+			}
+		}
+		writeTasks( quest);
+		writeStacksIf( quest.mRewards, version);
+		writeStacksIf( quest.mChoices, version);
+		if (version.contains( FileVersion.REPUTATION)) {
+			writeRewards( quest);
+		}
+	}
+
 	private void writeQuests( FHqm hqm, FQuestSetCat cat) {
 		mDst.writeData( SizeOfQuests.get( cat), DataBitHelper.QUESTS);
 		cat.forEachMember( mQuestWorker, null);
 	}
 
 	private void writeQuestSetCat( FQuestSetCat cat) {
-		if (mDst.contains( FileVersion.SETS)) {
-			mDst.writeData( SizeOf.getMember( cat), DataBitHelper.QUEST_SETS);
-			cat.forEachMember( this, null);
-		}
-	}
-
-	private void writeRepeatInfo( FQuest quest) {
-		if (mDst.contains( FileVersion.REPEATABLE_QUESTS)) {
-			quest.mRepeatInfo.accept( this, null);
-		}
+		mDst.writeData( SizeOf.getMember( cat), DataBitHelper.QUEST_SETS);
+		cat.forEachMember( this, null);
 	}
 
 	private void writeReputations( FReputationCat cat) {
-		if (mDst.contains( FileVersion.REPUTATION)) {
-			mDst.writeData( SizeOf.getMember( cat), DataBitHelper.REPUTATION);
-			cat.forEachMember( this, null);
-		}
+		mDst.writeData( SizeOf.getMember( cat), DataBitHelper.REPUTATION);
+		cat.forEachMember( this, null);
 	}
 
 	private void writeRewards( FQuest quest) {
-		if (mDst.contains( FileVersion.REPUTATION)) {
-			mDst.writeData( SizeOf.getReward( quest), DataBitHelper.REPUTATION_REWARD);
-			quest.forEachReward( this, null);
-		}
+		mDst.writeData( SizeOf.getReward( quest), DataBitHelper.REPUTATION_REWARD);
+		quest.forEachReward( this, null);
 	}
 
-	private void writeStacks( Vector<FItemStack> lst, DataBitHelper bits) {
+	private void writeStacks( Vector<FItemStack> lst, DataBitHelper bits, FileVersion version) {
 		mDst.writeData( lst.size(), bits);
 		for (FItemStack stk : lst) {
-			mDst.writeItemStackFix( stk);
+			mDst.writeItemStackFix( stk, version);
 		}
 	}
 
-	private void writeStacksIf( Vector<FItemStack> lst, DataBitHelper bits) {
+	private void writeStacksIf( Vector<FItemStack> lst, FileVersion version) {
 		if (lst != null) {
 			mDst.writeBoolean( true);
-			writeStacks( lst, DataBitHelper.REWARDS);
+			writeStacks( lst, DataBitHelper.REWARDS, version);
 		}
 		else {
 			mDst.writeBoolean( false);
@@ -341,41 +375,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter {
 	private final class QuestWorker extends AHQMWorker<Object, Object> {
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
-			mDst.writeBoolean( true);
-			mDst.writeString( quest.mName, DataBitHelper.QUEST_NAME_LENGTH);
-			mDst.writeString( quest.mDescr, DataBitHelper.QUEST_DESCRIPTION_LENGTH);
-			mDst.writeData( quest.mX, DataBitHelper.QUEST_POS_X);
-			mDst.writeData( quest.mY, DataBitHelper.QUEST_POS_Y);
-			mDst.writeBoolean( quest.mBig);
-			if (mDst.contains( FileVersion.SETS)) {
-				mDst.writeData( IndexOf.getMember( quest.getParent()), DataBitHelper.QUEST_SETS);
-				mDst.writeIconIf( quest.mIcon);
-			}
-			writeIds( quest.mRequirements, DataBitHelper.QUESTS);
-			if (mDst.contains( FileVersion.OPTION_LINKS)) {
-				writeIds( quest.mOptionLinks, DataBitHelper.QUESTS);
-			}
-			writeRepeatInfo( quest);
-			if (mDst.contains( FileVersion.TRIGGER_QUESTS)) {
-				TriggerType type = quest.mTriggerType;
-				mDst.writeData( type.ordinal(), DataBitHelper.TRIGGER_TYPE);
-				if (type.isUseTaskCount()) {
-					mDst.writeData( quest.mTriggerTasks, DataBitHelper.TASKS);
-				}
-			}
-			if (mDst.contains( FileVersion.PARENT_COUNT)) {
-				if (quest.mReqCount != null) {
-					mDst.writeBoolean( true);
-					mDst.writeData( quest.mReqCount, DataBitHelper.QUESTS);
-				}
-				else {
-					mDst.writeBoolean( false);
-				}
-			}
-			writeTasks( quest);
-			writeStacksIf( quest.mRewards, DataBitHelper.REWARDS);
-			writeStacksIf( quest.mChoices, DataBitHelper.REWARDS);
-			writeRewards( quest);
+			writeQuest( quest);
 			return null;
 		}
 

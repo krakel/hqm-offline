@@ -81,6 +81,10 @@ public final class FQuest extends ANamed implements IElement {
 		return reward;
 	}
 
+	public void delete() {
+		moveTo( mParentQuestSet.mParentCategory.mDelSet);
+	}
+
 	public <T, U> T forEachReward( IHQMWorker<T, U> worker, U p) {
 		for (FReward disp : Reputation) {
 			try {

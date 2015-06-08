@@ -25,6 +25,10 @@ public final class FHqm extends ANamed {
 		return w.forHQM( this, p);
 	}
 
+	public boolean contains( FileVersion other) {
+		return getVersion().contains( other);
+	}
+
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.HQM;

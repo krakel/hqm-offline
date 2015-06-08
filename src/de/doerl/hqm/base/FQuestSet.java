@@ -10,7 +10,6 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuestSet extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FQuestSet.class.getName());
-	public final FQuest mDeletedQuest = new FQuest( this, "__DELETED__");
 	public final FQuestSetCat mParentCategory;
 	final Vector<FQuest> mQuests = new Vector<>();
 	public String mDescr;
@@ -21,10 +20,10 @@ public final class FQuestSet extends AMember {
 		mParentCategory = parent;
 	}
 
-	public FQuestSet( FQuestSetCat parent, String name, boolean deleted) {
-		super( name);
+	FQuestSet( FQuestSetCat parent) {
+		super( "__DELETED__");
 		mParentCategory = parent;
-		mDeleted = deleted;
+		mDeleted = true;
 	}
 
 	@Override
@@ -39,10 +38,6 @@ public final class FQuestSet extends AMember {
 		else {
 			Utils.log( LOGGER, Level.WARNING, "wrong quest {0}", quest);
 		}
-	}
-
-	public void addDeletedQuest() {
-		mQuests.add( mDeletedQuest);
 	}
 
 	public FQuest createQuest( String name) {
