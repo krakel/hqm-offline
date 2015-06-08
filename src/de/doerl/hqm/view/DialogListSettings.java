@@ -21,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
@@ -77,13 +78,18 @@ public class DialogListSettings extends ADialogList<FSetting> {
 		public FSetting addElement() {
 			return mTask.createSetting();
 		}
+
+		@Override
+		public ABase getBase() {
+			return mTask;
+		}
 	}
 
 	private static class Editor extends ADialogEdit<FSetting> {
 		private static final long serialVersionUID = 7720930197206098500L;
 		private JComboBox<FReputation> mRep = new JComboBox<>();
-		private JComboBox<FMarker> mUpper = new JComboBox<>();
 		private JComboBox<FMarker> mLower = new JComboBox<>();
+		private JComboBox<FMarker> mUpper = new JComboBox<>();
 		private JCheckBox mInverted = new JCheckBox();
 
 		public Editor( Window owner) {
@@ -101,10 +107,11 @@ public class DialogListSettings extends ADialogList<FSetting> {
 
 		@Override
 		public FSetting addElement( ICreator<FSetting> creator) {
-			mRep.setSelectedIndex( 0);
-			mUpper.setSelectedIndex( 0);
-			mLower.setSelectedIndex( 0);
-			mInverted.setSelected( true);
+			mRep.setModel( new RepModel( creator.getBase().getHqm()));
+			mRep.setSelectedIndex( -1);
+			mLower.setSelectedIndex( -1);
+			mUpper.setSelectedIndex( -1);
+			mInverted.setSelected( false);
 			if (showDialog() == DialogResult.APPROVE) {
 				FSetting entry = creator.addElement();
 				updateResult( entry);
@@ -124,11 +131,10 @@ public class DialogListSettings extends ADialogList<FSetting> {
 
 		@Override
 		public FSetting changeElement( FSetting entry) {
-			mRep.removeAllItems();
 			mRep.setModel( new RepModel( entry.getHqm()));
 			mRep.setSelectedIndex( IndexOf.getMember( entry.mRep));
-			mUpper.setSelectedIndex( IndexOf.getMarker( entry.mUpper));
 			mLower.setSelectedIndex( IndexOf.getMarker( entry.mLower));
+			mUpper.setSelectedIndex( IndexOf.getMarker( entry.mUpper));
 			mInverted.setSelected( entry.mInverted);
 			if (showDialog() == DialogResult.APPROVE) {
 				updateResult( entry);
@@ -152,8 +158,8 @@ public class DialogListSettings extends ADialogList<FSetting> {
 			ParallelGroup leftGrp = layout.createParallelGroup();
 			ParallelGroup rightGrp = layout.createParallelGroup();
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Reputation", mRep));
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Upper", mUpper));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Lower", mLower));
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Upper", mUpper));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Inverted", mInverted));
 			hori.addGroup( leftGrp);
 			hori.addGroup( rightGrp);
@@ -175,15 +181,16 @@ public class DialogListSettings extends ADialogList<FSetting> {
 			public void actionPerformed( ActionEvent evt) {
 				int idx = mRep.getSelectedIndex();
 				if (idx >= 0) {
-					mUpper.removeAllItems();
-					mLower.removeAllItems();
 					try {
 						RepModel model = (RepModel) mRep.getModel();
 						FReputation rep = ReputationOfIdx.get( model.mHqm, idx);
-						mUpper.setModel( new DefaultComboBoxModel<FMarker>( rep.mMarker));
 						mLower.setModel( new DefaultComboBoxModel<FMarker>( rep.mMarker));
-						mUpper.setSelectedIndex( 0);
-						mLower.setSelectedIndex( 0);
+						mUpper.setModel( new DefaultComboBoxModel<FMarker>( rep.mMarker));
+						int size = rep.mMarker.size();
+						if (size > 0) {
+							mLower.setSelectedIndex( 0);
+							mUpper.setSelectedIndex( size - 1);
+						}
 					}
 					catch (ClassCastException ex) {
 					}
@@ -208,7 +215,7 @@ public class DialogListSettings extends ADialogList<FSetting> {
 		private LeafLabel mInfo = new LeafLabel( "");
 
 		public Renderer() {
-			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
+			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
 			mName.setFont( AEntity.FONT_STACK);

@@ -9,74 +9,72 @@ import java.util.Vector;
 import javax.swing.Icon;
 
 import de.doerl.hqm.base.FMarker;
-import de.doerl.hqm.base.FSetting;
+import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.utils.ResourceManager;
-import de.doerl.hqm.utils.Utils;
 
 class ReputationIcon implements Icon {
-	private FSetting mSetting;
 	private Image mImage = ResourceManager.getImageUI( "hqm.reputation");
+	private Image mMarker = ResourceManager.getImageUI( "hqm.marker");
+	private Image mNeutral = ResourceManager.getImageUI( "hqm.neutral");
+	private Image mCurrent = ResourceManager.getImageUI( "hqm.current");
+	private FReputation mRep;
 
-	public ReputationIcon( FSetting rs) {
-		mSetting = rs;
-		FMarker lower = rs.mLower;
-		Vector<FMarker> marker = rs.mRep.mMarker;
-		int size = marker.size();
-		FMarker first = marker.get( 0);
-		FMarker last = marker.get( size - 1);
-		int lowerValue;
-		boolean lowerOnMarker;
-		if (lower == null) {
-			lowerValue = Math.min( first.mMark, 0);
-			lowerOnMarker = false;
-		}
-		else {
-			lowerValue = lower.mMark;
-			lowerOnMarker = Utils.equals( lower, first) && lower.mMark > 0;
-			if (Utils.equals( lower.mName, rs.mRep.mNeutral) && last.mMark < 0) {
-				lowerValue = last.mMark;
-				lowerOnMarker = true;
-//					lowerMovedInner = true;
-//					lowerMoved = true;
-			}
-			else if (Utils.equals( lower, last)) {
-				lowerOnMarker = true;
-			}
-			else if (lowerValue <= 0) {
-				for (int i = 0; i < size; ++i) {
-					if (marker.get( i).mMark >= lowerValue) {
-						if (i > 0) {
-							lowerValue = marker.get( i - 1).mMark;
-							if (i - 1 != 0) {
-//									lowerMovedInner = true;
-							}
-//								lowerMoved = true;
-						}
-						break;
-					}
-				}
-			}
-		}
-//			FReputationMarker upper = rs.mUpper;
-//			FReputation rep = rs.mRep;
+	public ReputationIcon( FReputation rep) {
+		mRep = rep;
+	}
+
+	private void drawImage( Graphics2D g2, Image img, int x, int y) {
+		AEntity.drawImage( g2, img, AEntity.ZOOM, AEntity.ZOOM, x + 2, y);
 	}
 
 	public int getIconHeight() {
-		return mImage.getHeight( null);
+		return 250;
 	}
 
 	public int getIconWidth() {
-		return mImage.getWidth( null);
+		return 22;
 	}
 
 	public void paintIcon( Component c, Graphics g, int x, int y) {
 		Graphics2D g2 = (Graphics2D) g;
-		AEntity.drawImage( g2, c, mImage); //, scale, scale, 0, 10);
-		Vector<FMarker> marker = mSetting.mRep.mMarker;
-		for (int i = 0; i < marker.size(); ++i) {
-//				FMarker mark = marker.get( i);
-			int pos = i * mImage.getWidth( null) / marker.size();
-			AEntity.drawImage( g2, ResourceManager.getImageUI( "hqm.marker"), AEntity.ZOOM, AEntity.ZOOM, pos + 2, 12);
+		drawImage( g2, mImage, -2, 5);
+		if (mRep != null) {
+			Vector<FMarker> marker = mRep.mMarker;
+			int size = marker.size();
+			if (size > 0) {
+				FMarker first = marker.get( 0);
+				FMarker last = marker.get( size - 1);
+				int min = Math.min( first.mMark, 0);
+				int max = Math.max( last.mMark, 0);
+				int hub = max - min;
+				if (hub > 0) {
+					for (int i = 0; i < marker.size(); ++i) {
+						FMarker mm = marker.get( i);
+						int pos = 117 * (mm.mMark - min) / hub;
+						drawImage( g2, mMarker, pos, 6);
+					}
+				}
+				else if (hub == 0) {
+					int pos = 117 / 2;
+					drawImage( g2, mMarker, pos, 6);
+				}
+				if (min <= 0 && 0 <= max) {
+					int pos = 117 * (0 - min) / hub;
+					drawImage( g2, mNeutral, pos, 6);
+				}
+				if (min > 0) {
+					int pos = 0;
+					drawImage( g2, mCurrent, pos, 0);
+				}
+				else if (max < 0) {
+					int pos = 117;
+					drawImage( g2, mCurrent, pos, 0);
+				}
+				else {
+					int pos = 117 * (0 - min) / hub;
+					drawImage( g2, mCurrent, pos, 0);
+				}
+			}
 		}
 	}
 }

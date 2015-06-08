@@ -409,35 +409,4 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 			return null;
 		}
 	}
-
-	private static class QuestSizeOf extends AHQMWorker<Object, Object> {
-		private int mResult;
-
-		private QuestSizeOf() {
-		}
-
-		public static int get( FQuestSet qs) {
-			QuestSizeOf size = new QuestSizeOf();
-			qs.forEachQuest( size, null);
-			return size.mResult;
-		}
-
-		public static int get( FQuestSetCat cat) {
-			QuestSizeOf size = new QuestSizeOf();
-			cat.forEachMember( size, null);
-			return size.mResult;
-		}
-
-		@Override
-		public Object forQuest( FQuest quest, Object p) {
-			++mResult;
-			return null;
-		}
-
-		@Override
-		public Object forQuestSet( FQuestSet set, Object p) {
-			set.forEachQuest( this, p);
-			return null;
-		}
-	}
 }

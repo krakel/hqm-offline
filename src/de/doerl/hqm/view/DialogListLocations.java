@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
+import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.quest.Visibility;
@@ -69,6 +70,10 @@ class DialogListLocations extends ADialogList<FLocation> {
 		@Override
 		public FLocation addElement() {
 			return mTask.createLocation( null, "new");
+		}
+
+		public ABase getBase() {
+			return mTask;
 		}
 	}
 
@@ -180,7 +185,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 
 	private static class Renderer extends JPanel implements ListCellRenderer<FLocation> {
 		private static final long serialVersionUID = -430644712741965086L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_BACK);
+		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");
 

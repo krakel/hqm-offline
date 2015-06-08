@@ -2,6 +2,7 @@ package de.doerl.hqm.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -13,6 +14,7 @@ import de.doerl.hqm.utils.ResourceManager;
 
 class StackIcon implements Icon {
 	public static final Image ICON_BACK = ResourceManager.getImageUI( "hqm.icon.back");
+	public static final Dimension ICON_SIZE = AEntity.sizeOf( ICON_BACK);
 	private Image mBack;
 	private Image mImage;
 	private String mText;

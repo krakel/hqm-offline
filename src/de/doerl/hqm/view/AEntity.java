@@ -190,7 +190,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		result.setOpaque( false);
 		result.getViewport().setOpaque( false);
 		result.setBorder( null);
-		result.setPreferredSize( new Dimension( Short.MAX_VALUE, height));
+		result.setPreferredSize( new Dimension( 100, height));
 		return result;
 	}
 
@@ -206,6 +206,10 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		sColValue += 0x3773;
 		sColValue &= 0xFFFF;
 		return new Color( sColValue | 0x3F0000);
+	}
+
+	public static Dimension sizeOf( Image img) {
+		return new Dimension( ZOOM * img.getWidth( null), ZOOM * img.getHeight( null));
 	}
 
 	protected void createLeafs() {

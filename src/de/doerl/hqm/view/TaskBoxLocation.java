@@ -77,7 +77,7 @@ class TaskBoxLocation extends ATaskBox {
 
 	private final class Renderer extends JPanel implements ListCellRenderer<FLocation> {
 		private static final long serialVersionUID = -5631026361875552358L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_BACK);
+		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
 		private LeafLabel mName = new LeafLabel( "", true);
 		private LeafLabel mDimension = new LeafLabel( "");
 		private LeafLabel mCoorinate = new LeafLabel( "");
@@ -90,15 +90,15 @@ class TaskBoxLocation extends ATaskBox {
 			mIcon.setIcon( new StackIcon( null, 0.6));
 			add( mIcon);
 			add( Box.createHorizontalStrut( AEntity.GAP));
-			add( createDescription());
+			add( createBox());
 		}
 
-		private JComponent createDescription() {
-			JComponent result = AEntity.leafBox( BoxLayout.Y_AXIS);
-			result.add( mName);
-			result.add( mDimension);
-			result.add( mCoorinate);
-			return result;
+		private JComponent createBox() {
+			JComponent box = AEntity.leafBox( BoxLayout.Y_AXIS);
+			box.add( mName);
+			box.add( mDimension);
+			box.add( mCoorinate);
+			return box;
 		}
 
 		@Override

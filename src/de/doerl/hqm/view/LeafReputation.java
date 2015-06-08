@@ -13,8 +13,7 @@ class LeafReputation extends JLabel {
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
-		ReputationIcon img = new ReputationIcon( rs);
-		setIcon( img);
+		setIcon( new ReputationIcon( rs.mRep));
 		Dimension size = new Dimension( Short.MAX_VALUE, AEntity.ICON_SIZE);
 		setPreferredSize( size);
 		setMaximumSize( size.getSize());

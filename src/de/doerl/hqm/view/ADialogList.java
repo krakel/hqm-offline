@@ -18,6 +18,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.BevelBorder;
 
+import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.ui.ADialog;
 
 abstract class ADialogList<E> extends ADialog {
@@ -177,5 +178,7 @@ abstract class ADialogList<E> extends ADialog {
 
 	protected static interface ICreator<E> {
 		E addElement();
+
+		ABase getBase();
 	}
 }

@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
+import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.AStack;
@@ -86,6 +87,10 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 		@Override
 		public StackEntry addElement() {
 			return new StackEntry();
+		}
+
+		public ABase getBase() {
+			return null;
 		}
 	}
 
@@ -182,7 +187,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 
 	private static class Renderer extends JPanel implements ListCellRenderer<StackEntry> {
 		private static final long serialVersionUID = 5239073494468176719L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_BACK);
+		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");
 

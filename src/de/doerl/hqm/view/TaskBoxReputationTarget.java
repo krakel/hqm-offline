@@ -1,12 +1,15 @@
 package de.doerl.hqm.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
@@ -52,29 +55,33 @@ class TaskBoxReputationTarget extends ATaskBox {
 		SettingFactory.get( mTask, mList.getModel());
 	}
 
-//		dataBox.add( new LeafReputation( rs));
-//		dataBox.add( new LeafLabel( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral.mValue, 0)));
 	private final class Renderer extends JPanel implements ListCellRenderer<FSetting> {
 		private static final long serialVersionUID = 3374147415409104551L;
-		private LeafReputation mImage = new LeafReputation( null);
+		private LeafIcon mIcon = new LeafIcon( new Dimension( 260, 22));
 		private LeafLabel mNeutral = new LeafLabel( "");
 
 		public Renderer() {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( false);
 			setBorder( BorderFactory.createEmptyBorder( 2, 0, 2, 0));
-			mImage.setIcon( new StackIcon( null, 0.6));
-			add( mImage);
-//			add( Box.createHorizontalStrut( AEntity.GAP));
-			add( mNeutral);
+//			setBorder( BorderFactory.createLineBorder( Color.RED));
+			mIcon.setIcon( new StackIcon( null, 0.6));
+			add( Box.createHorizontalStrut( 15));
+			add( createBox());
+			add( Box.createHorizontalStrut( 15));
+		}
+
+		private JComponent createBox() {
+			JComponent box = AEntity.leafBox( BoxLayout.Y_AXIS);
+			box.setAlignmentY( CENTER_ALIGNMENT);
+			box.add( mIcon);
+			box.add( mNeutral);
+			return box;
 		}
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FSetting> list, FSetting rs, int index, boolean isSelected, boolean cellHasFocus) {
-//			Runnable cb = null;
-//			AStack stk = value.mIcon.mValue;
-//			Image img = ImageLoader.getImage( stk.getKey(), cb);
-//			mIcon.setIcon( new StackIcon( img, 0.8, null));
+			mIcon.setIcon( new ReputationIcon( rs.mRep));
 			mNeutral.setText( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral, 0));
 			return this;
 		}

@@ -135,6 +135,8 @@ public class ResourceManager {
 		ImageManager.makeImage( "hqm.button", "hqm.map", 54, 235, 57, 18);
 		ImageManager.makeImage( "hqm.reputation", "hqm.map", 0, 101, 125, 3);
 		ImageManager.makeImage( "hqm.marker", "hqm.map", 10, 93, 5, 5);
+		ImageManager.makeImage( "hqm.neutral", "hqm.map", 20, 93, 5, 5);
+		ImageManager.makeImage( "hqm.current", "hqm.map", 0, 93, 5, 5);
 		//
 		ImageManager.makeImage( "hqm.rep.base", "hqm.map", 30, 82, 16, 16);
 		ImageManager.makeImage( "hqm.rep.good", "hqm.map", 78, 82, 16, 16);
