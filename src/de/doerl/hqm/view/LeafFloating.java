@@ -1,10 +1,10 @@
 package de.doerl.hqm.view;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionListener;
 
-import javax.swing.Box;
 import javax.swing.JPanel;
 
 import de.doerl.hqm.base.AQuestTaskItems;
@@ -26,10 +26,11 @@ public class LeafFloating extends JPanel {
 	};
 
 	public LeafFloating() {
-		setLayout( new FlowLayout( FlowLayout.LEFT, 0, AEntity.GAP / 2));
+		setLayout( new FlowLayout( FlowLayout.LEFT, 3, AEntity.GAP / 2));
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
+		setPreferredSize( new Dimension( 7 * AEntity.ICON_SIZE, 4 * AEntity.ICON_SIZE));
 		addMouseListener( mHandler);
 		addMouseListener( new BorderAdapter( this));
 	}
@@ -51,7 +52,6 @@ public class LeafFloating extends JPanel {
 		removeAll();
 		if (RequirementIsEmpty.get( mTask)) {
 			add( new LeafIcon( new StackIcon( null, 0.8, null)));
-			add( Box.createHorizontalStrut( 3));
 		}
 		else {
 			mTask.forEachRequirement( mWorker, cb);
@@ -69,7 +69,6 @@ public class LeafFloating extends JPanel {
 			AStack stk = req.getStack();
 			Image img = ImageLoader.getImage( stk, cb);
 			add( new LeafIcon( new StackIcon( img, 0.8, String.valueOf( req.getCount()))));
-			add( Box.createHorizontalStrut( 3));
 			return null;
 		}
 	}
