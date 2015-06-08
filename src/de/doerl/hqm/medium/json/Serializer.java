@@ -42,7 +42,7 @@ import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.json.JsonWriter;
 
-class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToken {
+class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter, IToken {
 	private QuestWorker mQuestWorker = new QuestWorker();
 	private JsonWriter mDst;
 
@@ -56,11 +56,11 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		mDst.print( TASK_DESC, task.mDescr);
 	}
 
-	private void doTaskItem( AQuestTaskItems task) {
+	private void doTaskItem( AQuestTaskItems task, FileVersion version) {
 		mDst.beginObject();
 		doTask( task);
 		mDst.beginArray( TASK_REQUIREMENTS);
-		task.forEachRequirement( this, null);
+		task.forEachRequirement( this, version);
 		mDst.endArray();
 		mDst.endObject();
 	}
@@ -70,7 +70,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
+	public Object forFluidRequirement( FFluidRequirement fluid, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( REQUIREMENT_FLUID, fluid.getStack());
 		mDst.endObject();
@@ -78,19 +78,21 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forGroup( FGroup grp, Object p) {
+	public Object forGroup( FGroup grp, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( GROUP_ID, IndexOf.getMember( grp));
 		mDst.print( GROUP_NAME, grp.mName);
 		mDst.print( GROUP_TIER, toID( IndexOf.getMember( grp.mTier), grp.mTier.mName));
-		mDst.print( GROUP_LIMIT, grp.mLimit);
+		if (version.contains( FileVersion.BAG_LIMITS)) {
+			mDst.print( GROUP_LIMIT, grp.mLimit);
+		}
 		writeStackArr( grp.mStacks, GROUP_STACKS);
 		mDst.endObject();
 		return null;
 	}
 
 	@Override
-	public Object forGroupTier( FGroupTier tier, Object p) {
+	public Object forGroupTier( FGroupTier tier, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( GROUP_TIER_ID, IndexOf.getMember( tier));
 		mDst.print( GROUP_TIER_NAME, tier.mName);
@@ -101,7 +103,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forItemRequirement( FItemRequirement item, Object p) {
+	public Object forItemRequirement( FItemRequirement item, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( REQUIREMENT_ITEM, item.getStack());
 		mDst.print( REQUIREMENT_REQUIRED, item.mRequired);
@@ -111,7 +113,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forLocation( FLocation loc, Object p) {
+	public Object forLocation( FLocation loc, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( LOCATION_NAME, loc.mName);
 		mDst.print( LOCATION_ICON, loc.mIcon);
@@ -126,7 +128,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forMarker( FMarker mark, Object p) {
+	public Object forMarker( FMarker mark, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( MARKER_NAME, mark.mName);
 		mDst.print( MARKER_VALUE, mark.mMark);
@@ -135,7 +137,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forMob( FMob mob, Object p) {
+	public Object forMob( FMob mob, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( MOB_NAME, mob.mName);
 		mDst.print( MOB_ICON, mob.mIcon);
@@ -147,7 +149,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forQuestSet( FQuestSet set, Object p) {
+	public Object forQuestSet( FQuestSet set, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( QUEST_SET_NAME, set.mName);
 		mDst.print( QUEST_SET_DECR, set.mDescr);
@@ -156,7 +158,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forRepeatInfo( FRepeatInfo info, Object p) {
+	public Object forRepeatInfo( FRepeatInfo info, FileVersion version) {
 		mDst.beginObject( QUEST_REPEAT_INFO);
 		mDst.print( REPEAT_INFO_TYPE, info.mType);
 		if (info.mType.isUseTime()) {
@@ -167,17 +169,17 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forReputation( FReputation rep, Object p) {
+	public Object forReputation( FReputation rep, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( REPUTATION_NAME, rep.mName);
 		mDst.print( REPUTATION_NEUTRAL, rep.mNeutral);
-		writeMarkers( rep);
+		writeMarkers( rep, version);
 		mDst.endObject();
 		return null;
 	}
 
 	@Override
-	public Object forReward( FReward rr, Object p) {
+	public Object forReward( FReward rr, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( REWARD_REPUTATION, toID( IndexOf.getMember( rr.mRep), rr.mRep.mName));
 		mDst.print( REWARD_VALUE, rr.mValue);
@@ -186,7 +188,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forSetting( FSetting rs, Object p) {
+	public Object forSetting( FSetting rs, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( SETTING_REPUTATION, toID( IndexOf.getMember( rs.mRep), rs.mRep.mName));
 		if (rs.mLower != null) {
@@ -201,7 +203,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forTaskDeath( FQuestTaskDeath task, Object p) {
+	public Object forTaskDeath( FQuestTaskDeath task, FileVersion version) {
 		mDst.beginObject();
 		doTask( task);
 		mDst.print( TASK_DEATHS, task.mDeaths);
@@ -210,53 +212,53 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forTaskItemsConsume( FQuestTaskItemsConsume task, Object p) {
-		doTaskItem( task);
+	public Object forTaskItemsConsume( FQuestTaskItemsConsume task, FileVersion version) {
+		doTaskItem( task, version);
 		return null;
 	}
 
 	@Override
-	public Object forTaskItemsConsumeQDS( FQuestTaskItemsConsumeQDS task, Object p) {
-		doTaskItem( task);
+	public Object forTaskItemsConsumeQDS( FQuestTaskItemsConsumeQDS task, FileVersion version) {
+		doTaskItem( task, version);
 		return null;
 	}
 
 	@Override
-	public Object forTaskItemsCrafting( FQuestTaskItemsCrafting task, Object p) {
-		doTaskItem( task);
+	public Object forTaskItemsCrafting( FQuestTaskItemsCrafting task, FileVersion version) {
+		doTaskItem( task, version);
 		return null;
 	}
 
 	@Override
-	public Object forTaskItemsDetect( FQuestTaskItemsDetect task, Object p) {
-		doTaskItem( task);
+	public Object forTaskItemsDetect( FQuestTaskItemsDetect task, FileVersion version) {
+		doTaskItem( task, version);
 		return null;
 	}
 
 	@Override
-	public Object forTaskLocation( FQuestTaskLocation task, Object p) {
+	public Object forTaskLocation( FQuestTaskLocation task, FileVersion version) {
 		mDst.beginObject();
 		doTask( task);
 		mDst.beginArray( TASK_LOCATIONS);
-		task.forEachLocation( this, null);
+		task.forEachLocation( this, version);
 		mDst.endArray();
 		mDst.endObject();
 		return null;
 	}
 
 	@Override
-	public Object forTaskMob( FQuestTaskMob task, Object p) {
+	public Object forTaskMob( FQuestTaskMob task, FileVersion version) {
 		mDst.beginObject();
 		doTask( task);
 		mDst.beginArray( TASK_MOBS);
-		task.forEachMob( this, null);
+		task.forEachMob( this, version);
 		mDst.endArray();
 		mDst.endObject();
 		return null;
 	}
 
 	@Override
-	public Object forTaskReputationKill( FQuestTaskReputationKill task, Object p) {
+	public Object forTaskReputationKill( FQuestTaskReputationKill task, FileVersion version) {
 		mDst.beginObject();
 		doTask( task);
 		mDst.print( TASK_KILLS, task.mKills);
@@ -265,11 +267,11 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
+	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, FileVersion version) {
 		mDst.beginObject();
 		doTask( task);
 		mDst.beginArray( TASK_SETTINGS);
-		task.forEachSetting( this, null);
+		task.forEachSetting( this, version);
 		mDst.endArray();
 		mDst.endObject();
 		return null;
@@ -281,43 +283,48 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 
 	@Override
 	public void writeDst( FHqm hqm) {
+		FileVersion version = hqm.getVersion();
 		mDst.beginObject();
-		mDst.print( HQM_VERSION, hqm.getVersion());
-		mDst.printIf( HQM_PASSCODE, hqm.mPassCode);
-		mDst.print( HQM_DECRIPTION, hqm.mDescr);
-		if (hqm.contains( FileVersion.SETS)) {
-			writeQuestSetCat( hqm.mQuestSetCat);
+		mDst.print( HQM_VERSION, version);
+		if (version.contains( FileVersion.LOCK)) {
+			mDst.printIf( HQM_PASSCODE, hqm.mPassCode);
 		}
-		if (hqm.contains( FileVersion.REPUTATION)) {
-			writeReputations( hqm.mReputationCat);
+		if (version.contains( FileVersion.LORE)) {
+			mDst.print( HQM_DECRIPTION, hqm.mDescr);
 		}
-		writeQuests( hqm.mQuestSetCat);
-		if (hqm.contains( FileVersion.BAGS)) {
-			writeGroupTiers( hqm.mGroupTierCat);
-			writeGroups( hqm.mGroupCat);
+		if (version.contains( FileVersion.SETS)) {
+			writeQuestSetCat( hqm.mQuestSetCat, version);
+		}
+		if (version.contains( FileVersion.REPUTATION)) {
+			writeReputations( hqm.mReputationCat, version);
+		}
+		writeQuests( hqm.mQuestSetCat, version);
+		if (version.contains( FileVersion.BAGS)) {
+			writeGroupTiers( hqm.mGroupTierCat, version);
+			writeGroups( hqm.mGroupCat, version);
 		}
 		mDst.endObject();
 	}
 
-	private void writeGroups( FGroupCat set) {
+	private void writeGroups( FGroupCat set, FileVersion version) {
 		mDst.beginArray( HQM_GROUP_CAT);
-		set.forEachMember( this, null);
+		set.forEachMember( this, version);
 		mDst.endArray();
 	}
 
-	private void writeGroupTiers( FGroupTierCat set) {
+	private void writeGroupTiers( FGroupTierCat set, FileVersion version) {
 		mDst.beginArray( HQM_GROUP_TIER_CAT);
-		set.forEachMember( this, null);
+		set.forEachMember( this, version);
 		mDst.endArray();
 	}
 
-	private void writeMarkers( FReputation rep) {
+	private void writeMarkers( FReputation rep, FileVersion version) {
 		mDst.beginArray( REPUTATION_MARKERS);
-		rep.forEachMarker( this, null);
+		rep.forEachMarker( this, version);
 		mDst.endArray();
 	}
 
-	private void writeQuest( FQuest quest) {
+	private void writeQuest( FQuest quest, FileVersion version) {
 		mDst.beginObject();
 		mDst.print( QUEST_ID, IndexOfQuest.get( quest));
 		mDst.print( QUEST_NAME, quest.mName);
@@ -325,32 +332,31 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		mDst.print( QUEST_X, quest.mX);
 		mDst.print( QUEST_Y, quest.mY);
 		mDst.print( QUEST_BIG, quest.mBig);
-		FHqm hqm = quest.getHqm();
-		if (hqm.contains( FileVersion.SETS)) {
+		if (version.contains( FileVersion.SETS)) {
 			mDst.print( QUEST_SET, toID( IndexOf.getMember( quest.getParent()), quest.getParent().mName));
 		}
 		mDst.print( QUEST_ICON, quest.mIcon);
 		writeQuestArr( quest.mRequirements, QUEST_REQUIREMENTS);
-		if (hqm.contains( FileVersion.OPTION_LINKS)) {
+		if (version.contains( FileVersion.OPTION_LINKS)) {
 			writeQuestArr( quest.mOptionLinks, QUEST_OPTION_LINKS);
 		}
-		if (hqm.contains( FileVersion.REPEATABLE_QUESTS)) {
-			quest.mRepeatInfo.accept( this, mDst);
+		if (version.contains( FileVersion.REPEATABLE_QUESTS)) {
+			quest.mRepeatInfo.accept( this, version);
 		}
-		if (hqm.contains( FileVersion.TRIGGER_QUESTS)) {
+		if (version.contains( FileVersion.TRIGGER_QUESTS)) {
 			mDst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
 			if (quest.mTriggerType.isUseTaskCount()) {
 				mDst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
 			}
 		}
-		if (hqm.contains( FileVersion.PARENT_COUNT)) {
+		if (version.contains( FileVersion.PARENT_COUNT)) {
 			mDst.print( QUEST_PARENT_REQUIREMENT_COUNT, quest.mReqCount);
 		}
-		writeTasks( quest);
+		writeTasks( quest, version);
 		writeStackArr( quest.mRewards, QUEST_REWARD);
 		writeStackArr( quest.mChoices, QUEST_CHOICE);
-		if (hqm.contains( FileVersion.REPUTATION)) {
-			writeRewards( quest);
+		if (version.contains( FileVersion.REPUTATION)) {
+			writeRewards( quest, version);
 		}
 		mDst.endObject();
 	}
@@ -367,27 +373,27 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		}
 	}
 
-	private void writeQuests( FQuestSetCat cat) {
+	private void writeQuests( FQuestSetCat cat, FileVersion version) {
 		mDst.beginArray( HQM_QUESTS);
-		cat.forEachMember( mQuestWorker, null);
+		cat.forEachMember( mQuestWorker, version);
 		mDst.endArray();
 	}
 
-	private void writeQuestSetCat( FQuestSetCat set) {
+	private void writeQuestSetCat( FQuestSetCat set, FileVersion version) {
 		mDst.beginArray( HQM_QUEST_SET_CAT);
-		set.forEachMember( this, null);
+		set.forEachMember( this, version);
 		mDst.endArray();
 	}
 
-	private void writeReputations( FReputationCat set) {
+	private void writeReputations( FReputationCat set, FileVersion version) {
 		mDst.beginArray( HQM_REPUTATION_CAT);
-		set.forEachMember( this, null);
+		set.forEachMember( this, version);
 		mDst.endArray();
 	}
 
-	private void writeRewards( FQuest quest) {
+	private void writeRewards( FQuest quest, FileVersion version) {
 		mDst.beginArray( QUEST_REPUTATIONS);
-		quest.forEachReward( this, null);
+		quest.forEachReward( this, version);
 		mDst.endArray();
 	}
 
@@ -404,22 +410,22 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		}
 	}
 
-	private void writeTasks( FQuest quest) {
+	private void writeTasks( FQuest quest, FileVersion version) {
 		mDst.beginArray( QUEST_TASKS);
-		quest.forEachTask( this, null);
+		quest.forEachTask( this, version);
 		mDst.endArray();
 	}
 
-	private final class QuestWorker extends AHQMWorker<Object, Object> {
+	private final class QuestWorker extends AHQMWorker<Object, FileVersion> {
 		@Override
-		public Object forQuest( FQuest quest, Object p) {
-			writeQuest( quest);
+		public Object forQuest( FQuest quest, FileVersion version) {
+			writeQuest( quest, version);
 			return null;
 		}
 
 		@Override
-		public Object forQuestSet( FQuestSet set, Object p) {
-			set.forEachQuest( this, p);
+		public Object forQuestSet( FQuestSet set, FileVersion version) {
+			set.forEachQuest( this, version);
 			return null;
 		}
 	}

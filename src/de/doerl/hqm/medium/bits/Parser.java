@@ -235,8 +235,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		rep.sort();
 	}
 
-	private void readQuests( FHqm hqm) {
-		FileVersion version = hqm.getVersion();
+	private void readQuests( FHqm hqm, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.QUESTS, version);
 		for (int i = 0; i < count; ++i) {
 			if (mSrc.readBoolean()) {
@@ -350,7 +349,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		if (version.contains( FileVersion.REPUTATION)) {
 			readReputations( hqm.mReputationCat);
 		}
-		readQuests( hqm);
+		readQuests( hqm, version);
 		if (version.contains( FileVersion.BAGS)) {
 			readGroupTiers( hqm.mGroupTierCat);
 			readGroup( hqm.mGroupCat, version);
@@ -360,8 +359,8 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		updatePosts( hqm);
 	}
 
-	private void readStacks( Vector<FItemStack> param, DataBitHelper bitCount, FileVersion version) {
-		int count = mSrc.readData( bitCount);
+	private void readStacks( Vector<FItemStack> param, DataBitHelper bits, FileVersion version) {
+		int count = mSrc.readData( bits);
 		for (int i = 0; i < count; ++i) {
 			FItemStack stk = mSrc.readItemStackFix( version);
 			if (stk != null) {
@@ -370,9 +369,9 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		}
 	}
 
-	private void readStacksIf( Vector<FItemStack> param, DataBitHelper bitCount, FileVersion version) {
+	private void readStacksIf( Vector<FItemStack> param, DataBitHelper bits, FileVersion version) {
 		if (mSrc.readBoolean()) {
-			readStacks( param, bitCount, version);
+			readStacks( param, bits, version);
 		}
 	}
 

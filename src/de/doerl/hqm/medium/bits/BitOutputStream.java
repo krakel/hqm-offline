@@ -38,6 +38,10 @@ class BitOutputStream {
 		writeData( data, bits.getCount());
 	}
 
+	public void writeData( int data, DataBitHelper bits, FileVersion version) {
+		writeData( data, bits.getBitCount( version));
+	}
+
 	private void writeData( int data, int count) {
 		data &= (int) ((1L << count) - 1L);
 		while (mBits + count >= 8) {
@@ -72,10 +76,10 @@ class BitOutputStream {
 		}
 	}
 
-	public void writeIds( int[] ids, DataBitHelper bits) {
-		writeData( ids.length, bits);
+	public void writeIds( int[] ids, DataBitHelper bits, FileVersion version) {
+		writeData( ids.length, bits, version);
 		for (int i = 0; i < ids.length; ++i) {
-			writeData( ids[i], bits);
+			writeData( ids[i], bits, version);
 		}
 	}
 
