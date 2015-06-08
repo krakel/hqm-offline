@@ -185,16 +185,14 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 		return null;
 	}
 
-	private void readGroup( FGroupCat cat, FArray arr, FileVersion version) {
+	private void readGroup( FGroupCat cat, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FGroup grp = cat.createMember( FValue.toString( obj.get( IToken.GROUP_NAME)));
 					grp.mTier = GroupTierOfIdx.get( cat.mParentHQM, parseID( FValue.toString( obj.get( IToken.GROUP_TIER))));
-					if (version.contains( FileVersion.BAG_LIMITS)) {
-						grp.mLimit = FValue.toIntObj( obj.get( IToken.GROUP_LIMIT));
-					}
+					grp.mLimit = FValue.toIntObj( obj.get( IToken.GROUP_LIMIT));
 					readStacks( grp.mStacks, FArray.to( obj.get( IToken.GROUP_STACKS)));
 				}
 			}
@@ -257,7 +255,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 		}
 	}
 
-	private void readQuests( FHqm hqm, FArray arr, FileVersion version) {
+	private void readQuests( FHqm hqm, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
@@ -267,11 +265,8 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 						mQuests.add( hqm.mQuestSetCat.addDeletedQuest());
 					}
 					else {
-						FQuestSet qs = null;
-						if (version.contains( FileVersion.SETS)) {
-							int setID = parseID( FValue.toString( obj.get( IToken.QUEST_SET)));
-							qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
-						}
+						int setID = parseID( FValue.toString( obj.get( IToken.QUEST_SET)));
+						FQuestSet qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
 						if (qs == null) {
 							qs = hqm.mQuestSetCat.createMember( "__Missing__");
 						}
@@ -282,30 +277,20 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 						quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));
 						quest.mIcon = FItemStack.parse( FValue.toString( obj.get( IToken.QUEST_ICON)));
 						readQuestArr( quest, mRequirements, FArray.to( obj.get( IToken.QUEST_REQUIREMENTS)), true);
-						if (version.contains( FileVersion.OPTION_LINKS)) {
-							readQuestArr( quest, mOptionLinks, FArray.to( obj.get( IToken.QUEST_OPTION_LINKS)), false);
-						}
-						if (version.contains( FileVersion.REPEATABLE_QUESTS)) {
-							readQuestInfo( quest.mRepeatInfo, FObject.to( obj.get( IToken.QUEST_REPEAT_INFO)));
-						}
-						if (version.contains( FileVersion.TRIGGER_QUESTS)) {
-							String trigger = FValue.toString( obj.get( IToken.QUEST_TRIGGER_TYPE));
-							if (trigger != null) {
-								quest.mTriggerType = TriggerType.parse( trigger);
-								if (quest.mTriggerType.isUseTaskCount()) {
-									quest.mTriggerTasks = FValue.toInt( obj.get( IToken.QUEST_TRIGGER_TASKS));
-								}
+						readQuestArr( quest, mOptionLinks, FArray.to( obj.get( IToken.QUEST_OPTION_LINKS)), false);
+						readQuestInfo( quest.mRepeatInfo, FObject.to( obj.get( IToken.QUEST_REPEAT_INFO)));
+						String trigger = FValue.toString( obj.get( IToken.QUEST_TRIGGER_TYPE));
+						if (trigger != null) {
+							quest.mTriggerType = TriggerType.parse( trigger);
+							if (quest.mTriggerType.isUseTaskCount()) {
+								quest.mTriggerTasks = FValue.toInt( obj.get( IToken.QUEST_TRIGGER_TASKS));
 							}
 						}
-						if (version.contains( FileVersion.PARENT_COUNT)) {
-							quest.mReqCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT_COUNT));
-						}
+						quest.mReqCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT_COUNT));
 						readTasks( quest, FArray.to( obj.get( IToken.QUEST_TASKS)));
 						readStacks( quest.mRewards, FArray.to( obj.get( IToken.QUEST_REWARD)));
 						readStacks( quest.mChoices, FArray.to( obj.get( IToken.QUEST_CHOICE)));
-						if (version.contains( FileVersion.REPUTATION)) {
-							readRewards( quest, FArray.to( obj.get( IToken.QUEST_REPUTATIONS)));
-						}
+						readRewards( quest, FArray.to( obj.get( IToken.QUEST_REPUTATIONS)));
 						mQuests.add( quest);
 					}
 				}
@@ -357,31 +342,17 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			IJson json = mSrc.doAll();
 			FObject obj = FObject.to( json);
 			if (obj != null) {
-				FileVersion version = FileVersion.parse( FValue.toString( obj.get( IToken.HQM_VERSION)));
-				hqm.setVersion( version);
-				if (version.contains( FileVersion.LOCK)) {
-					hqm.mPassCode = FValue.toString( obj.get( IToken.HQM_PASSCODE));
-				}
-				if (version.contains( FileVersion.LORE)) {
-					hqm.mDescr = FValue.toString( obj.get( IToken.HQM_DECRIPTION));
-				}
-				else {
+				hqm.setVersion( FileVersion.parse( FValue.toString( obj.get( IToken.HQM_VERSION))));
+				hqm.mPassCode = FValue.toString( obj.get( IToken.HQM_PASSCODE));
+				hqm.mDescr = FValue.toString( obj.get( IToken.HQM_DECRIPTION));
+				if (hqm.mDescr == null) {
 					hqm.mDescr = "No description";
 				}
-				if (version.contains( FileVersion.SETS)) {
-					readQuestSetCat( hqm.mQuestSetCat, FArray.to( obj.get( IToken.HQM_QUEST_SET_CAT)));
-				}
-				else {
-					hqm.mQuestSetCat.createMember( "__Missing__");
-				}
-				if (version.contains( FileVersion.REPUTATION)) {
-					readReputations( hqm.mReputationCat, FArray.to( obj.get( IToken.HQM_REPUTATION_CAT)));
-				}
-				readQuests( hqm, FArray.to( obj.get( IToken.HQM_QUESTS)), version);
-				if (version.contains( FileVersion.BAGS)) {
-					readGroupTiers( hqm.mGroupTierCat, FArray.to( obj.get( IToken.HQM_GROUP_TIER_CAT)));
-					readGroup( hqm.mGroupCat, FArray.to( obj.get( IToken.HQM_GROUP_CAT)), version);
-				}
+				readQuestSetCat( hqm.mQuestSetCat, FArray.to( obj.get( IToken.HQM_QUEST_SET_CAT)));
+				readReputations( hqm.mReputationCat, FArray.to( obj.get( IToken.HQM_REPUTATION_CAT)));
+				readQuests( hqm, FArray.to( obj.get( IToken.HQM_QUESTS)));
+				readGroupTiers( hqm.mGroupTierCat, FArray.to( obj.get( IToken.HQM_GROUP_TIER_CAT)));
+				readGroup( hqm.mGroupCat, FArray.to( obj.get( IToken.HQM_GROUP_CAT)));
 				updateRequirements( hqm);
 				updateOptionLinks( hqm);
 				updatePosts( hqm);
