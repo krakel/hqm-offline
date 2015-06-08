@@ -142,6 +142,18 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 			}
 			return null;
 		}
+
+		@Override
+		public Object forQuestSet( FQuestSet set, ElementTreeModel model) {
+			DefaultMutableTreeNode node = model.getNode( set);
+			if (node != null) {
+				model.fireTreeNodesChanged( this, node.getPath(), null, null);
+				node.removeAllChildren();
+				TreeFactory.get( set, model);
+				model.fireTreeStructureChanged( this, node.getPath(), null, null);
+			}
+			return null;
+		}
 	}
 
 	private static class NodeFactory extends AHQMWorker<MutableTreeNode, ElementTreeModel> {

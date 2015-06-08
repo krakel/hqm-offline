@@ -67,9 +67,9 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mNameAction);
 		mTool.add( createToggleButton( mBigAction));
 		mTool.add( mSetAction);
-//		mTool.addSeparator();
-//		mTool.add( mMoveUpAction);
-//		mTool.add( mMoveDownAction);
+		mTool.addSeparator();
+		mTool.add( mMoveUpAction);
+		mTool.add( mMoveDownAction);
 		mTool.add( mDeleteAction);
 		mTool.addSeparator();
 		mTool.add( mGridAction);
@@ -155,10 +155,12 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		try {
 			ABase base = event.mBase;
 			if (mSet.equals( base)) {
+				FQuest old = mActiv.getQuest();
 				FQuestSet set = (FQuestSet) base;
 				removeMissingQuests();
 				set.forEachQuest( mQuestWorker, null);
 				set.forEachQuest( mLineWorker, null);
+				activSet( getLeafQuest( old), true);
 			}
 		}
 		catch (ClassCastException ex) {
