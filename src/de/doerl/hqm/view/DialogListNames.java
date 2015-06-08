@@ -11,19 +11,21 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.BevelBorder;
 
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 
-class DialogListNames extends ADialog {
+class DialogListNames<E> extends ADialog {
 	private static final long serialVersionUID = -2711755204151080619L;
 	private DefaultAction mOk = new DefaultAction( BTN_OK, DialogResult.APPROVE);
-	private DefaultListModel<String> mModel = new DefaultListModel<>();
-	private JList<String> mList;
-	private String mIgnore;
+	private DefaultListModel<E> mModel = new DefaultListModel<>();
+	private JList<E> mList;
+	private E mIgnore;
 
-	private DialogListNames( Window owner, String ignore) {
+	private DialogListNames( Window owner, E ignore) {
 		super( owner);
 		mIgnore = ignore;
 		mOk.setEnabled( false);
@@ -33,9 +35,21 @@ class DialogListNames extends ADialog {
 		addEscapeAction();
 	}
 
-	public static String update( Vector<String> vals, String ignore, Window owner) {
+	public static <E> E update( E[] vals, E ignore, Window owner) {
 		if (vals != null) {
-			DialogListNames dlg = new DialogListNames( owner, ignore);
+			DialogListNames<E> dlg = new DialogListNames<>( owner, ignore);
+			dlg.createMain();
+			dlg.updateMain( vals);
+			if (dlg.showDialog() == DialogResult.APPROVE) {
+				return dlg.getSelected();
+			}
+		}
+		return null;
+	}
+
+	public static <E> E update( Vector<E> vals, E ignore, Window owner) {
+		if (vals != null) {
+			DialogListNames<E> dlg = new DialogListNames<>( owner, ignore);
 			dlg.createMain();
 			dlg.updateMain( vals);
 			if (dlg.showDialog() == DialogResult.APPROVE) {
@@ -47,30 +61,44 @@ class DialogListNames extends ADialog {
 
 	@Override
 	protected void createMain() {
-		mList = new JList<String>( mModel);
+		mList = new JList<E>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
-		mList.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED));
 		mList.setCellRenderer( new Renderer());
 		mList.addMouseListener( new MouseAdapter() {
 			@Override
 			public void mouseClicked( MouseEvent evt) {
-				String current = mList.getSelectedValue();
+				E current = mList.getSelectedValue();
 				mOk.setEnabled( current != null && Utils.different( current, mIgnore));
 			}
 		});
-		mList.setPreferredSize( new Dimension( 400, 200));
-		mList.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
-		mMain.add( mList);
+		JScrollPane scroll = new JScrollPane( mList, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED));
+		scroll.setPreferredSize( new Dimension( 400, 200));
+		scroll.setMaximumSize( new Dimension( Short.MAX_VALUE, Short.MAX_VALUE));
+		mMain.add( scroll);
 	}
 
-	private String getSelected() {
+	private E getSelected() {
 		return mList.getSelectedValue();
 	}
 
-	private void updateMain( Vector<String> vals) {
+	private void updateMain( E[] vals) {
 		mModel.clear();
-		for (String s : vals) {
-			mModel.addElement( s);
+		for (int i = 0; i < vals.length; ++i) {
+			mModel.addElement( vals[i]);
+		}
+		if (mIgnore != null) {
+			mList.setSelectedValue( mIgnore, true);
+		}
+	}
+
+	private void updateMain( Vector<E> vals) {
+		mModel.clear();
+		for (int i = 0; i < vals.size(); ++i) {
+			mModel.addElement( vals.get( i));
+		}
+		if (mIgnore != null) {
+			mList.setSelectedValue( mIgnore, true);
 		}
 	}
 

@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
+import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.utils.ResourceManager;
@@ -21,6 +22,7 @@ class EntityHQM extends AEntity<FHqm> {
 	private FHqm mHQM;
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mDescAction = new TextBoxAction();
+	private ABundleAction mVersionAction = new VersionAction();
 	private JLabel mLogo = new LeafImage( ResourceManager.getImageUI( "hqm.default"));
 	private LeafTextBox mDesc = new LeafTextBox();
 
@@ -31,6 +33,7 @@ class EntityHQM extends AEntity<FHqm> {
 		update();
 		mDesc.addClickListener( mDescAction);
 		mTool.add( mDescAction);
+		mTool.add( mVersionAction);
 		mTool.addSeparator();
 	}
 
@@ -98,6 +101,23 @@ class EntityHQM extends AEntity<FHqm> {
 			if (result != null) {
 				mHQM.mDescr = result;
 				mCtrl.fireChanged( mHQM);
+			}
+		}
+	}
+
+	private final class VersionAction extends ABundleAction {
+		private static final long serialVersionUID = -2650359366196052333L;
+
+		public VersionAction() {
+			super( "entity.hqm.version");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			FileVersion[] names = FileVersion.values();
+			FileVersion result = DialogListNames.update( names, mHQM.getVersion(), mCtrl.getFrame());
+			if (result != null) {
+				mHQM.setVersion( result);
 			}
 		}
 	}
