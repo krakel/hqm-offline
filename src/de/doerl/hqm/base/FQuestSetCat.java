@@ -7,8 +7,6 @@ import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FQuestSetCat extends ACategory<FQuestSet> {
-	final FQuestSet mDelSet = new FQuestSet( this);
-
 	FQuestSetCat( FHqm parent) {
 		super( parent);
 	}
@@ -16,12 +14,6 @@ public final class FQuestSetCat extends ACategory<FQuestSet> {
 	@Override
 	public <T, U> T accept( IHQMWorker<T, U> w, U p) {
 		return w.forQuestSetCat( this, p);
-	}
-
-	public FQuest addDeletedQuest() {
-		FQuest del = mDelSet.createQuest( "__DELETED__");
-		mDelSet.mQuests.add( del);
-		return del;
 	}
 
 	@Override

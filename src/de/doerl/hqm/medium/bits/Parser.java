@@ -57,6 +57,7 @@ import de.doerl.hqm.utils.Utils;
 
 class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
+	private final FQuest mDelQuest = new FQuest( null, "__DELETED__");
 	private BitInputStream mSrc;
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
@@ -293,7 +294,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 				mQuests.add( quest);
 			}
 			else {
-				mQuests.add( hqm.mQuestSetCat.addDeletedQuest());
+				mQuests.add( mDelQuest);
 			}
 		}
 	}
@@ -397,7 +398,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
 				FQuest req = mQuests.get( id);
-				if (req == null || req.isDeleted()) {
+				if (req == null || req.getParent() == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing OptionLink [{0}] {1} for {2}", i, id, quest.mName);
 				}
 				else {
@@ -412,7 +413,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 			int id = e.getKey();
 			Vector<FQuest> posts = e.getValue();
 			FQuest quest = mQuests.get( id);
-			if (quest == null || quest.isDeleted()) {
+			if (quest == null || quest.getParent() == null) {
 				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
 			}
 			else {
@@ -428,7 +429,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
 				FQuest req = mQuests.get( id);
-				if (req == null || req.isDeleted()) {
+				if (req == null || req.getParent() == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{0}] {1} for {2}", i, id, quest.mName);
 				}
 				else {

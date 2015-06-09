@@ -13,17 +13,10 @@ public final class FQuestSet extends AMember {
 	public final FQuestSetCat mParentCategory;
 	final Vector<FQuest> mQuests = new Vector<>();
 	public String mDescr;
-	private boolean mDeleted;
 
 	public FQuestSet( FQuestSetCat parent, String name) {
 		super( name);
 		mParentCategory = parent;
-	}
-
-	FQuestSet( FQuestSetCat parent) {
-		super( "__DELETED__");
-		mParentCategory = parent;
-		mDeleted = true;
 	}
 
 	@Override
@@ -71,10 +64,6 @@ public final class FQuestSet extends AMember {
 	@Override
 	public FQuestSetCat getParent() {
 		return mParentCategory;
-	}
-
-	public boolean isDeleted() {
-		return mDeleted;
 	}
 
 	public boolean isFirst() {

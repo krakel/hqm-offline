@@ -56,6 +56,7 @@ import de.doerl.hqm.utils.json.JsonReader;
 
 class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
+	private final FQuest mDelQuest = new FQuest( null, "__DELETED__");
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
@@ -262,7 +263,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				if (obj != null) {
 					boolean isDelete = FValue.toBoolean( obj.get( IToken.QUEST_DELETED));
 					if (isDelete) {
-						mQuests.add( hqm.mQuestSetCat.addDeletedQuest());
+						mQuests.add( mDelQuest);
 					}
 					else {
 						int setID = parseID( FValue.toString( obj.get( IToken.QUEST_SET)));
@@ -397,7 +398,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
 				FQuest req = mQuests.get( id);
-				if (req == null || req.isDeleted()) {
+				if (req == null || req.getParent() == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing OptionLink [{0}] {1} for {2}", i, id, quest.mName);
 				}
 				else {
@@ -412,7 +413,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			int id = e.getKey();
 			Vector<FQuest> posts = e.getValue();
 			FQuest quest = mQuests.get( id);
-			if (quest == null || quest.isDeleted()) {
+			if (quest == null || quest.getParent() == null) {
 				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
 			}
 			else {
@@ -428,7 +429,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (int i = 0; i < ids.length; ++i) {
 				int id = ids[i];
 				FQuest req = mQuests.get( id);
-				if (req == null || req.isDeleted()) {
+				if (req == null || req.getParent() == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{0}] {1} for {2}", i, id, quest.mName);
 				}
 				else {
