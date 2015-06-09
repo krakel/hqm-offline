@@ -1,5 +1,6 @@
 package de.doerl.hqm.view;
 
+import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 
@@ -17,6 +18,7 @@ class TaskBoxItems extends ATaskBox {
 
 	public TaskBoxItems( AQuestTaskItems task) {
 		mTask = task;
+		mFloating.setPreferredSize( new Dimension( 100, 30));
 		add( AEntity.leafScoll( mFloating, HEIGHT));
 		add( Box.createVerticalStrut( AEntity.GAP));
 		switch (mTask.getTaskTyp()) {

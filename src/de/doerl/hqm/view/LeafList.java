@@ -1,6 +1,5 @@
 package de.doerl.hqm.view;
 
-import java.awt.Dimension;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
@@ -18,7 +17,6 @@ public class LeafList<E> extends JList<E> {
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
-		setPreferredSize( new Dimension( 100, 30));
 		addMouseListener( mHandler);
 	}
 
