@@ -9,7 +9,7 @@ import de.doerl.hqm.utils.BaseDefaults;
 class ConfigDialog extends ADialog {
 	private static final long serialVersionUID = 724962696459638751L;
 	private ConfigPath mMineDir = new ConfigPath( BaseDefaults.MINECRAFT_DIR, "config.mine.dir");
-	private ConfigPath mModDir = new ConfigPath( BaseDefaults.MODULE_DIR, "config.mod.dir");
+//	private ConfigPath mModDir = new ConfigPath( BaseDefaults.MODULE_DIR, "config.mod.dir");
 	private ConfigPath mDumpDir = new ConfigPath( BaseDefaults.DUMP_DIR, "config.dump.dir");
 	private ConfigVersion mVersion = new ConfigVersion();
 
@@ -32,13 +32,13 @@ class ConfigDialog extends ADialog {
 	@Override
 	protected void createMain() {
 		mMineDir.initControl();
-		mModDir.initControl();
+//		mModDir.initControl();
 		mDumpDir.initControl();
 		mVersion.initControl();
 		Box result = Box.createVerticalBox();
 		result.setAlignmentY( TOP_ALIGNMENT);
 		result.add( mMineDir);
-		result.add( mModDir);
+//		result.add( mModDir);
 		result.add( mDumpDir);
 		result.add( Box.createVerticalStrut( 10));
 		result.add( mVersion);
@@ -47,7 +47,7 @@ class ConfigDialog extends ADialog {
 
 	private void saveResult() {
 		mMineDir.applyChange();
-		mModDir.applyChange();
+//		mModDir.applyChange();
 		mDumpDir.applyChange();
 		mVersion.applyChange();
 	}

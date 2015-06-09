@@ -5,5 +5,5 @@ import java.awt.Image;
 public interface IHandler {
 	String getName();
 
-	Image load( String stk);
+	Image load( String stk, String nbt);
 }

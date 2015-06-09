@@ -14,9 +14,10 @@ import de.doerl.hqm.utils.Utils;
 
 public class ImageLoader extends Thread {
 	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
-	public static final ImageLoader SINGLETON = new ImageLoader();
-	private static HashMap<String, IHandler> sHandler = new HashMap<>();
-	private static HashMap<String, Image> sCache = new HashMap<>();
+	private static final ImageLoader SINGLETON = new ImageLoader();
+	private HashMap<String, Image> mCache = new HashMap<>();
+	private IHandler mDummy = new DummyHandler();
+	private IHandler mUni = new UniversalHandler();
 	private LinkedList<Request> mQueue = new LinkedList<>();
 
 	private ImageLoader() {
@@ -25,62 +26,35 @@ public class ImageLoader extends Thread {
 		setDaemon( true);
 	}
 
-	public static void addHandler( IHandler hdl) {
-		sHandler.put( hdl.getName(), hdl);
-	}
-
 	public static Image getImage( AStack stk, Runnable cb) {
 		if (stk != null) {
-			return getImage( stk.getKey(), cb);
+			return SINGLETON.getImage( stk.getKey(), stk.getNBT(), cb);
 		}
 		else {
 			return null;
 		}
 	}
 
-	public static Image getImage( String key, Runnable cb) {
-		Image img = sCache.get( key);
+	public static void init() {
+		SINGLETON.start();
+	}
+
+	private synchronized void add( String stk, String nbt, Runnable cb) {
+		mQueue.addLast( new Request( stk, nbt, cb));
+		notifyAll();
+	}
+
+	private Image getImage( String key, String nbt, Runnable cb) {
+		Image img = mCache.get( key);
 		if (img == null && key != null && cb != null) {
 			if (key.indexOf( ':') < 0) {
 				Utils.log( LOGGER, Level.WARNING, "wrong stack name: {0}", key);
 			}
 			else {
-				SINGLETON.add( key, cb);
+				add( key, nbt, cb);
 			}
 		}
 		return img;
-	}
-
-	public static void init() {
-		addHandler( new UniversalHandler());
-		SINGLETON.start();
-	}
-
-	private static void readImage( Request req) throws IOException {
-		if (!sCache.containsKey( req.mStk)) {
-//			Utils.log( LOGGER, Level.FINEST, "load image {0}:{1}", mod, stk);
-			IHandler hdl = sHandler.get( req.mMod);
-			if (hdl == null) {
-//				Utils.log( LOGGER, Level.WARNING, "missing handler for {0}", req.mMod);
-				hdl = new DummyHandler( req.mMod);
-				sHandler.put( req.mMod, hdl);
-			}
-			Image img = hdl.load( req.mStk);
-			if (img == null) {
-				Utils.log( LOGGER, Level.WARNING, "missing image for {0}", req.mStk);
-			}
-			else {
-				sCache.put( req.mStk, img);
-				if (req.mCallback != null) {
-					SwingUtilities.invokeLater( req.mCallback);
-				}
-			}
-		}
-	}
-
-	private synchronized void add( String stk, Runnable cb) {
-		mQueue.addLast( new Request( stk, cb));
-		notifyAll();
 	}
 
 	private synchronized Request getNextEntry() throws InterruptedException {
@@ -88,6 +62,21 @@ public class ImageLoader extends Thread {
 			wait( 0);
 		}
 		return mQueue.removeFirst();
+	}
+
+	private void readImage( Request req) throws IOException {
+		if (!mCache.containsKey( req.mStk)) {
+			Image img = mUni.load( req.mStk, req.mNbt);
+			if (img == null) {
+				img = mDummy.load( req.mStk, req.mNbt);
+			}
+			if (img != null) {
+				mCache.put( req.mStk, img);
+				if (req.mCallback != null) {
+					SwingUtilities.invokeLater( req.mCallback);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -115,11 +104,12 @@ public class ImageLoader extends Thread {
 
 	private static class Request {
 		private String mStk;
-		private String mMod = "NEI";
+		private String mNbt;
 		private Runnable mCallback;
 
-		public Request( String stk, Runnable cb) {
+		public Request( String stk, String nbt, Runnable cb) {
 			mStk = stk;
+			mNbt = nbt;
 			mCallback = cb;
 		}
 	}

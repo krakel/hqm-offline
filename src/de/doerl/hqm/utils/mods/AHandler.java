@@ -59,7 +59,7 @@ abstract class AHandler implements IHandler {
 
 	abstract boolean isModFile( String name);
 
-	public Image load( String stk) {
+	public Image load( String stk, String nbt) {
 		if (mJarFile == null) {
 			mJarFile = getJarFile();
 			if (mJarFile == null) {

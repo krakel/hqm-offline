@@ -20,7 +20,7 @@ import de.doerl.hqm.utils.Utils;
 
 class UniversalHandler implements IHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
-	private static HashMap<String, String> sStackNames = new HashMap<>();
+	private static HashMap<String, IMatcher> sStackNames = new HashMap<>();
 	private File mBase;
 	private File mImage;
 
@@ -43,7 +43,7 @@ class UniversalHandler implements IHandler {
 		return "NEI";
 	}
 
-	public Image load( String stk) {
+	public Image load( String stk, String nbt) {
 		if (mBase == null) {
 			mBase = getBaseDir();
 			if (mBase == null) {
@@ -64,9 +64,9 @@ class UniversalHandler implements IHandler {
 			}
 		}
 		if (mImage != null) {
-			String value = sStackNames.get( stk);
-			if (value != null) {
-				File file = new File( mImage, value + ".png");
+			IMatcher match = sStackNames.get( stk);
+			if (match != null) {
+				File file = new File( mImage, match.findFile( nbt) + ".png");
 				if (file.exists() && !file.isDirectory()) {
 					return readImage( file);
 				}
@@ -94,7 +94,7 @@ class UniversalHandler implements IHandler {
 					String name = line.substring( 0, p1);
 //					String id = line.substring( p1 + 1, p2);
 					String meta = line.substring( p2 + 1, p3);
-//					String nbt = line.substring( p3 + 1, p4);
+					boolean isNBT = Utils.parseBoolean( line.substring( p3 + 1, p4), false);
 					String base = line.substring( p4 + 1).replace( ':', '_');
 					String stk = name + '%' + meta;
 					int i = 1;
@@ -103,12 +103,12 @@ class UniversalHandler implements IHandler {
 						file = base + '_' + ++i;
 					}
 					names.put( file, stk);
-					if (sStackNames.containsKey( stk)) {
-//						Utils.log( LOGGER, Level.WARNING, "wrong stack name in {0}", line);
+					IMatcher match = sStackNames.get( stk);
+					if (match == null) {
+						match = isNBT ? new NBTMatcher() : new SimpleMatcher();
+						sStackNames.put( stk, match);
 					}
-					else {
-						sStackNames.put( stk, file);
-					}
+					match.addNBT( stk, file);
 				}
 				line = src.readLine();
 			}
@@ -135,5 +135,45 @@ class UniversalHandler implements IHandler {
 			Utils.closeIgnore( is);
 		}
 		return img;
+	}
+
+	private static interface IMatcher {
+		void addNBT( String nbt, String file);
+
+		String findFile( String nbt);
+	}
+
+	private static class NBTMatcher implements IMatcher {
+		private HashMap<String, String> mMap = new HashMap<>();
+
+		public NBTMatcher() {
+		}
+
+		@Override
+		public void addNBT( String nbt, String file) {
+			mMap.put( nbt, file);
+		}
+
+		@Override
+		public String findFile( String nbt) {
+			return mMap.get( nbt);
+		}
+	}
+
+	private static class SimpleMatcher implements IMatcher {
+		private String mFile;
+
+		public SimpleMatcher() {
+		}
+
+		@Override
+		public void addNBT( String nbt, String file) {
+			mFile = file;
+		}
+
+		@Override
+		public String findFile( String nbt) {
+			return mFile;
+		}
 	}
 }

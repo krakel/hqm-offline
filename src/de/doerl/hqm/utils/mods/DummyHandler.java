@@ -1,32 +1,32 @@
 package de.doerl.hqm.utils.mods;
 
 import java.awt.Image;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import de.doerl.hqm.utils.ResourceManager;
 
 class DummyHandler implements IHandler {
-	private HashMap<String, Image> mCache = new HashMap<>();
-	private String mName;
-	private String mToken;
+	private Hashtable<String, Integer> mCounts = new Hashtable<>();
 
-	public DummyHandler( String name) {
-		mName = name;
-		mToken = name.substring( 0, 2).toLowerCase();
+	public DummyHandler() {
 	}
 
 	@Override
 	public String getName() {
-		return mName;
+		return "dummy";
 	}
 
 	@Override
-	public Image load( String stk) {
-		Image img = mCache.get( stk);
-		if (img == null) {
-			img = ResourceManager.stringImage( mToken + mCache.size());
-			mCache.put( stk, img);
+	public Image load( String stk, String nbt) {
+		String mod = stk.substring( 0, 2).toLowerCase();
+		Integer cnt = mCounts.get( mod);
+		if (cnt == null) {
+			cnt = Integer.valueOf( 1);
 		}
-		return img;
+		else {
+			cnt = Integer.valueOf( cnt + 1);
+		}
+		mCounts.put( mod, cnt);
+		return ResourceManager.stringImage( mod + cnt);
 	}
 }
