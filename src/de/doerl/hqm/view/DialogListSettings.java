@@ -19,7 +19,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FHqm;
@@ -209,7 +208,7 @@ public class DialogListSettings extends ADialogList<FSetting> {
 		}
 	}
 
-	private static class Renderer extends JPanel implements ListCellRenderer<FSetting> {
+	private static class Renderer extends AListCellRenderer<FSetting> {
 		private static final long serialVersionUID = -430644712741965086L;
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");

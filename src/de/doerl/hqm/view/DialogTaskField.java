@@ -1,15 +1,19 @@
 package de.doerl.hqm.view;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
 
 import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
+import javax.swing.JList;
 import javax.swing.JTextField;
 
 import de.doerl.hqm.Tuple2;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
 class DialogTaskField extends ADialog {
@@ -23,6 +27,7 @@ class DialogTaskField extends ADialog {
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
+		mTypes.setRenderer( new TaskListRenderer());
 	}
 
 	public static Tuple2<TaskTyp, String> update( TaskTyp type, String value, Window owner) {
@@ -68,5 +73,22 @@ class DialogTaskField extends ADialog {
 			mTypes.setSelectedIndex( 0);
 		}
 		mField.setText( value != null ? value : "");
+	}
+
+	private static class TaskListRenderer extends DefaultListCellRenderer {
+		private static final long serialVersionUID = 2689137192462866821L;
+
+		@Override
+		public Component getListCellRendererComponent( JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			super.getListCellRendererComponent( list, value, index, isSelected, cellHasFocus);
+			try {
+				TaskTyp type = (TaskTyp) value;
+				setIcon( ResourceManager.getIcon( type.getIcon()));
+				setText( type.toString());
+			}
+			catch (ClassCastException ex) {
+			}
+			return this;
+		}
 	}
 }

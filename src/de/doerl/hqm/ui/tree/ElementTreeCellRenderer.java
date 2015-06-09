@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 
-import javax.swing.Icon;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -22,9 +21,5 @@ public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
 		Rectangle2D bounds = getFont().getStringBounds( getText(), frc);
 		dim.width = (int) bounds.getWidth() + getIconTextGap() + 20;
 		return dim;
-	}
-
-	@Override
-	public void setIcon( Icon icon) {
 	}
 }

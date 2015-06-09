@@ -11,8 +11,6 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FSetting;
@@ -55,7 +53,7 @@ class TaskBoxReputationTarget extends ATaskBox {
 		SettingFactory.get( mTask, mList.getModel());
 	}
 
-	private final class Renderer extends JPanel implements ListCellRenderer<FSetting> {
+	private final class Renderer extends AListCellRenderer<FSetting> {
 		private static final long serialVersionUID = 3374147415409104551L;
 		private LeafIcon mIcon = new LeafIcon( new Dimension( 260, 22));
 		private LeafLabel mNeutral = new LeafLabel( "");

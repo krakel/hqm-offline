@@ -17,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AStack;
@@ -147,7 +146,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 		}
 	}
 
-	private static class Renderer extends JPanel implements ListCellRenderer<StackEntry> {
+	private static class Renderer extends AListCellRenderer<StackEntry> {
 		private static final long serialVersionUID = 5239073494468176719L;
 		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
 		private LeafLabel mName = new LeafLabel( "Unknown");

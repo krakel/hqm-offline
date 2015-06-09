@@ -1,6 +1,5 @@
 package de.doerl.hqm.view;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionListener;
@@ -30,7 +29,7 @@ public class LeafFloating extends JPanel {
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
-		setPreferredSize( new Dimension( 7 * AEntity.ICON_SIZE, 4 * AEntity.ICON_SIZE));
+//		setPreferredSize( new Dimension( 7 * AEntity.ICON_SIZE, 4 * AEntity.ICON_SIZE));
 		addMouseListener( mHandler);
 		addMouseListener( new BorderAdapter( this));
 	}

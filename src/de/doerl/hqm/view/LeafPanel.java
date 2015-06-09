@@ -1,6 +1,5 @@
 package de.doerl.hqm.view;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -25,19 +24,6 @@ class LeafPanel extends JPanel {
 		}
 		else {
 			setBorder( RIGHT_BORDER);
-		}
-	}
-
-	public LeafPanel( boolean left, Color color) {
-		mLeft = left;
-		setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-		setOpaque( false);
-		setAlignmentX( LEFT_ALIGNMENT);
-		if (left) {
-			setBorder( BorderFactory.createCompoundBorder( LEFT_BORDER, BorderFactory.createLineBorder( color)));
-		}
-		else {
-			setBorder( BorderFactory.createCompoundBorder( RIGHT_BORDER, BorderFactory.createLineBorder( color)));
 		}
 	}
 

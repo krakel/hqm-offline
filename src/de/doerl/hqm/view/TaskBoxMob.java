@@ -11,8 +11,6 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FMob;
@@ -75,7 +73,7 @@ class TaskBoxMob extends ATaskBox {
 		}
 	}
 
-	private final class Renderer extends JPanel implements ListCellRenderer<FMob> {
+	private final class Renderer extends AListCellRenderer<FMob> {
 		private static final long serialVersionUID = 3374147415409104551L;
 		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
 		private LeafLabel mName = new LeafLabel( "", true);

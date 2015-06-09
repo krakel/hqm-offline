@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.Tuple2;
@@ -62,8 +61,8 @@ public class EntityQuest extends AEntity<FQuest> {
 	private LeafStacks mRewardList;
 	private LeafStacks mChoiceList;
 	private LeafTextBox mTaskDesc = new LeafTextBox();
-	private Box mBoxContainer = Box.createHorizontalBox();
-	private LeafList<ATaskBox> mBoxList = new LeafList<>();
+	private Box mTaskContent = Box.createHorizontalBox();
+	private LeafList<ATaskBox> mTaskList = new LeafList<>();
 	private volatile ATaskBox mActiv = BOX_EMPTY;
 
 	public EntityQuest( FQuest quest, EditController ctrl) {
@@ -73,16 +72,16 @@ public class EntityQuest extends AEntity<FQuest> {
 		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, new LeafIcon( icon));
 		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, new LeafButton( "Claim reward"));
 		updateReputation();
-		mBoxList.setCellRenderer( new TaskListRenderer());
-		mBoxContainer.setAlignmentX( LEFT_ALIGNMENT);
+		mTaskList.setCellRenderer( new TaskListRenderer());
+		mTaskContent.setAlignmentX( LEFT_ALIGNMENT);
 		createLeafs();
 		update();
 		updateActive( getFirstBox());
-		mBoxList.addMouseListener( new MouseAdapter() {
+		mTaskList.addMouseListener( new MouseAdapter() {
 			@Override
 			public void mouseClicked( MouseEvent evt) {
 				try {
-					ATaskBox box = mBoxList.getSelectedValue();
+					ATaskBox box = mTaskList.getSelectedValue();
 					if (box != null) {
 						SwingUtilities.invokeLater( new TaskListMouseAction( box));
 					}
@@ -160,7 +159,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( leafScoll( mDesc, 100));
 		leaf.add( Box.createVerticalStrut( GAP));
-		leaf.add( leafScoll( mBoxList, 50));
+		leaf.add( leafScoll( mTaskList, 50));
 		leaf.add( Box.createVerticalGlue());
 		leaf.add( new LeafLabel( "Rewards", true));
 		leaf.add( mRewardList);
@@ -173,11 +172,11 @@ public class EntityQuest extends AEntity<FQuest> {
 	protected void createRight( JPanel leaf) {
 		leaf.add( leafScoll( mTaskDesc, 160));
 		leaf.add( Box.createVerticalStrut( GAP));
-		leaf.add( mBoxContainer);
+		leaf.add( mTaskContent);
 	}
 
 	private ATaskBox findBoxOf( AQuestTask task) {
-		DefaultListModel<ATaskBox> model = mBoxList.getModel();
+		DefaultListModel<ATaskBox> model = mTaskList.getModel();
 		for (int i = 0; i < model.size(); ++i) {
 			ATaskBox box = model.elementAt( i);
 			if (Utils.equals( box.getTask(), task)) {
@@ -193,7 +192,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	}
 
 	public ATaskBox getFirstBox() {
-		DefaultListModel<ATaskBox> model = mBoxList.getModel();
+		DefaultListModel<ATaskBox> model = mTaskList.getModel();
 		return model.size() > 0 ? model.elementAt( 0) : null;
 	}
 
@@ -205,7 +204,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	private void update() {
 		mTitle.setText( mQuest.mName);
 		mDesc.setText( mQuest.mDescr);
-		TaskBoxUpdate.get( mQuest, mCtrl, mBoxList.getModel());
+		TaskBoxUpdate.get( mQuest, mCtrl, mTaskList.getModel());
 		mRewardList.update();
 		mChoiceList.update();
 		updateReputation();
@@ -221,26 +220,26 @@ public class EntityQuest extends AEntity<FQuest> {
 		mActiv.removeClickListener( mTaskListAction);
 		if (box == null || BOX_EMPTY.equals( box)) {
 			mTaskDesc.setText( null);
-			mBoxList.clearSelection();
-			mBoxContainer.removeAll();
-			mBoxContainer.add( BOX_EMPTY);
+			mTaskList.clearSelection();
+			mTaskContent.removeAll();
+			mTaskContent.add( BOX_EMPTY);
 			updateActions( false);
 			updateTaskAction( false);
 			mActiv = BOX_EMPTY;
 		}
 		else {
 			mTaskDesc.setText( box.getTask().mDescr);
-			mBoxList.setSelectedValue( box, true);
-			mBoxContainer.removeAll();
-			mBoxContainer.add( box);
+			mTaskList.setSelectedValue( box, true);
+			mTaskContent.removeAll();
+			mTaskContent.add( box);
 			updateActions( true);
 			updateTaskAction( true);
 			mActiv = box;
 		}
 		mActiv.addClickListener( mTaskListAction);
 		mActiv.update();
-		mBoxContainer.revalidate();
-		mBoxContainer.repaint();
+		mTaskContent.revalidate();
+		mTaskContent.repaint();
 	}
 
 	private void updateMoveActions() {
@@ -491,17 +490,18 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
-	private static class TaskListRenderer extends JPanel implements ListCellRenderer<ATaskBox> {
+	private static class TaskListRenderer extends AListCellRenderer<ATaskBox> {
 		private static final long serialVersionUID = 9081558438188872705L;
 		private JLabel mTitle = new LeafLabel( UNSELECTED, "", true);
 
 		public TaskListRenderer() {
-			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			add( mTitle);
+			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( false);
+			add( mTitle);
 		}
 
 		public Component getListCellRendererComponent( JList<? extends ATaskBox> list, ATaskBox box, int index, boolean isSelected, boolean cellHasFocus) {
+			mTitle.setIcon( ResourceManager.getIcon( box.getTask().getTaskTyp().getIcon()));
 			mTitle.setText( box.getTask().mName);
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			return this;

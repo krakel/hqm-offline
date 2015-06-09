@@ -10,24 +10,22 @@ import de.doerl.hqm.base.AQuestTaskItems;
 
 class TaskBoxItems extends ATaskBox {
 	private static final long serialVersionUID = -2578865094375861527L;
-	private static final LeafButton BTN1 = new LeafButton( "Manual detect");
-	private static final LeafButton BTN2 = new LeafButton( "Manual submit");
-	private static final LeafButton BTN3 = new LeafButton( "Select task");
 	private LeafFloating mFloating = new LeafFloating();
 	private AQuestTaskItems mTask;
 
 	public TaskBoxItems( AQuestTaskItems task) {
 		mTask = task;
-		mFloating.setPreferredSize( new Dimension( 100, 30));
+		mFloating.setPreferredSize( new Dimension( WIDTH, 4 * AEntity.ICON_SIZE));
 		add( AEntity.leafScoll( mFloating, HEIGHT));
-		add( Box.createVerticalStrut( AEntity.GAP));
 		switch (mTask.getTaskTyp()) {
 			case TASK_ITEMS_DETECT:
-				add( AEntity.leafButtons( BTN1));
+				add( Box.createVerticalStrut( AEntity.GAP));
+				add( AEntity.leafButtons( new LeafButton( "Manual detect")));
 				break;
 			case TASK_ITEMS_CONSUME:
 			case TASK_ITEMS_CONSUME_QDS:
-				add( AEntity.leafButtons( BTN2, BTN3));
+				add( Box.createVerticalStrut( AEntity.GAP));
+				add( AEntity.leafButtons( new LeafButton( "Manual submit"), new LeafButton( "Select task")));
 				break;
 			default:
 		}

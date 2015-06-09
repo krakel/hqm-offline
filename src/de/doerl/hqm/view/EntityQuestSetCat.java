@@ -17,7 +17,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
@@ -274,7 +273,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private static class ListRenderer extends JPanel implements ListCellRenderer<FQuestSet> {
+	private static class ListRenderer extends AListCellRenderer<FQuestSet> {
 		private static final long serialVersionUID = 9081558438188872705L;
 		private LeafLabel mTitle = new LeafLabel( UNSELECTED, "", true);
 		private LeafLabel mComplete = new LeafLabel( "");

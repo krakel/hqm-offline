@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FLocation;
@@ -183,7 +182,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 		}
 	}
 
-	private static class Renderer extends JPanel implements ListCellRenderer<FLocation> {
+	private static class Renderer extends AListCellRenderer<FLocation> {
 		private static final long serialVersionUID = -430644712741965086L;
 		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
 		private LeafLabel mName = new LeafLabel( "Unknown");
