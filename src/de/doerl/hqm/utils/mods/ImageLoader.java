@@ -41,75 +41,23 @@ public class ImageLoader extends Thread {
 	public static Image getImage( String key, Runnable cb) {
 		Image img = sCache.get( key);
 		if (img == null && key != null && cb != null) {
-			int p1 = key.indexOf( ':');
-			if (p1 < 0) {
+			if (key.indexOf( ':') < 0) {
 				Utils.log( LOGGER, Level.WARNING, "wrong stack name: {0}", key);
 			}
 			else {
-				String mod = key.substring( 0, p1);
-				String stk = key.substring( p1 + 1);
-				SINGLETON.add( key, mod, stk, cb);
+				SINGLETON.add( key, cb);
 			}
 		}
 		return img;
 	}
 
 	public static void init() {
-//		addHandler( new AE2Handler());
-//		addHandler( new AE2stuffHandler());
-//		addHandler( new AgriCraftHandler());
-//		addHandler( new AutomagyHandler());
-//		addHandler( new AutopackagerHandler());
-//		addHandler( new BagginsesHandler());
-//		addHandler( new BiblioCraftHandler());
-//		addHandler( new BiblioWoodsNaturaHandler());
-//		addHandler( new BigReactorsHandler());
-//		addHandler( new BloodMagicHandler());
-//		addHandler( new BotaniaHandler());
-//		addHandler( new CompactStorageHandler());
-//		addHandler( new EnderTechHandler());
-//		addHandler( new ExAstrisHandler());
-//		addHandler( new ExNihiloHandler());
-//		addHandler( new ExtraUtilitiesHandler());
-//		addHandler( new ForbiddenMagicHandler());
-//		addHandler( new ForestryHandler());
-		addHandler( new ForgeHandler());
-//		addHandler( new GendustryHandler());
-		addHandler( new HardcoreHandler());
-//		addHandler( new HarvestcraftHandler());
-//		addHandler( new HeadCrumbsHandler());
-//		addHandler( new IguanaTweaksHandler());
-//		addHandler( new JabbaHandler());
-//		addHandler( new MagicBeesHandler());
-//		addHandler( new MineFactoryHandler());
-//		addHandler( new NaturaHandler());
-//		addHandler( new NodalMechanicsHandler());
-//		addHandler( new ProgressiveHandler());
-//		addHandler( new RainmakerHandler());
-//		addHandler( new RefinedRelocationHandler());
-//		addHandler( new RFtoolsHandler());
-//		addHandler( new RFwindmillHandler());
-//		addHandler( new RouterRebornHandler());
-//		addHandler( new SanguimancyHandler());
-//		addHandler( new SolarFluxHandler());
-//		addHandler( new StevesWorkshopHandler());
-//		addHandler( new StorageDrawersHandler());
-//		addHandler( new SuperCraftingHandler());
-//		addHandler( new ThaumcraftHandler());
-//		addHandler( new ThaumicEnergisticsHandler());
-//		addHandler( new ThaumicHorizonsHandler());
-//		addHandler( new ThermalCastingHandler());
-//		addHandler( new ThermalDynamicsHandler());
-//		addHandler( new ThermalExpansionHandler());
-//		addHandler( new ThermalFoundationHandler());
-//		addHandler( new TinkerHandler());
-//		addHandler( new TravellersGearHandler());
-//		addHandler( new WitchingGadgetsHandler());
+		addHandler( new UniversalHandler());
 		SINGLETON.start();
 	}
 
 	private static void readImage( Request req) throws IOException {
-		if (!sCache.containsKey( req.mKey)) {
+		if (!sCache.containsKey( req.mStk)) {
 //			Utils.log( LOGGER, Level.FINEST, "load image {0}:{1}", mod, stk);
 			IHandler hdl = sHandler.get( req.mMod);
 			if (hdl == null) {
@@ -119,10 +67,10 @@ public class ImageLoader extends Thread {
 			}
 			Image img = hdl.load( req.mStk);
 			if (img == null) {
-				Utils.log( LOGGER, Level.WARNING, "missing image for {0}", req.mKey);
+				Utils.log( LOGGER, Level.WARNING, "missing image for {0}", req.mStk);
 			}
 			else {
-				sCache.put( req.mKey, img);
+				sCache.put( req.mStk, img);
 				if (req.mCallback != null) {
 					SwingUtilities.invokeLater( req.mCallback);
 				}
@@ -130,9 +78,8 @@ public class ImageLoader extends Thread {
 		}
 	}
 
-	private synchronized void add( String key, String mod, String stk, Runnable cb) {
-//		Utils.log( LOGGER, Level.FINEST, entry);
-		mQueue.addLast( new Request( key, mod, stk, cb));
+	private synchronized void add( String stk, Runnable cb) {
+		mQueue.addLast( new Request( stk, cb));
 		notifyAll();
 	}
 
@@ -167,14 +114,11 @@ public class ImageLoader extends Thread {
 	}
 
 	private static class Request {
-		private String mKey;
-		private String mMod;
 		private String mStk;
+		private String mMod = "NEI";
 		private Runnable mCallback;
 
-		public Request( String key, String mod, String stk, Runnable cb) {
-			mKey = key;
-			mMod = mod;
+		public Request( String stk, Runnable cb) {
 			mStk = stk;
 			mCallback = cb;
 		}

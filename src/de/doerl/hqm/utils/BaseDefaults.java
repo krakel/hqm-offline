@@ -25,9 +25,10 @@ public class BaseDefaults {
 	public static final String FILE_OPEN_DIR = "file.open.directory";
 	public static final String MINECRAFT_DIR = "minecraft.dir";
 	public static final String MODULE_DIR = "mod.dir";
+	public static final String DUMP_DIR = "dump.dir";
 	public static final String FILE_VERSION = "version";
 	private static final String[] KEYS = {
-		LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, MINECRAFT_DIR, MODULE_DIR, FILE_VERSION
+		LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, MINECRAFT_DIR, MODULE_DIR, DUMP_DIR, FILE_VERSION
 	};
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
@@ -47,6 +48,7 @@ public class BaseDefaults {
 		pref.checkBool( STACKTRC);
 		pref.checkString( MINECRAFT_DIR);
 		pref.checkString( MODULE_DIR);
+		pref.checkString( DUMP_DIR);
 		pref.checkString( FILE_VERSION);
 		pref.checkString( FILE_OPEN_DIR);
 		pref.checkArray( LAST_OPEN);
