@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,8 +19,6 @@ import javax.imageio.ImageIO;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.nei.FArray;
-import de.doerl.hqm.utils.nei.NEIReader;
 
 class UniversalHandler implements IHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
@@ -27,6 +27,17 @@ class UniversalHandler implements IHandler {
 	private File mImage;
 
 	public UniversalHandler() {
+	}
+
+	public List<SimpleMatcher> find( String value, int max) {
+		ArrayList<SimpleMatcher> arr = new ArrayList<>();
+		for (IMatcher mm : sStackNames.values()) {
+			mm.findMatch( arr, value);
+			if (arr.size() > max) {
+				break;
+			}
+		}
+		return arr;
 	}
 
 	private File getBaseDir() {
@@ -52,16 +63,17 @@ class UniversalHandler implements IHandler {
 				mBase = new File( "."); // only one try
 			}
 			else {
+				ArrayList<String> json = new ArrayList<>();
 				File[] arr = mBase.listFiles();
 				for (File curr : arr) {
 					if ("itempanel.json".equals( curr.getName())) {
-						parseJsonFile( curr);
+						parseJsonPlain( curr, json);
 						break;
 					}
 				}
 				for (File curr : arr) {
 					if ("itempanel.csv".equals( curr.getName())) {
-						parseCSVFile( curr);
+						parseCSVFile( curr, json);
 						break;
 					}
 				}
@@ -83,13 +95,15 @@ class UniversalHandler implements IHandler {
 		return null;
 	}
 
-	private void parseCSVFile( File csvFile) {
+	private void parseCSVFile( File csvFile, ArrayList<String> json) {
 		BufferedReader src = null;
 		try {
 			HashMap<String, String> names = new HashMap<>();
 			src = new BufferedReader( new FileReader( csvFile));
 			src.readLine();
-			for (String line = src.readLine(); line != null;) {
+			int idx = 0;
+			String line = src.readLine();
+			while (line != null) {
 				int p1 = line.indexOf( ',');
 				int p2 = line.indexOf( ',', p1 + 1);
 				int p3 = line.indexOf( ',', p2 + 1);
@@ -113,12 +127,19 @@ class UniversalHandler implements IHandler {
 					names.put( file, stk);
 					IMatcher match = sStackNames.get( stk);
 					if (match == null) {
-						match = isNBT ? new NBTMatcher() : new SimpleMatcher();
+						match = isNBT ? new NBTMatcher( stk) : new SimpleMatcher( stk);
 						sStackNames.put( stk, match);
 					}
-					match.addNBT( stk, file);
+					String nbt = json.get( idx);
+					if (nbt != null) {
+						match.addNBT( nbt, file);
+					}
+					else {
+						match.addNBT( file, file);
+					}
 				}
 				line = src.readLine();
+				++idx;
 			}
 		}
 		catch (IOException ex) {
@@ -129,15 +150,35 @@ class UniversalHandler implements IHandler {
 		}
 	}
 
-	private FArray parseJsonFile( File jsonFile) {
-		FArray arr = new FArray();
+//	private FArray parseJsonFile( File jsonFile) {
+//		FArray arr = new FArray();
+//		try {
+//			BufferedReader src = null;
+//			try {
+//				src = new BufferedReader( new FileReader( jsonFile));
+//				for (String line = src.readLine(); line != null;) {
+//					NEIReader rdr = new NEIReader( line);
+//					arr.add( rdr.doLine());
+//					line = src.readLine();
+//				}
+//			}
+//			finally {
+//				Utils.closeIgnore( src);
+//			}
+//		}
+//		catch (IOException ex) {
+//			Utils.logThrows( LOGGER, Level.WARNING, ex);
+//		}
+//		return arr;
+//	}
+//
+	private void parseJsonPlain( File jsonFile, ArrayList<String> arr) {
 		try {
 			BufferedReader src = null;
 			try {
 				src = new BufferedReader( new FileReader( jsonFile));
 				for (String line = src.readLine(); line != null;) {
-					NEIReader rdr = new NEIReader( line);
-					arr.add( rdr.doLine());
+					arr.add( line);
 					line = src.readLine();
 				}
 			}
@@ -148,7 +189,6 @@ class UniversalHandler implements IHandler {
 		catch (IOException ex) {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
-		return arr;
 	}
 
 	private Image readImage( File file) {
@@ -165,45 +205,5 @@ class UniversalHandler implements IHandler {
 			Utils.closeIgnore( is);
 		}
 		return img;
-	}
-
-	private static interface IMatcher {
-		void addNBT( String nbt, String file);
-
-		String findFile( String nbt);
-	}
-
-	private static class NBTMatcher implements IMatcher {
-		private HashMap<String, String> mMap = new HashMap<>();
-
-		public NBTMatcher() {
-		}
-
-		@Override
-		public void addNBT( String nbt, String file) {
-			mMap.put( nbt, file);
-		}
-
-		@Override
-		public String findFile( String nbt) {
-			return mMap.get( nbt);
-		}
-	}
-
-	private static class SimpleMatcher implements IMatcher {
-		private String mFile;
-
-		public SimpleMatcher() {
-		}
-
-		@Override
-		public void addNBT( String nbt, String file) {
-			mFile = file;
-		}
-
-		@Override
-		public String findFile( String nbt) {
-			return mFile;
-		}
 	}
 }

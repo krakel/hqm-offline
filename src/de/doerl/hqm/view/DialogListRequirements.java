@@ -10,8 +10,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.GroupLayout.Group;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -98,6 +97,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 		private JCheckBox mItem = new JCheckBox();
 		private JTextField mName = new JTextField();
 		private JTextField mCount = new JTextField();
+		private LeafSearch mSearch = new LeafSearch();
 		private JComboBox<String> mDmg = new JComboBox<>();
 		private JComboBox<ItemPrecision> mPrec = new JComboBox<>( ItemPrecision.values());
 
@@ -127,10 +127,10 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			return showEditor();
 		}
 
-		private ParallelGroup addLine( GroupLayout layout, ParallelGroup leftGrp, ParallelGroup rightGrp, String descr, JComponent comp) {
+		private Group addLine( GroupLayout layout, Group left, Group right, String descr, JComponent comp) {
 			JLabel lbl = new JLabel( descr);
-			leftGrp.addComponent( lbl);
-			rightGrp.addComponent( comp);
+			left.addComponent( lbl);
+			right.addComponent( comp);
 			return layout.createParallelGroup( Alignment.BASELINE).addComponent( lbl).addComponent( comp);
 		}
 
@@ -144,6 +144,20 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			return showEditor();
 		}
 
+		private Group createLeft( GroupLayout layout, Group hori) {
+			Group vert = layout.createSequentialGroup();
+			Group left = layout.createParallelGroup();
+			Group right = layout.createParallelGroup();
+			vert.addGroup( addLine( layout, left, right, "Item", mItem));
+			vert.addGroup( addLine( layout, left, right, "Name", mName));
+			vert.addGroup( addLine( layout, left, right, "Size", mCount));
+			vert.addGroup( addLine( layout, left, right, "Damage", mDmg));
+			vert.addGroup( addLine( layout, left, right, "Precition", mPrec));
+			hori.addGroup( left);
+			hori.addGroup( right);
+			return vert;
+		}
+
 		@Override
 		protected void createMain() {
 			JPanel box = new JPanel();
@@ -152,17 +166,11 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			box.setOpaque( false);
 //			box.setBorder( BorderFactory.createLineBorder( Color.RED));
 			layout.setAutoCreateGaps( true);
-			SequentialGroup hori = layout.createSequentialGroup();
-			SequentialGroup vert = layout.createSequentialGroup();
-			ParallelGroup leftGrp = layout.createParallelGroup();
-			ParallelGroup rightGrp = layout.createParallelGroup();
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Item", mItem));
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Name", mName));
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Size", mCount));
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Damage", mDmg));
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Precition", mPrec));
-			hori.addGroup( leftGrp);
-			hori.addGroup( rightGrp);
+			Group hori = layout.createSequentialGroup();
+			Group vert = layout.createParallelGroup();
+			vert.addGroup( createLeft( layout, hori));
+			vert.addComponent( mSearch);
+			hori.addComponent( mSearch);
 			layout.setHorizontalGroup( hori);
 			layout.setVerticalGroup( vert);
 			mMain.add( box);

@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,8 +17,8 @@ public class ImageLoader extends Thread {
 	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
 	private static final ImageLoader SINGLETON = new ImageLoader();
 	private HashMap<String, Image> mCache = new HashMap<>();
-	private IHandler mDummy = new DummyHandler();
-	private IHandler mUni = new UniversalHandler();
+	private DummyHandler mDummy = new DummyHandler();
+	private UniversalHandler mUni = new UniversalHandler();
 	private LinkedList<Request> mQueue = new LinkedList<>();
 
 	private ImageLoader() {
@@ -26,9 +27,22 @@ public class ImageLoader extends Thread {
 		setDaemon( true);
 	}
 
+	public static List<SimpleMatcher> find( String value, int max) {
+		return SINGLETON.mUni.find( value, max);
+	}
+
 	public static Image getImage( AStack stk, Runnable cb) {
 		if (stk != null) {
 			return SINGLETON.getImage( stk.getKey(), stk.getNBT(), cb);
+		}
+		else {
+			return null;
+		}
+	}
+
+	public static Image getImage( SimpleMatcher sm, Runnable cb) {
+		if (sm != null) {
+			return SINGLETON.getImage( sm.getStk(), sm.getNbt(), cb);
 		}
 		else {
 			return null;
