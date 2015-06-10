@@ -365,13 +365,12 @@ public class Utils {
 
 	public static void logThrows( Logger l, Level lvl, Throwable ex) {
 		if (l.isLoggable( lvl)) {
-			String msg = "Common.error {0}";
 			if (sTraceStack) {
-				doLogThrows( l, lvl, msg, ex);
+				doLogThrows( l, lvl, ex.getMessage(), ex);
 //				ex.printStackTrace();
 			}
 			else {
-				doLog( l, lvl, msg, new Object[] {
+				doLog( l, lvl, ex.getMessage(), new Object[] {
 					ex
 				});
 			}
@@ -399,6 +398,17 @@ public class Utils {
 		return def;
 	}
 
+	public static byte parseByte( String value, byte def) {
+		if (value != null) {
+			try {
+				return Byte.parseByte( value);
+			}
+			catch (NumberFormatException ex) {
+			}
+		}
+		return def;
+	}
+
 	public static double parseDouble( String value) {
 		return parseDouble( value, 0);
 	}
@@ -407,6 +417,17 @@ public class Utils {
 		if (value != null) {
 			try {
 				return Double.parseDouble( value);
+			}
+			catch (NumberFormatException ex) {
+			}
+		}
+		return def;
+	}
+
+	public static float parseFloat( String value, float def) {
+		if (value != null) {
+			try {
+				return Float.parseFloat( value);
 			}
 			catch (NumberFormatException ex) {
 			}
@@ -437,6 +458,17 @@ public class Utils {
 		if (value != null) {
 			try {
 				return Long.parseLong( value);
+			}
+			catch (NumberFormatException ex) {
+			}
+		}
+		return def;
+	}
+
+	public static short parseShort( String value, short def) {
+		if (value != null) {
+			try {
+				return Short.parseShort( value);
 			}
 			catch (NumberFormatException ex) {
 			}

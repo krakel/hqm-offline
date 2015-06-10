@@ -51,7 +51,7 @@ class Escape {
 		return sb.toString();
 	}
 
-	static Object unescape( String s) {
+	static String unescape( String s) {
 		boolean inEscape = false;
 		int inUnicode = 0;
 		StringBuffer sb = new StringBuffer();

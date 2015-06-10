@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nei.FArray;
+import de.doerl.hqm.utils.nei.NEIReader;
 
 class UniversalHandler implements IHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
@@ -51,6 +53,12 @@ class UniversalHandler implements IHandler {
 			}
 			else {
 				File[] arr = mBase.listFiles();
+				for (File curr : arr) {
+					if ("itempanel.json".equals( curr.getName())) {
+						parseJsonFile( curr);
+						break;
+					}
+				}
 				for (File curr : arr) {
 					if ("itempanel.csv".equals( curr.getName())) {
 						parseCSVFile( curr);
@@ -119,6 +127,28 @@ class UniversalHandler implements IHandler {
 		finally {
 			Utils.closeIgnore( src);
 		}
+	}
+
+	private FArray parseJsonFile( File jsonFile) {
+		FArray arr = new FArray();
+		try {
+			BufferedReader src = null;
+			try {
+				src = new BufferedReader( new FileReader( jsonFile));
+				for (String line = src.readLine(); line != null;) {
+					NEIReader rdr = new NEIReader( line);
+					arr.add( rdr.doLine());
+					line = src.readLine();
+				}
+			}
+			finally {
+				Utils.closeIgnore( src);
+			}
+		}
+		catch (IOException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+		return arr;
 	}
 
 	private Image readImage( File file) {
