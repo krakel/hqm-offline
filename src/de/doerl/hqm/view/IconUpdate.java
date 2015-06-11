@@ -53,10 +53,7 @@ class IconUpdate implements Runnable {
 	}
 
 	void update( Runnable cb) {
-		Image img = null;
-		if (mKey != null) {
-			img = ImageLoader.getImage( mKey, cb);
-		}
+		Image img = ImageLoader.getImage( mKey, cb);
 		if (img != null) {
 			mLbl.setVisible( true);
 		}

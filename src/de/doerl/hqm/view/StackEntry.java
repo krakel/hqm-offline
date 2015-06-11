@@ -6,6 +6,7 @@ import de.doerl.hqm.quest.ItemPrecision;
 class StackEntry {
 	public boolean mItem;
 	private String mKey;
+	private String mName;
 	public int mDmg;
 	public String mNbt;
 	public int mCount;
@@ -13,15 +14,17 @@ class StackEntry {
 
 	public StackEntry() {
 		mItem = true;
-		setKey( "name");
+		setName( "name");
 		mCount = 1;
 		mDmg = 0;
 		setPrecision( ItemPrecision.PRECISE);
+		updateKey();
 	}
 
 	public StackEntry( boolean item, AStack stk, int count, ItemPrecision precition) {
 		mItem = item;
-		setKey( stk.getName());
+		mKey = stk.getKey();
+		setName( stk.getName());
 		mDmg = stk.getDamage();
 		mNbt = stk.getNBT();
 		mCount = count;
@@ -30,30 +33,39 @@ class StackEntry {
 
 	public StackEntry( boolean item, String name, int dmg, int count, ItemPrecision precition) {
 		mItem = item;
-		setKey( name);
+		setName( name);
 		mDmg = dmg;
 		mCount = count;
 		setPrecision( precition);
+		updateKey();
 	}
 
 	public String getKey() {
 		return mKey;
 	}
 
+	public String getName() {
+		return mName;
+	}
+
 	public ItemPrecision getPrecision() {
 		return mPrecision;
 	}
 
-	public void setKey( String name) {
+	public void setName( String name) {
 		if (name.indexOf( ':') < 0) {
-			mKey = "unknown:" + name;
+			mName = "unknown:" + name;
 		}
 		else {
-			mKey = name;
+			mName = name;
 		}
 	}
 
 	public void setPrecision( ItemPrecision value) {
 		mPrecision = value != null ? value : ItemPrecision.PRECISE;
+	}
+
+	public void updateKey() {
+		mKey = mName + '%' + mDmg;
 	}
 }

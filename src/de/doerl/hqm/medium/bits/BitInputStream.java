@@ -126,10 +126,10 @@ class BitInputStream {
 		int size = withSize ? readData( DataBitHelper.SHORT) : 1;
 		int dmg = readData( DataBitHelper.SHORT);
 		if (readBoolean()) {
-			return new FItemStack( readNBT(), id, size, dmg);
+			return new FItemStack( readNBT(), id, dmg, size);
 		}
 		else {
-			return new FItemStack( id, size, dmg);
+			return new FItemStack( id, dmg, size);
 		}
 	}
 
@@ -138,10 +138,10 @@ class BitInputStream {
 		int size = withSize ? readData( DataBitHelper.SHORT) : 1;
 		int dmg = readData( DataBitHelper.SHORT);
 		if (readBoolean()) {
-			return new FItemStack( readNBT(), name, size, dmg);
+			return new FItemStack( readNBT(), name, dmg, size);
 		}
 		else {
-			return new FItemStack( name, size, dmg);
+			return new FItemStack( name, dmg, size);
 		}
 	}
 

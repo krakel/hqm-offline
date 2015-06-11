@@ -1,5 +1,6 @@
 package de.doerl.hqm.view;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,10 +10,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -23,9 +26,10 @@ import de.doerl.hqm.utils.mods.Matcher;
 class LeafSearch extends JPanel {
 	private static final long serialVersionUID = -1967387880066210929L;
 	private static final Logger LOGGER = Logger.getLogger( LeafSearch.class.getName());
+	private static final Border BORDER = BorderFactory.createLineBorder( Color.BLACK);
 	private static final int MAX_ICONS = 49;
 	private static StackIcon sDummy = new StackIcon();
-	private List<IMatcherListener> mListener = new ArrayList<>();
+	private List<ISearchListener> mListener = new ArrayList<>();
 	private JTextField mSearch = new JTextField();
 	private ArrayList<IconRefresh> mRefs = new ArrayList<>();
 	private MouseAdapter mClick = new MouseAdapter() {
@@ -34,8 +38,11 @@ class LeafSearch extends JPanel {
 			Object src = evt.getSource();
 			for (IconRefresh ref : mRefs) {
 				if (Utils.equals( src, ref.mLeaf)) {
+					ref.mLeaf.setBorder( BORDER);
 					SwingUtilities.invokeLater( new MatchRunner( ref.mMatch));
-					break;
+				}
+				else {
+					ref.mLeaf.setBorder( null);
 				}
 			}
 		}
@@ -65,7 +72,7 @@ class LeafSearch extends JPanel {
 		});
 	}
 
-	public void addActionListener( IMatcherListener l) {
+	public void addSearchListener( ISearchListener l) {
 		if (!mListener.contains( l)) {
 			mListener.add( l);
 		}
@@ -86,7 +93,7 @@ class LeafSearch extends JPanel {
 		return matrix;
 	}
 
-	private void doSearch() {
+	void doSearch() {
 		List<Matcher> lst = ImageLoader.find( mSearch.getText(), MAX_ICONS);
 		int size = lst.size();
 		for (int i = 0; i < MAX_ICONS; ++i) {
@@ -102,8 +109,8 @@ class LeafSearch extends JPanel {
 	}
 
 	void fireEvent( Matcher match) {
-		MatcherEvent evt = new MatcherEvent( match);
-		for (IMatcherListener l : mListener) {
+		SearchEvent evt = new SearchEvent( match);
+		for (ISearchListener l : mListener) {
 			try {
 				l.doAction( evt);
 			}
@@ -113,7 +120,7 @@ class LeafSearch extends JPanel {
 		}
 	}
 
-	public void removeActionListener( IMatcherListener l) {
+	public void removeSearchListener( ISearchListener l) {
 		mListener.remove( l);
 	}
 
@@ -126,20 +133,8 @@ class LeafSearch extends JPanel {
 		}
 	}
 
-	public static interface IMatcherListener extends EventListener {
-		void doAction( MatcherEvent event);
-	}
-
-	public static class MatcherEvent {
-		private Matcher mMatch;
-
-		private MatcherEvent( Matcher match) {
-			mMatch = match;
-		}
-
-		public Matcher getMatch() {
-			return mMatch;
-		}
+	public static interface ISearchListener extends EventListener {
+		void doAction( SearchEvent event);
 	}
 
 	private final class MatchRunner implements Runnable {
@@ -152,6 +147,18 @@ class LeafSearch extends JPanel {
 		@Override
 		public void run() {
 			fireEvent( mMatcher);
+		}
+	}
+
+	public static class SearchEvent {
+		private Matcher mMatch;
+
+		private SearchEvent( Matcher match) {
+			mMatch = match;
+		}
+
+		public Matcher getMatch() {
+			return mMatch;
 		}
 	}
 }

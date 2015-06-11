@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
@@ -41,6 +42,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private LeafAbsolute mLeaf = new LeafAbsolute();
 	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mNameAction = new NameAction();
+	private ABundleAction mIconAction = new IconAction();
 	private AToggleAction mGroupAdd = new GroupAddAction();
 	private AToggleAction mGroupMove = new GroupMoveAction();
 	private AToggleAction mGroupLink = new GroupLinkAction();
@@ -67,6 +69,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mNameAction);
 		mTool.add( createToggleButton( mBigAction));
 		mTool.add( mSetAction);
+		mTool.add( mIconAction);
 		mTool.addSeparator();
 		mTool.add( mMoveUpAction);
 		mTool.add( mMoveDownAction);
@@ -514,6 +517,27 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			else {
 				setCursor( Cursor.getPredefinedCursor( Cursor.DEFAULT_CURSOR));
 				enableQuest( mActiv != null);
+			}
+		}
+	}
+
+	private final class IconAction extends ABundleAction {
+		private static final long serialVersionUID = -4857945141280262728L;
+
+		public IconAction() {
+			super( "entity.set.icon");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				FQuest quest = mActiv.getQuest();
+				FItemStack result = DialogIcon.update( quest.mIcon, mCtrl.getFrame());
+				if (result != null) {
+					quest.mIcon = result;
+					mActiv.update( Type.BASE);
+					mCtrl.fireChanged( quest);
+				}
 			}
 		}
 	}

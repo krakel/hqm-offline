@@ -39,6 +39,9 @@ class LeafQuest extends JLabel {
 		StringBuffer sb = new StringBuffer();
 		sb.append( "<html><body bgcolor=#202020 text=#FFFFFF>");
 		sb.append( String.format( "<div align=center>%s<br>", mQuest.mName));
+		if (mQuest.mIcon != null) {
+			sb.append( String.format( "<div align=left>Icon: %s<br>", mQuest.mIcon));
+		}
 		if (!mQuest.isFree()) {
 			sb.append( "<div align=left style='color:#808080'>Locked Quest<br>");
 		}

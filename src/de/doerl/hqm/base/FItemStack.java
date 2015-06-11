@@ -13,7 +13,7 @@ public final class FItemStack extends AStack {
 	private int mSize;
 	private int mDmg;
 
-	public FItemStack( int id, int size, int dmg) {
+	public FItemStack( int id, int dmg, int size) {
 		super( null);
 		mName = OLD_ITEM + String.valueOf( id);
 		mSize = size;
@@ -29,15 +29,15 @@ public final class FItemStack extends AStack {
 		mKey = mName + "%" + mDmg;
 	}
 
-	public FItemStack( String item, int size, int dmg) {
+	public FItemStack( String name, int dmg, int size) {
 		super( null);
-		mName = item;
+		mName = name;
 		mSize = size;
 		mDmg = dmg;
 		mKey = mName + "%" + mDmg;
 	}
 
-	public FItemStack( String nbt, int id, int size, int dmg) {
+	public FItemStack( String nbt, int id, int dmg, int size) {
 		super( nbt);
 		mName = "id:" + String.valueOf( id);
 		mSize = size;
@@ -55,10 +55,10 @@ public final class FItemStack extends AStack {
 		mKey = mName + "%" + mDmg;
 	}
 
-	public FItemStack( String nbt, String item, int size, int dmg) {
+	public FItemStack( String nbt, String name, int dmg, int size) {
 		super( nbt);
-		if (item != null) {
-			mName = item;
+		if (name != null) {
+			mName = name;
 			mSize = size;
 			mDmg = dmg;
 		}

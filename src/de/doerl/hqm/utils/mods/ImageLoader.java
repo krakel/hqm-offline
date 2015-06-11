@@ -28,7 +28,7 @@ public class ImageLoader extends Thread {
 	}
 
 	public static List<Matcher> find( String value, int max) {
-		return SINGLETON.mUni.find( value, max);
+		return SINGLETON.mUni.find( value.toLowerCase(), max);
 	}
 
 	public static Image getImage( AStack stk, Runnable cb) {
@@ -36,48 +36,36 @@ public class ImageLoader extends Thread {
 			return SINGLETON.getImage0( stk.getKey(), cb);
 		}
 		else {
-			return null;
-		}
-	}
-
-	public static Image getImage( Matcher sm, Runnable cb) {
-		if (sm != null) {
-			return SINGLETON.getImage0( sm.mKey, cb);
-		}
-		else {
-			return null;
+			return SINGLETON.getImage0( null, cb);
 		}
 	}
 
 	public static Image getImage( String key, Runnable cb) {
-		if (key != null) {
-			return SINGLETON.getImage0( key, cb);
-		}
-		else {
-			return null;
-		}
+		return SINGLETON.getImage0( key, cb);
 	}
 
 	public static void init() {
 		SINGLETON.start();
 	}
 
-	private synchronized void add( String stk, Runnable cb) {
-		mQueue.addLast( new Request( stk, cb));
+	private synchronized void add( String key, Runnable cb) {
+		mQueue.addLast( new Request( key, cb));
 		notifyAll();
 	}
 
 	private Image getImage0( String key, Runnable cb) {
-		Image img = mCache.get( key);
-		if (img == null && key != null && cb != null) {
+		if (cb != null) {
+			add( key, cb);
+		}
+		if (key != null) {
 			if (key.indexOf( ':') < 0) {
 				Utils.log( LOGGER, Level.WARNING, "wrong stack name: {0}", key);
 			}
-			else {
-				add( key, cb);
-			}
+			return mCache.get( key);
 		}
-		return img;
+		else {
+			return null;
+		}
 	}
 
 	private synchronized Request getNextEntry() throws InterruptedException {
@@ -88,17 +76,18 @@ public class ImageLoader extends Thread {
 	}
 
 	private void readImage( Request req) throws IOException {
-		if (!mCache.containsKey( req.mStk)) {
-			Image img = mUni.load( req.mStk);
+		String key = req.mKey;
+		if (key != null && !mCache.containsKey( key)) {
+			Image img = mUni.load( key);
 			if (img == null) {
-				img = mDummy.load( req.mStk);
+				img = mDummy.load( key);
 			}
 			if (img != null) {
-				mCache.put( req.mStk, img);
-				if (req.mCallback != null) {
-					SwingUtilities.invokeLater( req.mCallback);
-				}
+				mCache.put( key, img);
 			}
+		}
+		if (req.mCallback != null) {
+			SwingUtilities.invokeLater( req.mCallback);
 		}
 	}
 
@@ -106,7 +95,7 @@ public class ImageLoader extends Thread {
 	public void run() {
 		try {
 			while (!interrupted()) {
-				sleep( 100);
+				sleep( 10);
 				Request entry = getNextEntry();
 				if (entry != null) {
 					try {
@@ -126,11 +115,11 @@ public class ImageLoader extends Thread {
 	}
 
 	private static class Request {
-		private String mStk;
+		private String mKey;
 		private Runnable mCallback;
 
-		public Request( String stk, Runnable cb) {
-			mStk = stk;
+		public Request( String key, Runnable cb) {
+			mKey = key;
 			mCallback = cb;
 		}
 	}

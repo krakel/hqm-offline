@@ -1,6 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Window;
 import java.util.Vector;
@@ -10,9 +11,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.Group;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -25,6 +26,9 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
+import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.view.LeafSearch.ISearchListener;
+import de.doerl.hqm.view.LeafSearch.SearchEvent;
 
 class DialogListItems extends ADialogList<StackEntry> {
 	private static final long serialVersionUID = 7121230392342882985L;
@@ -58,7 +62,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 		values.clear();
 		for (int i = 0; i < mModel.size(); ++i) {
 			StackEntry e = mModel.get( i);
-			values.add( new FItemStack( e.getKey(), e.mCount, e.mDmg));
+			values.add( new FItemStack( e.getName(), e.mDmg, e.mCount));
 		}
 	}
 
@@ -77,7 +81,8 @@ class DialogListItems extends ADialogList<StackEntry> {
 		private static final long serialVersionUID = 651515231606809783L;
 		private JTextField mName = new JTextField();
 		private JTextField mCount = new JTextField();
-		private JComboBox<String> mDmg = new JComboBox<>();
+		private LeafSearch mSearch = new LeafSearch();
+		private JTextField mDmg = new JTextField();
 
 		public Editor( Window owner) {
 			super( owner);
@@ -85,17 +90,25 @@ class DialogListItems extends ADialogList<StackEntry> {
 			addAction( BTN_CANCEL, DialogResult.CANCEL);
 			addAction( BTN_OK, DialogResult.APPROVE);
 			addEscapeAction();
-			for (int i = 0; i < 16; ++i) {
-				mDmg.addItem( String.valueOf( i));
-			}
+			mDmg.addKeyListener( new KeyAdaptorInterger());
 			mCount.addKeyListener( new KeyAdaptorInterger());
 			createMain();
+			mSearch.addSearchListener( new ISearchListener() {
+				@Override
+				public void doAction( SearchEvent event) {
+					Matcher match = event.getMatch();
+					mName.setText( match.getName());
+					mDmg.setText( String.valueOf( match.getDamage()));
+					mCount.setText( String.valueOf( 1));
+				}
+			});
+			mName.setPreferredSize( new Dimension( 200, mName.getPreferredSize().height));
 		}
 
 		@Override
 		public StackEntry addElement( ICreator<StackEntry> creator) {
 			mName.setText( "name");
-			mDmg.setSelectedIndex( 0);
+			mDmg.setText( "0");
 			mCount.setText( "1");
 			return showEditor();
 		}
@@ -109,10 +122,22 @@ class DialogListItems extends ADialogList<StackEntry> {
 
 		@Override
 		public StackEntry changeElement( StackEntry entry) {
-			mName.setText( entry.getKey());
-			mDmg.setSelectedIndex( entry.mDmg);
+			mName.setText( entry.getName());
+			mDmg.setText( String.valueOf( entry.mDmg));
 			mCount.setText( String.valueOf( entry.mCount));
 			return showEditor();
+		}
+
+		private Group createLeft( GroupLayout layout, Group hori) {
+			SequentialGroup vert = layout.createSequentialGroup();
+			ParallelGroup leftGrp = layout.createParallelGroup();
+			ParallelGroup rightGrp = layout.createParallelGroup();
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Name", mName));
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Damage", mDmg));
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Size", mCount));
+			hori.addGroup( leftGrp);
+			hori.addGroup( rightGrp);
+			return vert;
 		}
 
 		@Override
@@ -123,24 +148,21 @@ class DialogListItems extends ADialogList<StackEntry> {
 			box.setOpaque( false);
 //			box.setBorder( BorderFactory.createLineBorder( Color.RED));
 			layout.setAutoCreateGaps( true);
-			SequentialGroup hori = layout.createSequentialGroup();
-			SequentialGroup vert = layout.createSequentialGroup();
-			ParallelGroup leftGrp = layout.createParallelGroup();
-			ParallelGroup rightGrp = layout.createParallelGroup();
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Name", mName));
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Damage", mDmg));
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Size", mCount));
-			hori.addGroup( leftGrp);
-			hori.addGroup( rightGrp);
+			Group hori = layout.createSequentialGroup();
+			Group vert = layout.createParallelGroup();
+			vert.addGroup( createLeft( layout, hori));
+			vert.addComponent( mSearch);
+			hori.addComponent( mSearch);
 			layout.setHorizontalGroup( hori);
 			layout.setVerticalGroup( vert);
 			mMain.add( box);
+			mSearch.doSearch();
 		}
 
 		private StackEntry showEditor() {
 			if (showDialog() == DialogResult.APPROVE) {
 				int size = Utils.parseInteger( mCount.getText(), 1);
-				return new StackEntry( true, mName.getText(), mDmg.getSelectedIndex(), size, ItemPrecision.PRECISE);
+				return new StackEntry( true, mName.getText(), Utils.parseInteger( mDmg.getText(), 0), size, ItemPrecision.PRECISE);
 			}
 			else {
 				return null;
@@ -181,7 +203,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry value, int index, boolean isSelected, boolean cellHasFocus) {
 			Image img = ImageLoader.getImage( value.getKey(), createUpdater( list));
 			mIcon.setIcon( new StackIcon( img, String.valueOf( value.mCount)));
-			mName.setText( value.getKey());
+			mName.setText( value.getName());
 			mInfo.setText( String.format( "dmg %2d, count %d", value.mDmg, value.mCount));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
