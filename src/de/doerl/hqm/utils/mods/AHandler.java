@@ -59,7 +59,7 @@ abstract class AHandler implements IHandler {
 
 	abstract boolean isModFile( String name);
 
-	public Image load( String stk, String nbt) {
+	public Image load( String key) {
 		if (mJarFile == null) {
 			mJarFile = getJarFile();
 			if (mJarFile == null) {
@@ -69,10 +69,10 @@ abstract class AHandler implements IHandler {
 				parseFile();
 			}
 		}
-		Image img = mCache.get( stk);
+		Image img = mCache.get( key);
 		if (img == null) {
 			img = ResourceManager.stringImage( getToken() + mCache.size());
-			mCache.put( stk, img);
+			mCache.put( key, img);
 		}
 		return img;
 	}

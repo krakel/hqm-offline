@@ -68,8 +68,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	public EntityQuest( FQuest quest, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
 		mQuest = quest;
-		StackIcon icon = new StackIcon( ResourceManager.getImageUI( "hqm.rep.base"), ReputationFactory.get( quest), 1.0, null);
-		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, new LeafIcon( icon));
+		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, ReputationFactory.getIcon( quest));
 		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, new LeafButton( "Claim reward"));
 		updateReputation();
 		mTaskList.setCellRenderer( new TaskListRenderer());
@@ -320,6 +319,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	}
 
 	private static class ReputationFactory extends AHQMWorker<Object, Object> {
+		private static final Image BACK = ResourceManager.getImageUI( "hqm.rep.base");
 		private boolean positive;
 		private boolean negative;
 
@@ -332,6 +332,12 @@ public class EntityQuest extends AEntity<FQuest> {
 			else {
 				return ResourceManager.getImageUI( worker.positive ? "hqm.rep.good" : "hqm.rep.bad");
 			}
+		}
+
+		private static LeafIcon getIcon( FQuest quest) {
+			LeafIcon leaf = new LeafIcon( AEntity.sizeOf( BACK));
+			leaf.setIcon( new StackIcon( BACK, get( quest), 1.0));
+			return leaf;
 		}
 
 		@Override

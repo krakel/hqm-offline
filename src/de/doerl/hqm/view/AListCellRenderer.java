@@ -1,18 +1,23 @@
 package de.doerl.hqm.view;
 
-import java.awt.LayoutManager;
-
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 abstract class AListCellRenderer<E> extends JPanel implements ListCellRenderer<E> {
 	private static final long serialVersionUID = -658604546833347897L;
+	private int mMax = 10;
 
 	public AListCellRenderer() {
 	}
 
-	public AListCellRenderer( LayoutManager layout) {
-		super( layout);
+	protected ListUpdate createUpdater( JList<?> list) {
+		if (--mMax > 0) {
+			return new ListUpdate( list);
+		}
+		else {
+			return null;
+		}
 	}
 
 	@Override
@@ -45,5 +50,18 @@ abstract class AListCellRenderer<E> extends JPanel implements ListCellRenderer<E
 
 	@Override
 	public void firePropertyChange( String propertyName, short oldValue, short newValue) {
+	}
+
+	protected static class ListUpdate implements Runnable {
+		private JList<?> mList;
+
+		public ListUpdate( JList<?> lst) {
+			mList = lst;
+		}
+
+		@Override
+		public void run() {
+			mList.repaint();
+		}
 	}
 }

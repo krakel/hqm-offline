@@ -12,7 +12,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
 
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
@@ -75,7 +74,7 @@ class TaskBoxLocation extends ATaskBox {
 
 	private final class Renderer extends AListCellRenderer<FLocation> {
 		private static final long serialVersionUID = -5631026361875552358L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
+		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "", true);
 		private LeafLabel mDimension = new LeafLabel( "");
 		private LeafLabel mCoorinate = new LeafLabel( "");
@@ -85,7 +84,7 @@ class TaskBoxLocation extends ATaskBox {
 			setOpaque( false);
 			setBorder( BorderFactory.createEmptyBorder( 2, 0, 2, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon( null, 0.6));
+			mIcon.setIcon( new StackIcon());
 			add( mIcon);
 			add( Box.createHorizontalStrut( AEntity.GAP));
 			add( createBox());
@@ -101,10 +100,8 @@ class TaskBoxLocation extends ATaskBox {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FLocation> list, FLocation loc, int index, boolean isSelected, boolean cellHasFocus) {
-			Runnable cb = null;
-			AStack stk = loc.mIcon;
-			Image img = stk != null ? ImageLoader.getImage( stk, cb) : null;
-			mIcon.setIcon( new StackIcon( img, 0.8, null));
+			Image img = ImageLoader.getImage( loc.mIcon, createUpdater( list));
+			mIcon.setIcon( new StackIcon( img));
 			mName.setText( loc.mName);
 			mDimension.setText( String.format( "Dimension %d, [%d radius]", loc.mDim, loc.mRadius));
 			mCoorinate.setText( String.format( "(%d, %d, %d)", loc.mX, loc.mY, loc.mZ));

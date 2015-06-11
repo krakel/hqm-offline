@@ -1,7 +1,6 @@
 package de.doerl.hqm.view;
 
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -19,13 +18,13 @@ import javax.swing.event.DocumentListener;
 
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
-import de.doerl.hqm.utils.mods.SimpleMatcher;
+import de.doerl.hqm.utils.mods.Matcher;
 
 class LeafSearch extends JPanel {
 	private static final long serialVersionUID = -1967387880066210929L;
 	private static final Logger LOGGER = Logger.getLogger( LeafSearch.class.getName());
 	private static final int MAX_ICONS = 49;
-	private static StackIcon sDummy = new StackIcon( null, 0.6);
+	private static StackIcon sDummy = new StackIcon();
 	private List<IMatcherListener> mListener = new ArrayList<>();
 	private JTextField mSearch = new JTextField();
 	private ArrayList<IconRefresh> mRefs = new ArrayList<>();
@@ -35,7 +34,7 @@ class LeafSearch extends JPanel {
 			Object src = evt.getSource();
 			for (IconRefresh ref : mRefs) {
 				if (Utils.equals( src, ref.mLeaf)) {
-					SwingUtilities.invokeLater( new MatchRunner( ref.mMatcher));
+					SwingUtilities.invokeLater( new MatchRunner( ref.mMatch));
 					break;
 				}
 			}
@@ -78,20 +77,31 @@ class LeafSearch extends JPanel {
 		matrix.setOpaque( false);
 		matrix.setBorder( null);
 		for (int i = 0; i < MAX_ICONS; ++i) {
-			LeafIcon icon = new LeafIcon( sDummy);
+			LeafIcon icon = new LeafIcon();
+			icon.setIcon( sDummy);
 			icon.addMouseListener( mClick);
 			matrix.add( icon);
-			mRefs.add( new IconRefresh( icon, null));
+			mRefs.add( new IconRefresh( icon));
 		}
 		return matrix;
 	}
 
 	private void doSearch() {
-		List<SimpleMatcher> lst = ImageLoader.find( mSearch.getText(), MAX_ICONS);
-		update( lst);
+		List<Matcher> lst = ImageLoader.find( mSearch.getText(), MAX_ICONS);
+		int size = lst.size();
+		for (int i = 0; i < MAX_ICONS; ++i) {
+			IconRefresh ref = mRefs.get( i);
+			if (i < size) {
+				ref.mMatch = lst.get( i);
+			}
+			else {
+				ref.mMatch = null;
+			}
+			IconUpdate.create( ref.mLeaf, ref.mMatch);
+		}
 	}
 
-	void fireEvent( SimpleMatcher match) {
+	void fireEvent( Matcher match) {
 		MatcherEvent evt = new MatcherEvent( match);
 		for (IMatcherListener l : mListener) {
 			try {
@@ -107,48 +117,12 @@ class LeafSearch extends JPanel {
 		mListener.remove( l);
 	}
 
-	public void update( List<SimpleMatcher> lst) {
-		int size = lst.size();
-		for (int i = 0; i < MAX_ICONS; ++i) {
-			IconRefresh ref = mRefs.get( i);
-			if (i < size) {
-				ref.setMatcher( lst.get( i));
-			}
-			else {
-				ref.setMatcher( null);
-			}
-		}
-	}
-
-	private static class IconRefresh implements Runnable {
+	private static class IconRefresh {
 		private LeafIcon mLeaf;
-		private SimpleMatcher mMatcher;
+		public volatile Matcher mMatch;
 
-		public IconRefresh( LeafIcon leaf, SimpleMatcher mm) {
+		public IconRefresh( LeafIcon leaf) {
 			mLeaf = leaf;
-			mMatcher = mm;
-		}
-
-		@Override
-		public void run() {
-			updateIcon( null);
-		}
-
-		public void setMatcher( SimpleMatcher match) {
-			mMatcher = match;
-			updateIcon( this);
-		}
-
-		public void updateIcon( IconRefresh cb) {
-			Image img = ImageLoader.getImage( mMatcher, cb);
-			if (img != null) {
-				mLeaf.setIcon( new StackIcon( img, 0.6, null));
-				mLeaf.setEnabled( true);
-			}
-			else {
-				mLeaf.setIcon( sDummy);
-				mLeaf.setEnabled( false);
-			}
 		}
 	}
 
@@ -157,21 +131,21 @@ class LeafSearch extends JPanel {
 	}
 
 	public static class MatcherEvent {
-		private SimpleMatcher mMatch;
+		private Matcher mMatch;
 
-		private MatcherEvent( SimpleMatcher match) {
+		private MatcherEvent( Matcher match) {
 			mMatch = match;
 		}
 
-		public SimpleMatcher getMatch() {
+		public Matcher getMatch() {
 			return mMatch;
 		}
 	}
 
 	private final class MatchRunner implements Runnable {
-		private SimpleMatcher mMatcher;
+		private Matcher mMatcher;
 
-		public MatchRunner( SimpleMatcher matcher) {
+		public MatchRunner( Matcher matcher) {
 			mMatcher = matcher;
 		}
 

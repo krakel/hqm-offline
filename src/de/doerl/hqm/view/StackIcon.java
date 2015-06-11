@@ -9,30 +9,42 @@ import java.awt.Image;
 
 import javax.swing.Icon;
 
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.utils.ResourceManager;
 
 class StackIcon implements Icon {
 	public static final Image ICON_BACK = ResourceManager.getImageUI( "hqm.icon.back");
+	public static final Image ICON_UNKNOWN = ResourceManager.getImageUI( "hqm.unknown");
 	public static final Dimension ICON_SIZE = AEntity.sizeOf( ICON_BACK);
 	private Image mBack;
 	private Image mImage;
 	private String mText;
 	private double mZoom;
 
-	public StackIcon( AStack stk, double zoom) {
-		this( StackIcon.ICON_BACK, null, 0.6, stk != null ? stk.countOf() : null);
+	public StackIcon() {
+		this( ICON_BACK, ICON_UNKNOWN, 0.6, null);
+	}
+
+	public StackIcon( Image img) {
+		this( ICON_BACK, img, 0.6, null);
 	}
 
 	public StackIcon( Image img, double zoom, String txt) {
-		this( StackIcon.ICON_BACK, img, zoom, txt);
+		this( ICON_BACK, img, zoom, txt);
 	}
 
-	public StackIcon( Image back, Image img, double zoom, String txt) {
+	public StackIcon( Image back, Image img, double zoom) {
+		this( back, img, zoom, null);
+	}
+
+	private StackIcon( Image back, Image img, double zoom, String txt) {
 		mBack = back;
-		mImage = img != null ? img : ResourceManager.getImageUI( "hqm.unknown");
+		mImage = img;
 		mZoom = zoom;
 		mText = txt;
+	}
+
+	public StackIcon( Image img, String txt) {
+		this( ICON_BACK, img, 0.6, txt);
 	}
 
 	public Image getBack() {

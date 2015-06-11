@@ -1,6 +1,5 @@
 package de.doerl.hqm.view;
 
-import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -8,27 +7,15 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.ToolTipManager;
 
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.utils.ResourceManager;
-import de.doerl.hqm.utils.mods.ImageLoader;
 
 class LeafQuest extends JLabel {
 	private static final long serialVersionUID = -2797500791761791369L;
 	private ClickHandler mHandler = new ClickHandler();
 	private FQuest mQuest;
 	private Type mType = Type.NORM;
-	private Runnable mCallback = new Runnable() {
-		@Override
-		public void run() {
-			updateIcon( null);
-			Container parent = getParent();
-			if (parent != null) {
-				parent.repaint();
-			}
-		}
-	};
 
 	public LeafQuest( FQuest quest) {
 		mQuest = quest;
@@ -86,7 +73,7 @@ class LeafQuest extends JLabel {
 	public void update( Type type) {
 		updateType( type);
 		updateBounds();
-		updateIcon( mCallback);
+		updateIcon();
 	}
 
 	public void updateBounds() {
@@ -98,12 +85,10 @@ class LeafQuest extends JLabel {
 		setBounds( x, y, w, h);
 	}
 
-	private void updateIcon( Runnable cb) {
-		AStack stk = mQuest.mIcon;
+	private void updateIcon() {
 		String key = mType.getKey( mQuest.mBig);
 		Image back = ResourceManager.getImageUI( key);
-		Image img = ImageLoader.getImage( stk, cb);
-		setIcon( new StackIcon( back, img, 0.6, null));
+		IconUpdate.create( this, back, mQuest.mIcon, 0.6);
 	}
 
 	public void updateLocation() {

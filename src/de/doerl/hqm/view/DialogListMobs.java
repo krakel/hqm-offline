@@ -169,7 +169,7 @@ class DialogListMobs extends ADialogList<FMob> {
 
 	private static class Renderer extends AListCellRenderer<FMob> {
 		private static final long serialVersionUID = -430644712741965086L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
+		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");
 
@@ -177,7 +177,7 @@ class DialogListMobs extends ADialogList<FMob> {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			mIcon.setIcon( new StackIcon( null, 0.6));
+			mIcon.setIcon( new StackIcon());
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
 			add( createBox());
@@ -197,8 +197,8 @@ class DialogListMobs extends ADialogList<FMob> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob value, int index, boolean isSelected, boolean cellHasFocus) {
-			Image img = ImageLoader.getImage( value.mIcon, null);
-			mIcon.setIcon( new StackIcon( img, 0.6, String.valueOf( value.mKills)));
+			Image img = ImageLoader.getImage( value.mIcon, createUpdater( list));
+			mIcon.setIcon( new StackIcon( img, String.valueOf( value.mKills)));
 			mName.setText( value.mName);
 			mInfo.setText( String.format( "(%2s %s) x%d", value.mExact ? '!' : '~', value.mMob, value.mKills));
 			if (isSelected) {

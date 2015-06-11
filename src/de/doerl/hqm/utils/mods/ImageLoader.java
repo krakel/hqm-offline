@@ -27,22 +27,31 @@ public class ImageLoader extends Thread {
 		setDaemon( true);
 	}
 
-	public static List<SimpleMatcher> find( String value, int max) {
+	public static List<Matcher> find( String value, int max) {
 		return SINGLETON.mUni.find( value, max);
 	}
 
 	public static Image getImage( AStack stk, Runnable cb) {
 		if (stk != null) {
-			return SINGLETON.getImage( stk.getKey(), stk.getNBT(), cb);
+			return SINGLETON.getImage0( stk.getKey(), cb);
 		}
 		else {
 			return null;
 		}
 	}
 
-	public static Image getImage( SimpleMatcher sm, Runnable cb) {
+	public static Image getImage( Matcher sm, Runnable cb) {
 		if (sm != null) {
-			return SINGLETON.getImage( sm.getStk(), sm.getNbt(), cb);
+			return SINGLETON.getImage0( sm.mKey, cb);
+		}
+		else {
+			return null;
+		}
+	}
+
+	public static Image getImage( String key, Runnable cb) {
+		if (key != null) {
+			return SINGLETON.getImage0( key, cb);
 		}
 		else {
 			return null;
@@ -53,19 +62,19 @@ public class ImageLoader extends Thread {
 		SINGLETON.start();
 	}
 
-	private synchronized void add( String stk, String nbt, Runnable cb) {
-		mQueue.addLast( new Request( stk, nbt, cb));
+	private synchronized void add( String stk, Runnable cb) {
+		mQueue.addLast( new Request( stk, cb));
 		notifyAll();
 	}
 
-	private Image getImage( String key, String nbt, Runnable cb) {
+	private Image getImage0( String key, Runnable cb) {
 		Image img = mCache.get( key);
 		if (img == null && key != null && cb != null) {
 			if (key.indexOf( ':') < 0) {
 				Utils.log( LOGGER, Level.WARNING, "wrong stack name: {0}", key);
 			}
 			else {
-				add( key, nbt, cb);
+				add( key, cb);
 			}
 		}
 		return img;
@@ -80,9 +89,9 @@ public class ImageLoader extends Thread {
 
 	private void readImage( Request req) throws IOException {
 		if (!mCache.containsKey( req.mStk)) {
-			Image img = mUni.load( req.mStk, req.mNbt);
+			Image img = mUni.load( req.mStk);
 			if (img == null) {
-				img = mDummy.load( req.mStk, req.mNbt);
+				img = mDummy.load( req.mStk);
 			}
 			if (img != null) {
 				mCache.put( req.mStk, img);
@@ -118,12 +127,10 @@ public class ImageLoader extends Thread {
 
 	private static class Request {
 		private String mStk;
-		private String mNbt;
 		private Runnable mCallback;
 
-		public Request( String stk, String nbt, Runnable cb) {
+		public Request( String stk, Runnable cb) {
 			mStk = stk;
-			mNbt = nbt;
 			mCallback = cb;
 		}
 	}

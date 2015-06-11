@@ -1,6 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
 import java.util.Vector;
@@ -30,6 +31,7 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 class DialogListRequirements extends ADialogList<StackEntry> {
 	private static final long serialVersionUID = 8338191508190847304L;
@@ -57,7 +59,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 		for (ARequirement req : value) {
 			AStack stk = req.getStack();
 			boolean isItem = req.getElementTyp() == ElementTyp.ITEM_REQUIREMENT;
-			mModel.addElement( new StackEntry( isItem, stk.getName(), null, req.getCount(), stk.getDamage(), req.getPrecision()));
+			mModel.addElement( new StackEntry( isItem, stk, req.getCount(), req.getPrecision()));
 		}
 	}
 
@@ -69,13 +71,13 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			StackEntry e = mModel.get( i);
 			if (e.mItem) {
 				FItemRequirement req = task.createItemRequirement();
-				req.mStack = new FItemStack( e.getName(), 1, e.mDmg);
+				req.mStack = new FItemStack( e.getKey(), 1, e.mDmg);
 				req.mRequired = e.mCount;
 				req.mPrecision = e.getPrecision();
 			}
 			else {
 				FFluidRequirement req = task.createFluidRequirement();
-				req.mStack = new FFluidStack( e.getName(), e.mCount);
+				req.mStack = new FFluidStack( e.getKey(), e.mCount);
 			}
 		}
 		return result;
@@ -120,8 +122,8 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 		@Override
 		public StackEntry addElement( ICreator<StackEntry> creator) {
 			mName.setText( "name");
-			mCount.setText( "1");
 			mDmg.setSelectedIndex( 0);
+			mCount.setText( "1");
 			mItem.setSelected( true);
 			mPrec.setSelectedItem( ItemPrecision.PRECISE);
 			return showEditor();
@@ -136,9 +138,9 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 
 		@Override
 		public StackEntry changeElement( StackEntry entry) {
-			mName.setText( entry.getName());
-			mCount.setText( String.valueOf( entry.mCount));
+			mName.setText( entry.getKey());
 			mDmg.setSelectedIndex( entry.mDmg);
+			mCount.setText( String.valueOf( entry.mCount));
 			mItem.setSelected( entry.mItem);
 			mPrec.setSelectedItem( entry.getPrecision());
 			return showEditor();
@@ -150,8 +152,8 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			Group right = layout.createParallelGroup();
 			vert.addGroup( addLine( layout, left, right, "Item", mItem));
 			vert.addGroup( addLine( layout, left, right, "Name", mName));
-			vert.addGroup( addLine( layout, left, right, "Size", mCount));
 			vert.addGroup( addLine( layout, left, right, "Damage", mDmg));
+			vert.addGroup( addLine( layout, left, right, "Size", mCount));
 			vert.addGroup( addLine( layout, left, right, "Precition", mPrec));
 			hori.addGroup( left);
 			hori.addGroup( right);
@@ -179,7 +181,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 		private StackEntry getResult() {
 			int size = Utils.parseInteger( mCount.getText(), 1);
 			ItemPrecision prec = ItemPrecision.get( mPrec.getSelectedIndex());
-			return new StackEntry( mItem.isSelected(), mName.getText(), size, mDmg.getSelectedIndex(), prec);
+			return new StackEntry( mItem.isSelected(), mName.getText(), mDmg.getSelectedIndex(), size, prec);
 		}
 
 		private StackEntry showEditor() {
@@ -194,7 +196,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 
 	private static class Renderer extends AListCellRenderer<StackEntry> {
 		private static final long serialVersionUID = 5239073494468176719L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
+		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");
 
@@ -203,7 +205,7 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon( null, 0.6));
+			mIcon.setIcon( new StackIcon());
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
 			add( createBox());
@@ -223,8 +225,9 @@ class DialogListRequirements extends ADialogList<StackEntry> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry value, int index, boolean isSelected, boolean cellHasFocus) {
-			mIcon.setIcon( new StackIcon( null, 0.6, String.valueOf( value.mCount)));
-			mName.setText( value.getName());
+			Image img = ImageLoader.getImage( value.getKey(), createUpdater( list));
+			mIcon.setIcon( new StackIcon( img, String.valueOf( value.mCount)));
+			mName.setText( value.getKey());
 			mInfo.setText( String.format( "%s, dmg %2d, count %d", value.getPrecision(), value.mDmg, value.mCount));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

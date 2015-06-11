@@ -1,7 +1,6 @@
 package de.doerl.hqm.view;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
@@ -12,19 +11,12 @@ import javax.swing.JPanel;
 
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FItemStack;
-import de.doerl.hqm.utils.mods.ImageLoader;
 
 class LeafStacks extends JPanel {
 	private static final long serialVersionUID = -2203511730691517504L;
 	private ClickHandler mHandler = new ClickHandler();
 	private Vector<FItemStack> mList;
 	private JLabel mBtn;
-	private Runnable mCallback = new Runnable() {
-		@Override
-		public void run() {
-			updateIcons( null);
-		}
-	};
 
 	public LeafStacks( int height, Vector<FItemStack> list, JLabel btn) {
 		mList = list;
@@ -53,19 +45,16 @@ class LeafStacks extends JPanel {
 	}
 
 	public void update() {
-		updateIcons( mCallback);
-	}
-
-	private void updateIcons( Runnable cb) {
 		removeAll();
 		if (mList.isEmpty()) {
-			add( new LeafIcon( new StackIcon( null, 0.8)));
+			add( LeafIcon.createEmpty( 0.8));
 			add( Box.createHorizontalStrut( 3));
 		}
 		else {
 			for (AStack stk : mList) {
-				Image img = ImageLoader.getImage( stk, cb);
-				add( new LeafIcon( new StackIcon( img, 0.8, stk.countOf())));
+				LeafIcon leaf = new LeafIcon();
+				IconUpdate.create( leaf, stk, 0.8, stk.countOf());
+				add( leaf);
 				add( Box.createHorizontalStrut( 3));
 			}
 		}

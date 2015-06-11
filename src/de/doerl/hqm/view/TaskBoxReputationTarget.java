@@ -63,7 +63,7 @@ class TaskBoxReputationTarget extends ATaskBox {
 			setOpaque( false);
 			setBorder( BorderFactory.createEmptyBorder( 2, 0, 2, 0));
 //			setBorder( BorderFactory.createLineBorder( Color.RED));
-			mIcon.setIcon( new StackIcon( null, 0.6));
+			mIcon.setIcon( new StackIcon());
 			add( Box.createHorizontalStrut( 15));
 			add( createBox());
 			add( Box.createHorizontalStrut( 15));

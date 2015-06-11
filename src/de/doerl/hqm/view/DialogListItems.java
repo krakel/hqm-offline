@@ -1,6 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Window;
 import java.util.Vector;
 
@@ -23,6 +24,7 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 class DialogListItems extends ADialogList<StackEntry> {
 	private static final long serialVersionUID = 7121230392342882985L;
@@ -48,7 +50,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 	private void updateMain( Vector<FItemStack> value) {
 		mModel.clear();
 		for (AStack stk : value) {
-			mModel.addElement( new StackEntry( true, stk.getName(), null, stk.getCount(), 0, null));
+			mModel.addElement( new StackEntry( true, stk, stk.getCount(), null));
 		}
 	}
 
@@ -56,7 +58,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 		values.clear();
 		for (int i = 0; i < mModel.size(); ++i) {
 			StackEntry e = mModel.get( i);
-			values.add( new FItemStack( e.getName(), e.mCount, e.mDmg));
+			values.add( new FItemStack( e.getKey(), e.mCount, e.mDmg));
 		}
 	}
 
@@ -93,8 +95,8 @@ class DialogListItems extends ADialogList<StackEntry> {
 		@Override
 		public StackEntry addElement( ICreator<StackEntry> creator) {
 			mName.setText( "name");
-			mCount.setText( "1");
 			mDmg.setSelectedIndex( 0);
+			mCount.setText( "1");
 			return showEditor();
 		}
 
@@ -107,9 +109,9 @@ class DialogListItems extends ADialogList<StackEntry> {
 
 		@Override
 		public StackEntry changeElement( StackEntry entry) {
-			mName.setText( entry.getName());
-			mCount.setText( String.valueOf( entry.mCount));
+			mName.setText( entry.getKey());
 			mDmg.setSelectedIndex( entry.mDmg);
+			mCount.setText( String.valueOf( entry.mCount));
 			return showEditor();
 		}
 
@@ -126,8 +128,8 @@ class DialogListItems extends ADialogList<StackEntry> {
 			ParallelGroup leftGrp = layout.createParallelGroup();
 			ParallelGroup rightGrp = layout.createParallelGroup();
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Name", mName));
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Size", mCount));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Damage", mDmg));
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Size", mCount));
 			hori.addGroup( leftGrp);
 			hori.addGroup( rightGrp);
 			layout.setHorizontalGroup( hori);
@@ -138,7 +140,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 		private StackEntry showEditor() {
 			if (showDialog() == DialogResult.APPROVE) {
 				int size = Utils.parseInteger( mCount.getText(), 1);
-				return new StackEntry( true, mName.getText(), size, mDmg.getSelectedIndex(), ItemPrecision.PRECISE);
+				return new StackEntry( true, mName.getText(), mDmg.getSelectedIndex(), size, ItemPrecision.PRECISE);
 			}
 			else {
 				return null;
@@ -148,7 +150,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 
 	private static class Renderer extends AListCellRenderer<StackEntry> {
 		private static final long serialVersionUID = 5239073494468176719L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
+		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");
 
@@ -157,7 +159,7 @@ class DialogListItems extends ADialogList<StackEntry> {
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon( null, 0.6));
+			mIcon.setIcon( new StackIcon());
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
 			add( createBox());
@@ -177,8 +179,9 @@ class DialogListItems extends ADialogList<StackEntry> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry value, int index, boolean isSelected, boolean cellHasFocus) {
-			mIcon.setIcon( new StackIcon( null, 0.6, String.valueOf( value.mCount)));
-			mName.setText( value.getName());
+			Image img = ImageLoader.getImage( value.getKey(), createUpdater( list));
+			mIcon.setIcon( new StackIcon( img, String.valueOf( value.mCount)));
+			mName.setText( value.getKey());
 			mInfo.setText( String.format( "dmg %2d, count %d", value.mDmg, value.mCount));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

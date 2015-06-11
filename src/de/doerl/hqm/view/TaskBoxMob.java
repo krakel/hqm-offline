@@ -12,7 +12,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
 
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
@@ -75,7 +74,7 @@ class TaskBoxMob extends ATaskBox {
 
 	private final class Renderer extends AListCellRenderer<FMob> {
 		private static final long serialVersionUID = 3374147415409104551L;
-		private LeafIcon mIcon = new LeafIcon( StackIcon.ICON_SIZE);
+		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "", true);
 		private LeafLabel mKilled = new LeafLabel( "");
 		private LeafLabel mTotal = new LeafLabel( "");
@@ -85,7 +84,7 @@ class TaskBoxMob extends ATaskBox {
 			setOpaque( false);
 			setBorder( BorderFactory.createEmptyBorder( 2, 0, 2, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon( null, 0.6));
+			mIcon.setIcon( new StackIcon());
 			add( mIcon);
 			add( Box.createHorizontalStrut( AEntity.GAP));
 			add( createBox());
@@ -101,10 +100,8 @@ class TaskBoxMob extends ATaskBox {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob mob, int index, boolean isSelected, boolean cellHasFocus) {
-			Runnable cb = null;
-			AStack stk = mob.mIcon;
-			Image img = ImageLoader.getImage( stk, cb);
-			mIcon.setIcon( new StackIcon( img, 0.8, null));
+			Image img = ImageLoader.getImage( mob.mIcon, createUpdater( list));
+			mIcon.setIcon( new StackIcon( img));
 			mName.setText( mob.mName);
 			mTotal.setText( String.format( "Kill a total of %d", mob.mKills));
 			return this;
