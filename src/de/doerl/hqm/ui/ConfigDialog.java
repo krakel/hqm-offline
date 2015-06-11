@@ -5,6 +5,7 @@ import java.awt.Window;
 import javax.swing.Box;
 
 import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.mods.ImageLoader;
 
 class ConfigDialog extends ADialog {
 	private static final long serialVersionUID = 724962696459638751L;
@@ -50,5 +51,6 @@ class ConfigDialog extends ADialog {
 //		mModDir.applyChange();
 		mDumpDir.applyChange();
 		mVersion.applyChange();
+		ImageLoader.init();
 	}
 }

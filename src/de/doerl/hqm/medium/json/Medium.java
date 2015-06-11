@@ -2,6 +2,7 @@ package de.doerl.hqm.medium.json;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,6 +17,7 @@ import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.IMediumWorker;
 import de.doerl.hqm.medium.IRefreshListener;
+import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.Utils;
 
@@ -32,6 +34,9 @@ public class Medium implements IMedium {
 			FHqm hqm = new FHqm( name);
 			is = new FileInputStream( file);
 			readHqm( hqm, is);
+			MediaManager.setProperty( hqm, JSON_PATH, file);
+			MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
+			MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
 			return hqm;
 		}
 		catch (Exception ex) {
@@ -47,9 +52,30 @@ public class Medium implements IMedium {
 		return MediumUtils.normalize( choose, ".json");
 	}
 
-	static void readHqm( FHqm hqm, InputStream is) throws IOException {
+	private static void readHqm( FHqm hqm, InputStream is) throws IOException {
 		Parser parser = new Parser( is);
 		parser.readSrc( hqm);
+	}
+
+	static boolean saveHQM( FHqm hqm, File file) {
+		OutputStream os = null;
+		try {
+			MediumUtils.createBackup( file);
+			os = new FileOutputStream( file);
+			writeHQM( hqm, os);
+			hqm.mName = toName( file);
+			MediaManager.setProperty( hqm, JSON_PATH, file);
+			MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
+			MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
+			return true;
+		}
+		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+		finally {
+			Utils.closeIgnore( os);
+		}
+		return false;
 	}
 
 	static File suggest( String name) {
@@ -65,7 +91,7 @@ public class Medium implements IMedium {
 		return pos < 0 ? name : name.substring( 0, pos);
 	}
 
-	static void writeHQM( FHqm hqm, OutputStream os) throws IOException {
+	private static void writeHQM( FHqm hqm, OutputStream os) throws IOException {
 		Serializer serializer = new Serializer( os);
 		serializer.writeDst( hqm);
 		serializer.flushDst();

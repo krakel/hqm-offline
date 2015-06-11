@@ -366,11 +366,11 @@ public class Utils {
 	public static void logThrows( Logger l, Level lvl, Throwable ex) {
 		if (l.isLoggable( lvl)) {
 			if (sTraceStack) {
-				doLogThrows( l, lvl, ex.getMessage(), ex);
+				doLogThrows( l, lvl, "", ex);
 //				ex.printStackTrace();
 			}
 			else {
-				doLog( l, lvl, ex.getMessage(), new Object[] {
+				doLog( l, lvl, "", new Object[] {
 					ex
 				});
 			}

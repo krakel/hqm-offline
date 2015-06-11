@@ -41,16 +41,16 @@ class OpenLastAction extends ABundleAction implements IRefreshListener, Runnable
 
 	@Override
 	public void actionPerformed( ActionEvent e) {
-		String file = PreferenceManager.getArrayString( BaseDefaults.LAST_OPEN, mIndex);
-		IMedium m = MediumOfFile.get( file);
-		FHqm hqm = m.openHqm( new File( file));
+		String path = PreferenceManager.getArrayString( BaseDefaults.LAST_OPEN, mIndex);
+		IMedium m = MediumOfFile.get( path);
+		FHqm hqm = m.openHqm( new File( path));
 		if (hqm != null) {
-			PreferenceManager.deleteArrayString( BaseDefaults.LAST_OPEN, file);
-			PreferenceManager.addArrayString( BaseDefaults.LAST_OPEN, 0, file);
+			PreferenceManager.deleteArrayString( BaseDefaults.LAST_OPEN, path);
+			PreferenceManager.addArrayString( BaseDefaults.LAST_OPEN, 0, path);
 			mCallback.openHQMAction( hqm);
 		}
 		else {
-			Utils.log( LOGGER, Level.INFO, "Can not open {0}", file);
+			Utils.log( LOGGER, Level.INFO, "Can not open {0}", path);
 		}
 	}
 

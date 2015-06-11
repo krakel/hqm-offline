@@ -26,11 +26,21 @@ class IconUpdate implements Runnable {
 	}
 
 	public static void create( JLabel lbl, AStack stk, double zoom, String txt) {
-		create( lbl, null, zoom, stk.getKey(), txt, false);
+		if (stk != null) {
+			create( lbl, null, zoom, stk.getKey(), txt, false);
+		}
+		else {
+			create( lbl, null, zoom, null, txt, false);
+		}
 	}
 
 	public static void create( JLabel lbl, Image back, AStack stk, double zoom) {
-		create( lbl, back, zoom, stk.getKey(), null, false);
+		if (stk != null) {
+			create( lbl, back, zoom, stk.getKey(), null, false);
+		}
+		else {
+			create( lbl, back, zoom, null, null, false);
+		}
 	}
 
 	public static void create( JLabel lbl, Image back, double zoom, String key, String txt, boolean hide) {

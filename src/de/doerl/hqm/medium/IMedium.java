@@ -9,8 +9,6 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.dispatch.IDispatcher;
 
 public interface IMedium extends IDispatcher {
-	public static final String ACTIV_MEDIUM = "activ_medium";
-
 	<T, U> T accept( IMediumWorker<T, U> w, U p);
 
 	String getIcon();

@@ -8,8 +8,10 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.utils.Utils;
 
 public class MediaManager {
-	public static final String DEFAULT_MEDIUM = System.getProperty( "hqm.medium.default", "hqm");
 	private static final Logger LOGGER = Logger.getLogger( MediaManager.class.getName());
+	public static final String DEFAULT_MEDIUM = System.getProperty( "hqm.medium.default", "hqm");
+	public static final String ACTIV_MEDIUM = "activ_medium";
+	public static final String ACTIV_PATH = "activ_path";
 	private static Vector<IMedium> sMedia;
 	static {
 		sMedia = new Vector<IMedium>();

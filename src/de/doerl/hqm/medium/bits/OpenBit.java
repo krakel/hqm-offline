@@ -10,8 +10,6 @@ import javax.swing.JFileChooser;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.medium.AOpenFile;
 import de.doerl.hqm.medium.ICallback;
-import de.doerl.hqm.medium.IMedium;
-import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.utils.Utils;
 
 class OpenBit extends AOpenFile {
@@ -41,8 +39,6 @@ class OpenBit extends AOpenFile {
 		if (file != null && verifyLastHQM( file)) {
 			FHqm hqm = Medium.loadHqm( file);
 			if (hqm != null) {
-				MediaManager.setProperty( hqm, Medium.HQM_PATH, file);
-				MediaManager.setProperty( hqm, IMedium.ACTIV_MEDIUM, Medium.MEDIUM);
 				mCallback.openHQMAction( hqm);
 			}
 		}

@@ -45,7 +45,11 @@ public class ImageLoader extends Thread {
 	}
 
 	public static void init() {
-		SINGLETON.start();
+		SINGLETON.mCache.clear();
+		SINGLETON.mUni.init();
+		if (!SINGLETON.isAlive()) {
+			SINGLETON.start();
+		}
 	}
 
 	private synchronized void add( String key, Runnable cb) {

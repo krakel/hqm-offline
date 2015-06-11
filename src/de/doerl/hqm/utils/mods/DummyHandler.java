@@ -5,18 +5,12 @@ import java.util.Hashtable;
 
 import de.doerl.hqm.utils.ResourceManager;
 
-class DummyHandler implements IHandler {
+class DummyHandler {
 	private Hashtable<String, Integer> mCounts = new Hashtable<>();
 
 	public DummyHandler() {
 	}
 
-	@Override
-	public String getName() {
-		return "dummy";
-	}
-
-	@Override
 	public Image load( String key) {
 		String mod = key.substring( 0, 2).toLowerCase();
 		Integer cnt = mCounts.get( mod);

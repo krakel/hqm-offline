@@ -27,7 +27,7 @@ public class WeakProperty {
 		processQueue();
 		WeakInfo wi;
 		synchronized (sValues) {
-			Object src = base.toString();
+			Object src = String.valueOf( base.hashCode());
 			wi = sValues.get( src);
 			if (wi == null) {
 				wi = new WeakInfo( src, base, sQueue);

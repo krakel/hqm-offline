@@ -20,7 +20,7 @@ import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 
-class UniversalHandler implements IHandler {
+class UniversalHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
 	private static HashMap<String, Matcher> sStackNames = new HashMap<>();
 	private File mBase;
@@ -51,31 +51,28 @@ class UniversalHandler implements IHandler {
 		return null;
 	}
 
-	@Override
-	public String getName() {
-		return "NEI";
+	public void init() {
+		sStackNames.clear();
+		mBase = getBaseDir();
+		if (mBase == null) {
+			mBase = new File( "."); // only one try
+		}
+		else {
+			File[] arr = mBase.listFiles();
+			for (File curr : arr) {
+				if ("itempanel.csv".equals( curr.getName())) {
+					parseCSVFile( curr);
+					break;
+				}
+			}
+			File imgBase = new File( mBase, "itempanel_icons");
+			if (imgBase.exists() && imgBase.isDirectory()) {
+				mImage = imgBase;
+			}
+		}
 	}
 
 	public Image load( String key) {
-		if (mBase == null) {
-			mBase = getBaseDir();
-			if (mBase == null) {
-				mBase = new File( "."); // only one try
-			}
-			else {
-				File[] arr = mBase.listFiles();
-				for (File curr : arr) {
-					if ("itempanel.csv".equals( curr.getName())) {
-						parseCSVFile( curr);
-						break;
-					}
-				}
-				File imgBase = new File( mBase, "itempanel_icons");
-				if (imgBase.exists() && imgBase.isDirectory()) {
-					mImage = imgBase;
-				}
-			}
-		}
 		if (mImage != null) {
 			Matcher match = sStackNames.get( key);
 			if (match != null) {
