@@ -649,20 +649,25 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				if (mActiv != null && mGroupLink.isSelected()) {
 					if (Utils.different( mActiv, dst)) {
 						FQuest quest = mActiv.getQuest();
-						FQuest req = dst.getQuest();
-						Vector<FQuest> prevs = quest.mRequirements;
-						if (prevs.contains( req)) {
+						FQuest other = dst.getQuest();
+						Vector<FQuest> prefs = quest.mRequirements;
+						Vector<FQuest> posts = other.mPosts;
+						if (prefs.contains( other)) {
 							dst.update( Type.NORM);
-							removeLeafLine( req, quest);
-							prevs.remove( req);
+							removeLeafLine( other, quest);
+							posts.remove( quest);
+							prefs.remove( other);
 						}
 						else {
-							prevs.add( req);
+							prefs.add( other);
+							if (!posts.contains( quest)) {
+								posts.add( quest);
+							}
 							dst.update( Type.PREF);
-							createLeafLine( req, quest);
+							createLeafLine( other, quest);
 						}
 						mCtrl.fireChanged( quest);
-						mCtrl.fireChanged( req);
+						mCtrl.fireChanged( other);
 					}
 				}
 				else if (mActiv != null && Utils.equals( mActiv, dst)) {
