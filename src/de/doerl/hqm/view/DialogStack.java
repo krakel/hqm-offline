@@ -27,12 +27,12 @@ import de.doerl.hqm.view.LeafSearch.SearchEvent;
 class DialogStack extends ADialogEdit<StackEntry> {
 	private static final long serialVersionUID = 651515231606809783L;
 	private JCheckBox mItem = new JCheckBox();
-	private JTextField mName = new JTextField();
-	private JTextField mCount = new JTextField();
-	private LeafSearch mSearch = new LeafSearch();
-	private JTextField mDmg = new JTextField();
+	private JTextField mName = new TextFieldAscii();
+	private JTextField mCount = new TextFieldInteger();
+	private JTextField mDmg = new TextFieldInteger();
+	private JTextArea mNBT = new TextAreaAscii();
 	private JComboBox<ItemPrecision> mPrec = new JComboBox<>( ItemPrecision.values());
-	private JTextArea mNBT = new JTextArea();
+	private LeafSearch mSearch = new LeafSearch();
 
 	public DialogStack( Window owner, boolean require) {
 		super( owner);
@@ -43,8 +43,6 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		mItem.setOpaque( false);
 		Insets in = mItem.getInsets();
 		mItem.setBorder( BorderFactory.createEmptyBorder( in.top, 0, in.bottom, in.right));
-		mDmg.addKeyListener( new KeyAdaptorInterger());
-		mCount.addKeyListener( new KeyAdaptorInterger());
 		createMain();
 		mSearch.addSearchListener( new ISearchListener() {
 			@Override

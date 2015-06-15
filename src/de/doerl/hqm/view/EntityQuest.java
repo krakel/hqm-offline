@@ -32,6 +32,7 @@ import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.EditFrame;
@@ -293,7 +294,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextBox.update( mQuest.mDescr, mCtrl.getFrame());
+			String result = DialogTextBox.update( mQuest.mDescr, mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 			if (result != null) {
 				mQuest.mDescr = result;
 				mCtrl.fireChanged( mQuest);
@@ -310,7 +311,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( mQuest.mName, mCtrl.getFrame());
+			String result = DialogTextField.update( mQuest.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
 				mQuest.mName = result;
 				mCtrl.fireChanged( mQuest);
@@ -376,7 +377,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			Tuple2<TaskTyp, String> result = DialogTaskField.update( null, null, mCtrl.getFrame());
+			Tuple2<TaskTyp, String> result = DialogTaskField.update( null, null, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
 				mCtrl.questTaskCreate( mQuest, result._1, result._2);
 			}
@@ -458,7 +459,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		public void actionPerformed( ActionEvent evt) {
 			AQuestTask task = mActiv.getTask();
 			if (task != null) {
-				String result = DialogTextBox.update( task.mDescr, mCtrl.getFrame());
+				String result = DialogTextBox.update( task.mDescr, mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 				if (result != null) {
 					task.mDescr = result;
 					mCtrl.fireChanged( mQuest);
@@ -559,7 +560,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		public void actionPerformed( ActionEvent evt) {
 			AQuestTask task = mActiv.getTask();
 			if (task != null) {
-				String result = DialogTextField.update( task.mName, mCtrl.getFrame());
+				String result = DialogTextField.update( task.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					task.mName = result;
 					mCtrl.fireChanged( mQuest);

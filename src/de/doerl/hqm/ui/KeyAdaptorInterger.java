@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.ui;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

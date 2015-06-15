@@ -7,11 +7,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ADialog;
 
 class DialogTextBox extends ADialog {
 	private static final long serialVersionUID = 5413493873409894323L;
-	private JTextArea mArea;
+	private JTextArea mArea = new TextAreaAscii();
 
 	private DialogTextBox( Window owner) {
 		super( owner);
@@ -21,12 +22,12 @@ class DialogTextBox extends ADialog {
 		addEscapeAction();
 	}
 
-	public static String update( String value, Window owner) {
+	public static String update( String value, Window owner, DataBitHelper bits) {
 		DialogTextBox dlg = new DialogTextBox( owner);
 		dlg.createMain();
 		dlg.updateMain( value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
-			return dlg.getText();
+			return dlg.getText( bits);
 		}
 		else {
 			return null;
@@ -35,7 +36,6 @@ class DialogTextBox extends ADialog {
 
 	@Override
 	protected void createMain() {
-		mArea = new JTextArea();
 		mArea.setFont( AEntity.FONT_NORMAL);
 		mArea.setLineWrap( true);
 		mArea.setWrapStyleWord( true);
@@ -45,8 +45,8 @@ class DialogTextBox extends ADialog {
 		mMain.add( scroll);
 	}
 
-	private String getText() {
-		return mArea.getText();
+	private String getText( DataBitHelper bits) {
+		return bits.truncate( mArea.getText());
 	}
 
 	private void updateMain( String value) {

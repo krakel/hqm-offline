@@ -5,11 +5,12 @@ import java.awt.Window;
 
 import javax.swing.JTextField;
 
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ADialog;
 
 class DialogTextField extends ADialog {
 	private static final long serialVersionUID = -520943310358443074L;
-	private JTextField mField = new JTextField();
+	private JTextField mField = new TextFieldAscii();
 
 	private DialogTextField( Window owner) {
 		super( owner);
@@ -19,12 +20,12 @@ class DialogTextField extends ADialog {
 		addEscapeAction();
 	}
 
-	public static String update( String value, Window owner) {
+	public static String update( String value, Window owner, DataBitHelper bits) {
 		DialogTextField dlg = new DialogTextField( owner);
 		dlg.createMain();
 		dlg.updateMain( value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
-			return dlg.getText();
+			return dlg.getText( bits);
 		}
 		else {
 			return null;
@@ -39,8 +40,8 @@ class DialogTextField extends ADialog {
 		mMain.add( mField);
 	}
 
-	private String getText() {
-		return mField.getText();
+	private String getText( DataBitHelper bits) {
+		return bits.truncate( mField.getText());
 	}
 
 	private void updateMain( String value) {

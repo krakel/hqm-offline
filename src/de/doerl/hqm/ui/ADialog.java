@@ -16,6 +16,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
@@ -55,7 +57,7 @@ public abstract class ADialog extends JDialog {
 		content.add( mMain);
 		content.add( Box.createVerticalGlue());
 		content.add( Box.createVerticalStrut( GAP));
-		content.add( new JSinkLine());
+		content.add( new SinkLine());
 		content.add( mSelect);
 	}
 
@@ -129,12 +131,12 @@ public abstract class ADialog extends JDialog {
 		SAVE;
 	}
 
-	protected static class JSingleLine extends JPanel {
+	protected static class SingleLine extends JPanel {
 		private static final long serialVersionUID = -2148404323729982876L;
 		private static final Dimension MAX_SIZE = new Dimension( Integer.MAX_VALUE, 1);
 		private static final Dimension PREF_SIZE = new Dimension( 0, 1);
 
-		public JSingleLine() {
+		public SingleLine() {
 			setAlignmentX( LEFT_ALIGNMENT);
 		}
 
@@ -156,12 +158,12 @@ public abstract class ADialog extends JDialog {
 		}
 	}
 
-	protected static class JSinkLine extends JPanel {
+	protected static class SinkLine extends JPanel {
 		private static final long serialVersionUID = -2143279745769033698L;
 		private static final Dimension MAX_SIZE = new Dimension( Integer.MAX_VALUE, 2);
 		private static final Dimension PREF_SIZE = new Dimension( 0, 2);
 
-		public JSinkLine() {
+		public SinkLine() {
 			setAlignmentX( LEFT_ALIGNMENT);
 		}
 
@@ -182,6 +184,30 @@ public abstract class ADialog extends JDialog {
 			g.drawLine( 0, 0, getWidth(), 0);
 			g.setColor( getBackground().brighter());
 			g.drawLine( 0, 1, getWidth(), 1);
+		}
+	}
+
+	public static class TextAreaAscii extends JTextArea {
+		private static final long serialVersionUID = 124973359051465828L;
+
+		public TextAreaAscii() {
+			addKeyListener( new KeyAdaptorASCII());
+		}
+	}
+
+	public static class TextFieldAscii extends JTextField {
+		private static final long serialVersionUID = 124973359051465828L;
+
+		public TextFieldAscii() {
+			addKeyListener( new KeyAdaptorASCII());
+		}
+	}
+
+	public static class TextFieldInteger extends JTextField {
+		private static final long serialVersionUID = 124973359051465828L;
+
+		public TextFieldInteger() {
+			addKeyListener( new KeyAdaptorInterger());
 		}
 	}
 }

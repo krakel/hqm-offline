@@ -2,9 +2,9 @@ package de.doerl.hqm.view;
 
 import java.awt.event.ActionListener;
 
-import javax.swing.JTextArea;
+import de.doerl.hqm.ui.ADialog.TextAreaAscii;
 
-class LeafTextBox extends JTextArea {
+class LeafTextBox extends TextAreaAscii {
 	private static final long serialVersionUID = 535359109100667359L;
 	private ClickHandler mHandler = new ClickHandler();
 

@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FQuestTaskLocation;
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.Visibility;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
@@ -79,12 +80,12 @@ class DialogListLocations extends ADialogList<FLocation> {
 
 	private static class Editor extends ADialogEdit<FLocation> {
 		private static final long serialVersionUID = 7720930197206098500L;
-		private JTextField mName = new JTextField();
-		private JTextField mX = new JTextField();
-		private JTextField mY = new JTextField();
-		private JTextField mZ = new JTextField();
-		private JTextField mRadius = new JTextField();
-		private JTextField mDim = new JTextField();
+		private JTextField mName = new TextFieldAscii();
+		private JTextField mX = new TextFieldInteger();
+		private JTextField mY = new TextFieldInteger();
+		private JTextField mZ = new TextFieldInteger();
+		private JTextField mRadius = new TextFieldInteger();
+		private JTextField mDim = new TextFieldInteger();
 		private JComboBox<Visibility> mVisible = new JComboBox<>( Visibility.values());
 
 		public Editor( Window owner) {
@@ -93,12 +94,6 @@ class DialogListLocations extends ADialogList<FLocation> {
 			addAction( BTN_CANCEL, DialogResult.CANCEL);
 			addAction( BTN_OK, DialogResult.APPROVE);
 			addEscapeAction();
-			KeyAdaptorInterger kh = new KeyAdaptorInterger();
-			mX.addKeyListener( kh);
-			mY.addKeyListener( kh);
-			mZ.addKeyListener( kh);
-			mRadius.addKeyListener( kh);
-			mDim.addKeyListener( kh);
 			createMain();
 		}
 
@@ -173,7 +168,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 		}
 
 		private void updateResult( FLocation loc) {
-			loc.mName = mName.getText();
+			loc.mName = DataBitHelper.NAME_LENGTH.truncate( mName.getText());
 			loc.mX = Utils.parseInteger( mX.getText(), 0);
 			loc.mY = Utils.parseInteger( mY.getText(), 0);
 			loc.mZ = Utils.parseInteger( mZ.getText(), 0);

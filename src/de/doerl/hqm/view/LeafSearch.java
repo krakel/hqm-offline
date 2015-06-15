@@ -19,6 +19,7 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import de.doerl.hqm.ui.ADialog.TextFieldAscii;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.Matcher;
@@ -30,7 +31,7 @@ class LeafSearch extends JPanel {
 	private static final int MAX_ICONS = 49;
 	private static StackIcon sDummy = new StackIcon();
 	private List<ISearchListener> mListener = new ArrayList<>();
-	private JTextField mSearch = new JTextField();
+	private JTextField mSearch = new TextFieldAscii();
 	private ArrayList<IconRefresh> mRefs = new ArrayList<>();
 	private MouseAdapter mClick = new MouseAdapter() {
 		@Override

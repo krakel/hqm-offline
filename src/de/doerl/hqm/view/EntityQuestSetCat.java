@@ -28,6 +28,7 @@ import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.SizeOfQuests;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.EditFrame;
@@ -218,7 +219,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( "new", mCtrl.getFrame());
+			String result = DialogTextField.update( "new", mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
 				mCtrl.questSetCreate( mCategory, result);
 			}
@@ -250,7 +251,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.mDescr, mCtrl.getFrame());
+				String result = DialogTextBox.update( mActiv.mDescr, mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 				if (result != null) {
 					mActiv.mDescr = result;
 					mCtrl.fireChanged( mCategory);
@@ -342,7 +343,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.mName, mCtrl.getFrame());
+				String result = DialogTextField.update( mActiv.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					mActiv.mName = result;
 					mCtrl.fireChanged( mCategory);

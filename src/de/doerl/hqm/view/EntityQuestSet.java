@@ -25,6 +25,7 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.AToggleAction;
 import de.doerl.hqm.ui.EditFrame;
@@ -393,7 +394,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void mouseClicked( MouseEvent evt) {
 			if (mGroupAdd.isSelected()) {
-				String result = DialogTextField.update( "Unnamed", mCtrl.getFrame());
+				String result = DialogTextField.update( "Unnamed", mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					int x = mLeaf.stepX( evt.getX()) / AEntity.ZOOM - ResourceManager.getW5( false);
 					int y = mLeaf.stepY( evt.getY()) / AEntity.ZOOM - ResourceManager.getH5( false);
@@ -735,7 +736,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
-				String result = DialogTextField.update( quest.mName, mCtrl.getFrame());
+				String result = DialogTextField.update( quest.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					quest.mName = result;
 					mCtrl.fireChanged( quest);

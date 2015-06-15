@@ -12,7 +12,7 @@ import de.doerl.hqm.utils.Utils;
 
 class DialogIntegerField extends ADialog {
 	private static final long serialVersionUID = -520943310358443074L;
-	private JTextField mField = new JTextField();
+	private JTextField mField = new TextFieldInteger();
 
 	private DialogIntegerField( Window owner) {
 		super( owner);
@@ -20,7 +20,6 @@ class DialogIntegerField extends ADialog {
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
-		mField.addKeyListener( new KeyAdaptorInterger());
 	}
 
 	public static boolean update( FQuestTaskDeath task, Window owner) {

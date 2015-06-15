@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.EditFrame;
@@ -97,7 +98,7 @@ class EntityHQM extends AEntity<FHqm> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextBox.update( mHQM.mDescr, mCtrl.getFrame());
+			String result = DialogTextBox.update( mHQM.mDescr, mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 			if (result != null) {
 				mHQM.mDescr = result;
 				mCtrl.fireChanged( mHQM);

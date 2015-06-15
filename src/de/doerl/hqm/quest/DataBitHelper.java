@@ -110,4 +110,14 @@ public enum DataBitHelper {
 		}
 		return mCached;
 	}
+
+	public String truncate( String txt) {
+		int max = getMaximum();
+		if (max < txt.length()) {
+			return txt.substring( 0, max);
+		}
+		else {
+			return txt;
+		}
+	}
 }

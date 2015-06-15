@@ -11,6 +11,7 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 
 import de.doerl.hqm.Tuple2;
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.ResourceManager;
@@ -19,7 +20,7 @@ import de.doerl.hqm.utils.Utils;
 class DialogTaskField extends ADialog {
 	private static final long serialVersionUID = 3815258461920509252L;
 	private JComboBox<TaskTyp> mTypes = new JComboBox<>( TaskTyp.values());
-	private JTextField mField = new JTextField();
+	private JTextField mField = new TextFieldAscii();
 
 	private DialogTaskField( Window owner) {
 		super( owner);
@@ -30,12 +31,12 @@ class DialogTaskField extends ADialog {
 		mTypes.setRenderer( new TaskListRenderer());
 	}
 
-	public static Tuple2<TaskTyp, String> update( TaskTyp type, String value, Window owner) {
+	public static Tuple2<TaskTyp, String> update( TaskTyp type, String value, Window owner, DataBitHelper bits) {
 		DialogTaskField dlg = new DialogTaskField( owner);
 		dlg.createMain();
 		dlg.updateMain( type, value);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
-			return Tuple2.apply( dlg.getTaskType(), dlg.getText());
+			return Tuple2.apply( dlg.getTaskType(), dlg.getText( bits));
 		}
 		else {
 			return null;
@@ -60,9 +61,14 @@ class DialogTaskField extends ADialog {
 		return (TaskTyp) mTypes.getSelectedItem();
 	}
 
-	private String getText() {
-		String text = mField.getText();
-		return Utils.validString( text) ? text : getTaskType().getTitle();
+	private String getText( DataBitHelper bits) {
+		String txt = mField.getText();
+		if (Utils.validString( txt)) {
+			return bits.truncate( txt);
+		}
+		else {
+			return getTaskType().getTitle();
+		}
 	}
 
 	private void updateMain( TaskTyp type, String value) {

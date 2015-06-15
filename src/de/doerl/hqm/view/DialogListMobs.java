@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuestTaskMob;
+import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
 
@@ -80,9 +81,9 @@ class DialogListMobs extends ADialogList<FMob> {
 
 	private static class Editor extends ADialogEdit<FMob> {
 		private static final long serialVersionUID = 7720930197206098500L;
-		private JTextField mName = new JTextField();
-		private JTextField mMob = new JTextField();
-		private JTextField mKills = new JTextField();
+		private JTextField mName = new TextFieldAscii();
+		private JTextField mMob = new TextFieldAscii();
+		private JTextField mKills = new TextFieldInteger();
 		private JCheckBox mExact = new JCheckBox();
 
 		public Editor( Window owner) {
@@ -94,7 +95,6 @@ class DialogListMobs extends ADialogList<FMob> {
 			mExact.setOpaque( false);
 			Insets in = mExact.getInsets();
 			mExact.setBorder( BorderFactory.createEmptyBorder( in.top, 0, in.bottom, in.right));
-			mKills.addKeyListener( new KeyAdaptorInterger());
 			createMain();
 		}
 
@@ -160,8 +160,8 @@ class DialogListMobs extends ADialogList<FMob> {
 		}
 
 		private void updateResult( FMob entry) {
-			entry.mName = mName.getText();
-			entry.mMob = mMob.getText();
+			entry.mName = DataBitHelper.NAME_LENGTH.truncate( mName.getText());
+			entry.mMob = DataBitHelper.MOB_ID_LENGTH.truncate( mMob.getText());
 			entry.mKills = Utils.parseInteger( mKills.getText(), 1);
 			entry.mExact = mExact.isSelected();
 		}
