@@ -532,7 +532,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
-				FItemStack result = DialogIcon.update( quest.mIcon, mCtrl.getFrame());
+				FItemStack result = DialogStack.update( quest.mIcon, mCtrl.getFrame());
 				if (result != null) {
 					quest.mIcon = result;
 					mActiv.update( Type.BASE);

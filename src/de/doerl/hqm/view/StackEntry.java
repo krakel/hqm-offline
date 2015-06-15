@@ -2,6 +2,7 @@ package de.doerl.hqm.view;
 
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.quest.ItemPrecision;
+import de.doerl.hqm.utils.Utils;
 
 class StackEntry {
 	public boolean mItem;
@@ -31,10 +32,11 @@ class StackEntry {
 		setPrecision( precition);
 	}
 
-	public StackEntry( boolean item, String name, int dmg, int count, ItemPrecision precition) {
+	public StackEntry( boolean item, String name, int dmg, String nbt, int count, ItemPrecision precition) {
 		mItem = item;
 		setName( name);
 		mDmg = dmg;
+		mNbt = Utils.validString( nbt) ? nbt : null;
 		mCount = count;
 		setPrecision( precition);
 		updateKey();

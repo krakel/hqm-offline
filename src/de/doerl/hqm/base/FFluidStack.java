@@ -1,11 +1,14 @@
 package de.doerl.hqm.base;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.doerl.hqm.utils.Utils;
 
 public final class FFluidStack extends AStack {
+	private static final Logger LOGGER = Logger.getLogger( FFluidStack.class.getName());
 	private static final Pattern PATTERN = Pattern.compile( "(.*?) size\\((\\d*)\\)");
 	private static final String FLUID_MOD = "fluid:";
 	private static final String OLD_FLUID = "id:";
@@ -16,9 +19,8 @@ public final class FFluidStack extends AStack {
 	private FFluidStack( Matcher mm) {
 		super( null);
 		mm.find();
-		int size = mm.groupCount();
-		mName = size > 0 ? mm.group( 1) : "fluid:unknown";
-		mSize = size > 1 ? Utils.parseInteger( mm.group( 2)) : 0;
+		mName = mm.group( 1);
+		mSize = Utils.parseInteger( mm.group( 2));
 		mKey = mName + "%0";
 	}
 
@@ -55,7 +57,13 @@ public final class FFluidStack extends AStack {
 			return new FFluidStack( nbt);
 		}
 		else {
-			return new FFluidStack( PATTERN.matcher( nbt));
+			try {
+				return new FFluidStack( PATTERN.matcher( nbt));
+			}
+			catch (RuntimeException ex) {
+				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", nbt);
+				return new FFluidStack( "item:unknown", 0);
+			}
 		}
 	}
 

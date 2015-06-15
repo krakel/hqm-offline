@@ -39,6 +39,7 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.IndexOfQuest;
 import de.doerl.hqm.medium.IHqmWriter;
+import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
 
 class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToken {
@@ -105,6 +106,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		mDst.print( REQUIREMENT_ITEM, item.getStack());
 		mDst.print( REQUIREMENT_REQUIRED, item.mRequired);
 		mDst.print( REQUIREMENT_PRECISION, item.mPrecision);
+		String nbt = item.getStack().getNBT();
+		if (Utils.validString( nbt)) {
+			mDst.print( REQUIREMENT_NBT, nbt);
+		}
 		mDst.endObject();
 		return null;
 	}

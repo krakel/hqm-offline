@@ -1,11 +1,14 @@
 package de.doerl.hqm.base;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.doerl.hqm.utils.Utils;
 
 public final class FItemStack extends AStack {
+	private static final Logger LOGGER = Logger.getLogger( FItemStack.class.getName());
 	private static final Pattern PATTERN = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)");
 	private static final String OLD_ITEM = "id:";
 	private String mKey;
@@ -48,10 +51,9 @@ public final class FItemStack extends AStack {
 	private FItemStack( String nbt, Matcher mm) {
 		super( nbt);
 		mm.find();
-		int size = mm.groupCount();
-		mName = size > 0 ? mm.group( 1) : "item:unknown";
-		mSize = size > 1 ? Utils.parseInteger( mm.group( 2)) : 0;
-		mDmg = size > 2 ? Utils.parseInteger( mm.group( 3)) : 0;
+		mName = mm.group( 1);
+		mSize = Utils.parseInteger( mm.group( 2));
+		mDmg = Utils.parseInteger( mm.group( 3));
 		mKey = mName + "%" + mDmg;
 	}
 
@@ -70,18 +72,30 @@ public final class FItemStack extends AStack {
 		mKey = mName + "%" + mDmg;
 	}
 
-	public static FItemStack parse( String name) {
-		if (name != null) {
-			return new FItemStack( null, PATTERN.matcher( name));
+	public static FItemStack parse( String sequence) {
+		if (sequence != null) {
+			try {
+				return new FItemStack( null, PATTERN.matcher( sequence));
+			}
+			catch (RuntimeException ex) {
+				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", sequence);
+				return new FItemStack( "item:unknown", 0, 0);
+			}
 		}
 		else {
 			return null;
 		}
 	}
 
-	public static FItemStack parse( String name, String nbt) {
-		if (name != null) {
-			return new FItemStack( nbt, PATTERN.matcher( name));
+	public static FItemStack parse( String sequence, String nbt) {
+		if (sequence != null) {
+			try {
+				return new FItemStack( nbt, PATTERN.matcher( sequence));
+			}
+			catch (RuntimeException ex) {
+				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", nbt);
+				return new FItemStack( "item:unknown", 0, 0);
+			}
 		}
 		else if (nbt != null) {
 			return new FItemStack( nbt);
@@ -130,6 +144,10 @@ public final class FItemStack extends AStack {
 		else {
 			return "=COMPOUND(  )";
 		}
+	}
+
+	public void setNBT( String value) {
+		mNBT = value;
 	}
 
 	@Override

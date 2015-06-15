@@ -94,10 +94,10 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
-					String name = FValue.toString( oo.get( IToken.REQUIREMENT_ITEM));
-					if (name != null) {
+					String sequence = FValue.toString( oo.get( IToken.REQUIREMENT_ITEM));
+					if (sequence != null) {
 						FItemRequirement item = task.createItemRequirement();
-						item.mStack = FItemStack.parse( name);
+						item.mStack = FItemStack.parse( sequence, FValue.toString( oo.get( IToken.REQUIREMENT_NBT)));
 						item.mRequired = FValue.toInt( oo.get( IToken.REQUIREMENT_REQUIRED));
 						item.mPrecision = ItemPrecision.parse( FValue.toString( oo.get( IToken.REQUIREMENT_PRECISION)));
 					}
@@ -369,9 +369,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					String name = FValue.toString( obj.get( IToken.ITEM_NAME));
+					String sequence = FValue.toString( obj.get( IToken.ITEM_NAME));
 					String nbt = FValue.toString( obj.get( IToken.ITEM_NBT));
-					param.add( FItemStack.parse( name, nbt));
+					param.add( FItemStack.parse( sequence, nbt));
 				}
 			}
 		}

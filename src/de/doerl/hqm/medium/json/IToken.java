@@ -77,6 +77,7 @@ interface IToken {
 	static final String REQUIREMENT_ITEM = "item";
 	static final String REQUIREMENT_REQUIRED = "required";
 	static final String REQUIREMENT_PRECISION = "precision";
+	static final String REQUIREMENT_NBT = "itemNBT";
 	static final String REQUIREMENT_FLUID = "fluid";
 	//
 	static final String ITEM_NAME = "item";
