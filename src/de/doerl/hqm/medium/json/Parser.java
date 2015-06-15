@@ -94,16 +94,16 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
-					String sequence = FValue.toString( oo.get( IToken.REQUIREMENT_ITEM));
+					String sequence = FValue.toString( oo.get( IToken.ITEM_OBJECT));
 					if (sequence != null) {
 						FItemRequirement item = task.createItemRequirement();
-						item.mStack = FItemStack.parse( sequence, FValue.toString( oo.get( IToken.REQUIREMENT_NBT)));
+						item.mStack = FItemStack.parse( sequence, FValue.toString( oo.get( IToken.ITEM_NBT)));
 						item.mRequired = FValue.toInt( oo.get( IToken.REQUIREMENT_REQUIRED));
 						item.mPrecision = ItemPrecision.parse( FValue.toString( oo.get( IToken.REQUIREMENT_PRECISION)));
 					}
 					else {
 						FFluidRequirement fluid = task.createFluidRequirement();
-						fluid.mStack = FFluidStack.parse( FValue.toString( oo.get( IToken.REQUIREMENT_FLUID)));
+						fluid.mStack = FFluidStack.parse( FValue.toString( oo.get( IToken.FLUID_OBJECT)));
 					}
 				}
 			}
@@ -124,8 +124,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
-					FItemStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.LOCATION_ICON)));
-					FLocation loc = task.createLocation( icon, FValue.toString( oo.get( IToken.LOCATION_NAME)));
+					String name = FValue.toString( oo.get( IToken.LOCATION_NAME));
+					FLocation loc = task.createLocation( name);
+					loc.mIcon = readIcon( obj.get( IToken.LOCATION_ICON));
 					loc.mX = FValue.toInt( oo.get( IToken.LOCATION_X));
 					loc.mY = FValue.toInt( oo.get( IToken.LOCATION_Y));
 					loc.mZ = FValue.toInt( oo.get( IToken.LOCATION_Z));
@@ -145,8 +146,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
-					FItemStack icon = FItemStack.parse( FValue.toString( oo.get( IToken.MOB_ICON)));
-					FMob mob = task.createMob( icon, FValue.toString( oo.get( IToken.MOB_NAME)));
+					String name = FValue.toString( oo.get( IToken.MOB_NAME));
+					FMob mob = task.createMob( name);
+					mob.mIcon = readIcon( obj.get( IToken.MOB_ICON));
 					mob.mMob = FValue.toString( oo.get( IToken.MOB_MOB2));
 					mob.mKills = FValue.toInt( oo.get( IToken.MOB_COUNT));
 					mob.mExact = FValue.toBoolean( oo.get( IToken.MOB_EXACT));
@@ -220,6 +222,20 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 		}
 	}
 
+	private FItemStack readIcon( IJson json) {
+		FObject arr = FObject.to( json);
+		if (arr != null) {
+			String seq = FValue.toString( arr.get( IToken.ITEM_OBJECT));
+			String nbt = FValue.toString( arr.get( IToken.ITEM_NBT));
+			return FItemStack.parse( seq, nbt);
+		}
+		String str = FValue.toString( json);
+		if (str != null) {
+			return FItemStack.parse( str);
+		}
+		return null;
+	}
+
 	private void readMarker( FReputation rep, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
@@ -276,7 +292,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 						quest.mX = FValue.toInt( obj.get( IToken.QUEST_X));
 						quest.mY = FValue.toInt( obj.get( IToken.QUEST_Y));
 						quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));
-						quest.mIcon = FItemStack.parse( FValue.toString( obj.get( IToken.QUEST_ICON)));
+						quest.mIcon = readIcon( obj.get( IToken.QUEST_ICON));
 						readQuestArr( quest, mRequirements, FArray.to( obj.get( IToken.QUEST_REQUIREMENTS)), true);
 						readQuestArr( quest, mOptionLinks, FArray.to( obj.get( IToken.QUEST_OPTION_LINKS)), false);
 						readQuestInfo( quest.mRepeatInfo, FObject.to( obj.get( IToken.QUEST_REPEAT_INFO)));
@@ -369,9 +385,18 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					String sequence = FValue.toString( obj.get( IToken.ITEM_NAME));
+					String seq = FValue.toString( obj.get( IToken.ITEM_OBJECT));
 					String nbt = FValue.toString( obj.get( IToken.ITEM_NBT));
-					param.add( FItemStack.parse( sequence, nbt));
+					param.add( FItemStack.parse( seq, nbt));
+				}
+				else {
+					String str = FValue.toString( json);
+					if (str != null) {
+						param.add( FItemStack.parse( str));
+					}
+					else {
+						param.add( new FItemStack( "unknown"));
+					}
 				}
 			}
 		}

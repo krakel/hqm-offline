@@ -12,10 +12,9 @@ public final class FLocation extends ANamed implements IElement {
 	public int mDim;
 	public Visibility mVisibility;
 
-	public FLocation( FQuestTaskLocation parent, FItemStack icon, String name) {
+	public FLocation( FQuestTaskLocation parent, String name) {
 		super( name);
 		mParentTask = parent;
-		mIcon = icon;
 	}
 
 	@Override

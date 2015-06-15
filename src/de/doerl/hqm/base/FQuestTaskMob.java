@@ -21,8 +21,8 @@ public final class FQuestTaskMob extends AQuestTask {
 		return w.forTaskMob( this, p);
 	}
 
-	public FMob createMob( FItemStack icon, String name) {
-		FMob res = new FMob( this, icon, name);
+	public FMob createMob( String name) {
+		FMob res = new FMob( this, name);
 		mMobs.add( res);
 		return res;
 	}

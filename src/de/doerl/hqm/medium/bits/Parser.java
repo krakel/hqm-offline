@@ -152,7 +152,8 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		for (int i = 0; i < count; i++) {
 			FItemStack icon = mSrc.readIconIf( version);
 			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
-			FLocation loc = task.createLocation( icon, name);
+			FLocation loc = task.createLocation( name);
+			loc.mIcon = icon;
 			loc.mX = mSrc.readData( DataBitHelper.WORLD_COORDINATE);
 			loc.mY = mSrc.readData( DataBitHelper.WORLD_COORDINATE);
 			loc.mZ = mSrc.readData( DataBitHelper.WORLD_COORDINATE);
@@ -169,7 +170,8 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		for (int i = 0; i < count; i++) {
 			FItemStack icon = mSrc.readIconIf( version);
 			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
-			FMob mob = task.createMob( icon, name);
+			FMob mob = task.createMob( name);
+			mob.mIcon = icon;
 			mob.mMob = mSrc.readString( DataBitHelper.MOB_ID_LENGTH);
 			mob.mKills = mSrc.readData( DataBitHelper.KILL_COUNT);
 			mob.mExact = mSrc.readBoolean();

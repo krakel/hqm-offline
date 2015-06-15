@@ -10,10 +10,9 @@ public final class FMob extends ANamed implements IElement {
 	public int mKills;
 	public boolean mExact;
 
-	public FMob( FQuestTaskMob parent, FItemStack icon, String name) {
+	public FMob( FQuestTaskMob parent, String name) {
 		super( name);
 		mParentTask = parent;
-		mIcon = icon;
 	}
 
 	@Override

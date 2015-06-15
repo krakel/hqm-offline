@@ -74,14 +74,12 @@ interface IToken {
 	static final String SETTING_UPPER = "upperID";
 	static final String SETTING_INVERTED = "inverted";
 	//
-	static final String REQUIREMENT_ITEM = "item";
 	static final String REQUIREMENT_REQUIRED = "required";
 	static final String REQUIREMENT_PRECISION = "precision";
-	static final String REQUIREMENT_NBT = "itemNBT";
-	static final String REQUIREMENT_FLUID = "fluid";
 	//
-	static final String ITEM_NAME = "item";
-	static final String ITEM_NBT = "itemNBT";
+	static final String ITEM_OBJECT = "item";
+	static final String ITEM_NBT = "nbt";
+	static final String FLUID_OBJECT = "fluid";
 	//
 	static final String REWARD_REPUTATION = "reputation";
 	static final String REWARD_VALUE = "value";

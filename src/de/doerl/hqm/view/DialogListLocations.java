@@ -69,7 +69,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 
 		@Override
 		public FLocation addElement() {
-			return mTask.createLocation( null, "new");
+			return mTask.createLocation( "new");
 		}
 
 		public ABase getBase() {

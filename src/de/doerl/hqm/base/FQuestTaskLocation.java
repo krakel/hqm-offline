@@ -21,8 +21,8 @@ public final class FQuestTaskLocation extends AQuestTask {
 		return w.forTaskLocation( this, p);
 	}
 
-	public FLocation createLocation( FItemStack icon, String name) {
-		FLocation loc = new FLocation( this, icon, name);
+	public FLocation createLocation( String name) {
+		FLocation loc = new FLocation( this, name);
 		mLocations.add( loc);
 		return loc;
 	}

@@ -70,7 +70,7 @@ class DialogListMobs extends ADialogList<FMob> {
 
 		@Override
 		public FMob addElement() {
-			return mTask.createMob( null, "new");
+			return mTask.createMob( "new");
 		}
 
 		public ABase getBase() {
