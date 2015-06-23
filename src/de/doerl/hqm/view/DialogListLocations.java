@@ -1,29 +1,30 @@
 package de.doerl.hqm.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Window;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.GroupLayout.Group;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.Visibility;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
+import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.view.LeafSearch.ISearchListener;
+import de.doerl.hqm.view.LeafSearch.SearchEvent;
 
 class DialogListLocations extends ADialogList<FLocation> {
 	private static final long serialVersionUID = 7903951948404166751L;
@@ -80,6 +81,8 @@ class DialogListLocations extends ADialogList<FLocation> {
 
 	private static class Editor extends ADialogEdit<FLocation> {
 		private static final long serialVersionUID = 7720930197206098500L;
+		private JTextField mIcon = new TextFieldAscii();
+		private JTextField mIconDmg = new TextFieldInteger();
 		private JTextField mName = new TextFieldAscii();
 		private JTextField mX = new TextFieldInteger();
 		private JTextField mY = new TextFieldInteger();
@@ -87,6 +90,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 		private JTextField mRadius = new TextFieldInteger();
 		private JTextField mDim = new TextFieldInteger();
 		private JComboBox<Visibility> mVisible = new JComboBox<>( Visibility.values());
+		private LeafSearch mSearch = new LeafSearch();
 
 		public Editor( Window owner) {
 			super( owner);
@@ -95,10 +99,21 @@ class DialogListLocations extends ADialogList<FLocation> {
 			addAction( BTN_OK, DialogResult.APPROVE);
 			addEscapeAction();
 			createMain();
+			mSearch.addSearchListener( new ISearchListener() {
+				@Override
+				public void doAction( SearchEvent event) {
+					Matcher match = event.getMatch();
+					mIcon.setText( match.getName());
+					mIconDmg.setText( String.valueOf( match.getDamage()));
+				}
+			});
+			mName.setPreferredSize( new Dimension( 200, mName.getPreferredSize().height));
 		}
 
 		@Override
 		public FLocation addElement( ICreator<FLocation> creator) {
+			mIcon.setText( null);
+			mIconDmg.setText( "0");
 			mName.setText( "unknown");
 			mX.setText( String.valueOf( 0));
 			mY.setText( String.valueOf( 0));
@@ -116,15 +131,16 @@ class DialogListLocations extends ADialogList<FLocation> {
 			}
 		}
 
-		private ParallelGroup addLine( GroupLayout layout, ParallelGroup leftGrp, ParallelGroup rightGrp, String descr, JComponent comp) {
-			JLabel lbl = new JLabel( descr);
-			leftGrp.addComponent( lbl);
-			rightGrp.addComponent( comp);
-			return layout.createParallelGroup( Alignment.BASELINE).addComponent( lbl).addComponent( comp);
-		}
-
 		@Override
 		public FLocation changeElement( FLocation entry) {
+			FItemStack icon = entry.mIcon;
+			if (icon != null) {
+				mIcon.setText( icon.getItem());
+				mIconDmg.setText( String.valueOf( icon.getDamage()));
+			}
+			else {
+				mIconDmg.setText( "0");
+			}
 			mName.setText( entry.mName);
 			mX.setText( String.valueOf( entry.mX));
 			mY.setText( String.valueOf( entry.mY));
@@ -141,18 +157,12 @@ class DialogListLocations extends ADialogList<FLocation> {
 			}
 		}
 
-		@Override
-		protected void createMain() {
-			JPanel box = new JPanel();
-			GroupLayout layout = new GroupLayout( box);
-			box.setLayout( layout);
-			box.setOpaque( false);
-//			box.setBorder( BorderFactory.createLineBorder( Color.RED));
-			layout.setAutoCreateGaps( true);
-			SequentialGroup hori = layout.createSequentialGroup();
-			SequentialGroup vert = layout.createSequentialGroup();
-			ParallelGroup leftGrp = layout.createParallelGroup();
-			ParallelGroup rightGrp = layout.createParallelGroup();
+		private Group createLeft( GroupLayout layout, Group hori) {
+			Group vert = layout.createSequentialGroup();
+			Group leftGrp = layout.createParallelGroup();
+			Group rightGrp = layout.createParallelGroup();
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Icon", mIcon));
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Icon Damage", mIconDmg));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Name", mName));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "x", mX));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "y", mY));
@@ -162,19 +172,43 @@ class DialogListLocations extends ADialogList<FLocation> {
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Visibility", mVisible));
 			hori.addGroup( leftGrp);
 			hori.addGroup( rightGrp);
+			return vert;
+		}
+
+		@Override
+		protected void createMain() {
+			JPanel box = new JPanel();
+			GroupLayout layout = new GroupLayout( box);
+			box.setLayout( layout);
+			box.setOpaque( false);
+//				box.setBorder( BorderFactory.createLineBorder( Color.RED));
+			layout.setAutoCreateGaps( true);
+			Group hori = layout.createSequentialGroup();
+			Group vert = layout.createParallelGroup();
+			vert.addGroup( createLeft( layout, hori));
+			vert.addComponent( mSearch);
+			hori.addComponent( mSearch);
 			layout.setHorizontalGroup( hori);
 			layout.setVerticalGroup( vert);
 			mMain.add( box);
+			mSearch.doSearch();
 		}
 
-		private void updateResult( FLocation loc) {
-			loc.mName = DataBitHelper.NAME_LENGTH.truncate( mName.getText());
-			loc.mX = Utils.parseInteger( mX.getText(), 0);
-			loc.mY = Utils.parseInteger( mY.getText(), 0);
-			loc.mZ = Utils.parseInteger( mZ.getText(), 0);
-			loc.mRadius = Utils.parseInteger( mRadius.getText(), 3);
-			loc.mDim = Utils.parseInteger( mDim.getText(), 0);
-			loc.mVisibility = Visibility.get( mVisible.getSelectedIndex());
+		private void updateResult( FLocation entry) {
+			String icon = mIcon.getText();
+			if (Utils.validString( icon)) {
+				entry.mIcon = new FItemStack( icon, Utils.parseInteger( mIconDmg.getText(), 0), 1);
+			}
+			else {
+				entry.mIcon = null;
+			}
+			entry.mName = DataBitHelper.NAME_LENGTH.truncate( mName.getText());
+			entry.mX = Utils.parseInteger( mX.getText(), 0);
+			entry.mY = Utils.parseInteger( mY.getText(), 0);
+			entry.mZ = Utils.parseInteger( mZ.getText(), 0);
+			entry.mRadius = Utils.parseInteger( mRadius.getText(), 3);
+			entry.mDim = Utils.parseInteger( mDim.getText(), 0);
+			entry.mVisibility = Visibility.get( mVisible.getSelectedIndex());
 		}
 	}
 

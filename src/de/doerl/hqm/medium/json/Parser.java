@@ -126,7 +126,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				if (oo != null) {
 					String name = FValue.toString( oo.get( IToken.LOCATION_NAME));
 					FLocation loc = task.createLocation( name);
-					loc.mIcon = readIcon( obj.get( IToken.LOCATION_ICON));
+					loc.mIcon = readIcon( oo.get( IToken.LOCATION_ICON));
 					loc.mX = FValue.toInt( oo.get( IToken.LOCATION_X));
 					loc.mY = FValue.toInt( oo.get( IToken.LOCATION_Y));
 					loc.mZ = FValue.toInt( oo.get( IToken.LOCATION_Z));
@@ -148,7 +148,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				if (oo != null) {
 					String name = FValue.toString( oo.get( IToken.MOB_NAME));
 					FMob mob = task.createMob( name);
-					mob.mIcon = readIcon( obj.get( IToken.MOB_ICON));
+					mob.mIcon = readIcon( oo.get( IToken.MOB_ICON));
 					mob.mMob = FValue.toString( oo.get( IToken.MOB_MOB2));
 					mob.mKills = FValue.toInt( oo.get( IToken.MOB_COUNT));
 					mob.mExact = FValue.toBoolean( oo.get( IToken.MOB_EXACT));

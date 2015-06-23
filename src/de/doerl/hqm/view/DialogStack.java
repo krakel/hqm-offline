@@ -6,12 +6,9 @@ import java.awt.Window;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout.Group;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -81,13 +78,6 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		mPrec.setSelectedItem( ItemPrecision.PRECISE);
 		mNBT.setText( "");
 		return showEditor();
-	}
-
-	private Group addLine( GroupLayout layout, Group left, Group right, String descr, JComponent comp) {
-		JLabel lbl = new JLabel( descr);
-		left.addComponent( lbl);
-		right.addComponent( comp);
-		return layout.createParallelGroup( Alignment.BASELINE).addComponent( lbl).addComponent( comp);
 	}
 
 	@Override

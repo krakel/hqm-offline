@@ -1,6 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
@@ -9,22 +10,22 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.GroupLayout.Group;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
+import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.view.LeafSearch.ISearchListener;
+import de.doerl.hqm.view.LeafSearch.SearchEvent;
 
 class DialogListMobs extends ADialogList<FMob> {
 	private static final long serialVersionUID = 7903951948404166751L;
@@ -81,10 +82,13 @@ class DialogListMobs extends ADialogList<FMob> {
 
 	private static class Editor extends ADialogEdit<FMob> {
 		private static final long serialVersionUID = 7720930197206098500L;
+		private JTextField mIcon = new TextFieldAscii();
+		private JTextField mIconDmg = new TextFieldInteger();
 		private JTextField mName = new TextFieldAscii();
 		private JTextField mMob = new TextFieldAscii();
 		private JTextField mKills = new TextFieldInteger();
 		private JCheckBox mExact = new JCheckBox();
+		private LeafSearch mSearch = new LeafSearch();
 
 		public Editor( Window owner) {
 			super( owner);
@@ -96,10 +100,21 @@ class DialogListMobs extends ADialogList<FMob> {
 			Insets in = mExact.getInsets();
 			mExact.setBorder( BorderFactory.createEmptyBorder( in.top, 0, in.bottom, in.right));
 			createMain();
+			mSearch.addSearchListener( new ISearchListener() {
+				@Override
+				public void doAction( SearchEvent event) {
+					Matcher match = event.getMatch();
+					mIcon.setText( match.getName());
+					mIconDmg.setText( String.valueOf( match.getDamage()));
+				}
+			});
+			mName.setPreferredSize( new Dimension( 200, mName.getPreferredSize().height));
 		}
 
 		@Override
 		public FMob addElement( ICreator<FMob> creator) {
+			mIcon.setText( null);
+			mIconDmg.setText( "0");
 			mName.setText( "unknown");
 			mMob.setText( "unknown");
 			mKills.setText( "1");
@@ -114,15 +129,16 @@ class DialogListMobs extends ADialogList<FMob> {
 			}
 		}
 
-		private ParallelGroup addLine( GroupLayout layout, ParallelGroup leftGrp, ParallelGroup rightGrp, String descr, JComponent comp) {
-			JLabel lbl = new JLabel( descr);
-			leftGrp.addComponent( lbl);
-			rightGrp.addComponent( comp);
-			return layout.createParallelGroup( Alignment.BASELINE).addComponent( lbl).addComponent( comp);
-		}
-
 		@Override
 		public FMob changeElement( FMob entry) {
+			FItemStack icon = entry.mIcon;
+			if (icon != null) {
+				mIcon.setText( icon.getItem());
+				mIconDmg.setText( String.valueOf( icon.getDamage()));
+			}
+			else {
+				mIconDmg.setText( "0");
+			}
 			mName.setText( entry.mName);
 			mMob.setText( entry.mMob);
 			mKills.setText( String.valueOf( entry.mKills));
@@ -136,30 +152,48 @@ class DialogListMobs extends ADialogList<FMob> {
 			}
 		}
 
-		@Override
-		protected void createMain() {
-			JPanel box = new JPanel();
-			GroupLayout layout = new GroupLayout( box);
-			box.setLayout( layout);
-			box.setOpaque( false);
-//			box.setBorder( BorderFactory.createLineBorder( Color.RED));
-			layout.setAutoCreateGaps( true);
-			SequentialGroup hori = layout.createSequentialGroup();
-			SequentialGroup vert = layout.createSequentialGroup();
-			ParallelGroup leftGrp = layout.createParallelGroup();
-			ParallelGroup rightGrp = layout.createParallelGroup();
+		private Group createLeft( GroupLayout layout, Group hori) {
+			Group vert = layout.createSequentialGroup();
+			Group leftGrp = layout.createParallelGroup();
+			Group rightGrp = layout.createParallelGroup();
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Icon", mIcon));
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Icon Damage", mIconDmg));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Name", mName));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Mob", mMob));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Kills", mKills));
 			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Exact", mExact));
 			hori.addGroup( leftGrp);
 			hori.addGroup( rightGrp);
+			return vert;
+		}
+
+		@Override
+		protected void createMain() {
+			JPanel box = new JPanel();
+			GroupLayout layout = new GroupLayout( box);
+			box.setLayout( layout);
+			box.setOpaque( false);
+//				box.setBorder( BorderFactory.createLineBorder( Color.RED));
+			layout.setAutoCreateGaps( true);
+			Group hori = layout.createSequentialGroup();
+			Group vert = layout.createParallelGroup();
+			vert.addGroup( createLeft( layout, hori));
+			vert.addComponent( mSearch);
+			hori.addComponent( mSearch);
 			layout.setHorizontalGroup( hori);
 			layout.setVerticalGroup( vert);
 			mMain.add( box);
+			mSearch.doSearch();
 		}
 
 		private void updateResult( FMob entry) {
+			String icon = mIcon.getText();
+			if (Utils.validString( icon)) {
+				entry.mIcon = new FItemStack( icon, Utils.parseInteger( mIconDmg.getText(), 0), 1);
+			}
+			else {
+				entry.mIcon = null;
+			}
 			entry.mName = DataBitHelper.NAME_LENGTH.truncate( mName.getText());
 			entry.mMob = DataBitHelper.MOB_ID_LENGTH.truncate( mMob.getText());
 			entry.mKills = Utils.parseInteger( mKills.getText(), 1);
