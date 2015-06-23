@@ -161,12 +161,22 @@ class DialogStack extends ADialogEdit<StackEntry> {
 	}
 
 	private void updateMainStk( FItemStack stk) {
-		mName.setText( stk.getName());
-		mDmg.setText( String.valueOf( stk.getDamage()));
-		mCount.setText( "1");
-		mCount.setEnabled( false);
-		mItem.setSelected( true);
-		mPrec.setSelectedItem( ItemPrecision.PRECISE);
-		mNBT.setText( stk.getNBT());
+		if (stk != null) {
+			mName.setText( stk.getName());
+			mDmg.setText( String.valueOf( stk.getDamage()));
+			mCount.setText( "1");
+			mCount.setEnabled( false);
+			mItem.setSelected( true);
+			mPrec.setSelectedItem( ItemPrecision.PRECISE);
+			mNBT.setText( stk.getNBT());
+		}
+		else {
+			mName.setText( "unknown");
+			mDmg.setText( "0");
+			mCount.setText( "1");
+			mCount.setEnabled( false);
+			mItem.setSelected( true);
+			mPrec.setSelectedItem( ItemPrecision.PRECISE);
+		}
 	}
 }
