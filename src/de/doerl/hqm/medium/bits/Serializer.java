@@ -85,12 +85,12 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 		mDst.writeData( IndexOf.getMember( grp.mTier), DataBitHelper.TIER_COUNT);
 		writeStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
 		if (version.contains( FileVersion.BAG_LIMITS)) {
-			if (grp.mLimit != null) {
-				mDst.writeBoolean( true);
-				mDst.writeData( grp.mLimit, DataBitHelper.LIMIT);
+			if (grp.mLimit == null) {
+				mDst.writeBoolean( false);
 			}
 			else {
-				mDst.writeBoolean( false);
+				mDst.writeBoolean( true);
+				mDst.writeData( grp.mLimit, DataBitHelper.LIMIT);
 			}
 		}
 		return null;
@@ -225,6 +225,27 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 		return null;
 	}
 
+	private boolean isEmpty( Vector<?> lst) {
+		int size = lst.size();
+		for (int i = 0; i < size; ++i) {
+			if (lst.get( i) != null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private int sizeOf( Vector<?> lst) {
+		int res = 0;
+		int size = lst.size();
+		for (int i = 0; i < size; ++i) {
+			if (lst.get( i) != null) {
+				++res;
+			}
+		}
+		return res;
+	}
+
 	@Override
 	public void writeDst( FHqm hqm) {
 		FileVersion version = hqm.getVersion();
@@ -259,17 +280,19 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	}
 
 	private void writeIds( Vector<FQuest> lst, DataBitHelper bits, FileVersion version) {
-		if (lst != null) {
+		if (lst == null || isEmpty( lst)) {
+			mDst.writeBoolean( false);
+		}
+		else {
 			mDst.writeBoolean( true);
-			mDst.writeData( lst.size(), bits, version);
-			for (FQuest quest : lst) {
+			mDst.writeData( sizeOf( lst), bits, version);
+			int size = lst.size();
+			for (int i = 0; i < size; ++i) {
+				FQuest quest = lst.get( i);
 				if (quest != null) {
 					mDst.writeData( IndexOfQuest.get( quest), bits, version);
 				}
 			}
-		}
-		else {
-			mDst.writeBoolean( false);
 		}
 	}
 
@@ -279,12 +302,12 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	}
 
 	private void writeMarkerIf( FMarker mark) {
-		if (mark != null) {
-			mDst.writeBoolean( true);
-			mDst.writeData( IndexOf.getMarker( mark), DataBitHelper.REPUTATION_MARKER);
+		if (mark == null) {
+			mDst.writeBoolean( false);
 		}
 		else {
-			mDst.writeBoolean( false);
+			mDst.writeBoolean( true);
+			mDst.writeData( IndexOf.getMarker( mark), DataBitHelper.REPUTATION_MARKER);
 		}
 	}
 
@@ -314,12 +337,12 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 			}
 		}
 		if (version.contains( FileVersion.PARENT_COUNT)) {
-			if (quest.mReqCount != null) {
-				mDst.writeBoolean( true);
-				mDst.writeData( quest.mReqCount, DataBitHelper.QUESTS, version);
+			if (quest.mReqCount == null) {
+				mDst.writeBoolean( false);
 			}
 			else {
-				mDst.writeBoolean( false);
+				mDst.writeBoolean( true);
+				mDst.writeData( quest.mReqCount, DataBitHelper.QUESTS, version);
 			}
 		}
 		writeTasks( quest, version);
@@ -351,19 +374,23 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	}
 
 	private void writeStacks( Vector<FItemStack> lst, DataBitHelper bits, FileVersion version) {
-		mDst.writeData( lst.size(), bits);
-		for (FItemStack stk : lst) {
-			mDst.writeItemStackFix( stk, version);
+		mDst.writeData( sizeOf( lst), bits);
+		int size = lst.size();
+		for (int i = 0; i < size; ++i) {
+			FItemStack stk = lst.get( i);
+			if (stk != null) {
+				mDst.writeItemStackFix( stk, version);
+			}
 		}
 	}
 
 	private void writeStacksIf( Vector<FItemStack> lst, FileVersion version) {
-		if (lst != null) {
-			mDst.writeBoolean( true);
-			writeStacks( lst, DataBitHelper.REWARDS, version);
+		if (lst == null || isEmpty( lst)) {
+			mDst.writeBoolean( false);
 		}
 		else {
-			mDst.writeBoolean( false);
+			mDst.writeBoolean( true);
+			writeStacks( lst, DataBitHelper.REWARDS, version);
 		}
 	}
 
