@@ -71,16 +71,16 @@ public class Medium implements IMedium {
 		return MediumUtils.normalize( choose, ".hqm");
 	}
 
-	static File protectOriginal( File src) {
-		if ("quests.hqm".equals( src.getName()) && src.exists()) {
-			File protect = new File( src.getParentFile(), "quests.hqm.orig");
+	static File protectOriginal( File orig) {
+		if ("quests.hqm".equals( orig.getName()) && orig.exists()) {
+			File protect = new File( orig.getParentFile(), "quests.hqm.orig");
 			if (protect.exists()) {
 				return null;
 			}
-			if (src.renameTo( protect)) {
+			if (orig.renameTo( protect)) {
 				return protect;
 			}
-			Utils.log( LOGGER, Level.SEVERE, "cannot rename original hqm file {0}", src);
+			Utils.log( LOGGER, Level.SEVERE, "cannot rename original hqm file {0}", orig);
 		}
 		return null;
 	}
@@ -90,34 +90,31 @@ public class Medium implements IMedium {
 		parser.readSrc( hqm);
 	}
 
-	static void restoreOriginal( File old) {
-		if (old != null && old.exists()) {
-			File orig = new File( old.getParentFile(), "quests.hqm");
-			if (orig.exists()) {
-				orig.delete();
+	static void restoreOriginal( File protect) {
+		if (protect != null && protect.exists()) {
+			File wrong = new File( protect.getParentFile(), "quests.hqm");
+			if (wrong.exists()) {
+				wrong.delete();
 			}
-			if (!old.renameTo( orig)) {
-				Utils.log( LOGGER, Level.SEVERE, "cannot restore original hqm file {0}", old);
+			if (!protect.renameTo( wrong)) {
+				Utils.log( LOGGER, Level.SEVERE, "cannot restore original hqm file {0}", protect);
 			}
 		}
 	}
 
 	static boolean saveHqm( FHqm hqm, File file) {
+		File protect = protectOriginal( file);
 		OutputStream os = null;
 		try {
-			File old = protectOriginal( file);
 			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
 			writeHQM( hqm, os);
-			hqm.mName = toName( file);
-			MediaManager.setProperty( hqm, HQM_PATH, file);
-			MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
-			MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
-			restoreOriginal( old);
+			MediaManager.setProperty( hqm, Medium.HQM_PATH, file);
 			return true;
 		}
 		catch (Exception ex) {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
+			restoreOriginal( protect);
 		}
 		finally {
 			Utils.closeIgnore( os);

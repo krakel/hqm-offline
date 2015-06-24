@@ -63,10 +63,7 @@ public class Medium implements IMedium {
 			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
 			writeHQM( hqm, os);
-			hqm.mName = toName( file);
-			MediaManager.setProperty( hqm, JSON_PATH, file);
-			MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
-			MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
+			MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
 			return true;
 		}
 		catch (Exception ex) {

@@ -9,6 +9,7 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.medium.ASaveFile;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.MediaManager;
+import de.doerl.hqm.utils.Utils;
 
 class SaveJSON extends ASaveFile {
 //	private static final Logger LOGGER = Logger.getLogger( SaveJSON.class.getName());
@@ -42,6 +43,17 @@ class SaveJSON extends ASaveFile {
 					mCallback.savedHQMAction();
 				}
 			}
+		}
+	}
+
+	public void run() {
+		FHqm hqm = mCallback.updateHQM();
+		if (hqm != null) {
+			Object medium = MediaManager.getProperty( hqm, MediaManager.ACTIV_MEDIUM);
+			setEnabled( mCallback.isModifiedHQM() && Utils.equals( medium, Medium.MEDIUM));
+		}
+		else {
+			setEnabled( false);
 		}
 	}
 }

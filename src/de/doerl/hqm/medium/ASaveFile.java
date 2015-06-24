@@ -10,10 +10,6 @@ public abstract class ASaveFile extends ADialogFile implements Runnable {
 		setEnabled( false);
 	}
 
-	public void run() {
-		setEnabled( mCallback.isModifiedHQM());
-	}
-
 	public void updateAction( RefreshEvent event) {
 		SwingUtilities.invokeLater( this);
 	}
