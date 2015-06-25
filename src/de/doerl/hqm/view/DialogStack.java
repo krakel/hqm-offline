@@ -45,12 +45,14 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			@Override
 			public void doAction( SearchEvent event) {
 				Matcher match = event.getMatch();
-				mName.setText( match.getName());
-				mDmg.setText( String.valueOf( match.getDamage()));
-				mCount.setText( String.valueOf( 1));
-				mItem.setSelected( true);
-				mPrec.setSelectedItem( ItemPrecision.PRECISE);
-				mNBT.setText( "");
+				if (match != null) {
+					mName.setText( match.getName());
+					mDmg.setText( String.valueOf( match.getDamage()));
+					mCount.setText( String.valueOf( 1));
+					mItem.setSelected( true);
+					mPrec.setSelectedItem( ItemPrecision.PRECISE);
+					mNBT.setText( "");
+				}
 			}
 		});
 		mName.setPreferredSize( new Dimension( 200, mName.getPreferredSize().height));

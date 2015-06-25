@@ -26,9 +26,11 @@ class DialogIcon extends ADialog {
 			@Override
 			public void doAction( SearchEvent event) {
 				Matcher match = event.getMatch();
-				mName = match.getName();
-				mDmg = match.getDamage();
-				mOk.setEnabled( mName != null);
+				if (match != null) {
+					mName = match.getName();
+					mDmg = match.getDamage();
+					mOk.setEnabled( mName != null);
+				}
 			}
 		});
 	}
