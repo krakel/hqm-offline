@@ -31,7 +31,7 @@ class DialogListMobs extends ADialogList<FMob> {
 	private static final long serialVersionUID = 7903951948404166751L;
 
 	public DialogListMobs( Window owner) {
-		super( owner, new Renderer(), new Editor( owner));
+		super( owner, new Renderer(), new Editor( owner), 4);
 		setTheme( "edit.mob.theme");
 	}
 
@@ -53,6 +53,7 @@ class DialogListMobs extends ADialogList<FMob> {
 		for (FMob mob : task.mMobs) {
 			mModel.addElement( mob);
 		}
+		updateBtn();
 	}
 
 	private void updateResult( FQuestTaskMob task) {
@@ -118,7 +119,7 @@ class DialogListMobs extends ADialogList<FMob> {
 			mName.setText( "unknown");
 			mMob.setText( "unknown");
 			mKills.setText( "1");
-			mExact.setSelected( true);
+			mExact.setSelected( false);
 			if (showDialog() == DialogResult.APPROVE) {
 				FMob entry = creator.addElement();
 				updateResult( entry);
@@ -234,7 +235,7 @@ class DialogListMobs extends ADialogList<FMob> {
 			Image img = ImageLoader.getImage( value.mIcon, createUpdater( list));
 			mIcon.setIcon( new StackIcon( img, String.valueOf( value.mKills)));
 			mName.setText( value.mName);
-			mInfo.setText( String.format( "(%2s %s) x%d", value.mExact ? '!' : '~', value.mMob, value.mKills));
+			mInfo.setText( String.format( "(%s %s) x%d", value.mExact ? '!' : '~', value.mMob, value.mKills));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}

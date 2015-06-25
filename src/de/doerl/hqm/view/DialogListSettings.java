@@ -34,7 +34,7 @@ public class DialogListSettings extends ADialogList<FSetting> {
 	private static final long serialVersionUID = -5897552996020524162L;
 
 	public DialogListSettings( Window owner) {
-		super( owner, new Renderer(), new Editor( owner));
+		super( owner, new Renderer(), new Editor( owner), 6);
 		setTheme( "edit.setting.theme");
 	}
 
@@ -56,6 +56,7 @@ public class DialogListSettings extends ADialogList<FSetting> {
 		for (FSetting set : task.mSettings) {
 			mModel.addElement( set);
 		}
+		updateBtn();
 	}
 
 	private void updateResult( FQuestTaskReputationTarget task) {

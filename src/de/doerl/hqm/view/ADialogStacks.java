@@ -16,7 +16,7 @@ abstract class ADialogStacks extends ADialogList<StackEntry> {
 	private static final long serialVersionUID = -47899015784969950L;
 
 	public ADialogStacks( Window owner, boolean require) {
-		super( owner, new Renderer( require), new DialogStack( owner, require));
+		super( owner, new Renderer( require), new DialogStack( owner, require), 99);
 	}
 
 	protected static class Creator implements ICreator<StackEntry> {

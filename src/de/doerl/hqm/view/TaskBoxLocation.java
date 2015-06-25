@@ -103,7 +103,7 @@ class TaskBoxLocation extends ATaskBox {
 			Image img = ImageLoader.getImage( loc.mIcon, createUpdater( list));
 			mIcon.setIcon( new StackIcon( img));
 			mName.setText( loc.mName);
-			mDimension.setText( String.format( "Dimension %d, [%d radius]", loc.mDim, loc.mRadius));
+			mDimension.setText( String.format( "%s (dim %d) [radius %d]", loc.mVisibility, loc.mDim, loc.mRadius));
 			mCoorinate.setText( String.format( "(%d, %d, %d)", loc.mX, loc.mY, loc.mZ));
 			return this;
 		}

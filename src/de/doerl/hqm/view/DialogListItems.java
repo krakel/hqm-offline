@@ -33,6 +33,7 @@ class DialogListItems extends ADialogStacks {
 		for (AStack stk : value) {
 			mModel.addElement( new StackEntry( true, stk, stk.getCount(), ItemPrecision.PRECISE));
 		}
+		updateBtn();
 	}
 
 	private void updateResult( Vector<FItemStack> values) {

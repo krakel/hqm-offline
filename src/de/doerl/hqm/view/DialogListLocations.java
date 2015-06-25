@@ -30,8 +30,8 @@ class DialogListLocations extends ADialogList<FLocation> {
 	private static final long serialVersionUID = 7903951948404166751L;
 
 	public DialogListLocations( Window owner) {
-		super( owner, new Renderer(), new Editor( owner));
-		setTheme( "edit.mob.theme");
+		super( owner, new Renderer(), new Editor( owner), 4);
+		setTheme( "edit.location.theme");
 	}
 
 	public static boolean update( FQuestTaskLocation task, Window owner) {
@@ -52,6 +52,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 		for (FLocation loc : task.mLocations) {
 			mModel.addElement( loc);
 		}
+		updateBtn();
 	}
 
 	private void updateResult( FQuestTaskLocation task) {

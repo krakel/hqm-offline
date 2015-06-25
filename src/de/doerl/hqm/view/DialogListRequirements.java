@@ -40,6 +40,7 @@ class DialogListRequirements extends ADialogStacks {
 			boolean isItem = req.getElementTyp() == ElementTyp.ITEM_REQUIREMENT;
 			mModel.addElement( new StackEntry( isItem, stk, req.getCount(), req.getPrecision()));
 		}
+		updateBtn();
 	}
 
 	private Vector<ARequirement> updateResult( AQuestTaskItems task) {

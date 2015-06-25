@@ -32,11 +32,13 @@ abstract class ADialogList<E> extends ADialog {
 	private JButton mBtnDown = new JButton( "Down");
 	private ListCellRenderer<E> mRenderer;
 	private ADialogEdit<E> mEdit;
+	private int mMax;
 
-	public ADialogList( Window owner, ListCellRenderer<E> renderer, ADialogEdit<E> edit) {
+	public ADialogList( Window owner, ListCellRenderer<E> renderer, ADialogEdit<E> edit, int max) {
 		super( owner);
 		mRenderer = renderer;
 		mEdit = edit;
+		mMax = max;
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
@@ -87,15 +89,16 @@ abstract class ADialogList<E> extends ADialog {
 		ActionListener edit = new EntryChangeHandler();
 		mBtnChange.addActionListener( edit);
 		dbl.addClickListener( edit);
-		updateBtn();
 	}
 
-	private void updateBtn() {
+	protected void updateBtn() {
 		int idx = mList.getSelectedIndex() + 1;
+		int size = mModel.getSize();
 		mBtnDelete.setEnabled( idx > 0);
 		mBtnChange.setEnabled( idx > 0);
 		mBtnUp.setEnabled( idx > 1);
-		mBtnDown.setEnabled( idx > 0 && idx < mModel.getSize());
+		mBtnDown.setEnabled( idx > 0 && idx < size);
+		mBtnAdd.setEnabled( size < mMax);
 	}
 
 	private void updateSize( JComponent comp) {
