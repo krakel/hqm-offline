@@ -12,7 +12,6 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
-import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
@@ -79,12 +78,7 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 
 	@Override
 	public T forGroup( FGroup grp, U p) {
-		return doMember( grp, p);
-	}
-
-	@Override
-	public T forGroupCat( FGroupCat cat, U p) {
-		return doCategory( cat, p);
+		return doNamed( grp, p);
 	}
 
 	@Override

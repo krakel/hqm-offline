@@ -8,7 +8,6 @@ import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
-import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
@@ -32,8 +31,10 @@ import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
+import de.doerl.hqm.base.dispatch.IndexOfGroup;
 import de.doerl.hqm.base.dispatch.IndexOfQuest;
 import de.doerl.hqm.base.dispatch.SizeOf;
+import de.doerl.hqm.base.dispatch.SizeOfGroups;
 import de.doerl.hqm.base.dispatch.SizeOfQuests;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.quest.DataBitHelper;
@@ -43,6 +44,7 @@ import de.doerl.hqm.quest.TriggerType;
 class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 //	private static final Logger LOGGER = Logger.getLogger( Serializer.class.getName());
 	private QuestWorker mQuestWorker = new QuestWorker();
+	private GroupWorker mGroupWorker = new GroupWorker();
 	private BitOutputStream mDst;
 
 	public Serializer( OutputStream out) throws IOException {
@@ -73,26 +75,6 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	public Object forFluidRequirement( FFluidRequirement fluid, FileVersion version) {
 		mDst.writeBoolean( false);
 		mDst.writeFluidStack( fluid.mStack);
-		return null;
-	}
-
-	@Override
-	public Object forGroup( FGroup grp, FileVersion version) {
-		if (version.contains( FileVersion.BAG_LIMITS)) {
-			mDst.writeData( IndexOf.getMember( grp), DataBitHelper.GROUP_COUNT);
-		}
-		mDst.writeString( grp.mName, DataBitHelper.QUEST_NAME_LENGTH);
-		mDst.writeData( IndexOf.getMember( grp.mTier), DataBitHelper.TIER_COUNT);
-		writeStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
-		if (version.contains( FileVersion.BAG_LIMITS)) {
-			if (grp.mLimit == null) {
-				mDst.writeBoolean( false);
-			}
-			else {
-				mDst.writeBoolean( true);
-				mDst.writeData( grp.mLimit, DataBitHelper.LIMIT);
-			}
-		}
 		return null;
 	}
 
@@ -265,13 +247,31 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 		writeQuests( hqm.mQuestSetCat, version);
 		if (version.contains( FileVersion.BAGS)) {
 			writeGroupTiers( hqm.mGroupTierCat, version);
-			writeGroup( hqm.mGroupCat, version);
+			writeGroups( hqm.mGroupTierCat, version);
 		}
 	}
 
-	private void writeGroup( FGroupCat cat, FileVersion version) {
-		mDst.writeData( SizeOf.getMember( cat), DataBitHelper.GROUP_COUNT);
-		cat.forEachMember( this, version);
+	private void writeGroup( FGroup grp, FileVersion version) {
+		if (version.contains( FileVersion.BAG_LIMITS)) {
+			mDst.writeData( IndexOfGroup.get( grp), DataBitHelper.GROUP_COUNT);
+		}
+		mDst.writeString( grp.mName, DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeData( IndexOf.getMember( grp.mParentTier), DataBitHelper.TIER_COUNT);
+		writeStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
+		if (version.contains( FileVersion.BAG_LIMITS)) {
+			if (grp.mLimit == null) {
+				mDst.writeBoolean( false);
+			}
+			else {
+				mDst.writeBoolean( true);
+				mDst.writeData( grp.mLimit, DataBitHelper.LIMIT);
+			}
+		}
+	}
+
+	private void writeGroups( FGroupTierCat cat, FileVersion version) {
+		mDst.writeData( SizeOfGroups.get( cat), DataBitHelper.GROUP_COUNT);
+		cat.forEachMember( mGroupWorker, version);
 	}
 
 	private void writeGroupTiers( FGroupTierCat cat, FileVersion version) {
@@ -397,6 +397,20 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	private void writeTasks( FQuest quest, FileVersion version) {
 		mDst.writeData( SizeOf.getTasks( quest), DataBitHelper.TASKS);
 		quest.forEachTask( this, version);
+	}
+
+	private final class GroupWorker extends AHQMWorker<Object, FileVersion> {
+		@Override
+		public Object forGroup( FGroup grp, FileVersion version) {
+			writeGroup( grp, version);
+			return null;
+		}
+
+		@Override
+		public Object forGroupTier( FGroupTier tier, FileVersion version) {
+			tier.forEachGroup( this, version);
+			return null;
+		}
 	}
 
 	private final class QuestWorker extends AHQMWorker<Object, FileVersion> {

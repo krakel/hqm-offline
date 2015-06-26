@@ -9,7 +9,6 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
-import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
@@ -37,6 +36,7 @@ import de.doerl.hqm.base.FReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
+import de.doerl.hqm.base.dispatch.IndexOfGroup;
 import de.doerl.hqm.base.dispatch.IndexOfQuest;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.utils.Utils;
@@ -44,6 +44,7 @@ import de.doerl.hqm.utils.json.JsonWriter;
 
 class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToken {
 	private QuestWorker mQuestWorker = new QuestWorker();
+	private GroupWorker mGroupWorker = new GroupWorker();
 	private JsonWriter mDst;
 
 	public Serializer( OutputStream os) throws IOException {
@@ -73,18 +74,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
 		mDst.beginObject();
 		mDst.print( FLUID_OBJECT, fluid.getStack());
-		mDst.endObject();
-		return null;
-	}
-
-	@Override
-	public Object forGroup( FGroup grp, Object p) {
-		mDst.beginObject();
-		mDst.print( GROUP_ID, IndexOf.getMember( grp));
-		mDst.print( GROUP_NAME, grp.mName);
-		mDst.print( GROUP_TIER, toID( IndexOf.getMember( grp.mTier), grp.mTier.mName));
-		mDst.print( GROUP_LIMIT, grp.mLimit);
-		writeStackArr( GROUP_STACKS, grp.mStacks);
 		mDst.endObject();
 		return null;
 	}
@@ -293,19 +282,29 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		writeReputations( hqm.mReputationCat);
 		writeQuests( hqm.mQuestSetCat);
 		writeGroupTiers( hqm.mGroupTierCat);
-		writeGroups( hqm.mGroupCat);
+		writeGroups( hqm.mGroupTierCat);
 		mDst.endObject();
 	}
 
-	private void writeGroups( FGroupCat set) {
+	private void writeGroup( FGroup grp) {
+		mDst.beginObject();
+		mDst.print( GROUP_ID, IndexOfGroup.get( grp));
+		mDst.print( GROUP_NAME, grp.mName);
+		mDst.print( GROUP_TIER, toID( IndexOf.getMember( grp.mParentTier), grp.mParentTier.mName));
+		mDst.print( GROUP_LIMIT, grp.mLimit);
+		writeStackArr( GROUP_STACKS, grp.mStacks);
+		mDst.endObject();
+	}
+
+	private void writeGroups( FGroupTierCat cat) {
 		mDst.beginArray( HQM_GROUP_CAT);
-		set.forEachMember( this, null);
+		cat.forEachMember( mGroupWorker, null);
 		mDst.endArray();
 	}
 
-	private void writeGroupTiers( FGroupTierCat set) {
+	private void writeGroupTiers( FGroupTierCat cat) {
 		mDst.beginArray( HQM_GROUP_TIER_CAT);
-		set.forEachMember( this, null);
+		cat.forEachMember( this, null);
 		mDst.endArray();
 	}
 
@@ -415,6 +414,20 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		mDst.beginArray( QUEST_TASKS);
 		quest.forEachTask( this, null);
 		mDst.endArray();
+	}
+
+	private final class GroupWorker extends AHQMWorker<Object, Object> {
+		@Override
+		public Object forGroup( FGroup grp, Object p) {
+			writeGroup( grp);
+			return null;
+		}
+
+		@Override
+		public Object forGroupTier( FGroupTier tier, Object p) {
+			tier.forEachGroup( this, p);
+			return null;
+		}
 	}
 
 	private final class QuestWorker extends AHQMWorker<Object, Object> {

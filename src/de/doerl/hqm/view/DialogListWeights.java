@@ -236,7 +236,7 @@ class DialogListWeights extends ADialog {
 	private static class Renderer extends AListCellRenderer<Integer> {
 		private static final long serialVersionUID = -430644712741965086L;
 		private LeafLabel mBag = new LeafLabel( "");
-		private LeafLabel mName = new LeafLabel( "Unknown");
+		private LeafLabel mName = new LeafLabel( "");
 
 		public Renderer() {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));

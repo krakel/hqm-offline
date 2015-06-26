@@ -152,7 +152,7 @@ abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 		public void actionPerformed( ActionEvent evt) {
 			String result = DialogTextField.update( "new", mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
-				mCtrl.groupMember( mCategory, result);
+				mCtrl.memberCreate( mCategory, result);
 			}
 		}
 	}

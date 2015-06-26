@@ -5,15 +5,14 @@ import java.util.Vector;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FGroup extends AMember {
-	public final FGroupCat mParentCategory;
-	public FGroupTier mTier;
+public final class FGroup extends ANamed implements IElement {
+	public final FGroupTier mParentTier;
 	public Integer mLimit;
 	public Vector<FItemStack> mStacks = new Vector<>();
 
-	public FGroup( FGroupCat parent, String name) {
+	public FGroup( FGroupTier parent, String name) {
 		super( name);
-		mParentCategory = parent;
+		mParentTier = parent;
 	}
 
 	@Override
@@ -27,30 +26,30 @@ public final class FGroup extends AMember {
 	}
 
 	@Override
-	public FGroupCat getParent() {
-		return mParentCategory;
+	public FGroupTier getParent() {
+		return mParentTier;
 	}
 
 	public boolean isFirst() {
-		return ABase.isFirst( mParentCategory.mArr, this);
+		return ABase.isFirst( mParentTier.mGroups, this);
 	}
 
 	@Override
 	public boolean isLast() {
-		return ABase.isLast( mParentCategory.mArr, this);
+		return ABase.isLast( mParentTier.mGroups, this);
 	}
 
 	@Override
 	public void moveDown() {
-		ABase.moveDown( mParentCategory.mArr, this);
+		ABase.moveDown( mParentTier.mGroups, this);
 	}
 
 	@Override
 	public void moveUp() {
-		ABase.moveUp( mParentCategory.mArr, this);
+		ABase.moveUp( mParentTier.mGroups, this);
 	}
 
 	public void remove() {
-		ABase.remove( mParentCategory.mArr, this);
+		ABase.remove( mParentTier.mGroups, this);
 	}
 }

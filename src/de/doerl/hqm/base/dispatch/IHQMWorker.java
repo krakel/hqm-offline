@@ -2,7 +2,6 @@ package de.doerl.hqm.base.dispatch;
 
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
-import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
@@ -32,8 +31,6 @@ public interface IHQMWorker<T, U> extends IWorker {
 	T forFluidRequirement( FFluidRequirement fluid, U p);
 
 	T forGroup( FGroup grp, U p);
-
-	T forGroupCat( FGroupCat cat, U p);
 
 	T forGroupTier( FGroupTier tier, U p);
 

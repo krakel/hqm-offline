@@ -237,7 +237,7 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 	private static class WeightRenderer extends AListCellRenderer<Integer> {
 		private static final long serialVersionUID = -8131645092948557749L;
 		private JLabel mBag = new LeafLabel( "");
-		private JLabel mTitle = new LeafLabel( "");
+		private JLabel mName = new LeafLabel( "");
 
 		public WeightRenderer() {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
@@ -245,13 +245,13 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 			mBag.setMinimumSize( new Dimension( 50, FONT_NORMAL.getSize()));
 			JComponent hori = leafBoxHorizontal( FONT_NORMAL.getSize());
 			hori.add( mBag);
-			hori.add( mTitle);
+			hori.add( mName);
 			add( hori);
 		}
 
 		public Component getListCellRendererComponent( JList<? extends Integer> list, Integer value, int index, boolean isSelected, boolean cellHasFocus) {
 			mBag.setText( BagTier.get( index).toString());
-			mTitle.setText( String.format( "%6d", value));
+			mName.setText( String.format( "%6d", value));
 			return this;
 		}
 	}

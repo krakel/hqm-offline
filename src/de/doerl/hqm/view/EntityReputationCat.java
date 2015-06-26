@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -145,16 +146,24 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 
 	private static class MarkerRenderer extends AListCellRenderer<FMarker> {
 		private static final long serialVersionUID = -5514545387219031325L;
-		private JLabel mTitle = new LeafLabel( UNSELECTED, "", false);
+		private JLabel mMark = new LeafLabel( "");
+		private JLabel mName = new LeafLabel( "");
 
 		public MarkerRenderer() {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( false);
-			add( mTitle);
+			mMark.setMinimumSize( new Dimension( 30, FONT_NORMAL.getSize()));
+//			mMark.setHorizontalTextPosition( SwingConstants.RIGHT);
+//			mName.setHorizontalTextPosition( SwingConstants.LEFT);
+			JComponent hori = leafBoxHorizontal( FONT_NORMAL.getSize());
+			hori.add( mMark);
+			hori.add( mName);
+			add( hori);
 		}
 
 		public Component getListCellRendererComponent( JList<? extends FMarker> list, FMarker mark, int index, boolean isSelected, boolean cellHasFocus) {
-			mTitle.setText( String.format( "%6d %s", mark.mMark, mark.mName));
+			mMark.setText( String.valueOf( mark.mMark));
+			mName.setText( mark.mName);
 			return this;
 		}
 	}

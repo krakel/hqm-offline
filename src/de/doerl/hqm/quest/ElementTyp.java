@@ -17,7 +17,6 @@ public enum ElementTyp {
 	ITEM_REQUIREMENT,
 	FLUID_REQUIREMENT,
 	GROUP,
-	GROUP_CAT,
 	GROUP_TIER,
 	GROUP_TIER_CAT;
 	public static ElementTyp get( int idx) {

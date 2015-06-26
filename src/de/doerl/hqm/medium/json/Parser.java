@@ -13,7 +13,6 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
-import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
@@ -189,13 +188,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 		return null;
 	}
 
-	private void readGroup( FGroupCat cat, FArray arr) {
+	private void readGroup( FGroupTierCat cat, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					FGroup grp = cat.createMember( FValue.toString( obj.get( IToken.GROUP_NAME)));
-					grp.mTier = GroupTierOfIdx.get( cat.mParentHQM, parseID( FValue.toString( obj.get( IToken.GROUP_TIER))));
+					FGroupTier tier = GroupTierOfIdx.get( cat, parseID( FValue.toString( obj.get( IToken.GROUP_TIER))));
+					FGroup grp = tier.createGroup( FValue.toString( obj.get( IToken.GROUP_NAME)));
 					grp.mLimit = FValue.toIntObj( obj.get( IToken.GROUP_LIMIT));
 					readStacks( grp.mStacks, FArray.to( obj.get( IToken.GROUP_STACKS)));
 				}
@@ -371,7 +370,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				readReputations( hqm.mReputationCat, FArray.to( obj.get( IToken.HQM_REPUTATION_CAT)));
 				readQuests( hqm, FArray.to( obj.get( IToken.HQM_QUESTS)));
 				readGroupTiers( hqm.mGroupTierCat, FArray.to( obj.get( IToken.HQM_GROUP_TIER_CAT)));
-				readGroup( hqm.mGroupCat, FArray.to( obj.get( IToken.HQM_GROUP_CAT)));
+				readGroup( hqm.mGroupTierCat, FArray.to( obj.get( IToken.HQM_GROUP_CAT)));
 				updateRequirements( hqm);
 				updateOptionLinks( hqm);
 				updatePosts( hqm);

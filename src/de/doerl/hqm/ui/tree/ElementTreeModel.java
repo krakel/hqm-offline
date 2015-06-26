@@ -12,6 +12,8 @@ import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.AQuestTask;
+import de.doerl.hqm.base.FGroupTier;
+import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
@@ -208,6 +210,16 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		}
 
 		@Override
+		public MutableTreeNode forGroupTier( FGroupTier tier, ElementTreeModel model) {
+			return doNamed( tier, model, false);
+		}
+
+		@Override
+		public MutableTreeNode forGroupTierCat( FGroupTierCat cat, ElementTreeModel model) {
+			return doCategory( cat, model, true);
+		}
+
+		@Override
 		public MutableTreeNode forHQM( FHqm hqm, ElementTreeModel model) {
 			MutableTreeNode node = model.getNode( hqm);
 			if (node == null) {
@@ -264,12 +276,24 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		}
 
 		@Override
+		public Object forGroupTier( FGroupTier tier, ElementTreeModel model) {
+			NodeFactory.get( tier, model);
+			return null;
+		}
+
+		@Override
+		public Object forGroupTierCat( FGroupTierCat cat, ElementTreeModel model) {
+			NodeFactory.get( cat, model);
+			cat.forEachMember( this, model);
+			return null;
+		}
+
+		@Override
 		public Object forHQM( FHqm hqm, ElementTreeModel model) {
 			NodeFactory.get( hqm, model);
-			hqm.mQuestSetCat.accept( this, model);
 			hqm.mReputationCat.accept( this, model);
+			hqm.mQuestSetCat.accept( this, model);
 			hqm.mGroupTierCat.accept( this, model);
-			hqm.mGroupCat.accept( this, model);
 			return null;
 		}
 

@@ -13,7 +13,6 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
-import de.doerl.hqm.base.FGroupCat;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
@@ -198,15 +197,18 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		return null;
 	}
 
-	private void readGroup( FGroupCat cat, FileVersion version) {
+	private void readGroup( FGroupTierCat cat, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.GROUP_COUNT);
 		for (int i = 0; i < count; ++i) {
 			if (version.contains( FileVersion.BAG_LIMITS)) {
 				mSrc.readData( DataBitHelper.GROUP_COUNT);
 			}
 			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-			FGroup grp = cat.createMember( name);
-			grp.mTier = GroupTierOfIdx.get( cat.mParentHQM, mSrc.readData( DataBitHelper.TIER_COUNT));
+			FGroupTier tier = GroupTierOfIdx.get( cat, mSrc.readData( DataBitHelper.TIER_COUNT));
+			if (tier == null) {
+				tier = cat.createMember( "__Missing__");
+			}
+			FGroup grp = tier.createGroup( name);
 			readStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
 			if (version.contains( FileVersion.BAG_LIMITS) && mSrc.readBoolean()) {
 				grp.mLimit = mSrc.readData( DataBitHelper.LIMIT);
@@ -355,7 +357,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		readQuests( hqm, version);
 		if (version.contains( FileVersion.BAGS)) {
 			readGroupTiers( hqm.mGroupTierCat);
-			readGroup( hqm.mGroupCat, version);
+			readGroup( hqm.mGroupTierCat, version);
 		}
 		updateRequirements( hqm);
 		updateOptionLinks( hqm);

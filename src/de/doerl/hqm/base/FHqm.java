@@ -10,7 +10,7 @@ public final class FHqm extends ANamed {
 	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
 	public final FReputationCat mReputationCat = new FReputationCat( this);
 	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
-	public final FGroupCat mGroupCat = new FGroupCat( this);
+//	public final FGroupCat mGroupCat = new FGroupCat( this);
 	public String mPassCode;
 	public String mDescr;
 	private boolean mModified;

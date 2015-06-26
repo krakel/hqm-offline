@@ -69,19 +69,24 @@ public class EditController implements IModelListener {
 		return mFrame;
 	}
 
+	public void groupCreate( FGroupTier tier, String name) {
+		FGroup grp = tier.createGroup( name);
+		fireAdded( grp);
+	}
+
 	public void groupDelete( FGroup grp) {
 		GroupDelete.get( grp, this);
 		fireRemoved( grp);
 	}
 
-	public <E extends AMember> void groupMember( ACategory<E> cat, String name) {
-		E member = cat.createMember( name);
-		fireAdded( member);
+	public void grpTierDelete( FGroupTier tier) {
+		tier.remove();
+		fireRemoved( tier);
 	}
 
-	public void grpTierDelete( FGroupTier tier) {
-		GroupTierDelete.get( tier, this);
-		fireRemoved( tier);
+	public <E extends AMember> void memberCreate( ACategory<E> cat, String name) {
+		E member = cat.createMember( name);
+		fireAdded( member);
 	}
 
 	public FQuest questCreate( FQuestSet set, String name, int x, int y) {

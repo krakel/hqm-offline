@@ -14,7 +14,7 @@ import javax.swing.ToolTipManager;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.AQuestTask;
-import de.doerl.hqm.base.FGroupCat;
+import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
@@ -145,11 +145,11 @@ public class EditView extends JPanel implements IModelListener {
 		}
 
 		@Override
-		public AEntity<? extends ABase> forGroupCat( FGroupCat cat, EditView view) {
-			AEntity<?> ent = view.mContent.get( cat);
+		public AEntity<? extends ABase> forGroupTier( FGroupTier tier, EditView view) {
+			AEntity<?> ent = view.mContent.get( tier);
 			if (ent == null) {
-				ent = new EntityGroupCat( cat, view.getController());
-				view.mContent.put( cat, ent);
+				ent = new EntityGroupTier( tier, view.getController());
+				view.mContent.put( tier, ent);
 				view.mCtrl.addListener( ent);
 			}
 			return ent;

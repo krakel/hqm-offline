@@ -187,28 +187,24 @@ class DialogListMarker extends ADialog {
 
 	private static class Renderer extends AListCellRenderer<FMarker> {
 		private static final long serialVersionUID = -430644712741965086L;
-		private LeafLabel mName = new LeafLabel( "Unknown");
+		private LeafLabel mMark = new LeafLabel( "");
+		private LeafLabel mName = new LeafLabel( "");
 
 		public Renderer() {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			add( Box.createHorizontalStrut( 5));
-			add( createBox());
-		}
-
-		private Box createBox() {
-			mName.setFont( AEntity.FONT_STACK);
-			mName.setAlignmentX( LEFT_ALIGNMENT);
-			Box box = Box.createVerticalBox();
-			box.setAlignmentY( CENTER_ALIGNMENT);
-			box.add( mName);
-			return box;
+			mMark.setMinimumSize( new Dimension( 30, AEntity.FONT_NORMAL.getSize()));
+			JComponent hori = AEntity.leafBoxHorizontal( AEntity.FONT_NORMAL.getSize());
+			hori.add( mMark);
+			hori.add( mName);
+			add( hori);
 		}
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMarker> list, FMarker value, int index, boolean isSelected, boolean cellHasFocus) {
-			mName.setText( String.format( "%6d %s", value.mMark, value.mName));
+			mMark.setText( String.valueOf( value.mMark));
+			mName.setText( value.mName);
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}
