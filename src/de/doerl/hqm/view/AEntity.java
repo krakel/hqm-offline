@@ -232,4 +232,10 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	public JToolBar getToolBar() {
 		return mTool;
 	}
+
+	public static void setSizes( JComponent comp, int height) {
+		comp.setMinimumSize( new Dimension( 0, height));
+		comp.setPreferredSize( new Dimension( 0, height));
+		comp.setMaximumSize( new Dimension( Short.MAX_VALUE, height));
+	}
 }

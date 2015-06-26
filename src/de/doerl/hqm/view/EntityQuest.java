@@ -240,17 +240,9 @@ public class EntityQuest extends AEntity<FQuest> {
 			mTaskMoveUpAction.setEnabled( false);
 			mTaskMoveDownAction.setEnabled( false);
 		}
-		else if (task.isFirst()) {
-			mTaskMoveUpAction.setEnabled( false);
-			mTaskMoveDownAction.setEnabled( true);
-		}
-		else if (task.isLast()) {
-			mTaskMoveUpAction.setEnabled( true);
-			mTaskMoveDownAction.setEnabled( false);
-		}
 		else {
-			mTaskMoveUpAction.setEnabled( true);
-			mTaskMoveDownAction.setEnabled( true);
+			mTaskMoveUpAction.setEnabled( !task.isFirst());
+			mTaskMoveDownAction.setEnabled( !task.isLast());
 		}
 	}
 

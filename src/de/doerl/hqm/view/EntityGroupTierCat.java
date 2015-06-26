@@ -3,6 +3,7 @@ package de.doerl.hqm.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
@@ -10,7 +11,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -240,13 +240,11 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 		private JLabel mName = new LeafLabel( "");
 
 		public WeightRenderer() {
-			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
+			setLayout( new GridLayout( 1, 2, 2, 2));
 			setOpaque( false);
-			mBag.setMinimumSize( new Dimension( 50, FONT_NORMAL.getSize()));
-			JComponent hori = leafBoxHorizontal( FONT_NORMAL.getSize());
-			hori.add( mBag);
-			hori.add( mName);
-			add( hori);
+			AEntity.setSizes( this, FONT_NORMAL.getSize());
+			add( mBag);
+			add( mName);
 		}
 
 		public Component getListCellRendererComponent( JList<? extends Integer> list, Integer value, int index, boolean isSelected, boolean cellHasFocus) {

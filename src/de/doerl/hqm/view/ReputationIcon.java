@@ -58,11 +58,11 @@ class ReputationIcon implements Icon {
 					int pos = 117 / 2;
 					drawImage( g2, mMarker, pos, 6);
 				}
-				if (min <= 0 && 0 <= max) {
+				else if (min <= 0 && 0 <= max) {
 					int pos = 117 * (0 - min) / hub;
 					drawImage( g2, mNeutral, pos, 6);
 				}
-				if (min > 0) {
+				else if (min > 0) {
 					int pos = 0;
 					drawImage( g2, mCurrent, pos, 0);
 				}

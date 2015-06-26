@@ -2,16 +2,17 @@ package de.doerl.hqm.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
@@ -73,6 +74,7 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 	private void updateActions( boolean enabled) {
 		mNameAction.setEnabled( enabled);
 		mNeutralAction.setEnabled( enabled);
+		mMarkerAction.setEnabled( enabled);
 		mDeleteAction.setEnabled( enabled);
 	}
 
@@ -144,26 +146,24 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 		}
 	}
 
-	private static class MarkerRenderer extends AListCellRenderer<FMarker> {
+	static class MarkerRenderer extends AListCellRenderer<FMarker> {
 		private static final long serialVersionUID = -5514545387219031325L;
 		private JLabel mMark = new LeafLabel( "");
 		private JLabel mName = new LeafLabel( "");
 
 		public MarkerRenderer() {
-			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
+			setLayout( new GridLayout( 1, 2, 2, 2));
 			setOpaque( false);
-			mMark.setMinimumSize( new Dimension( 30, FONT_NORMAL.getSize()));
-//			mMark.setHorizontalTextPosition( SwingConstants.RIGHT);
-//			mName.setHorizontalTextPosition( SwingConstants.LEFT);
-			JComponent hori = leafBoxHorizontal( FONT_NORMAL.getSize());
-			hori.add( mMark);
-			hori.add( mName);
-			add( hori);
+			AEntity.setSizes( this, FONT_NORMAL.getSize());
+			mMark.setHorizontalTextPosition( SwingConstants.RIGHT);
+			mName.setHorizontalTextPosition( SwingConstants.LEFT);
+			add( mName);
+			add( mMark);
 		}
 
 		public Component getListCellRendererComponent( JList<? extends FMarker> list, FMarker mark, int index, boolean isSelected, boolean cellHasFocus) {
-			mMark.setText( String.valueOf( mark.mMark));
 			mName.setText( mark.mName);
+			mMark.setText( String.format( "%6d", mark.mMark));
 			return this;
 		}
 	}

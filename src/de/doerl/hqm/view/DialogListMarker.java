@@ -2,6 +2,7 @@ package de.doerl.hqm.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +11,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -191,20 +191,17 @@ class DialogListMarker extends ADialog {
 		private LeafLabel mName = new LeafLabel( "");
 
 		public Renderer() {
-			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
-			setOpaque( true);
-			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			mMark.setMinimumSize( new Dimension( 30, AEntity.FONT_NORMAL.getSize()));
-			JComponent hori = AEntity.leafBoxHorizontal( AEntity.FONT_NORMAL.getSize());
-			hori.add( mMark);
-			hori.add( mName);
-			add( hori);
+			setLayout( new GridLayout( 1, 2, 2, 2));
+			setOpaque( false);
+			AEntity.setSizes( this, AEntity.FONT_NORMAL.getSize());
+			add( mName);
+			add( mMark);
 		}
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMarker> list, FMarker value, int index, boolean isSelected, boolean cellHasFocus) {
-			mMark.setText( String.valueOf( value.mMark));
 			mName.setText( value.mName);
+			mMark.setText( String.format( "%6d", value.mMark));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());
 			}

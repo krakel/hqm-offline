@@ -179,17 +179,9 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 			mMoveUpAction.setEnabled( false);
 			mMoveDownAction.setEnabled( false);
 		}
-		else if (mActiv.isFirst()) {
-			mMoveUpAction.setEnabled( false);
-			mMoveDownAction.setEnabled( true);
-		}
-		else if (mActiv.isLast()) {
-			mMoveUpAction.setEnabled( true);
-			mMoveDownAction.setEnabled( false);
-		}
 		else {
-			mMoveUpAction.setEnabled( true);
-			mMoveDownAction.setEnabled( true);
+			mMoveUpAction.setEnabled( !mActiv.isFirst());
+			mMoveDownAction.setEnabled( !mActiv.isLast());
 		}
 	}
 
