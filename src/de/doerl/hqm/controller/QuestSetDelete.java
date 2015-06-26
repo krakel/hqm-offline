@@ -11,7 +11,7 @@ class QuestSetDelete extends AHQMWorker<Object, EditController> {
 	}
 
 	public static void get( FQuestSet set, EditController ctrl) {
-		set.forEachQuest( QuestSetDelete.WORKER, ctrl);
+		set.forEachQuest( WORKER, ctrl);
 		set.remove();
 	}
 

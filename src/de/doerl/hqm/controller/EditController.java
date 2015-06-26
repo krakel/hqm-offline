@@ -7,6 +7,8 @@ import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
+import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.model.EditModel;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
@@ -106,5 +108,15 @@ public class EditController implements IModelListener {
 
 	public void removeListener( IModelListener l) {
 		mModel.removeListener( l);
+	}
+
+	public void reputationCreate( FReputationCat cat, String name) {
+		FReputation rep = cat.createMember( name);
+		fireAdded( rep);
+	}
+
+	public void reputationDelete( FReputation rep) {
+		ReputationDelete.get( rep, this);
+		fireRemoved( rep);
 	}
 }

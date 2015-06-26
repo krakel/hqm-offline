@@ -245,6 +245,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 					marker.mMark = FValue.toInt( obj.get( IToken.MARKER_VALUE));
 				}
 			}
+			rep.sort();
 		}
 	}
 

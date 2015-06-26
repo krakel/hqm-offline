@@ -12,9 +12,13 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.Group;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -91,6 +95,13 @@ public abstract class ADialog extends JDialog {
 
 	protected void addEscapeAction() {
 		addKeyAction( getRootPane(), JComponent.WHEN_IN_FOCUSED_WINDOW, "ESCAPE", ESC_ACTION);
+	}
+
+	protected Group addLine( GroupLayout layout, Group left, Group right, String descr, JComponent comp) {
+		JLabel lbl = new JLabel( descr);
+		left.addComponent( lbl);
+		right.addComponent( comp);
+		return layout.createParallelGroup( Alignment.BASELINE).addComponent( lbl).addComponent( comp);
 	}
 
 	protected abstract void createMain();

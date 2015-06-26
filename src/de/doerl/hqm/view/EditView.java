@@ -230,14 +230,8 @@ public class EditView extends JPanel implements IModelListener {
 		}
 
 		@Override
-		public AEntity<? extends ABase> forReputation( FReputation rep, EditView view) {
-			AEntity<?> ent = view.mContent.get( rep);
-			if (ent == null) {
-				ent = new EntityReputation( rep, view.getController());
-				view.mContent.put( rep, ent);
-				view.mCtrl.addListener( ent);
-			}
-			return ent;
+		public AEntity<? extends ABase> forReputation( FReputation rep, EditView p) {
+			return null;
 		}
 
 		@Override

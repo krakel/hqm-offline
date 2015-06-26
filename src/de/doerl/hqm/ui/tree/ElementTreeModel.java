@@ -18,6 +18,7 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
@@ -178,10 +179,14 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 
 		@Override
 		protected MutableTreeNode doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
+			return doCategory( cat, model, true);
+		}
+
+		private MutableTreeNode doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model, boolean allowsChildren) {
 			MutableTreeNode node = model.getNode( cat);
 			if (node == null) {
 				MutableTreeNode parent = cat.getParent().accept( this, model);
-				node = model.createNode( parent, new CatNode( cat));
+				node = model.createNode( parent, new CatNode( cat), allowsChildren);
 			}
 			return node;
 		}
@@ -223,6 +228,11 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		@Override
 		public MutableTreeNode forQuestSet( FQuestSet set, ElementTreeModel model) {
 			return doNamed( set, model, true);
+		}
+
+		@Override
+		public MutableTreeNode forReputationCat( FReputationCat cat, ElementTreeModel model) {
+			return doCategory( cat, model, false);
 		}
 	}
 
@@ -288,8 +298,13 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		}
 
 		@Override
-		public Object forReputation( FReputation rep, ElementTreeModel model) {
-			NodeFactory.get( rep, model);
+		public Object forReputation( FReputation rep, ElementTreeModel p) {
+			return null;
+		}
+
+		@Override
+		public Object forReputationCat( FReputationCat cat, ElementTreeModel model) {
+			NodeFactory.get( cat, model);
 			return null;
 		}
 	}

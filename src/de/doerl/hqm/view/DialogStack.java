@@ -114,7 +114,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		GroupLayout layout = new GroupLayout( box);
 		box.setLayout( layout);
 		box.setOpaque( false);
-//			box.setBorder( BorderFactory.createLineBorder( Color.RED));
+//		box.setBorder( BorderFactory.createLineBorder( Color.RED));
 		layout.setAutoCreateGaps( true);
 		Group hori = layout.createSequentialGroup();
 		Group vert = layout.createParallelGroup();
