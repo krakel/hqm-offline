@@ -78,33 +78,36 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 	@Override
 	protected void updateActive( FReputation rep, boolean toggel) {
 		if (rep == null) {
-			mIcon.setVisible( false);
 			mNeutral.setText( null);
 			mMarker.getModel().clear();
-			mMarker.setVisible( false);
 			mList.clearSelection();
 			updateActions( false);
+			updateControls( false);
 			mActiv = null;
 		}
 		else if (toggel && Utils.equals( rep, mActiv)) {
-			mIcon.setVisible( false);
 			mNeutral.setText( null);
 			mMarker.getModel().clear();
-			mMarker.setVisible( false);
 			mList.clearSelection();
 			updateActions( false);
+			updateControls( false);
 			mActiv = null;
 		}
 		else {
 			mIcon.setIcon( new ReputationIcon( rep));
-			mIcon.setVisible( true);
 			mNeutral.setText( rep.mNeutral);
 			MarkerUpdate.get( rep, mCtrl, mMarker.getModel());
-			mMarker.setVisible( true);
 			mList.setSelectedValue( rep, true);
 			updateActions( true);
+			updateControls( true);
 			mActiv = rep;
 		}
+	}
+
+	private void updateControls( boolean enabled) {
+		mIcon.setVisible( enabled);
+		mNeutral.setVisible( enabled);
+		mMarker.setVisible( enabled);
 	}
 
 	private static class ListRenderer extends AListCellRenderer<FReputation> {

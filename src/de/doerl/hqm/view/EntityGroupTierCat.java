@@ -87,17 +87,17 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 		if (tier == null) {
 			mColor.setSelectedIndex( -1);
 			model.clear();
-			mWeights.setVisible( false);
 			mList.clearSelection();
 			updateActions( false);
+			updateControls( false);
 			mActiv = null;
 		}
 		else if (toggel && Utils.equals( tier, mActiv)) {
 			mColor.setSelectedIndex( -1);
 			model.clear();
-			mWeights.setVisible( false);
 			mList.clearSelection();
 			updateActions( false);
+			updateControls( false);
 			mActiv = null;
 		}
 		else {
@@ -106,11 +106,16 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 			for (int i = 0; i < tier.mWeights.length; ++i) {
 				model.addElement( Integer.valueOf( tier.mWeights[i]));
 			}
-			mWeights.setVisible( true);
 			mList.setSelectedValue( tier, true);
 			updateActions( true);
+			updateControls( true);
 			mActiv = tier;
 		}
+	}
+
+	private void updateControls( boolean enabled) {
+		mColor.setVisible( enabled);
+		mWeights.setVisible( enabled);
 	}
 
 	public class ColorAction extends ABundleAction {

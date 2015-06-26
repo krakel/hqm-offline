@@ -15,11 +15,9 @@ import de.doerl.hqm.base.FItemStack;
 class LeafStacks extends JPanel {
 	private static final long serialVersionUID = -2203511730691517504L;
 	private ClickHandler mHandler = new ClickHandler();
-	private Vector<FItemStack> mList;
 	private JLabel mBtn;
 
-	public LeafStacks( int height, Vector<FItemStack> list, JLabel btn) {
-		mList = list;
+	public LeafStacks( int height, JLabel btn) {
 		mBtn = btn;
 		setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 		setAlignmentX( LEFT_ALIGNMENT);
@@ -44,14 +42,14 @@ class LeafStacks extends JPanel {
 		mBtn.setVisible( value);
 	}
 
-	public void update() {
+	public void update( Vector<FItemStack> list) {
 		removeAll();
-		if (mList.isEmpty()) {
+		if (list.isEmpty()) {
 			add( LeafIcon.createEmpty( 0.8));
 			add( Box.createHorizontalStrut( 3));
 		}
 		else {
-			for (AStack stk : mList) {
+			for (AStack stk : list) {
 				LeafIcon leaf = new LeafIcon();
 				IconUpdate.create( leaf, stk, 0.8, stk.countOf());
 				add( leaf);

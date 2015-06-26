@@ -66,8 +66,8 @@ public class EntityQuest extends AEntity<FQuest> {
 	public EntityQuest( FQuest quest, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
 		mQuest = quest;
-		mRewardList = new LeafStacks( ICON_SIZE, quest.mRewards, ReputationFactory.getIcon( quest));
-		mChoiceList = new LeafStacks( ICON_SIZE, quest.mChoices, new LeafButton( "Claim reward"));
+		mRewardList = new LeafStacks( ICON_SIZE, ReputationFactory.getIcon( quest));
+		mChoiceList = new LeafStacks( ICON_SIZE, new LeafButton( "Claim reward"));
 		updateReputation();
 		mTaskList.setCellRenderer( new TaskListRenderer());
 		mTaskContent.setAlignmentX( LEFT_ALIGNMENT);
@@ -197,8 +197,8 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTitle.setText( mQuest.mName);
 		mDesc.setText( mQuest.mDescr);
 		TaskBoxUpdate.get( mQuest, mCtrl, mTaskList.getModel());
-		mRewardList.update();
-		mChoiceList.update();
+		mRewardList.update( mQuest.mRewards);
+		mChoiceList.update( mQuest.mChoices);
 		updateReputation();
 	}
 

@@ -90,27 +90,31 @@ class EntityQuestSetCat extends AEntityCat<FQuestSet> {
 		if (qs == null) {
 			mTotal.setText( String.format( "%d quests in total", 0));
 			mDesc.setText( null);
-			mScroll.setVisible( false);
 			mList.clearSelection();
 			updateActions( false);
+			updateControls( false);
 			mActiv = null;
 		}
 		else if (toggel && Utils.equals( qs, mActiv)) {
 			mTotal.setText( String.format( "%d quests in total", SizeOfQuests.get( qs.mParentCategory)));
 			mDesc.setText( null);
-			mScroll.setVisible( false);
 			mList.clearSelection();
 			updateActions( false);
+			updateControls( false);
 			mActiv = null;
 		}
 		else {
 			mTotal.setText( String.format( "%d quests in total", SizeOfQuests.get( qs)));
 			mDesc.setText( qs.mDescr);
-			mScroll.setVisible( true);
 			mList.setSelectedValue( qs, true);
 			updateActions( true);
+			updateControls( true);
 			mActiv = qs;
 		}
+	}
+
+	private void updateControls( boolean enabled) {
+		mScroll.setVisible( enabled);
 	}
 
 	private final class DescriptionAction extends ABundleAction {
