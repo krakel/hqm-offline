@@ -32,7 +32,7 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
@@ -170,7 +170,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
-	public Object forReward( FReward rr, Object p) {
+	public Object forReputationReward( FReputationReward rr, Object p) {
 		mDst.beginObject();
 		mDst.print( REWARD_REPUTATION, toID( IndexOf.getMember( rr.mRep), rr.mRep.mName));
 		mDst.print( REWARD_VALUE, rr.mValue);
@@ -386,7 +386,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	private void writeRewards( FQuest quest) {
-		mDst.beginArray( QUEST_REPUTATIONS);
+		mDst.beginArray( QUEST_REP_REWRDS);
 		quest.forEachReward( this, null);
 		mDst.endArray();
 	}

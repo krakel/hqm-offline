@@ -38,7 +38,7 @@ interface IToken {
 	static final String QUEST_TASKS = "tasks";
 	static final String QUEST_REWARD = "reward";
 	static final String QUEST_CHOICE = "choice";
-	static final String QUEST_REPUTATIONS = "reputations";
+	static final String QUEST_REP_REWRDS = "reputations";
 	static final String QUEST_DELETED = "deleted";
 	//
 	static final String REPEAT_INFO_TYPE = "type";

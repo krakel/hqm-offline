@@ -32,7 +32,7 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
@@ -308,7 +308,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 						readTasks( quest, FArray.to( obj.get( IToken.QUEST_TASKS)));
 						readStacks( quest.mRewards, FArray.to( obj.get( IToken.QUEST_REWARD)));
 						readStacks( quest.mChoices, FArray.to( obj.get( IToken.QUEST_CHOICE)));
-						readRewards( quest, FArray.to( obj.get( IToken.QUEST_REPUTATIONS)));
+						readRewards( quest, FArray.to( obj.get( IToken.QUEST_REP_REWRDS)));
 						mQuests.add( quest);
 					}
 				}
@@ -346,7 +346,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					FReward reward = quest.createReputationReward();
+					FReputationReward reward = quest.createRepReward();
 					reward.mRep = ReputationOfIdx.get( quest.getHqm(), parseID( FValue.toString( obj.get( IToken.REWARD_REPUTATION))));
 					reward.mValue = FValue.toInt( obj.get( IToken.REWARD_VALUE));
 				}

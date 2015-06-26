@@ -27,7 +27,7 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
@@ -154,7 +154,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	}
 
 	@Override
-	public Object forReward( FReward rr, FileVersion version) {
+	public Object forReputationReward( FReputationReward rr, FileVersion version) {
 		mDst.writeData( IndexOf.getMember( rr.mRep), DataBitHelper.REPUTATION);
 		mDst.writeData( rr.mValue, DataBitHelper.REPUTATION_VALUE);
 		return null;

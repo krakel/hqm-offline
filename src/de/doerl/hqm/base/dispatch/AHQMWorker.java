@@ -34,7 +34,7 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.utils.ToString;
 import de.doerl.hqm.utils.Utils;
@@ -147,7 +147,7 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	@Override
-	public T forReward( FReward rr, U p) {
+	public T forReputationReward( FReputationReward rr, U p) {
 		return doBase( rr, p);
 	}
 

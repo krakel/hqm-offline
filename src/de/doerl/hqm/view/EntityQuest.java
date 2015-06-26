@@ -27,7 +27,7 @@ import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
@@ -247,7 +247,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	}
 
 	private void updateReputation() {
-		mRewardList.setBtnVisible( !mQuest.Reputation.isEmpty());
+		mRewardList.setBtnVisible( !mQuest.mRepRewards.isEmpty());
 	}
 
 	private void updateTaskAction( boolean enabled) {
@@ -326,7 +326,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 
 		@Override
-		public Object forReward( FReward rr, Object p) {
+		public Object forReputationReward( FReputationReward rr, Object p) {
 			if (rr.mValue < 0) {
 				negative = true;
 			}

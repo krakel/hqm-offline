@@ -3,18 +3,18 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FReward extends ABase implements IElement {
+public final class FReputationReward extends ABase implements IElement {
 	public final FQuest mParentQuest;
 	public FReputation mRep;
 	public int mValue;
 
-	public FReward( FQuest parent) {
+	public FReputationReward( FQuest parent) {
 		mParentQuest = parent;
 	}
 
 	@Override
 	public <T, U> T accept( IHQMWorker<T, U> w, U p) {
-		return w.forReward( this, p);
+		return w.forReputationReward( this, p);
 	}
 
 	@Override
@@ -34,26 +34,26 @@ public final class FReward extends ABase implements IElement {
 
 	@Override
 	public boolean isFirst() {
-		return ABase.isFirst( mParentQuest.Reputation, this);
+		return ABase.isFirst( mParentQuest.mRepRewards, this);
 	}
 
 	@Override
 	public boolean isLast() {
-		return ABase.isLast( mParentQuest.Reputation, this);
+		return ABase.isLast( mParentQuest.mRepRewards, this);
 	}
 
 	@Override
 	public void moveDown() {
-		ABase.moveDown( mParentQuest.Reputation, this);
+		ABase.moveDown( mParentQuest.mRepRewards, this);
 	}
 
 	@Override
 	public void moveUp() {
-		ABase.moveUp( mParentQuest.Reputation, this);
+		ABase.moveUp( mParentQuest.mRepRewards, this);
 	}
 
 	@Override
 	public void remove() {
-		ABase.remove( mParentQuest.Reputation, this);
+		ABase.remove( mParentQuest.mRepRewards, this);
 	}
 }

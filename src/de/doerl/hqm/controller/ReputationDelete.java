@@ -3,7 +3,7 @@ package de.doerl.hqm.controller;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
@@ -36,7 +36,7 @@ class ReputationDelete extends AHQMWorker<Object, Object> {
 	}
 
 	@Override
-	public Object forReward( FReward rr, Object p) {
+	public Object forReputationReward( FReputationReward rr, Object p) {
 		if (Utils.equals( rr.mRep, mRep)) {
 			rr.remove();
 		}

@@ -13,7 +13,7 @@ import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 
 public class SizeOf extends AHQMWorker<Object, Object> {
@@ -107,7 +107,7 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 	}
 
 	@Override
-	public Object forReward( FReward rr, Object p) {
+	public Object forReputationReward( FReputationReward rr, Object p) {
 		++mResult;
 		return null;
 	}

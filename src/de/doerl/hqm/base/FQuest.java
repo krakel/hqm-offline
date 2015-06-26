@@ -26,7 +26,7 @@ public final class FQuest extends ANamed implements IElement {
 	public final Vector<FQuest> mRequirements = new Vector<>();
 	public final Vector<FQuest> mOptionLinks = new Vector<>();
 	public final Vector<FQuest> mPosts = new Vector<>();
-	public final Vector<FReward> Reputation = new Vector<>();
+	public final Vector<FReputationReward> mRepRewards = new Vector<>();
 	public FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	final Vector<AQuestTask> mTasks = new Vector<>();
 
@@ -75,14 +75,14 @@ public final class FQuest extends ANamed implements IElement {
 		return task;
 	}
 
-	public FReward createReputationReward() {
-		FReward reward = new FReward( this);
-		Reputation.add( reward);
+	public FReputationReward createRepReward() {
+		FReputationReward reward = new FReputationReward( this);
+		mRepRewards.add( reward);
 		return reward;
 	}
 
 	public <T, U> T forEachReward( IHQMWorker<T, U> worker, U p) {
-		for (FReward disp : Reputation) {
+		for (FReputationReward disp : mRepRewards) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);

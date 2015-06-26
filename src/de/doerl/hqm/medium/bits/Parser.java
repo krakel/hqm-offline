@@ -36,7 +36,7 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
@@ -327,7 +327,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 	private void readRewards( FQuest quest) {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_REWARD);
 		for (int i = 0; i < count; i++) {
-			FReward reward = quest.createReputationReward();
+			FReputationReward reward = quest.createRepReward();
 			reward.mRep = mReps.get( mSrc.readData( DataBitHelper.REPUTATION));
 			reward.mValue = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
 		}

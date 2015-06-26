@@ -24,7 +24,7 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
-import de.doerl.hqm.base.FReward;
+import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 
 public interface IHQMWorker<T, U> extends IWorker {
@@ -58,7 +58,7 @@ public interface IHQMWorker<T, U> extends IWorker {
 
 	T forReputationCat( FReputationCat cat, U p);
 
-	T forReward( FReward rr, U p);
+	T forReputationReward( FReputationReward rr, U p);
 
 	T forSetting( FSetting rs, U p);
 
