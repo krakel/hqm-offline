@@ -41,6 +41,7 @@ import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
+import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.quest.RepeatType;
@@ -211,7 +212,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 					tier.mColorID = FValue.toInt( obj.get( IToken.GROUP_TIER_COLOR));
 					FArray weights = FArray.to( obj.get( IToken.GROUP_TIER_WEIGHTS));
 					if (weights != null) {
-						int[] ww = new int[weights.size()];
+						int[] ww = BagTier.newArray();
 						for (int i = 0; i < ww.length; ++i) {
 							ww[i] = FValue.toInt( weights.get( i));
 						}

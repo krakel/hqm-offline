@@ -12,16 +12,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.AQuestTask;
-import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupCat;
-import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
-import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
@@ -137,19 +135,13 @@ public class EditView extends JPanel implements IModelListener {
 		}
 
 		@Override
-		protected AEntity<? extends ABase> doTask( AQuestTask task, EditView p) {
+		protected AEntity<? extends ABase> doMember( AMember member, EditView p) {
 			return null;
 		}
 
 		@Override
-		public AEntity<? extends ABase> forGroup( FGroup grp, EditView view) {
-			AEntity<?> ent = view.mContent.get( grp);
-			if (ent == null) {
-				ent = new EntityGroup( grp, view.getController());
-				view.mContent.put( grp, ent);
-				view.mCtrl.addListener( ent);
-			}
-			return ent;
+		protected AEntity<? extends ABase> doTask( AQuestTask task, EditView p) {
+			return null;
 		}
 
 		@Override
@@ -158,17 +150,6 @@ public class EditView extends JPanel implements IModelListener {
 			if (ent == null) {
 				ent = new EntityGroupCat( cat, view.getController());
 				view.mContent.put( cat, ent);
-				view.mCtrl.addListener( ent);
-			}
-			return ent;
-		}
-
-		@Override
-		public AEntity<? extends ABase> forGroupTier( FGroupTier tier, EditView view) {
-			AEntity<?> ent = view.mContent.get( tier);
-			if (ent == null) {
-				ent = new EntityGroupTier( tier, view.getController());
-				view.mContent.put( tier, ent);
 				view.mCtrl.addListener( ent);
 			}
 			return ent;
@@ -227,11 +208,6 @@ public class EditView extends JPanel implements IModelListener {
 				view.mCtrl.addListener( ent);
 			}
 			return ent;
-		}
-
-		@Override
-		public AEntity<? extends ABase> forReputation( FReputation rep, EditView p) {
-			return null;
 		}
 
 		@Override

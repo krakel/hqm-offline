@@ -3,12 +3,14 @@ package de.doerl.hqm.controller;
 import java.awt.Frame;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.ACategory;
+import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.AQuestTask;
+import de.doerl.hqm.base.FGroup;
+import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.model.EditModel;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
@@ -67,6 +69,21 @@ public class EditController implements IModelListener {
 		return mFrame;
 	}
 
+	public void groupDelete( FGroup grp) {
+		GroupDelete.get( grp, this);
+		fireRemoved( grp);
+	}
+
+	public <E extends AMember> void groupMember( ACategory<E> cat, String name) {
+		E member = cat.createMember( name);
+		fireAdded( member);
+	}
+
+	public void grpTierDelete( FGroupTier tier) {
+		GroupTierDelete.get( tier, this);
+		fireRemoved( tier);
+	}
+
 	public FQuest questCreate( FQuestSet set, String name, int x, int y) {
 		FQuest quest = set.createQuest( name);
 		quest.mX = x;
@@ -86,11 +103,6 @@ public class EditController implements IModelListener {
 		fireAdded( quest);
 	}
 
-	public void questSetCreate( FQuestSetCat cat, String name) {
-		FQuestSet set = cat.createMember( name);
-		fireAdded( set);
-	}
-
 	public void questSetDelete( FQuestSet set) {
 		QuestSetDelete.get( set, this);
 		fireRemoved( set);
@@ -108,11 +120,6 @@ public class EditController implements IModelListener {
 
 	public void removeListener( IModelListener l) {
 		mModel.removeListener( l);
-	}
-
-	public void reputationCreate( FReputationCat cat, String name) {
-		FReputation rep = cat.createMember( name);
-		fireAdded( rep);
 	}
 
 	public void reputationDelete( FReputation rep) {

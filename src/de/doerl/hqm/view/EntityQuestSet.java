@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
 import de.doerl.hqm.base.ABase;
@@ -28,7 +27,6 @@ import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.AToggleAction;
-import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
@@ -41,7 +39,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private LineFactory mLineWorker = new LineFactory();
 	private FQuestSet mSet;
 	private LeafAbsolute mLeaf = new LeafAbsolute();
-	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mNameAction = new NameAction();
 	private ABundleAction mIconAction = new IconAction();
 	private AToggleAction mGroupAdd = new GroupAddAction();
@@ -286,11 +283,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public JToolBar getToolBar() {
-		return mTool;
 	}
 
 	private void removeLeafLine( FQuest req, FQuest quest) {

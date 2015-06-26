@@ -12,13 +12,10 @@ import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.AQuestTask;
-import de.doerl.hqm.base.FGroup;
-import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
-import de.doerl.hqm.base.FReputation;
-import de.doerl.hqm.base.FReputationCat;
+import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
@@ -179,7 +176,7 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 
 		@Override
 		protected MutableTreeNode doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
-			return doCategory( cat, model, true);
+			return doCategory( cat, model, false);
 		}
 
 		private MutableTreeNode doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model, boolean allowsChildren) {
@@ -231,8 +228,8 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		}
 
 		@Override
-		public MutableTreeNode forReputationCat( FReputationCat cat, ElementTreeModel model) {
-			return doCategory( cat, model, false);
+		public MutableTreeNode forQuestSetCat( FQuestSetCat cat, ElementTreeModel model) {
+			return doCategory( cat, model, true);
 		}
 	}
 
@@ -253,24 +250,16 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		@Override
 		protected Object doCategory( ACategory<? extends ANamed> cat, ElementTreeModel model) {
 			NodeFactory.get( cat, model);
-			cat.forEachMember( this, model);
+			return null;
+		}
+
+		@Override
+		protected Object doMember( AMember member, ElementTreeModel p) {
 			return null;
 		}
 
 		@Override
 		protected Object doTask( AQuestTask task, ElementTreeModel p) {
-			return null;
-		}
-
-		@Override
-		public Object forGroup( FGroup grp, ElementTreeModel model) {
-			NodeFactory.get( grp, model);
-			return null;
-		}
-
-		@Override
-		public Object forGroupTier( FGroupTier tier, ElementTreeModel model) {
-			NodeFactory.get( tier, model);
 			return null;
 		}
 
@@ -298,13 +287,9 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 		}
 
 		@Override
-		public Object forReputation( FReputation rep, ElementTreeModel p) {
-			return null;
-		}
-
-		@Override
-		public Object forReputationCat( FReputationCat cat, ElementTreeModel model) {
+		public Object forQuestSetCat( FQuestSetCat cat, ElementTreeModel model) {
 			NodeFactory.get( cat, model);
+			cat.forEachMember( this, model);
 			return null;
 		}
 	}

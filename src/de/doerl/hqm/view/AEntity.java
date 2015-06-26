@@ -22,6 +22,7 @@ import javax.swing.ScrollPaneConstants;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.IModelListener;
+import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.utils.ResourceManager;
 
 abstract class AEntity<T extends ABase> extends JPanel implements IModelListener {
@@ -38,6 +39,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	static final Color UNSELECTED = new Color( 0x404040);
 	private static int sColValue;
 	protected EditController mCtrl;
+	protected JToolBar mTool = EditFrame.createToolBar();
 
 	AEntity( EditController ctrl, LayoutManager layout) {
 		super( layout, true);
@@ -190,7 +192,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		result.setOpaque( false);
 		result.getViewport().setOpaque( false);
 		result.setBorder( null);
-		result.setPreferredSize( new Dimension( 100, height));
+		result.setPreferredSize( new Dimension( 200, height));
 		return result;
 	}
 
@@ -227,5 +229,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 
 	public abstract T getBase();
 
-	public abstract JToolBar getToolBar();
+	public JToolBar getToolBar() {
+		return mTool;
+	}
 }

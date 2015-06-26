@@ -133,11 +133,13 @@ abstract class ADialogList<E> extends ADialog {
 	private final class EntryChangeHandler implements ActionListener {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			E old = mList.getSelectedValue();
-			E entry = mEdit.changeElement( old);
-			if (entry != null) {
-				int idx = mList.getSelectedIndex();
-				mModel.setElementAt( entry, idx);
+			int idx = mList.getSelectedIndex();
+			if (idx >= 0) {
+				E old = mModel.getElementAt( idx);
+				E entry = mEdit.changeElement( old);
+				if (entry != null) {
+					mModel.setElementAt( entry, idx);
+				}
 			}
 		}
 	}
@@ -145,9 +147,9 @@ abstract class ADialogList<E> extends ADialog {
 	private final class EntryDeleteHandler implements ActionListener {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			E old = mList.getSelectedValue();
-			if (old != null) {
-				mModel.removeElement( old);
+			int idx = mList.getSelectedIndex();
+			if (idx >= 0) {
+				mModel.removeElementAt( idx);
 				updateBtn();
 			}
 		}

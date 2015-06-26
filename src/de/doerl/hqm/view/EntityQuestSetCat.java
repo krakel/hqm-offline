@@ -1,12 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Component;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -16,10 +11,9 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
@@ -27,26 +21,15 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.SizeOfQuests;
 import de.doerl.hqm.controller.EditController;
-import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.ui.ABundleAction;
-import de.doerl.hqm.ui.EditFrame;
-import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.Utils;
 
-class EntityQuestSetCat extends AEntity<FQuestSetCat> {
+class EntityQuestSetCat extends AEntityCat<FQuestSet> {
 	private static final long serialVersionUID = -5930552368392528379L;
-	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
-	private final FQuestSetCat mCategory;
-	private JToolBar mTool = EditFrame.createToolBar();
-	private ABundleAction mNameAction = new NameAction();
+//	private static final Logger LOGGER = Logger.getLogger( EntityQuestSetCat.class.getName());
 	private ABundleAction mDescAction = new DescriptionAction();
-	private ABundleAction mAddAction = new AddAction();
-	private ABundleAction mDeleteAction = new DeleteAction();
-	private ABundleAction mMoveUpAction = new MoveUpAction();
-	private ABundleAction mMoveDownAction = new MoveDownAction();
-	private LeafList<FQuestSet> mList = new LeafList<>();
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafLabel mTotal = new LeafLabel( GuiColor.BLACK.getColor(), "");
 	private LeafLabel mLocked = new LeafLabel( GuiColor.CYAN.getColor(), "0 unlocked quests");
@@ -55,79 +38,15 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	private LeafLabel mUnclaimed = new LeafLabel( GuiColor.PURPLE.getColor(), "0 quests with unclaimed rewards");
 	private LeafLabel mInvisible = new LeafLabel( GuiColor.LIGHT_GRAY.getColor(), "0 quests including invisible ones");
 	private JScrollPane mScroll;
-	private volatile FQuestSet mActiv;
 
 	public EntityQuestSetCat( FQuestSetCat cat, EditController ctrl) {
-		super( ctrl, new GridLayout( 1, 2));
-		mCategory = cat;
-		mList.setCellRenderer( new ListRenderer());
-		createLeafs();
-		update();
-		updateActive( QuestSetFirst.get( mCategory), true);
-		mList.addMouseListener( new MouseAdapter() {
-			@Override
-			public void mouseClicked( MouseEvent evt) {
-				FQuestSet qs = mList.getSelectedValue();
-				if (qs != null) {
-					SwingUtilities.invokeLater( new ListMouseAction( qs));
-				}
-			}
-		});
-		mList.addClickListener( mNameAction);
+		super( cat, ctrl, new ListRenderer());
+		init();
 		mDesc.addClickListener( mDescAction);
-		mTool.add( mNameAction);
+		initTools();
 		mTool.add( mDescAction);
 		mTool.addSeparator();
-		mTool.add( mAddAction);
-		mTool.add( mMoveUpAction);
-		mTool.add( mMoveDownAction);
-		mTool.add( mDeleteAction);
-		mTool.addSeparator();
 		updateMoveActions();
-	}
-
-	@Override
-	public void baseActivate( ModelEvent event) {
-	}
-
-	@Override
-	public void baseAdded( ModelEvent event) {
-		try {
-			ABase base = event.mBase;
-			if (mCategory.equals( base.getParent())) {
-				update();
-				updateActive( (FQuestSet) base, true);
-				updateMoveActions();
-			}
-		}
-		catch (ClassCastException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-	}
-
-	@Override
-	public void baseChanged( ModelEvent event) {
-		ABase base = event.mBase;
-		if (mCategory.equals( base) || mCategory.equals( base.getParent())) {
-			update();
-			updateActive( mActiv, false);
-			updateMoveActions();
-		}
-	}
-
-	@Override
-	public void baseRemoved( ModelEvent event) {
-		ABase base = event.mBase;
-		if (mCategory.equals( base.getParent())) {
-			update();
-			updateActive( QuestSetFirst.get( mCategory), true);
-			updateMoveActions();
-		}
-	}
-
-	@Override
-	protected void createLeft( JPanel leaf) {
-		leaf.add( leafScoll( mList, 10000));
 	}
 
 	@Override
@@ -146,16 +65,17 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 	}
 
 	@Override
-	public FQuestSetCat getBase() {
-		return mCategory;
+	protected void doDelete() {
+		mCtrl.questSetDelete( mActiv);
 	}
 
 	@Override
-	public JToolBar getToolBar() {
-		return mTool;
+	protected FQuestSet getFirst() {
+		return QuestSetFirst.get( mCategory);
 	}
 
-	private void update() {
+	@Override
+	protected void update() {
 		QuestSetUpdate.get( mCategory, mList.getModel());
 	}
 
@@ -165,7 +85,8 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		mDeleteAction.setEnabled( enabled);
 	}
 
-	private void updateActive( FQuestSet qs, boolean toggel) {
+	@Override
+	protected void updateActive( FQuestSet qs, boolean toggel) {
 		if (qs == null) {
 			mTotal.setText( String.format( "%d quests in total", 0));
 			mDesc.setText( null);
@@ -192,56 +113,6 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private void updateMoveActions() {
-		if (mActiv == null) {
-			mMoveUpAction.setEnabled( false);
-			mMoveDownAction.setEnabled( false);
-		}
-		else if (mActiv.isFirst()) {
-			mMoveUpAction.setEnabled( false);
-			mMoveDownAction.setEnabled( true);
-		}
-		else if (mActiv.isLast()) {
-			mMoveUpAction.setEnabled( true);
-			mMoveDownAction.setEnabled( false);
-		}
-		else {
-			mMoveUpAction.setEnabled( true);
-			mMoveDownAction.setEnabled( true);
-		}
-	}
-
-	private final class AddAction extends ABundleAction {
-		private static final long serialVersionUID = 6724759221568885874L;
-
-		public AddAction() {
-			super( "entity.setcat.add");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( "new", mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
-			if (result != null) {
-				mCtrl.questSetCreate( mCategory, result);
-			}
-		}
-	}
-
-	private final class DeleteAction extends ABundleAction {
-		private static final long serialVersionUID = 7223654325808174399L;
-
-		public DeleteAction() {
-			super( "entity.setcat.delete");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			if (WarnDialogs.askDelete( mCtrl.getFrame())) {
-				mCtrl.questSetDelete( mActiv);
-			}
-		}
-	}
-
 	private final class DescriptionAction extends ABundleAction {
 		private static final long serialVersionUID = -8367056239473171639L;
 
@@ -258,20 +129,6 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 					mCtrl.fireChanged( mCategory);
 				}
 			}
-		}
-	}
-
-	private final class ListMouseAction implements Runnable {
-		private FQuestSet mQS;
-
-		public ListMouseAction( FQuestSet qs) {
-			mQS = qs;
-		}
-
-		@Override
-		public void run() {
-			updateActive( mQS, true);
-			updateMoveActions();
 		}
 	}
 
@@ -302,64 +159,13 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		}
 	}
 
-	private final class MoveDownAction extends ABundleAction {
-		private static final long serialVersionUID = -4792849231706543388L;
-
-		public MoveDownAction() {
-			super( "entity.setcat.moveDown");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null) {
-				mActiv.moveDown();
-				mCtrl.fireChanged( mActiv.mParentCategory);
-			}
-		}
-	}
-
-	private final class MoveUpAction extends ABundleAction {
-		private static final long serialVersionUID = 6791409995069306038L;
-
-		public MoveUpAction() {
-			super( "entity.setcat.moveUp");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null) {
-				mActiv.moveUp();
-				mCtrl.fireChanged( mActiv.mParentCategory);
-			}
-		}
-	}
-
-	private final class NameAction extends ABundleAction {
-		private static final long serialVersionUID = -3873930852720932846L;
-
-		public NameAction() {
-			super( "entity.setcat.title");
-		}
-
-		@Override
-		public void actionPerformed( ActionEvent evt) {
-			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
-				if (result != null) {
-					mActiv.mName = result;
-					mCtrl.fireChanged( mCategory);
-				}
-			}
-		}
-	}
-
 	private static class QuestSetFirst extends AHQMWorker<FQuestSet, Object> {
 		private static final QuestSetFirst WORKER = new QuestSetFirst();
 
 		private QuestSetFirst() {
 		}
 
-		public static FQuestSet get( FQuestSetCat cat) {
+		public static FQuestSet get( ACategory<FQuestSet> cat) {
 			return cat.forEachMember( WORKER, null);
 		}
 
@@ -394,7 +200,7 @@ class EntityQuestSetCat extends AEntity<FQuestSetCat> {
 		private QuestSetUpdate() {
 		}
 
-		public static void get( FQuestSetCat set, DefaultListModel<FQuestSet> model) {
+		public static void get( ACategory<FQuestSet> set, DefaultListModel<FQuestSet> model) {
 			model.clear();
 			set.forEachMember( WORKER, model);
 		}

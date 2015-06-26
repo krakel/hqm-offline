@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.FHqm;
@@ -15,13 +14,11 @@ import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.ui.ABundleAction;
-import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.utils.ResourceManager;
 
 class EntityHQM extends AEntity<FHqm> {
 	private static final long serialVersionUID = 4033642877403597083L;
 	private FHqm mHQM;
-	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mDescAction = new TextBoxAction();
 	private ABundleAction mVersionAction = new VersionAction();
 	private JLabel mLogo = new LeafImage( ResourceManager.getImageUI( "hqm.default"));
@@ -77,11 +74,6 @@ class EntityHQM extends AEntity<FHqm> {
 	@Override
 	public FHqm getBase() {
 		return mHQM;
-	}
-
-	@Override
-	public JToolBar getToolBar() {
-		return mTool;
 	}
 
 	public void update() {

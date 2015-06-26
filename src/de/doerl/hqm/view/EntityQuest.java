@@ -15,7 +15,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.Tuple2;
@@ -35,7 +34,6 @@ import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.ui.ABundleAction;
-import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
@@ -45,7 +43,6 @@ public class EntityQuest extends AEntity<FQuest> {
 	private static final Logger LOGGER = Logger.getLogger( EntityQuest.class.getName());
 	private static final TaskBoxEmpty BOX_EMPTY = new TaskBoxEmpty();
 	private final FQuest mQuest;
-	private JToolBar mTool = EditFrame.createToolBar();
 	private ABundleAction mNameAction = new NameAction();
 	private ABundleAction mDescAction = new DescriptionAction();
 	private ABundleAction mRewardAction = new RewardAction();
@@ -194,11 +191,6 @@ public class EntityQuest extends AEntity<FQuest> {
 	public ATaskBox getFirstBox() {
 		DefaultListModel<ATaskBox> model = mTaskList.getModel();
 		return model.size() > 0 ? model.elementAt( 0) : null;
-	}
-
-	@Override
-	public JToolBar getToolBar() {
-		return mTool;
 	}
 
 	private void update() {
