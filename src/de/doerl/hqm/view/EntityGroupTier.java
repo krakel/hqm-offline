@@ -15,18 +15,17 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ABundleAction;
-import de.doerl.hqm.ui.ADialog.TextFieldInteger;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.Utils;
 
@@ -34,23 +33,25 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 	private static final long serialVersionUID = 2046344393475287723L;
 	private static final Logger LOGGER = Logger.getLogger( EntityGroupTier.class.getName());
 	private FGroupTier mTier;
-	protected ABundleAction mNameAction = new NameAction();
-	protected ABundleAction mAddAction = new AddAction();
-	protected ABundleAction mMoveUpAction = new MoveUpAction();
-	protected ABundleAction mMoveDownAction = new MoveDownAction();
-	protected ABundleAction mDeleteAction = new DeleteAction();
-	protected LeafList<FGroup> mList = new LeafList<>();
-	private JTextField mLimit = new TextFieldInteger();
-	private LeafStacks mStacks = new LeafStacks( ICON_SIZE, null);
+	private ABundleAction mNameAction = new NameAction();
+	private ABundleAction mLimitAction = new LimitAction();
+	private ABundleAction mStacksAction = new StacksAction();
+	private ABundleAction mAddAction = new AddAction();
+	private ABundleAction mMoveUpAction = new MoveUpAction();
+	private ABundleAction mMoveDownAction = new MoveDownAction();
+	private ABundleAction mDeleteAction = new DeleteAction();
+	private LeafList<FGroup> mList = new LeafList<>();
+	private LeafTextField mLimit = new LeafTextField();
+	private LeafFloating mStacks = new LeafFloating();
 	protected volatile FGroup mActiv;
 
 	EntityGroupTier( FGroupTier tier, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
 		mTier = tier;
 		mList.setCellRenderer( new ListRenderer());
-		mLimit.setPreferredSize( new Dimension( 200, 2 * getFont().getSize()));
+		mLimit.setPreferredSize( new Dimension( WIDTH, 2 * getFont().getSize()));
 		mLimit.setMaximumSize( new Dimension( Short.MAX_VALUE, 2 * getFont().getSize()));
-		mLimit.setAlignmentX( LEFT_ALIGNMENT);
+		mStacks.setPreferredSize( new Dimension( WIDTH, 6 * AEntity.ICON_SIZE));
 		createLeafs();
 		GroupUpdate.get( mTier, mList.getModel());
 		updateActive( GroupSetFirst.get( mTier), true);
@@ -64,13 +65,18 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 			}
 		});
 		mList.addClickListener( mNameAction);
-//		mMarker.addMouseListener( new BorderAdapter( mMarker));
-//		mNeutral.addClickListener( mNeutralAction);
-//		mMarker.addClickListener( mMarkerAction);
-		initTools();
-//		mTool.add( mNeutralAction);
-//		mTool.add( mMarkerAction);
-//		mTool.addSeparator();
+		mLimit.addClickListener( mLimitAction);
+		mStacks.addClickListener( mStacksAction);
+		mTool.add( mNameAction);
+		mTool.addSeparator();
+		mTool.add( mAddAction);
+		mTool.add( mMoveUpAction);
+		mTool.add( mMoveDownAction);
+		mTool.add( mDeleteAction);
+		mTool.addSeparator();
+		mTool.add( mLimitAction);
+		mTool.add( mStacksAction);
+		mTool.addSeparator();
 		updateMoveActions();
 	}
 
@@ -131,37 +137,31 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 		return mTier;
 	}
 
-	private void initTools() {
-		mTool.add( mNameAction);
-		mTool.addSeparator();
-		mTool.add( mAddAction);
-		mTool.add( mMoveUpAction);
-		mTool.add( mMoveDownAction);
-		mTool.add( mDeleteAction);
-		mTool.addSeparator();
-	}
-
 	private void updateActions( boolean enabled) {
 		mNameAction.setEnabled( enabled);
+		mLimitAction.setEnabled( enabled);
+		mStacksAction.setEnabled( enabled);
 		mDeleteAction.setEnabled( enabled);
 	}
 
 	private void updateActive( FGroup tier, boolean toggel) {
 		if (tier == null) {
 			mList.clearSelection();
+			mStacks.removeAll();
 			updateActions( false);
 			updateControls( false);
 			mActiv = null;
 		}
 		else if (toggel && Utils.equals( tier, mActiv)) {
 			mList.clearSelection();
+			mStacks.removeAll();
 			updateActions( false);
 			updateControls( false);
 			mActiv = null;
 		}
 		else {
-			mLimit.setText( String.valueOf( tier.mLimit));
-			mStacks.update( tier.mStacks);
+			mLimit.setText( String.format( "Limit: %d", tier.mLimit));
+			updateStacks( tier);
 			mList.setSelectedValue( tier, true);
 			updateActions( true);
 			updateControls( true);
@@ -183,6 +183,22 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 			mMoveUpAction.setEnabled( !mActiv.isFirst());
 			mMoveDownAction.setEnabled( !mActiv.isLast());
 		}
+	}
+
+	private void updateStacks( FGroup tier) {
+		mStacks.removeAll();
+		if (tier.mStacks.isEmpty()) {
+			mStacks.add( LeafIcon.createEmpty( 0.8));
+		}
+		else {
+			for (FItemStack stk : tier.mStacks) {
+				LeafIcon leaf = new LeafIcon();
+				IconUpdate.create( leaf, stk, 0.8, String.valueOf( stk.getCount()));
+				mStacks.add( leaf);
+			}
+		}
+		mStacks.revalidate();
+		mStacks.repaint();
 	}
 
 	private final class AddAction extends ABundleAction {
@@ -252,6 +268,21 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 		public Object forGroup( FGroup grp, DefaultListModel<FGroup> model) {
 			model.addElement( grp);
 			return null;
+		}
+	}
+
+	private class LimitAction extends ABundleAction {
+		private static final long serialVersionUID = -1342076802896523271L;
+
+		public LimitAction() {
+			super( "entity.tier.limit");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent e) {
+			if (DialogIntegerField.update( mActiv, mCtrl.getFrame())) {
+				mCtrl.fireChanged( mActiv);
+			}
 		}
 	}
 
@@ -338,21 +369,18 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 		}
 	}
 
-	public class TierRenderere extends AListCellRenderer<FGroupTier> {
-		private static final long serialVersionUID = 4392939516279598751L;
-		private LeafLabel mTitle = new LeafLabel( UNSELECTED, "", false);
+	private final class StacksAction extends ABundleAction {
+		private static final long serialVersionUID = 6120295563371537564L;
 
-		private TierRenderere() {
-			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-			setOpaque( true);
-			setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10));
-			add( mTitle);
+		public StacksAction() {
+			super( "entity.tier.stacks");
 		}
 
 		@Override
-		public Component getListCellRendererComponent( JList<? extends FGroupTier> list, FGroupTier value, int index, boolean isSelected, boolean cellHasFocus) {
-			mTitle.setText( Utils.validString( value.mName) ? value.mName : "~missing~");
-			return this;
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null && DialogListItems.update( mActiv.mStacks, mCtrl.getFrame())) {
+				mCtrl.fireChanged( mActiv);
+			}
 		}
 	}
 }

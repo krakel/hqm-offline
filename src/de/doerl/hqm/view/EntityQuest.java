@@ -54,6 +54,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	private ABundleAction mTaskDeleteAction = new TaskDeleteAction();
 	private ABundleAction mTaskMoveUpAction = new TaskMoveUpAction();
 	private ABundleAction mTaskMoveDownAction = new TaskMoveDownAction();
+	private LeafButton mRewardBtn = new LeafButton( "Claim reward");
 	private LeafTextField mTitle = new LeafTextField( true);
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafStacks mRewardList;
@@ -66,9 +67,8 @@ public class EntityQuest extends AEntity<FQuest> {
 	public EntityQuest( FQuest quest, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
 		mQuest = quest;
-		mRewardList = new LeafStacks( ICON_SIZE, ReputationFactory.getIcon( quest));
-		mChoiceList = new LeafStacks( ICON_SIZE, new LeafButton( "Claim reward"));
-		updateReputation();
+		mRewardList = new LeafStacks();
+		mChoiceList = new LeafStacks();
 		mTaskList.setCellRenderer( new TaskListRenderer());
 		mTaskContent.setAlignmentX( LEFT_ALIGNMENT);
 		createLeafs();
@@ -193,13 +193,21 @@ public class EntityQuest extends AEntity<FQuest> {
 		return model.size() > 0 ? model.elementAt( 0) : null;
 	}
 
+	private LeafIcon getReputationIcon() {
+		if (mQuest.mRepRewards.isEmpty()) {
+			return null;
+		}
+		else {
+			return ReputationFactory.getIcon( mQuest);
+		}
+	}
+
 	private void update() {
 		mTitle.setText( mQuest.mName);
 		mDesc.setText( mQuest.mDescr);
 		TaskBoxUpdate.get( mQuest, mCtrl, mTaskList.getModel());
-		mRewardList.update( mQuest.mRewards);
-		mChoiceList.update( mQuest.mChoices);
-		updateReputation();
+		mRewardList.update( mQuest.mRewards, getReputationIcon());
+		mChoiceList.update( mQuest.mChoices, mRewardBtn);
 	}
 
 	private void updateActions( boolean enabled) {
@@ -244,10 +252,6 @@ public class EntityQuest extends AEntity<FQuest> {
 			mTaskMoveUpAction.setEnabled( !task.isFirst());
 			mTaskMoveDownAction.setEnabled( !task.isLast());
 		}
-	}
-
-	private void updateReputation() {
-		mRewardList.setBtnVisible( !mQuest.mRepRewards.isEmpty());
 	}
 
 	private void updateTaskAction( boolean enabled) {

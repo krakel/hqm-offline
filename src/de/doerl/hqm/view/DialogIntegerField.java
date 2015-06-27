@@ -5,6 +5,7 @@ import java.awt.Window;
 
 import javax.swing.JTextField;
 
+import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.ui.ADialog;
@@ -20,6 +21,19 @@ class DialogIntegerField extends ADialog {
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
+	}
+
+	public static boolean update( FGroup group, Window owner) {
+		DialogIntegerField dlg = new DialogIntegerField( owner);
+		dlg.createMain();
+		dlg.updateMain( String.valueOf( group.mLimit));
+		if (dlg.showDialog() == DialogResult.APPROVE) {
+			group.mLimit = Utils.parseInteger( dlg.getText(), 1);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	public static boolean update( FQuestTaskDeath task, Window owner) {

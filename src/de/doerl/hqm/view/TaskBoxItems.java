@@ -5,8 +5,12 @@ import java.awt.Window;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
+import javax.swing.JPanel;
 
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.ARequirement;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.base.dispatch.IsEmpty;
 
 class TaskBoxItems extends ATaskBox {
 	private static final long serialVersionUID = -2578865094375861527L;
@@ -53,6 +57,33 @@ class TaskBoxItems extends ATaskBox {
 
 	@Override
 	public void update() {
-		mFloating.update( mTask);
+		RequirementFactory.update( mFloating, mTask);
+	}
+
+	private static class RequirementFactory extends AHQMWorker<Object, JPanel> {
+		private static final RequirementFactory WORKER = new RequirementFactory();
+
+		public RequirementFactory() {
+		}
+
+		public static void update( LeafFloating panel, AQuestTaskItems task) {
+			panel.removeAll();
+			if (IsEmpty.getRequirement( task)) {
+				panel.add( LeafIcon.createEmpty( 0.8));
+			}
+			else {
+				task.forEachRequirement( WORKER, panel);
+			}
+			panel.revalidate();
+			panel.repaint();
+		}
+
+		@Override
+		protected Object doRequirement( ARequirement req, JPanel panel) {
+			LeafIcon leaf = new LeafIcon();
+			IconUpdate.create( leaf, req.getStack(), 0.8, String.valueOf( req.getCount()));
+			panel.add( leaf);
+			return null;
+		}
 	}
 }
