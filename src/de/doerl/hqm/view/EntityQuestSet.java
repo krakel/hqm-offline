@@ -46,6 +46,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private AToggleAction mBigAction = new BigAction();
 	private AToggleAction mGridAction = new GridAction();
 	private ABundleAction mSetAction = new SetAction();
+	private ABundleAction mRepeatAction = new RepeatAction();
 	private ABundleAction mTriggerAction = new TriggerAction();
 	private ABundleAction mIconAction = new IconAction();
 	private ABundleAction mDeleteAction = new DeleteAction();
@@ -68,6 +69,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mNameAction);
 		mTool.add( createToggleButton( mBigAction));
 		mTool.add( mSetAction);
+		mTool.add( mRepeatAction);
 		mTool.add( mTriggerAction);
 		mTool.add( mIconAction);
 		mTool.addSeparator();
@@ -78,7 +80,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mGridAction);
 		mTool.addSeparator();
 		mLeaf.addMouseListener( new AddHandler());
-		enableGroup( false);
+		updateGroup( false);
 		updateActions( false);
 		updateMoveActions();
 		selectGroupNothing();
@@ -119,7 +121,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		updateCurrent( false);
 		activeUpdate( Type.NORM);
 		mActiv = null;
-		enableGroup( false);
+		updateGroup( false);
 		updateActions( false);
 		updateMoveActions();
 		selectGroupNothing();
@@ -265,12 +267,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		return btn;
 	}
 
-	private void enableGroup( boolean value) {
-		mGroupAdd.setEnabled( true);
-		mGroupMove.setEnabled( value);
-		mGroupLink.setEnabled( value);
-	}
-
 	@Override
 	public FQuestSet getBase() {
 		return mSet;
@@ -370,8 +366,9 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mNameAction.setEnabled( value);
 		mBigAction.setEnabled( value);
 		mSetAction.setEnabled( value);
-		mIconAction.setEnabled( value);
+		mRepeatAction.setEnabled( value);
 		mTriggerAction.setEnabled( value);
+		mIconAction.setEnabled( value);
 		mDeleteAction.setEnabled( value);
 	}
 
@@ -385,7 +382,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		activeUpdate( Type.NORM);
 		mActiv = activ;
 		activeUpdate( Type.BASE);
-		enableGroup( true);
+		updateGroup( true);
 		updateActions( enableQuest);
 		mBigAction.setSelected( activ.getQuest().mBig);
 		updateMoveActions();
@@ -397,6 +394,12 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			quest.setInformation( info);
 			mCtrl.fireModified( quest);
 		}
+	}
+
+	private void updateGroup( boolean value) {
+		mGroupAdd.setEnabled( true);
+		mGroupMove.setEnabled( value);
+		mGroupLink.setEnabled( value);
 	}
 
 	private void updateMoveActions() {
@@ -790,6 +793,24 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public Object forQuestSet( FQuestSet set, Vector<String> arr) {
 			arr.add( set.mName);
 			return null;
+		}
+	}
+
+	public class RepeatAction extends ABundleAction {
+		private static final long serialVersionUID = -7789181879988427447L;
+
+		public RepeatAction() {
+			super( "entity.set.repeat");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				FQuest quest = mActiv.getQuest();
+				if (DialogRepeat.update( quest.mRepeatInfo, mCtrl.getFrame())) {
+					mCtrl.fireChanged( quest);
+				}
+			}
 		}
 	}
 

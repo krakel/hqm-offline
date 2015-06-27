@@ -91,7 +91,20 @@ class LeafQuest extends JLabel {
 	private void updateIcon() {
 		String key = mType.getKey( mQuest.mBig);
 		Image back = ResourceManager.getImageUI( key);
-		IconUpdate.create( this, back, mQuest.mIcon, 0.6, mQuest.mTriggerType.getMarker());
+		String rr = mQuest.mRepeatInfo.mType.getMarker();
+		String tt = mQuest.mTriggerType.getMarker();
+		if (rr == null && tt == null) {
+			IconUpdate.create( this, back, mQuest.mIcon, 0.6, null);
+		}
+		else if (rr == null) {
+			IconUpdate.create( this, back, mQuest.mIcon, 0.6, String.format( "~%s", tt));
+		}
+		else if (tt == null) {
+			IconUpdate.create( this, back, mQuest.mIcon, 0.6, String.format( "%s~", rr));
+		}
+		else {
+			IconUpdate.create( this, back, mQuest.mIcon, 0.6, String.format( "%s%s", rr, tt));
+		}
 	}
 
 	public void updateLocation() {

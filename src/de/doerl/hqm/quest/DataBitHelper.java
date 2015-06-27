@@ -106,7 +106,7 @@ public enum DataBitHelper {
 	public int getMaximum() {
 		if (!mMaximum) {
 			mMaximum = true;
-			mCached = (1 << mCount) - 1;
+			mCached = Integer.MAX_VALUE & (int) ((1L << mCount) - 1);
 		}
 		return mCached;
 	}

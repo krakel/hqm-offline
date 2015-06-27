@@ -12,20 +12,22 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import de.doerl.hqm.base.FQuest;
-import de.doerl.hqm.quest.TriggerType;
+import de.doerl.hqm.base.FRepeatInfo;
+import de.doerl.hqm.quest.DataBitHelper;
+import de.doerl.hqm.quest.RepeatType;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 
-class DialogTrigger extends ADialog {
+class DialogRepeat extends ADialog {
 	private static final long serialVersionUID = -7234317010798818603L;
 	private JTextArea mDesc = new JTextArea();
-	private JComboBox<TriggerType> mTrigger = new JComboBox<>( TriggerType.values());
-	private JTextField mTasks = new TextFieldInteger();
+	private JComboBox<RepeatType> mType = new JComboBox<>( RepeatType.values());
+	private JTextField mDays = new TextFieldInteger();
+	private JTextField mHours = new TextFieldInteger();
 
-	private DialogTrigger( Window owner) {
+	private DialogRepeat( Window owner) {
 		super( owner);
-		setTheme( "edit.trigger.theme");
+		setTheme( "edit.repeat.theme");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
@@ -33,15 +35,15 @@ class DialogTrigger extends ADialog {
 		mDesc.setWrapStyleWord( true);
 		mDesc.setOpaque( false);
 		mDesc.setAlignmentX( LEFT_ALIGNMENT);
-		mTrigger.addActionListener( new TriggerAction());
+		mType.addActionListener( new TypeAction());
 	}
 
-	public static boolean update( FQuest quest, Window owner) {
-		DialogTrigger dlg = new DialogTrigger( owner);
+	public static boolean update( FRepeatInfo info, Window owner) {
+		DialogRepeat dlg = new DialogRepeat( owner);
 		dlg.createMain();
-		dlg.updateMain( quest);
+		dlg.updateMain( info);
 		if (dlg.showDialog() == DialogResult.APPROVE) {
-			dlg.updateResult( quest);
+			dlg.updateResult( info);
 			return true;
 		}
 		else {
@@ -53,8 +55,9 @@ class DialogTrigger extends ADialog {
 		Group hori = layout.createSequentialGroup();
 		ParallelGroup leftGrp = layout.createParallelGroup();
 		ParallelGroup rightGrp = layout.createParallelGroup();
-		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Trigger", mTrigger));
-		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Tasks", mTasks));
+		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Type", mType));
+		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Days", mDays));
+		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Hours", mHours));
 		hori.addGroup( leftGrp);
 		hori.addGroup( rightGrp);
 		return hori;
@@ -78,21 +81,24 @@ class DialogTrigger extends ADialog {
 		mMain.add( box);
 	}
 
-	private void updateMain( FQuest quest) {
-		mTrigger.setSelectedItem( quest.mTriggerType);
-		mTasks.setText( String.valueOf( quest.mTriggerTasks));
+	private void updateMain( FRepeatInfo info) {
+		mType.setSelectedItem( info.mType);
+		mDays.setText( String.valueOf( info.mTotal / 24));
+		mHours.setText( String.valueOf( info.mTotal % 24));
 	}
 
-	private void updateResult( FQuest quest) {
+	private void updateResult( FRepeatInfo info) {
 		try {
-			TriggerType type = (TriggerType) mTrigger.getSelectedItem();
+			RepeatType type = (RepeatType) mType.getSelectedItem();
 			if (type != null) {
-				quest.mTriggerType = type;
-				if (type.isUseTaskCount()) {
-					quest.mTriggerTasks = Utils.parseInteger( mTasks.getText(), 1);
+				info.mType = type;
+				if (type.isUseTime()) {
+					int days = Utils.parseInteger( mDays.getText(), 0);
+					int hours = Utils.parseInteger( mHours.getText(), 0);
+					info.mTotal = Math.min( DataBitHelper.HOURS.getMaximum(), days * 24 + hours);
 				}
 				else {
-					quest.mTriggerTasks = 0;
+					info.mTotal = 0;
 				}
 			}
 		}
@@ -100,17 +106,19 @@ class DialogTrigger extends ADialog {
 		}
 	}
 
-	private final class TriggerAction implements ActionListener {
+	private final class TypeAction implements ActionListener {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			try {
-				TriggerType type = (TriggerType) mTrigger.getSelectedItem();
+				RepeatType type = (RepeatType) mType.getSelectedItem();
 				if (type != null) {
-					mTasks.setEditable( type.isUseTaskCount());
+					mDays.setEditable( type.isUseTime());
+					mHours.setEditable( type.isUseTime());
 					mDesc.setText( type.getDescription());
 				}
 				else {
-					mTasks.setEditable( false);
+					mDays.setEditable( false);
+					mHours.setEditable( false);
 					mDesc.setText( null);
 				}
 			}
