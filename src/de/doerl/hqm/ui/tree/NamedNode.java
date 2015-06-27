@@ -16,11 +16,6 @@ class NamedNode extends ANode {
 
 	@Override
 	public String toString() {
-		if (mNamed.isInformation()) {
-			return String.format( "[ %s ]", mNamed.mName);
-		}
-		else {
-			return String.valueOf( mNamed.mName);
-		}
+		return String.valueOf( mNamed.mName);
 	}
 }

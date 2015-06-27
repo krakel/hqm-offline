@@ -23,6 +23,7 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ABundleAction;
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 
 class EntityReputationCat extends AEntityCat<FReputation> {
@@ -154,7 +155,7 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 		public MarkerRenderer() {
 			setLayout( new GridLayout( 1, 2, 2, 2));
 			setOpaque( false);
-			AEntity.setSizes( this, FONT_NORMAL.getSize());
+			AEntity.setSizes( this, ADialog.FONT_NORMAL.getSize());
 			mMark.setHorizontalTextPosition( SwingConstants.RIGHT);
 			mName.setHorizontalTextPosition( SwingConstants.LEFT);
 			add( mName);

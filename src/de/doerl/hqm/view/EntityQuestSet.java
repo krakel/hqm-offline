@@ -667,22 +667,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			for (Component cc : mLeaf.getComponents()) {
 				if (cc instanceof LeafLine) {
 					LeafLine ll = (LeafLine) cc;
-					FQuest from = ll.getFrom();
-					FQuest to = ll.getTo();
-					if (Utils.equals( quest, from)) {
-						int x1 = x + ZOOM * ResourceManager.getW5( quest.mBig);
-						int y1 = y + ZOOM * ResourceManager.getH5( quest.mBig);
-						int x2 = ZOOM * to.getCenterX();
-						int y2 = ZOOM * to.getCenterY();
-						ll.updateBounds( x1, y1, x2, y2);
-					}
-					if (Utils.equals( quest, to)) {
-						int x1 = ZOOM * from.getCenterX();
-						int y1 = ZOOM * from.getCenterY();
-						int x2 = x + ZOOM * ResourceManager.getW5( quest.mBig);
-						int y2 = y + ZOOM * ResourceManager.getH5( quest.mBig);
-						ll.updateBounds( x1, y1, x2, y2);
-					}
+					ll.updateBounds( quest, x, y);
 				}
 			}
 		}

@@ -36,7 +36,7 @@ class DialogTextBox extends ADialog {
 
 	@Override
 	protected void createMain() {
-		mArea.setFont( AEntity.FONT_NORMAL);
+		mArea.setFont( ADialog.FONT_NORMAL);
 		mArea.setLineWrap( true);
 		mArea.setWrapStyleWord( true);
 		JScrollPane scroll = new JScrollPane( mArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

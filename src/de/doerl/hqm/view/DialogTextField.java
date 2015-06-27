@@ -34,7 +34,7 @@ class DialogTextField extends ADialog {
 
 	@Override
 	protected void createMain() {
-		mField.setFont( AEntity.FONT_NORMAL);
+		mField.setFont( ADialog.FONT_NORMAL);
 		mField.setPreferredSize( new Dimension( 200, 2 * getFont().getSize()));
 		mField.setAlignmentX( TOP_ALIGNMENT);
 		mMain.add( mField);

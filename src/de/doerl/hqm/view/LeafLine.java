@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import de.doerl.hqm.base.FQuest;
+import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.utils.Utils;
 
 class LeafLine extends JPanel {
 	private static final long serialVersionUID = -5876257198033732175L;
@@ -73,7 +75,16 @@ class LeafLine extends JPanel {
 		}
 	}
 
-	public void updateBounds( int x1, int y1, int x2, int y2) {
+	public void updateBounds( FQuest quest, int x, int y) {
+		if (Utils.equals( mFrom, quest)) {
+			updateBoundsFrom( x, y);
+		}
+		if (Utils.equals( quest, mTo)) {
+			updateBoundsTo( x, y);
+		}
+	}
+
+	private void updateBounds( int x1, int y1, int x2, int y2) {
 		mDX = x1 - x2;
 		mDY = y1 - y2;
 		int x = Math.min( x1, x2);
@@ -81,5 +92,21 @@ class LeafLine extends JPanel {
 		int width = Math.max( Math.abs( mDX), LINE_SIZE);
 		int height = Math.max( Math.abs( mDY), LINE_SIZE);
 		setBounds( x, y, width, height);
+	}
+
+	private void updateBoundsFrom( int x, int y) {
+		int x1 = x + AEntity.ZOOM * ResourceManager.getW5( mFrom.mBig);
+		int y1 = y + AEntity.ZOOM * ResourceManager.getH5( mFrom.mBig);
+		int x2 = AEntity.ZOOM * mTo.getCenterX();
+		int y2 = AEntity.ZOOM * mTo.getCenterY();
+		updateBounds( x1, y1, x2, y2);
+	}
+
+	private void updateBoundsTo( int x, int y) {
+		int x1 = AEntity.ZOOM * mFrom.getCenterX();
+		int y1 = AEntity.ZOOM * mFrom.getCenterY();
+		int x2 = x + AEntity.ZOOM * ResourceManager.getW5( mTo.mBig);
+		int y2 = y + AEntity.ZOOM * ResourceManager.getH5( mTo.mBig);
+		updateBounds( x1, y1, x2, y2);
 	}
 }

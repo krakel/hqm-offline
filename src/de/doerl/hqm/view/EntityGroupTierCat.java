@@ -24,6 +24,7 @@ import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.ui.ABundleAction;
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 
 class EntityGroupTierCat extends AEntityCat<FGroupTier> {
@@ -242,7 +243,7 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 		public WeightRenderer() {
 			setLayout( new GridLayout( 1, 2, 2, 2));
 			setOpaque( false);
-			AEntity.setSizes( this, FONT_NORMAL.getSize());
+			AEntity.setSizes( this, ADialog.FONT_NORMAL.getSize());
 			add( mBag);
 			add( mName);
 		}

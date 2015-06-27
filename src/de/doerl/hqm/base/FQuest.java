@@ -41,6 +41,20 @@ public final class FQuest extends ANamed implements IElement {
 		return w.forQuest( this, p);
 	}
 
+	public boolean containExt() {
+		for (FQuest prev : mRequirements) {
+			if (Utils.different( prev.mParentQuestSet, mParentQuestSet)) {
+				return true;
+			}
+		}
+		for (FQuest post : mPosts) {
+			if (Utils.different( post.mParentQuestSet, mParentQuestSet)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public AQuestTask createQuestTask( TaskTyp type, String name) {
 		AQuestTask task = null;
 		switch (type) {

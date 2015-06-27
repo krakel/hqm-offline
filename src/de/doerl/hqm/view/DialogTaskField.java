@@ -46,7 +46,7 @@ class DialogTaskField extends ADialog {
 	@Override
 	protected void createMain() {
 		mTypes.setAlignmentX( LEFT_ALIGNMENT);
-		mField.setFont( AEntity.FONT_NORMAL);
+		mField.setFont( ADialog.FONT_NORMAL);
 		mField.setPreferredSize( new Dimension( 200, 2 * getFont().getSize()));
 		mField.setAlignmentX( LEFT_ALIGNMENT);
 		Box box = Box.createVerticalBox();

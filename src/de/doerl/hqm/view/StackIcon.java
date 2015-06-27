@@ -9,6 +9,7 @@ import java.awt.Image;
 
 import javax.swing.Icon;
 
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.ResourceManager;
 
 class StackIcon implements Icon {
@@ -64,7 +65,7 @@ class StackIcon implements Icon {
 			AEntity.drawCenteredImage( g2, c, mImage, mZoom);
 		}
 		if (mText != null) {
-			g2.setFont( AEntity.FONT_STACK);
+			g2.setFont( ADialog.FONT_STACK);
 			g2.setColor( Color.BLACK);
 			switch (mPos) {
 				case 1:

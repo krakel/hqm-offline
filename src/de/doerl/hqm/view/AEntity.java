@@ -3,7 +3,6 @@ package de.doerl.hqm.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -31,10 +30,6 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 	static final int GAP = 8;
 	static final int ICON_SIZE = 36;
 	static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * 170, ZOOM * 234);
-	static final Font FONT_SMALL = new Font( "SansSerif", Font.PLAIN, 11);
-	static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, 14);
-	static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, 18);
-	static final Font FONT_STACK = new Font( "SansSerif", Font.PLAIN | Font.BOLD, 14);
 	static final Color SELECTED = new Color( 0xAAAAAA);
 	static final Color UNSELECTED = new Color( 0x404040);
 	private static int sColValue;

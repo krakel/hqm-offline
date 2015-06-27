@@ -93,7 +93,7 @@ class LeafQuest extends JLabel {
 	}
 
 	private void updateIcon() {
-		String key = mType.getKey( mQuest.mBig);
+		String key = mType.getKey( mQuest.mBig, mQuest.containExt());
 		Image back = ResourceManager.getImageUI( key);
 		String rr = mQuest.mRepeatInfo.mType.getMarker();
 		String tt = mQuest.mTriggerType.getMarker();
@@ -125,22 +125,31 @@ class LeafQuest extends JLabel {
 	}
 
 	public static enum Type {
-		NORM( "hqm.quest.norm", "hqm.quest.big"),
-		DARK( "hqm.dark.norm", "hqm.dark.big"),
-		BASE( "hqm.base.norm", "hqm.base.big"),
-		LINK( "hqm.link.norm", "hqm.link.big"),
-		PREF( "hqm.pref.norm", "hqm.pref.big"),
-		POST( "hqm.post.norm", "hqm.post.big");
-		private String mBigKey;
-		private String mNormKey;
+		NORM( "hqm.quest.normA", "hqm.quest.bigA", "hqm.quest.normB", "hqm.quest.bigB"),
+		DARK( "hqm.dark.normA", "hqm.dark.bigA", "hqm.dark.normB", "hqm.dark.bigB"),
+		BASE( "hqm.base.normA", "hqm.base.bigA", "hqm.base.normB", "hqm.base.bigB"),
+		LINK( "hqm.link.normA", "hqm.link.bigA", "hqm.link.normB", "hqm.link.bigB"),
+		PREF( "hqm.pref.normA", "hqm.pref.bigA", "hqm.pref.normB", "hqm.pref.bigB"),
+		POST( "hqm.post.normA", "hqm.post.bigA", "hqm.post.normB", "hqm.post.bigB");
+		private String mNormKeyA;
+		private String mBigKeyA;
+		private String mNormKeyB;
+		private String mBigKeyB;
 
-		private Type( String normKey, String bigKey) {
-			mNormKey = normKey;
-			mBigKey = bigKey;
+		private Type( String normKeyA, String bigKeyA, String normKeyB, String bigKeyB) {
+			mNormKeyA = normKeyA;
+			mBigKeyA = bigKeyA;
+			mNormKeyB = normKeyB;
+			mBigKeyB = bigKeyB;
 		}
 
-		String getKey( boolean big) {
-			return big ? mBigKey : mNormKey;
+		String getKey( boolean big, boolean alt) {
+			if (alt) {
+				return big ? mBigKeyB : mNormKeyB;
+			}
+			else {
+				return big ? mBigKeyA : mNormKeyA;
+			}
 		}
 	}
 }

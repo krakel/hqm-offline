@@ -241,7 +241,7 @@ class DialogListWeights extends ADialog {
 		public Renderer() {
 			setLayout( new GridLayout( 1, 2, 2, 2));
 			setOpaque( false);
-			AEntity.setSizes( this, AEntity.FONT_NORMAL.getSize());
+			AEntity.setSizes( this, ADialog.FONT_NORMAL.getSize());
 			add( mBag);
 			add( mName);
 		}

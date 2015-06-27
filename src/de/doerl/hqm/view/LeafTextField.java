@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
+import de.doerl.hqm.ui.ADialog;
+
 class LeafTextField extends JLabel {
 	private static final long serialVersionUID = 5262142469277711143L;
 	private ClickHandler mHandler = new ClickHandler();
@@ -26,7 +28,7 @@ class LeafTextField extends JLabel {
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
-		setFont( title ? AEntity.FONT_TITLE : AEntity.FONT_NORMAL);
+		setFont( title ? ADialog.FONT_TITLE : ADialog.FONT_NORMAL);
 		setForeground( color);
 		setPreferredSize( new Dimension( 200, 2 * getFont().getSize()));
 		setMaximumSize( new Dimension( Short.MAX_VALUE, getFont().getSize()));

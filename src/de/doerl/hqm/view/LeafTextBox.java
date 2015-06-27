@@ -2,6 +2,7 @@ package de.doerl.hqm.view;
 
 import java.awt.event.ActionListener;
 
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.ui.ADialog.TextAreaAscii;
 
 class LeafTextBox extends TextAreaAscii {
@@ -12,7 +13,7 @@ class LeafTextBox extends TextAreaAscii {
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
-		setFont( AEntity.FONT_NORMAL);
+		setFont( ADialog.FONT_NORMAL);
 		setLineWrap( true);
 		setWrapStyleWord( true);
 		setEditable( false);

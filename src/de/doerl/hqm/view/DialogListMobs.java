@@ -21,6 +21,7 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.quest.DataBitHelper;
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.Matcher;
@@ -222,8 +223,8 @@ class DialogListMobs extends ADialogList<FMob> {
 		}
 
 		private Box createBox() {
-			mName.setFont( AEntity.FONT_STACK);
-			mInfo.setFont( AEntity.FONT_SMALL);
+			mName.setFont( ADialog.FONT_STACK);
+			mInfo.setFont( ADialog.FONT_SMALL);
 			mName.setAlignmentX( LEFT_ALIGNMENT);
 			mInfo.setAlignmentX( LEFT_ALIGNMENT);
 			Box box = Box.createVerticalBox();

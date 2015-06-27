@@ -8,6 +8,8 @@ import java.awt.Image;
 
 import javax.swing.Icon;
 
+import de.doerl.hqm.ui.ADialog;
+
 class ButtonIcon implements Icon {
 	private Image mImage;
 	private String mText;
@@ -33,7 +35,7 @@ class ButtonIcon implements Icon {
 		Graphics2D g2 = (Graphics2D) g;
 		AEntity.drawImage( g2, c, mImage);
 		if (mText != null) {
-			g2.setFont( AEntity.FONT_NORMAL);
+			g2.setFont( ADialog.FONT_NORMAL);
 			g2.setColor( Color.BLACK);
 			AEntity.drawCenteredString( g2, c, mText);
 		}

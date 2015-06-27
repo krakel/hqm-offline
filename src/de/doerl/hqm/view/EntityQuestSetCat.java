@@ -24,6 +24,7 @@ import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.ui.ABundleAction;
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 
 class EntityQuestSetCat extends AEntityCat<FQuestSet> {
@@ -145,7 +146,7 @@ class EntityQuestSetCat extends AEntityCat<FQuestSet> {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
 			setOpaque( false);
 			setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10));
-			JComponent hori = leafBoxHorizontal( FONT_NORMAL.getSize());
+			JComponent hori = leafBoxHorizontal( ADialog.FONT_NORMAL.getSize());
 			hori.add( Box.createHorizontalStrut( 24));
 			hori.add( mComplete);
 			add( mTitle);

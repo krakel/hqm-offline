@@ -143,20 +143,34 @@ public class ResourceManager {
 		ImageManager.makeImage( "hqm.rep.bad", "hqm.map", 94, 82, 16, 16);
 		ImageManager.makeImage( "hqm.rep.norm", "hqm.map", 110, 82, 16, 16);
 		//
-		ImageManager.makeImage( "hqm.quest.norm", "hqm.map", 170, 0, 25, 30);
-		ImageManager.makeImage( "hqm.quest.big", "hqm.map", 195, 0, 31, 37);
+		ImageManager.makeImage( "hqm.quest.normA", "hqm.map", 170, 0, 25, 30);
+		ImageManager.makeImage( "hqm.quest.normB", "hqm.map", 170, 30, 25, 30);
+		ImageManager.makeImage( "hqm.quest.bigA", "hqm.map", 195, 0, 31, 37);
+		ImageManager.makeImage( "hqm.quest.bigB", "hqm.map", 195, 37, 31, 37);
 		//
-		ImageManager.makeImage( "hqm.dark.norm", "hqm.quest.norm", 0.6F, 0.6F, 0.6F);
-		ImageManager.makeImage( "hqm.base.norm", "hqm.quest.norm", 0.6F, 1F, 0.6F);
-		ImageManager.makeImage( "hqm.link.norm", "hqm.quest.norm", 0.6F, 1F, 1F);
-		ImageManager.makeImage( "hqm.pref.norm", "hqm.quest.norm", 0.6F, 0.6F, 1F);
-		ImageManager.makeImage( "hqm.post.norm", "hqm.quest.norm", 1F, 0.6F, 0.6F);
+		ImageManager.makeImage( "hqm.dark.normA", "hqm.quest.normA", 0.6F, 0.6F, 0.6F);
+		ImageManager.makeImage( "hqm.base.normA", "hqm.quest.normA", 0.6F, 1F, 0.6F);
+		ImageManager.makeImage( "hqm.link.normA", "hqm.quest.normA", 0.6F, 1F, 1F);
+		ImageManager.makeImage( "hqm.pref.normA", "hqm.quest.normA", 0.6F, 0.6F, 1F);
+		ImageManager.makeImage( "hqm.post.normA", "hqm.quest.normA", 1F, 0.6F, 0.6F);
 		//
-		ImageManager.makeImage( "hqm.dark.big", "hqm.quest.big", 0.6F, 0.6F, 0.6F);
-		ImageManager.makeImage( "hqm.base.big", "hqm.quest.big", 0.6F, 1F, 0.6F);
-		ImageManager.makeImage( "hqm.link.big", "hqm.quest.big", 0.6F, 1F, 1F);
-		ImageManager.makeImage( "hqm.pref.big", "hqm.quest.big", 0.6F, 0.6F, 1F);
-		ImageManager.makeImage( "hqm.post.big", "hqm.quest.big", 1F, 0.6F, 0.6F);
+		ImageManager.makeImage( "hqm.dark.normB", "hqm.quest.normB", 0.7F, 0.7F, 0.7F);
+		ImageManager.makeImage( "hqm.base.normB", "hqm.quest.normB", 0.7F, 1F, 0.7F);
+		ImageManager.makeImage( "hqm.link.normB", "hqm.quest.normB", 0.7F, 1F, 1F);
+		ImageManager.makeImage( "hqm.pref.normB", "hqm.quest.normB", 0.7F, 0.7F, 1F);
+		ImageManager.makeImage( "hqm.post.normB", "hqm.quest.normB", 1F, 0.7F, 0.7F);
+		//
+		ImageManager.makeImage( "hqm.dark.bigA", "hqm.quest.bigA", 0.6F, 0.6F, 0.6F);
+		ImageManager.makeImage( "hqm.base.bigA", "hqm.quest.bigA", 0.6F, 1F, 0.6F);
+		ImageManager.makeImage( "hqm.link.bigA", "hqm.quest.bigA", 0.6F, 1F, 1F);
+		ImageManager.makeImage( "hqm.pref.bigA", "hqm.quest.bigA", 0.6F, 0.6F, 1F);
+		ImageManager.makeImage( "hqm.post.bigA", "hqm.quest.bigA", 1F, 0.6F, 0.6F);
+		//
+		ImageManager.makeImage( "hqm.dark.bigB", "hqm.quest.bigB", 0.7F, 0.7F, 0.7F);
+		ImageManager.makeImage( "hqm.base.bigB", "hqm.quest.bigB", 0.7F, 1F, 0.7F);
+		ImageManager.makeImage( "hqm.link.bigB", "hqm.quest.bigB", 0.7F, 1F, 1F);
+		ImageManager.makeImage( "hqm.pref.bigB", "hqm.quest.bigB", 0.7F, 0.7F, 1F);
+		ImageManager.makeImage( "hqm.post.bigB", "hqm.quest.bigB", 1F, 0.7F, 0.7F);
 		//
 		ImageManager.makeImage( "hqm.book.back", "hqm.book", 0, 0, 170, 234);
 		ImageManager.makeImage( "hqm.default", "hqm.front", 0, 0, 280, 360);

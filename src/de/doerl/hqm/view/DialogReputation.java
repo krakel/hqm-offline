@@ -23,6 +23,7 @@ import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 
 class DialogReputation extends ADialogList<FReputationReward> {
@@ -174,7 +175,7 @@ class DialogReputation extends ADialogList<FReputationReward> {
 		public Renderer() {
 			setLayout( new GridLayout( 1, 2, 2, 2));
 			setOpaque( true);
-			AEntity.setSizes( this, AEntity.FONT_NORMAL.getSize());
+			AEntity.setSizes( this, ADialog.FONT_NORMAL.getSize());
 			add( mName);
 			add( mInfo);
 		}

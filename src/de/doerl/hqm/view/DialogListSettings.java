@@ -29,6 +29,7 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
+import de.doerl.hqm.ui.ADialog;
 
 public class DialogListSettings extends ADialogList<FSetting> {
 	private static final long serialVersionUID = -5897552996020524162L;
@@ -218,8 +219,8 @@ public class DialogListSettings extends ADialogList<FSetting> {
 			setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			mName.setFont( AEntity.FONT_STACK);
-			mInfo.setFont( AEntity.FONT_SMALL);
+			mName.setFont( ADialog.FONT_STACK);
+			mInfo.setFont( ADialog.FONT_SMALL);
 			mName.setAlignmentX( LEFT_ALIGNMENT);
 			mInfo.setAlignmentX( LEFT_ALIGNMENT);
 			add( mName);

@@ -10,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JList;
 
 import de.doerl.hqm.base.ABase;
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.mods.ImageLoader;
 
 abstract class ADialogStacks extends ADialogList<StackEntry> {
@@ -51,8 +52,8 @@ abstract class ADialogStacks extends ADialogList<StackEntry> {
 		}
 
 		private Box createBox() {
-			mName.setFont( AEntity.FONT_STACK);
-			mInfo.setFont( AEntity.FONT_SMALL);
+			mName.setFont( ADialog.FONT_STACK);
+			mInfo.setFont( ADialog.FONT_SMALL);
 			mName.setAlignmentX( LEFT_ALIGNMENT);
 			mInfo.setAlignmentX( LEFT_ALIGNMENT);
 			Box box = Box.createVerticalBox();

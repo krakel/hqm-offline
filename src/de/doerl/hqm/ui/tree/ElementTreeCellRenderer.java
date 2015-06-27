@@ -3,6 +3,7 @@ package de.doerl.hqm.ui.tree;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 
@@ -34,7 +35,11 @@ public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 			ANode nn = (ANode) node.getUserObject();
 			if (nn.getBase().isInformation()) {
-				super.setForeground( Color.RED);
+				setFont( tree.getFont().deriveFont( Font.BOLD));
+				setForeground( Color.MAGENTA);
+			}
+			else {
+				setFont( tree.getFont());
 			}
 		}
 		catch (Exception ex) {

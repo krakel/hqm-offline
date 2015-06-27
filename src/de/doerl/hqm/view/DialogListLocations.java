@@ -20,6 +20,7 @@ import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.Visibility;
+import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.Matcher;
@@ -233,8 +234,8 @@ class DialogListLocations extends ADialogList<FLocation> {
 		}
 
 		private Box createBox() {
-			mName.setFont( AEntity.FONT_STACK);
-			mInfo.setFont( AEntity.FONT_SMALL);
+			mName.setFont( ADialog.FONT_STACK);
+			mInfo.setFont( ADialog.FONT_SMALL);
 			mName.setAlignmentX( LEFT_ALIGNMENT);
 			mInfo.setAlignmentX( LEFT_ALIGNMENT);
 			Box box = Box.createVerticalBox();

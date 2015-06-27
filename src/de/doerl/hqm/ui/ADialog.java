@@ -3,6 +3,7 @@ package de.doerl.hqm.ui;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Window;
@@ -36,6 +37,10 @@ public abstract class ADialog extends JDialog {
 	public static final String BTN_NEW = "btn.new";
 	public static final String BTN_EDIT = "btn.edit";
 	public static final String BTN_DELETE = "btn.delete";
+	public static final Font FONT_SMALL = new Font( "SansSerif", Font.PLAIN, 11);
+	public static final Font FONT_NORMAL = new Font( "SansSerif", Font.PLAIN, 14);
+	public static final Font FONT_TITLE = new Font( "SansSerif", Font.PLAIN, 18);
+	public static final Font FONT_STACK = new Font( "SansSerif", Font.PLAIN | Font.BOLD, 14);
 	public static final int GAP = 10;
 	protected final Action ESC_ACTION = new DefaultAction( "esc pressed", DialogResult.CANCEL);
 	protected DialogResult mReturnValue = DialogResult.CANCEL;

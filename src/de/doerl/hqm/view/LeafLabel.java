@@ -5,6 +5,8 @@ import java.awt.Dimension;
 
 import javax.swing.JLabel;
 
+import de.doerl.hqm.ui.ADialog;
+
 class LeafLabel extends JLabel {
 	private static final long serialVersionUID = 6627294162311351931L;
 
@@ -16,7 +18,7 @@ class LeafLabel extends JLabel {
 		setAlignmentX( LEFT_ALIGNMENT);
 		setOpaque( false);
 		setBorder( null);
-		setFont( title ? AEntity.FONT_TITLE : AEntity.FONT_NORMAL);
+		setFont( title ? ADialog.FONT_TITLE : ADialog.FONT_NORMAL);
 		setForeground( color);
 		setPreferredSize( new Dimension( Short.MAX_VALUE, getFont().getSize()));
 		setText( text);
