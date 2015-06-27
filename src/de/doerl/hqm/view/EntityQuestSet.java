@@ -40,13 +40,14 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private FQuestSet mSet;
 	private LeafAbsolute mLeaf = new LeafAbsolute();
 	private ABundleAction mNameAction = new NameAction();
-	private ABundleAction mIconAction = new IconAction();
 	private AToggleAction mGroupAdd = new GroupAddAction();
 	private AToggleAction mGroupMove = new GroupMoveAction();
 	private AToggleAction mGroupLink = new GroupLinkAction();
 	private AToggleAction mBigAction = new BigAction();
 	private AToggleAction mGridAction = new GridAction();
 	private ABundleAction mSetAction = new SetAction();
+	private ABundleAction mTriggerAction = new TriggerAction();
+	private ABundleAction mIconAction = new IconAction();
 	private ABundleAction mDeleteAction = new DeleteAction();
 	private ABundleAction mMoveUpAction = new MoveUpAction();
 	private ABundleAction mMoveDownAction = new MoveDownAction();
@@ -67,6 +68,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mNameAction);
 		mTool.add( createToggleButton( mBigAction));
 		mTool.add( mSetAction);
+		mTool.add( mTriggerAction);
 		mTool.add( mIconAction);
 		mTool.addSeparator();
 		mTool.add( mMoveUpAction);
@@ -77,7 +79,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.addSeparator();
 		mLeaf.addMouseListener( new AddHandler());
 		enableGroup( false);
-		enableQuest( false);
+		updateActions( false);
 		updateMoveActions();
 		selectGroupNothing();
 	}
@@ -117,7 +119,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		activeUpdate( Type.NORM);
 		mActiv = null;
 		enableGroup( false);
-		enableQuest( false);
+		updateActions( false);
 		updateMoveActions();
 		selectGroupNothing();
 	}
@@ -127,7 +129,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mActiv = activ;
 		activeUpdate( Type.BASE);
 		enableGroup( true);
-		enableQuest( enableQuest);
+		updateActions( enableQuest);
 		mBigAction.setSelected( activ.getQuest().mBig);
 		updateMoveActions();
 	}
@@ -261,13 +263,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mGroupLink.setEnabled( value);
 	}
 
-	private void enableQuest( boolean value) {
-		mNameAction.setEnabled( value);
-		mBigAction.setEnabled( value);
-		mSetAction.setEnabled( value);
-		mDeleteAction.setEnabled( value);
-	}
-
 	@Override
 	public FQuestSet getBase() {
 		return mSet;
@@ -337,7 +332,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mGroupAdd.setSelected( true);
 		mGroupMove.setSelected( false);
 		mGroupLink.setSelected( false);
-		enableQuest( false);
+		updateActions( false);
 	}
 
 	private void selectGroupLink() {
@@ -345,7 +340,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mGroupAdd.setSelected( false);
 		mGroupMove.setSelected( false);
 		mGroupLink.setSelected( true);
-		enableQuest( false);
+		updateActions( false);
 	}
 
 	private void selectGroupMove() {
@@ -353,7 +348,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mGroupAdd.setSelected( false);
 		mGroupMove.setSelected( true);
 		mGroupLink.setSelected( false);
-		enableQuest( false);
+		updateActions( false);
 	}
 
 	private void selectGroupNothing() {
@@ -361,6 +356,15 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mGroupAdd.setSelected( false);
 		mGroupMove.setSelected( false);
 		mGroupLink.setSelected( false);
+	}
+
+	private void updateActions( boolean value) {
+		mNameAction.setEnabled( value);
+		mBigAction.setEnabled( value);
+		mSetAction.setEnabled( value);
+		mIconAction.setEnabled( value);
+		mTriggerAction.setEnabled( value);
+		mDeleteAction.setEnabled( value);
 	}
 
 	private void updateMoveActions() {
@@ -464,7 +468,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			}
 			else {
 				setCursor( Cursor.getPredefinedCursor( Cursor.DEFAULT_CURSOR));
-				enableQuest( mActiv != null);
+				updateActions( mActiv != null);
 			}
 		}
 	}
@@ -483,7 +487,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			}
 			else {
 				setCursor( Cursor.getPredefinedCursor( Cursor.DEFAULT_CURSOR));
-				enableQuest( mActiv != null);
+				updateActions( mActiv != null);
 			}
 		}
 	}
@@ -502,7 +506,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			}
 			else {
 				setCursor( Cursor.getPredefinedCursor( Cursor.DEFAULT_CURSOR));
-				enableQuest( mActiv != null);
+				updateActions( mActiv != null);
 			}
 		}
 	}
@@ -778,6 +782,24 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 						activRemove();
 						mCtrl.questMoveTo( quest, set);
 					}
+				}
+			}
+		}
+	}
+
+	private final class TriggerAction extends ABundleAction {
+		private static final long serialVersionUID = 5835438582658183075L;
+
+		public TriggerAction() {
+			super( "entity.set.trigger");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				FQuest quest = mActiv.getQuest();
+				if (DialogTrigger.update( quest, mCtrl.getFrame())) {
+					mCtrl.fireChanged( quest);
 				}
 			}
 		}

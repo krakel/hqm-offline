@@ -59,7 +59,6 @@ public abstract class ADialog extends JDialog {
 		mSelect.setMaximumSize( new Dimension( Short.MAX_VALUE, 32));
 		mSelect.add( Box.createHorizontalGlue());
 		content.add( mMain);
-		content.add( Box.createVerticalGlue());
 		content.add( Box.createVerticalStrut( GAP));
 		content.add( new SinkLine());
 		content.add( mSelect);

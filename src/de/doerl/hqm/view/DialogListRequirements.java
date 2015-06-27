@@ -20,7 +20,7 @@ class DialogListRequirements extends ADialogStacks {
 		setTheme( "edit.require.theme");
 	}
 
-	public static boolean update( AQuestTaskItems task, Window owner) { //  Vector<ARequirement> value
+	public static boolean update( AQuestTaskItems task, Window owner) {
 		DialogListRequirements dlg = new DialogListRequirements( owner);
 		dlg.createMain( new Creator());
 		dlg.updateMain( task.mRequirements);

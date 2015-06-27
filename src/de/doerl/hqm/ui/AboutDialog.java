@@ -3,6 +3,7 @@ package de.doerl.hqm.ui;
 import java.awt.Dimension;
 import java.awt.Window;
 
+import javax.swing.Box;
 import javax.swing.JLabel;
 
 class AboutDialog extends ADialog {
@@ -27,5 +28,6 @@ class AboutDialog extends ADialog {
 		lbl.setPreferredSize( new Dimension( 400, 200));
 		lbl.setAlignmentX( TOP_ALIGNMENT);
 		mMain.add( lbl);
+		mMain.add( Box.createVerticalGlue());
 	}
 }
