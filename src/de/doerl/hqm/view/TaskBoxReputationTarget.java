@@ -55,6 +55,7 @@ class TaskBoxReputationTarget extends ATaskBox {
 
 	private final class Renderer extends AListCellRenderer<FSetting> {
 		private static final long serialVersionUID = 3374147415409104551L;
+		private static final double ICON_ZOOM = 0.6;
 		private LeafIcon mIcon = new LeafIcon( new Dimension( 260, 22));
 		private LeafLabel mNeutral = new LeafLabel( "");
 
@@ -63,7 +64,7 @@ class TaskBoxReputationTarget extends ATaskBox {
 			setOpaque( false);
 			setBorder( BorderFactory.createEmptyBorder( 2, 0, 2, 0));
 //			setBorder( BorderFactory.createLineBorder( Color.RED));
-			mIcon.setIcon( new StackIcon());
+			mIcon.setIcon( new StackIcon( ICON_ZOOM));
 			add( Box.createHorizontalStrut( 15));
 			add( createBox());
 			add( Box.createHorizontalStrut( 15));

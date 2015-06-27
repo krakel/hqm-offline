@@ -87,6 +87,6 @@ public final class FReputation extends AMember {
 
 	@Override
 	public String toString() {
-		return String.format( "%s[neutral %s]", mName, mNeutral);
+		return String.format( "%s [%s]", mName, mNeutral);
 	}
 }

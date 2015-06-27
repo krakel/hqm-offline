@@ -32,6 +32,7 @@ import de.doerl.hqm.utils.Utils;
 class EntityGroupTier extends AEntity<FGroupTier> {
 	private static final long serialVersionUID = 2046344393475287723L;
 	private static final Logger LOGGER = Logger.getLogger( EntityGroupTier.class.getName());
+	private static final double ICON_ZOOM = 0.8;
 	private FGroupTier mTier;
 	private ABundleAction mNameAction = new NameAction();
 	private ABundleAction mLimitAction = new LimitAction();
@@ -188,12 +189,12 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 	private void updateStacks( FGroup tier) {
 		mStacks.removeAll();
 		if (tier.mStacks.isEmpty()) {
-			mStacks.add( LeafIcon.createEmpty( 0.8));
+			mStacks.add( LeafIcon.createEmpty( ICON_ZOOM));
 		}
 		else {
 			for (FItemStack stk : tier.mStacks) {
 				LeafIcon leaf = new LeafIcon();
-				IconUpdate.create( leaf, stk, 0.8, String.valueOf( stk.getCount()));
+				IconUpdate.create( leaf, stk, ICON_ZOOM, String.valueOf( stk.getCount()));
 				mStacks.add( leaf);
 			}
 		}

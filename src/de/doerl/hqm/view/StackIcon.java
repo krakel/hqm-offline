@@ -20,12 +20,12 @@ class StackIcon implements Icon {
 	private String mText;
 	private double mZoom;
 
-	public StackIcon() {
-		this( ICON_BACK, ICON_UNKNOWN, 0.6, null);
+	public StackIcon( double zoom) {
+		this( ICON_BACK, ICON_UNKNOWN, zoom, null);
 	}
 
-	public StackIcon( Image img) {
-		this( ICON_BACK, img, 0.6, null);
+	public StackIcon( Image img, double zoom) {
+		this( ICON_BACK, img, zoom, null);
 	}
 
 	public StackIcon( Image img, double zoom, String txt) {
@@ -41,10 +41,6 @@ class StackIcon implements Icon {
 		mImage = img;
 		mZoom = zoom;
 		mText = txt;
-	}
-
-	public StackIcon( Image img, String txt) {
-		this( ICON_BACK, img, 0.6, txt);
 	}
 
 	public Image getBack() {

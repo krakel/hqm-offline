@@ -217,6 +217,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 
 	private static class Renderer extends AListCellRenderer<FLocation> {
 		private static final long serialVersionUID = -430644712741965086L;
+		private static final double ICON_ZOOM = 0.6;
 		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");
@@ -225,7 +226,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			mIcon.setIcon( new StackIcon());
+			mIcon.setIcon( new StackIcon( ICON_ZOOM));
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
 			add( createBox());
@@ -245,7 +246,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FLocation> list, FLocation value, int index, boolean isSelected, boolean cellHasFocus) {
-			mIcon.setIcon( new StackIcon( ImageLoader.getImage( value.mIcon, createUpdater( list))));
+			mIcon.setIcon( new StackIcon( ImageLoader.getImage( value.mIcon, createUpdater( list)), ICON_ZOOM));
 			mName.setText( value.mName);
 			mInfo.setText( String.format( "%s (dim %d) (%d, %d, %d)[radius %d]", value.mVisibility, value.mDim, value.mX, value.mY, value.mZ, value.mRadius));
 			if (isSelected) {

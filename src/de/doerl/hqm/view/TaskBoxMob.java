@@ -74,6 +74,7 @@ class TaskBoxMob extends ATaskBox {
 
 	private final class Renderer extends AListCellRenderer<FMob> {
 		private static final long serialVersionUID = 3374147415409104551L;
+		private static final double ICON_ZOOM = 0.6;
 		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "", true);
 		private LeafLabel mKilled = new LeafLabel( "");
@@ -84,7 +85,7 @@ class TaskBoxMob extends ATaskBox {
 			setOpaque( false);
 			setBorder( BorderFactory.createEmptyBorder( 2, 0, 2, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon());
+			mIcon.setIcon( new StackIcon( ICON_ZOOM));
 			add( mIcon);
 			add( Box.createHorizontalStrut( AEntity.GAP));
 			add( createBox());
@@ -101,7 +102,7 @@ class TaskBoxMob extends ATaskBox {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob mob, int index, boolean isSelected, boolean cellHasFocus) {
 			Image img = ImageLoader.getImage( mob.mIcon, createUpdater( list));
-			mIcon.setIcon( new StackIcon( img));
+			mIcon.setIcon( new StackIcon( img, ICON_ZOOM));
 			mName.setText( mob.mName);
 			mTotal.setText( String.format( "%s Kill a total of %d", mob.mExact ? '!' : '~', mob.mKills));
 			return this;

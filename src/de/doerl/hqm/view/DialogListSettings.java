@@ -108,7 +108,7 @@ public class DialogListSettings extends ADialogList<FSetting> {
 		@Override
 		public FSetting addElement( ICreator<FSetting> creator) {
 			mRep.setModel( new RepModel( creator.getBase().getHqm()));
-			mRep.setSelectedIndex( -1);
+			mRep.setSelectedIndex( mRep.getModel().getSize() - 1);
 			mLower.setSelectedIndex( -1);
 			mUpper.setSelectedIndex( -1);
 			mInverted.setSelected( false);

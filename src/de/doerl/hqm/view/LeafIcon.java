@@ -22,7 +22,7 @@ public class LeafIcon extends JLabel {
 
 	public static LeafIcon createEmpty( double zoom) {
 		LeafIcon leaf = new LeafIcon();
-		leaf.setIcon( new StackIcon());
+		leaf.setIcon( new StackIcon( zoom));
 		return leaf;
 	}
 }

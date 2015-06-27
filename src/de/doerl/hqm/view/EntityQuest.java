@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +22,8 @@ import de.doerl.hqm.Tuple2;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AStack;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskDeath;
 import de.doerl.hqm.base.FQuestTaskLocation;
@@ -41,12 +44,15 @@ import de.doerl.hqm.utils.Utils;
 public class EntityQuest extends AEntity<FQuest> {
 	private static final long serialVersionUID = -5707664232506407627L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuest.class.getName());
+	private static final double ICON_ZOOM = 0.8;
+	private static final Image REPUTATION_BACK = ResourceManager.getImageUI( "hqm.rep.base");
 	private static final TaskBoxEmpty BOX_EMPTY = new TaskBoxEmpty();
 	private final FQuest mQuest;
 	private ABundleAction mNameAction = new NameAction();
 	private ABundleAction mDescAction = new DescriptionAction();
 	private ABundleAction mRewardAction = new RewardAction();
 	private ABundleAction mChoiceAction = new ChoiceAction();
+	private ABundleAction mReputationAction = new ReputationAction();
 	private ABundleAction mTaskNameAction = new TaskNameAction();
 	private ABundleAction mTaskDescAction = new TaskDescAction();
 	private ABundleAction mTaskListAction = new TaskListAction();
@@ -59,6 +65,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	private LeafTextBox mDesc = new LeafTextBox();
 	private LeafStacks mRewardList;
 	private LeafStacks mChoiceList;
+	private LeafIconBox mRepIcon = new LeafIconBox( AEntity.sizeOf( REPUTATION_BACK));
 	private LeafTextBox mTaskDesc = new LeafTextBox();
 	private Box mTaskContent = Box.createHorizontalBox();
 	private LeafList<ATaskBox> mTaskList = new LeafList<>();
@@ -93,11 +100,13 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTaskDesc.addClickListener( mTaskDescAction);
 		mRewardList.addClickListener( mRewardAction);
 		mChoiceList.addClickListener( mChoiceAction);
+		mRepIcon.addClickListener( mReputationAction);
 		mTool.add( mNameAction);
 		mTool.add( mDescAction);
 		mTool.addSeparator();
 		mTool.add( mRewardAction);
 		mTool.add( mChoiceAction);
+		mTool.add( mReputationAction);
 		mTool.addSeparator();
 		mTool.add( mTaskNameAction);
 		mTool.add( mTaskDescAction);
@@ -109,6 +118,25 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTool.add( mTaskDeleteAction);
 		mTool.addSeparator();
 		updateMoveActions();
+	}
+
+	private static void updateStacks( JPanel panel, Vector<FItemStack> list) {
+		panel.removeAll();
+		if (list.isEmpty()) {
+			panel.add( LeafIcon.createEmpty( ICON_ZOOM));
+			panel.add( Box.createHorizontalStrut( 3));
+		}
+		else {
+			for (AStack stk : list) {
+				LeafIcon leaf = new LeafIcon();
+				IconUpdate.create( leaf, stk, ICON_ZOOM, stk.countOf());
+				panel.add( leaf);
+				panel.add( Box.createHorizontalStrut( 3));
+			}
+		}
+		panel.add( Box.createHorizontalGlue());
+		panel.revalidate();
+		panel.repaint();
 	}
 
 	@Override
@@ -150,6 +178,14 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
+	private Box createChoiseBox() {
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX( LEFT_ALIGNMENT);
+		box.add( mChoiceList);
+		box.add( mRewardBtn);
+		return box;
+	}
+
 	@Override
 	protected void createLeft( JPanel leaf) {
 		leaf.add( mTitle);
@@ -159,10 +195,18 @@ public class EntityQuest extends AEntity<FQuest> {
 		leaf.add( leafScoll( mTaskList, 50));
 		leaf.add( Box.createVerticalGlue());
 		leaf.add( new LeafLabel( "Rewards", true));
-		leaf.add( mRewardList);
+		leaf.add( createRewardBox());
 		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( new LeafLabel( "Choices", true));
-		leaf.add( mChoiceList);
+		leaf.add( createChoiseBox());
+	}
+
+	private Box createRewardBox() {
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX( LEFT_ALIGNMENT);
+		box.add( mRewardList);
+		box.add( mRepIcon);
+		return box;
 	}
 
 	@Override
@@ -193,21 +237,13 @@ public class EntityQuest extends AEntity<FQuest> {
 		return model.size() > 0 ? model.elementAt( 0) : null;
 	}
 
-	private LeafIcon getReputationIcon() {
-		if (mQuest.mRepRewards.isEmpty()) {
-			return null;
-		}
-		else {
-			return ReputationFactory.getIcon( mQuest);
-		}
-	}
-
 	private void update() {
 		mTitle.setText( mQuest.mName);
 		mDesc.setText( mQuest.mDescr);
 		TaskBoxUpdate.get( mQuest, mCtrl, mTaskList.getModel());
-		mRewardList.update( mQuest.mRewards, getReputationIcon());
-		mChoiceList.update( mQuest.mChoices, mRewardBtn);
+		mRepIcon.setIcon( new StackIcon( REPUTATION_BACK, ReputationFactory.get( mQuest), 1.0));
+		updateStacks( mRewardList, mQuest.mRewards);
+		updateStacks( mChoiceList, mQuest.mChoices);
 	}
 
 	private void updateActions( boolean enabled) {
@@ -307,35 +343,48 @@ public class EntityQuest extends AEntity<FQuest> {
 		}
 	}
 
+	private final class ReputationAction extends ABundleAction {
+		private static final long serialVersionUID = -3007492870966214729L;
+
+		public ReputationAction() {
+			super( "entity.quest.reputation");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (DialogReputation.update( mQuest, mCtrl.getFrame())) {
+				mCtrl.fireChanged( mQuest);
+			}
+		}
+	}
+
 	private static class ReputationFactory extends AHQMWorker<Object, Object> {
-		private static final Image BACK = ResourceManager.getImageUI( "hqm.rep.base");
-		private boolean positive;
-		private boolean negative;
+		private boolean mPositive;
+		private boolean mNegative;
+		private boolean mEmpty = true;
 
 		public static Image get( FQuest quest) {
 			ReputationFactory worker = new ReputationFactory();
 			quest.forEachReward( worker, null);
-			if (worker.negative == worker.positive) {
+			if (worker.mEmpty) {
+				return null;
+			}
+			else if (worker.mNegative == worker.mPositive) {
 				return ResourceManager.getImageUI( "hqm.rep.norm");
 			}
 			else {
-				return ResourceManager.getImageUI( worker.positive ? "hqm.rep.good" : "hqm.rep.bad");
+				return ResourceManager.getImageUI( worker.mPositive ? "hqm.rep.good" : "hqm.rep.bad");
 			}
-		}
-
-		private static LeafIcon getIcon( FQuest quest) {
-			LeafIcon leaf = new LeafIcon( AEntity.sizeOf( BACK));
-			leaf.setIcon( new StackIcon( BACK, get( quest), 1.0));
-			return leaf;
 		}
 
 		@Override
 		public Object forReputationReward( FReputationReward rr, Object p) {
+			mEmpty = false;
 			if (rr.mValue < 0) {
-				negative = true;
+				mNegative = true;
 			}
 			else if (rr.mValue > 0) {
-				positive = true;
+				mPositive = true;
 			}
 			return null;
 		}

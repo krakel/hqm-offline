@@ -61,6 +61,7 @@ class TaskBoxItems extends ATaskBox {
 	}
 
 	private static class RequirementFactory extends AHQMWorker<Object, JPanel> {
+		private static final double ICON_ZOOM = 0.8;
 		private static final RequirementFactory WORKER = new RequirementFactory();
 
 		public RequirementFactory() {
@@ -69,7 +70,7 @@ class TaskBoxItems extends ATaskBox {
 		public static void update( LeafFloating panel, AQuestTaskItems task) {
 			panel.removeAll();
 			if (IsEmpty.getRequirement( task)) {
-				panel.add( LeafIcon.createEmpty( 0.8));
+				panel.add( LeafIcon.createEmpty( ICON_ZOOM));
 			}
 			else {
 				task.forEachRequirement( WORKER, panel);
@@ -81,7 +82,7 @@ class TaskBoxItems extends ATaskBox {
 		@Override
 		protected Object doRequirement( ARequirement req, JPanel panel) {
 			LeafIcon leaf = new LeafIcon();
-			IconUpdate.create( leaf, req.getStack(), 0.8, String.valueOf( req.getCount()));
+			IconUpdate.create( leaf, req.getStack(), ICON_ZOOM, String.valueOf( req.getCount()));
 			panel.add( leaf);
 			return null;
 		}

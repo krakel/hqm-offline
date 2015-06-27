@@ -206,6 +206,7 @@ class DialogListMobs extends ADialogList<FMob> {
 
 	private static class Renderer extends AListCellRenderer<FMob> {
 		private static final long serialVersionUID = -430644712741965086L;
+		private static final double ICON_ZOOM = 0.6;
 		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");
@@ -214,7 +215,7 @@ class DialogListMobs extends ADialogList<FMob> {
 			setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
-			mIcon.setIcon( new StackIcon());
+			mIcon.setIcon( new StackIcon( ICON_ZOOM));
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
 			add( createBox());
@@ -235,7 +236,7 @@ class DialogListMobs extends ADialogList<FMob> {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob value, int index, boolean isSelected, boolean cellHasFocus) {
 			Image img = ImageLoader.getImage( value.mIcon, createUpdater( list));
-			mIcon.setIcon( new StackIcon( img, String.valueOf( value.mKills)));
+			mIcon.setIcon( new StackIcon( img, ICON_ZOOM, String.valueOf( value.mKills)));
 			mName.setText( value.mName);
 			mInfo.setText( String.format( "(%s %s) x%d", value.mExact ? '!' : '~', value.mMob, value.mKills));
 			if (isSelected) {

@@ -26,10 +26,11 @@ import de.doerl.hqm.utils.mods.Matcher;
 
 class LeafSearch extends JPanel {
 	private static final long serialVersionUID = -1967387880066210929L;
+	private static final double ICON_ZOOM = 0.6;
 	private static final Logger LOGGER = Logger.getLogger( LeafSearch.class.getName());
 	private static final Border BORDER = BorderFactory.createLineBorder( Color.BLACK);
 	private static final int MAX_ICONS = 49;
-	private static StackIcon sDummy = new StackIcon();
+	private static StackIcon sDummy = new StackIcon( ICON_ZOOM);
 	private List<ISearchListener> mListener = new ArrayList<>();
 	private JTextField mSearch = new TextFieldAscii();
 	private ArrayList<IconRefresh> mRefs = new ArrayList<>();

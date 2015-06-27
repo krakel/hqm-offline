@@ -32,6 +32,7 @@ abstract class ADialogStacks extends ADialogList<StackEntry> {
 
 	private static class Renderer extends AListCellRenderer<StackEntry> {
 		private static final long serialVersionUID = 5239073494468176719L;
+		private static final double ICON_ZOOM = 0.6;
 		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "Unknown");
 		private LeafLabel mInfo = new LeafLabel( "");
@@ -43,7 +44,7 @@ abstract class ADialogStacks extends ADialogList<StackEntry> {
 			setOpaque( true);
 			setBorder( BorderFactory.createEmptyBorder( 1, 0, 1, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon());
+			mIcon.setIcon( new StackIcon( ICON_ZOOM));
 			add( mIcon);
 			add( Box.createHorizontalStrut( 5));
 			add( createBox());
@@ -64,7 +65,7 @@ abstract class ADialogStacks extends ADialogList<StackEntry> {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry value, int index, boolean isSelected, boolean cellHasFocus) {
 			Image img = ImageLoader.getImage( value.getKey(), createUpdater( list));
-			mIcon.setIcon( new StackIcon( img, String.valueOf( value.mCount)));
+			mIcon.setIcon( new StackIcon( img, ICON_ZOOM, String.valueOf( value.mCount)));
 			mName.setText( value.getName());
 			if (mRequire) {
 				mInfo.setText( String.format( "%s, dmg %2d, count %d", value.getPrecision(), value.mDmg, value.mCount));

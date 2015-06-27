@@ -74,6 +74,7 @@ class TaskBoxLocation extends ATaskBox {
 
 	private final class Renderer extends AListCellRenderer<FLocation> {
 		private static final long serialVersionUID = -5631026361875552358L;
+		private static final double ICON_ZOOM = 0.6;
 		private LeafIcon mIcon = new LeafIcon();
 		private LeafLabel mName = new LeafLabel( "", true);
 		private LeafLabel mDimension = new LeafLabel( "");
@@ -84,7 +85,7 @@ class TaskBoxLocation extends ATaskBox {
 			setOpaque( false);
 			setBorder( BorderFactory.createEmptyBorder( 2, 0, 2, 0));
 			mName.setAlignmentY( TOP_ALIGNMENT);
-			mIcon.setIcon( new StackIcon());
+			mIcon.setIcon( new StackIcon( ICON_ZOOM));
 			add( mIcon);
 			add( Box.createHorizontalStrut( AEntity.GAP));
 			add( createBox());
@@ -101,7 +102,7 @@ class TaskBoxLocation extends ATaskBox {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FLocation> list, FLocation loc, int index, boolean isSelected, boolean cellHasFocus) {
 			Image img = ImageLoader.getImage( loc.mIcon, createUpdater( list));
-			mIcon.setIcon( new StackIcon( img));
+			mIcon.setIcon( new StackIcon( img, ICON_ZOOM));
 			mName.setText( loc.mName);
 			mDimension.setText( String.format( "%s (dim %d) [radius %d]", loc.mVisibility, loc.mDim, loc.mRadius));
 			mCoorinate.setText( String.format( "(%d, %d, %d)", loc.mX, loc.mY, loc.mZ));
