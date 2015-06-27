@@ -337,12 +337,12 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 			}
 		}
 		if (version.contains( FileVersion.PARENT_COUNT)) {
-			if (quest.mReqCount == null) {
+			if (quest.mCount == null) {
 				mDst.writeBoolean( false);
 			}
 			else {
 				mDst.writeBoolean( true);
-				mDst.writeData( quest.mReqCount, DataBitHelper.QUESTS, version);
+				mDst.writeData( quest.mCount, DataBitHelper.QUESTS, version);
 			}
 		}
 		writeTasks( quest, version);

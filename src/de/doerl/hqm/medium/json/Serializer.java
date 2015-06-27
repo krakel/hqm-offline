@@ -347,7 +347,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		quest.mRepeatInfo.accept( this, null);
 		mDst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
 		mDst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
-		mDst.print( QUEST_PARENT_REQUIREMENT_COUNT, quest.mReqCount);
+		mDst.print( QUEST_PARENT_REQUIREMENT_COUNT, quest.mCount);
 		writeTasks( quest);
 		writeStackArr( QUEST_REWARD, quest.mRewards);
 		writeStackArr( QUEST_CHOICE, quest.mChoices);

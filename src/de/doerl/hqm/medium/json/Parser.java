@@ -304,7 +304,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 								quest.mTriggerTasks = FValue.toInt( obj.get( IToken.QUEST_TRIGGER_TASKS));
 							}
 						}
-						quest.mReqCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT_COUNT));
+						quest.mCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT_COUNT));
 						readTasks( quest, FArray.to( obj.get( IToken.QUEST_TASKS)));
 						readStacks( quest.mRewards, FArray.to( obj.get( IToken.QUEST_REWARD)));
 						readStacks( quest.mChoices, FArray.to( obj.get( IToken.QUEST_CHOICE)));

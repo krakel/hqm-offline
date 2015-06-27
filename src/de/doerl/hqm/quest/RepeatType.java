@@ -2,9 +2,9 @@ package de.doerl.hqm.quest;
 
 public enum RepeatType {
 	NONE( null, "This quest is not repeatable and can therefore only be completed once."),
-	INSTANT( "I", "As soon as this quest is completed it can be completed again for another set of rewards"),
-	INTERVAL( "V", "At a specific interval this quest will be reset and available for completion again. The quest is only reset if it has already been completed."),
-	TIME( "T", "After completing this quest it goes on a cooldown, when this cooldown ends you can complete the quest again.");
+	INSTANT( "i", "As soon as this quest is completed it can be completed again for another set of rewards"),
+	INTERVAL( "v", "At a specific interval this quest will be reset and available for completion again. The quest is only reset if it has already been completed."),
+	TIME( "t", "After completing this quest it goes on a cooldown, when this cooldown ends you can complete the quest again.");
 	private String mMark;
 	private String mDesc;
 

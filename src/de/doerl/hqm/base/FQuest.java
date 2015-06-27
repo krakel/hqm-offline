@@ -18,10 +18,10 @@ public final class FQuest extends ANamed implements IElement {
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
+	public Integer mCount;
 	public FItemStack mIcon;
 	public TriggerType mTriggerType = TriggerType.NONE;
 	public int mTriggerTasks;
-	public Integer mReqCount;
 	public final Vector<FItemStack> mRewards = new Vector<>();
 	public final Vector<FItemStack> mChoices = new Vector<>();
 	public final Vector<FQuest> mRequirements = new Vector<>();

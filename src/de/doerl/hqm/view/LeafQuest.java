@@ -26,6 +26,10 @@ class LeafQuest extends JLabel {
 		ToolTipManager.sharedInstance().registerComponent( this);
 	}
 
+	private static String fromObj( Object value) {
+		return value != null ? String.valueOf( value) : "";
+	}
+
 	public void addClickListener( ActionListener l) {
 		mHandler.addClickListener( l);
 	}
@@ -93,17 +97,12 @@ class LeafQuest extends JLabel {
 		Image back = ResourceManager.getImageUI( key);
 		String rr = mQuest.mRepeatInfo.mType.getMarker();
 		String tt = mQuest.mTriggerType.getMarker();
-		if (rr == null && tt == null) {
+		Integer cc = mQuest.mCount;
+		if (rr == null && tt == null && cc == null) {
 			IconUpdate.create( this, back, mQuest.mIcon, 0.6, null);
 		}
-		else if (rr == null) {
-			IconUpdate.create( this, back, mQuest.mIcon, 0.6, String.format( "~%s", tt));
-		}
-		else if (tt == null) {
-			IconUpdate.create( this, back, mQuest.mIcon, 0.6, String.format( "%s~", rr));
-		}
 		else {
-			IconUpdate.create( this, back, mQuest.mIcon, 0.6, String.format( "%s%s", rr, tt));
+			IconUpdate.create( this, back, mQuest.mIcon, 0.6, fromObj( rr) + fromObj( tt) + fromObj( cc));
 		}
 	}
 

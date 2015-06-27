@@ -46,6 +46,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private AToggleAction mBigAction = new BigAction();
 	private AToggleAction mGridAction = new GridAction();
 	private ABundleAction mSetAction = new SetAction();
+	private ABundleAction mCountAction = new CountAction();
 	private ABundleAction mRepeatAction = new RepeatAction();
 	private ABundleAction mTriggerAction = new TriggerAction();
 	private ABundleAction mIconAction = new IconAction();
@@ -71,6 +72,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTool.add( mSetAction);
 		mTool.add( mRepeatAction);
 		mTool.add( mTriggerAction);
+		mTool.add( mCountAction);
 		mTool.add( mIconAction);
 		mTool.addSeparator();
 		mTool.add( mMoveUpAction);
@@ -366,6 +368,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mNameAction.setEnabled( value);
 		mBigAction.setEnabled( value);
 		mSetAction.setEnabled( value);
+		mCountAction.setEnabled( value);
 		mRepeatAction.setEnabled( value);
 		mTriggerAction.setEnabled( value);
 		mIconAction.setEnabled( value);
@@ -450,6 +453,25 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				mBigAction.setSelected( quest.mBig);
 				mActiv.update( Type.BASE);
 				mCtrl.fireChanged( quest);
+			}
+		}
+	}
+
+	private final class CountAction extends ABundleAction {
+		private static final long serialVersionUID = -5452726397504503732L;
+
+		public CountAction() {
+			super( "entity.set.count");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (mActiv != null) {
+				FQuest quest = mActiv.getQuest();
+				if (DialogCount.update( quest, mCtrl.getFrame())) {
+					updateActive( getLeafQuest( quest), true);
+					mCtrl.fireChanged( quest);
+				}
 			}
 		}
 	}
@@ -709,7 +731,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private class LineFactory extends AHQMWorker<Object, Object> {
+	private final class LineFactory extends AHQMWorker<Object, Object> {
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
 			createLeafLines( quest);
@@ -769,7 +791,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private class QuestFactory extends AHQMWorker<Object, Object> {
+	private final class QuestFactory extends AHQMWorker<Object, Object> {
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
 			createLeafQuest( quest);
@@ -796,7 +818,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	public class RepeatAction extends ABundleAction {
+	private final class RepeatAction extends ABundleAction {
 		private static final long serialVersionUID = -7789181879988427447L;
 
 		public RepeatAction() {
@@ -808,6 +830,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				if (DialogRepeat.update( quest.mRepeatInfo, mCtrl.getFrame())) {
+					updateActive( getLeafQuest( quest), true);
 					mCtrl.fireChanged( quest);
 				}
 			}
@@ -852,6 +875,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				if (DialogTrigger.update( quest, mCtrl.getFrame())) {
+					updateActive( getLeafQuest( quest), true);
 					mCtrl.fireChanged( quest);
 				}
 			}

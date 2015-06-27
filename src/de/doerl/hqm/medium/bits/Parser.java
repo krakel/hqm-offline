@@ -287,7 +287,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 					}
 				}
 				if (version.contains( FileVersion.PARENT_COUNT) && mSrc.readBoolean()) {
-					quest.mReqCount = mSrc.readData( DataBitHelper.QUESTS, version);
+					quest.mCount = mSrc.readData( DataBitHelper.QUESTS, version);
 				}
 				readTasks( quest, version);
 				readStacksIf( quest.mRewards, DataBitHelper.REWARDS, version);
