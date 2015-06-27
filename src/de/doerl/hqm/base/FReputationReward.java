@@ -38,6 +38,11 @@ public final class FReputationReward extends ABase implements IElement {
 	}
 
 	@Override
+	public boolean isInformation() {
+		return false;
+	}
+
+	@Override
 	public boolean isLast() {
 		return ABase.isLast( mParentQuest.mRepRewards, this);
 	}
@@ -55,5 +60,9 @@ public final class FReputationReward extends ABase implements IElement {
 	@Override
 	public void remove() {
 		ABase.remove( mParentQuest.mRepRewards, this);
+	}
+
+	@Override
+	public void setInformation( boolean information) {
 	}
 }

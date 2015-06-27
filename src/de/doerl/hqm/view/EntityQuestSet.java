@@ -116,22 +116,13 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	}
 
 	private void activRemove() {
+		updateCurrent( false);
 		activeUpdate( Type.NORM);
 		mActiv = null;
 		enableGroup( false);
 		updateActions( false);
 		updateMoveActions();
 		selectGroupNothing();
-	}
-
-	private void activSet( LeafQuest activ, boolean enableQuest) {
-		activeUpdate( Type.NORM);
-		mActiv = activ;
-		activeUpdate( Type.BASE);
-		enableGroup( true);
-		updateActions( enableQuest);
-		mBigAction.setSelected( activ.getQuest().mBig);
-		updateMoveActions();
 	}
 
 	@Override
@@ -158,12 +149,29 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		try {
 			ABase base = event.mBase;
 			if (mSet.equals( base)) {
-				FQuest old = mActiv.getQuest();
 				FQuestSet set = (FQuestSet) base;
 				removeMissingQuests();
 				set.forEachQuest( mQuestWorker, null);
 				set.forEachQuest( mLineWorker, null);
-				activSet( getLeafQuest( old), true);
+				if (mActiv != null) {
+					FQuest old = mActiv.getQuest();
+					LeafQuest newActiv = getLeafQuest( old);
+					updateActive( newActiv, true);
+				}
+			}
+		}
+		catch (ClassCastException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+	}
+
+	@Override
+	public void baseModified( ModelEvent event) {
+		try {
+			ABase base = event.mBase;
+			if (mSet.equals( base.getParent()) && (mActiv == null || Utils.different( base, mActiv.getQuest()))) {
+				LeafQuest newActiv = getLeafQuest( (FQuest) base);
+				updateActive( newActiv, true);
 			}
 		}
 		catch (ClassCastException ex) {
@@ -367,6 +375,30 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mDeleteAction.setEnabled( value);
 	}
 
+	private void updateActive( LeafQuest activ, boolean enableQuest) {
+		updateCurrent( false);
+		updateActive0( activ, enableQuest);
+		updateCurrent( true);
+	}
+
+	private void updateActive0( LeafQuest activ, boolean enableQuest) {
+		activeUpdate( Type.NORM);
+		mActiv = activ;
+		activeUpdate( Type.BASE);
+		enableGroup( true);
+		updateActions( enableQuest);
+		mBigAction.setSelected( activ.getQuest().mBig);
+		updateMoveActions();
+	}
+
+	private void updateCurrent( boolean info) {
+		if (mActiv != null) {
+			FQuest quest = mActiv.getQuest();
+			quest.setInformation( info);
+			mCtrl.fireModified( quest);
+		}
+	}
+
 	private void updateMoveActions() {
 		if (mActiv == null) {
 			mMoveUpAction.setEnabled( false);
@@ -390,7 +422,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 					FQuest quest = mCtrl.questCreate( mSet, result, x, y);
 					quest.mDescr = "Unnamed quest";
 					createLeafQuest( quest);
-					activSet( getLeafQuest( quest), false);
+					updateActive( getLeafQuest( quest), false);
 					mCtrl.fireAdded( quest);
 				}
 			}
@@ -664,7 +696,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 					selectGroupMove();
 				}
 				else {
-					activSet( dst, true);
+					updateActive( dst, true);
 					selectGroupNothing();
 				}
 			}

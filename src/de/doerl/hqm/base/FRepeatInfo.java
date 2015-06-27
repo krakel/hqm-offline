@@ -32,4 +32,13 @@ public final class FRepeatInfo extends ABase {
 	public FQuest getParent() {
 		return mParentQuest;
 	}
+
+	@Override
+	public boolean isInformation() {
+		return false;
+	}
+
+	@Override
+	public void setInformation( boolean information) {
+	}
 }

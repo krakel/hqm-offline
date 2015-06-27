@@ -139,6 +139,10 @@ public class EditFrame extends JFrame implements IModelListener {
 	}
 
 	@Override
+	public void baseModified( ModelEvent event) {
+	}
+
+	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
 		if (base instanceof FHqm) {

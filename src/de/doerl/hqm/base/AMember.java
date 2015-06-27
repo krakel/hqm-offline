@@ -9,4 +9,13 @@ public abstract class AMember extends ANamed implements IElement {
 	public ACategory<? extends AMember> getParent() {
 		return null;
 	}
+
+	@Override
+	public boolean isInformation() {
+		return false;
+	}
+
+	@Override
+	public void setInformation( boolean information) {
+	}
 }

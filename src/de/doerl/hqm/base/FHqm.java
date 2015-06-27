@@ -44,8 +44,17 @@ public final class FHqm extends ANamed {
 		return mVersion;
 	}
 
+	@Override
+	public boolean isInformation() {
+		return false;
+	}
+
 	public boolean isModified() {
 		return mModified;
+	}
+
+	@Override
+	public void setInformation( boolean information) {
 	}
 
 	public void setModified( boolean value) {

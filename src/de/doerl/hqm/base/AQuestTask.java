@@ -30,6 +30,11 @@ public abstract class AQuestTask extends ANamed implements IElement {
 	}
 
 	@Override
+	public boolean isInformation() {
+		return false;
+	}
+
+	@Override
 	public boolean isLast() {
 		return ABase.isLast( mParentQuest.mTasks, this);
 	}
@@ -46,5 +51,9 @@ public abstract class AQuestTask extends ANamed implements IElement {
 
 	public void remove() {
 		ABase.remove( mParentQuest.mTasks, this);
+	}
+
+	@Override
+	public void setInformation( boolean information) {
 	}
 }

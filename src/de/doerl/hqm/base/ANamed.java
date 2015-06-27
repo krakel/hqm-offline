@@ -7,6 +7,7 @@ public abstract class ANamed extends ABase {
 		mName = name;
 	}
 
+	@Override
 	public FHqm getHqm() {
 		return getParent().getHqm();
 	}

@@ -19,28 +19,30 @@ class StackIcon implements Icon {
 	private Image mImage;
 	private String mText;
 	private double mZoom;
+	private int mPos;
 
 	public StackIcon( double zoom) {
-		this( ICON_BACK, ICON_UNKNOWN, zoom, null);
+		this( ICON_BACK, ICON_UNKNOWN, zoom, null, 0);
 	}
 
 	public StackIcon( Image img, double zoom) {
-		this( ICON_BACK, img, zoom, null);
+		this( ICON_BACK, img, zoom, null, 0);
 	}
 
 	public StackIcon( Image img, double zoom, String txt) {
-		this( ICON_BACK, img, zoom, txt);
+		this( ICON_BACK, img, zoom, txt, 0);
 	}
 
 	public StackIcon( Image back, Image img, double zoom) {
-		this( back, img, zoom, null);
+		this( back, img, zoom, null, 0);
 	}
 
-	private StackIcon( Image back, Image img, double zoom, String txt) {
+	public StackIcon( Image back, Image img, double zoom, String txt, int pos) {
 		mBack = back;
 		mImage = img;
 		mZoom = zoom;
 		mText = txt;
+		mPos = pos;
 	}
 
 	public Image getBack() {
@@ -64,7 +66,16 @@ class StackIcon implements Icon {
 		if (mText != null) {
 			g2.setFont( AEntity.FONT_STACK);
 			g2.setColor( Color.BLACK);
-			AEntity.drawBottomLeftString( g2, c, mText);
+			switch (mPos) {
+				case 1:
+					AEntity.drawBottomCenterString( g2, c, mText);
+					break;
+				case 2:
+					AEntity.drawBottomRightString( g2, c, mText);
+					break;
+				default:
+					AEntity.drawBottomLeftString( g2, c, mText);
+			}
 		}
 	}
 }

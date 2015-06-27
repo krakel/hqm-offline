@@ -34,9 +34,9 @@ class IconUpdate implements Runnable {
 		}
 	}
 
-	public static void create( JLabel lbl, Image back, AStack stk, double zoom) {
+	public static void create( JLabel lbl, Image back, AStack stk, double zoom, String txt) {
 		if (stk != null) {
-			create( lbl, back, zoom, stk.getKey(), null, false);
+			create( lbl, back, zoom, stk.getKey(), txt, false);
 		}
 		else {
 			create( lbl, back, zoom, null, null, false);
@@ -74,7 +74,7 @@ class IconUpdate implements Runnable {
 			img = StackIcon.ICON_UNKNOWN;
 		}
 		if (mBack != null) {
-			mLbl.setIcon( new StackIcon( mBack, img, mZoom));
+			mLbl.setIcon( new StackIcon( mBack, img, mZoom, mTxt, 1));
 		}
 		else {
 			mLbl.setIcon( new StackIcon( img, mZoom, mTxt));

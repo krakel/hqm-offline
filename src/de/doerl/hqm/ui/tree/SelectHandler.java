@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.utils.Utils;
 
@@ -29,7 +30,15 @@ class SelectHandler implements MouseListener {
 				if (obj != null) {
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) obj;
 					ANode user = (ANode) node.getUserObject();
-					mCtrl.fireActive( user.getBase());
+					ABase base = user.getBase();
+					if (evt.isControlDown()) {
+						mCtrl.fireActive( base.getParent());
+						base.setInformation( true);
+						mCtrl.fireModified( base);
+					}
+					else {
+						mCtrl.fireActive( base);
+					}
 				}
 			}
 		}

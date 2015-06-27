@@ -52,6 +52,14 @@ public class ElementTreeModel extends DefaultTreeModel implements IModelListener
 	}
 
 	@Override
+	public void baseModified( ModelEvent event) {
+		DefaultMutableTreeNode node = getNode( event.mBase);
+		if (node != null) {
+			fireTreeNodesChanged( this, node.getPath(), null, null);
+		}
+	}
+
+	@Override
 	public void baseRemoved( ModelEvent event) {
 		MutableTreeNode node = getNode( event.mBase);
 		if (node != null) {

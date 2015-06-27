@@ -88,9 +88,23 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
+	static void drawBottomCenterString( Graphics2D g2, Component c, String text) {
+		FontMetrics fm = g2.getFontMetrics();
+		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
+		int y = c.getHeight() - 2 * fm.getDescent();
+		g2.drawString( text, x, y);
+	}
+
 	static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
 		FontMetrics fm = g2.getFontMetrics();
 		int x = c.getWidth() - fm.stringWidth( text);
+		int y = c.getHeight() - fm.getDescent();
+		g2.drawString( text, x, y);
+	}
+
+	static void drawBottomRightString( Graphics2D g2, Component c, String text) {
+		FontMetrics fm = g2.getFontMetrics();
+		int x = 0;
 		int y = c.getHeight() - fm.getDescent();
 		g2.drawString( text, x, y);
 	}
@@ -210,6 +224,12 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		return new Color( sColValue | 0x3F0000);
 	}
 
+	public static void setSizes( JComponent comp, int height) {
+		comp.setMinimumSize( new Dimension( 0, height));
+		comp.setPreferredSize( new Dimension( 0, height));
+		comp.setMaximumSize( new Dimension( Short.MAX_VALUE, height));
+	}
+
 	public static Dimension sizeOf( Image img) {
 		return new Dimension( ZOOM * img.getWidth( null), ZOOM * img.getHeight( null));
 	}
@@ -231,11 +251,5 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 
 	public JToolBar getToolBar() {
 		return mTool;
-	}
-
-	public static void setSizes( JComponent comp, int height) {
-		comp.setMinimumSize( new Dimension( 0, height));
-		comp.setPreferredSize( new Dimension( 0, height));
-		comp.setMaximumSize( new Dimension( Short.MAX_VALUE, height));
 	}
 }

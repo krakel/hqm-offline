@@ -56,6 +56,10 @@ class EntityHQM extends AEntity<FHqm> {
 	}
 
 	@Override
+	public void baseModified( ModelEvent event) {
+	}
+
+	@Override
 	public void baseRemoved( ModelEvent event) {
 	}
 

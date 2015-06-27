@@ -37,6 +37,11 @@ public final class FMarker extends ANamed implements Comparable<FMarker>, IEleme
 	}
 
 	@Override
+	public boolean isInformation() {
+		return false;
+	}
+
+	@Override
 	public boolean isLast() {
 		return ABase.isLast( mParentRep.mMarker, this);
 	}
@@ -54,6 +59,10 @@ public final class FMarker extends ANamed implements Comparable<FMarker>, IEleme
 	@Override
 	public void remove() {
 		ABase.remove( mParentRep.mMarker, this);
+	}
+
+	@Override
+	public void setInformation( boolean information) {
 	}
 
 	@Override

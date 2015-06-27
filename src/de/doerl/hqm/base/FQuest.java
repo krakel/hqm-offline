@@ -14,6 +14,7 @@ import de.doerl.hqm.utils.Utils;
 public final class FQuest extends ANamed implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private FQuestSet mParentQuestSet;
+	private boolean mInformation;
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
@@ -148,6 +149,11 @@ public final class FQuest extends ANamed implements IElement {
 	}
 
 	@Override
+	public boolean isInformation() {
+		return mInformation;
+	}
+
+	@Override
 	public boolean isLast() {
 		return ABase.isLast( mParentQuestSet.mQuests, this);
 	}
@@ -170,5 +176,10 @@ public final class FQuest extends ANamed implements IElement {
 
 	public void remove() {
 		ABase.remove( mParentQuestSet.mQuests, this);
+	}
+
+	@Override
+	public void setInformation( boolean information) {
+		mInformation = information;
 	}
 }

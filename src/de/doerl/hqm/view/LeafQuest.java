@@ -91,7 +91,7 @@ class LeafQuest extends JLabel {
 	private void updateIcon() {
 		String key = mType.getKey( mQuest.mBig);
 		Image back = ResourceManager.getImageUI( key);
-		IconUpdate.create( this, back, mQuest.mIcon, 0.6);
+		IconUpdate.create( this, back, mQuest.mIcon, 0.6, mQuest.mTriggerType.getMarker());
 	}
 
 	public void updateLocation() {

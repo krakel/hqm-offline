@@ -84,6 +84,10 @@ public abstract class ABase implements IDispatcher {
 
 	public abstract ABase getParent();
 
+	public abstract boolean isInformation();
+
+	public abstract void setInformation( boolean information);
+
 	@Override
 	public String toString() {
 		return ToString.clsName( this);

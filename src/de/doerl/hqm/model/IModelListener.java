@@ -9,5 +9,7 @@ public interface IModelListener extends EventListener {
 
 	void baseChanged( ModelEvent event);
 
+	void baseModified( ModelEvent event);
+
 	void baseRemoved( ModelEvent event);
 }

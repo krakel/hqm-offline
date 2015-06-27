@@ -59,6 +59,18 @@ public class EditModel {
 		}
 	}
 
+	public void fireBaseModified( ABase base) {
+		ModelEvent event = new ModelEvent( base);
+		for (IModelListener l : mListener.toArray( EMPTY)) {
+			try {
+				l.baseModified( event);
+			}
+			catch (Exception ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+			}
+		}
+	}
+
 	public void fireBaseRemoved( ABase base) {
 		ModelEvent event = new ModelEvent( base);
 		for (IModelListener l : mListener.toArray( EMPTY)) {

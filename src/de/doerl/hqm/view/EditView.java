@@ -81,6 +81,10 @@ public class EditView extends JPanel implements IModelListener {
 	}
 
 	@Override
+	public void baseModified( ModelEvent event) {
+	}
+
+	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
 		AEntity<?> ent = mContent.remove( base);

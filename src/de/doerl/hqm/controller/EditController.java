@@ -13,10 +13,9 @@ import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.model.EditModel;
 import de.doerl.hqm.model.IModelListener;
-import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.TaskTyp;
 
-public class EditController implements IModelListener {
+public class EditController {
 	//	private static final Logger LOGGER = Logger.getLogger( EditController.class.getName());
 	private EditModel mModel;
 	private Frame mFrame;
@@ -24,27 +23,10 @@ public class EditController implements IModelListener {
 	public EditController( EditModel model, Frame frame) {
 		mModel = model;
 		mFrame = frame;
-		model.addListener( this);
 	}
 
 	public void addListener( IModelListener l) {
 		mModel.addListener( l);
-	}
-
-	@Override
-	public void baseActivate( ModelEvent event) {
-	}
-
-	@Override
-	public void baseAdded( ModelEvent event) {
-	}
-
-	@Override
-	public void baseChanged( ModelEvent event) {
-	}
-
-	@Override
-	public void baseRemoved( ModelEvent event) {
 	}
 
 	public void fireActive( ABase base) {
@@ -59,6 +41,10 @@ public class EditController implements IModelListener {
 	public void fireChanged( ABase base) {
 		base.getHqm().setModified( true);
 		mModel.fireBaseChanged( base);
+	}
+
+	public void fireModified( ABase base) {
+		mModel.fireBaseModified( base);
 	}
 
 	public void fireRemoved( ABase base) {

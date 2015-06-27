@@ -169,6 +169,10 @@ public class EntityQuest extends AEntity<FQuest> {
 	}
 
 	@Override
+	public void baseModified( ModelEvent event) {
+	}
+
+	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
 		if (mQuest.equals( base.getParent())) {
