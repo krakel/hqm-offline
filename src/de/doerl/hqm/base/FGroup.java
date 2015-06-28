@@ -35,11 +35,6 @@ public final class FGroup extends ANamed implements IElement {
 	}
 
 	@Override
-	public boolean isInformation() {
-		return false;
-	}
-
-	@Override
 	public boolean isLast() {
 		return ABase.isLast( mParentTier.mGroups, this);
 	}
@@ -56,9 +51,5 @@ public final class FGroup extends ANamed implements IElement {
 
 	public void remove() {
 		ABase.remove( mParentTier.mGroups, this);
-	}
-
-	@Override
-	public void setInformation( boolean information) {
 	}
 }

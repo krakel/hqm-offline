@@ -29,8 +29,8 @@ public class EditController {
 		mModel.addListener( l);
 	}
 
-	public void fireActive( ABase base) {
-		mModel.fireBaseActivate( base);
+	public void fireActive( ABase base, boolean ctrlKey) {
+		mModel.fireBaseActivate( base, ctrlKey);
 	}
 
 	public void fireAdded( ABase base) {

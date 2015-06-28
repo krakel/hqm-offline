@@ -139,16 +139,16 @@ public class EditFrame extends JFrame implements IModelListener {
 	}
 
 	@Override
-	public void baseModified( ModelEvent event) {
-	}
-
-	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
 		if (base instanceof FHqm) {
 			SwingUtilities.invokeLater( new ToolUpdate( null));
 			mCB.fireActionUpdate();
 		}
+	}
+
+	@Override
+	public void baseTreeChange( ModelEvent event) {
 	}
 
 	private Box createContent() {
@@ -163,12 +163,13 @@ public class EditFrame extends JFrame implements IModelListener {
 		JMenuBar menu = new JMenuBar();
 		menu.setBackground( UIManager.getColor( "panel.background"));
 		menu.add( createMenuFile());
-		menu.add( createMenuEdit());
+//		menu.add( createMenuEdit());
 		menu.add( createMenuHelp());
 //		menu.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
 		return menu;
 	}
 
+	@SuppressWarnings( "unused")
 	private JMenu createMenuEdit() {
 		JMenu menu = createMenu( "hqm.edit");
 //		menu.add( new CopyAction( mMaster));

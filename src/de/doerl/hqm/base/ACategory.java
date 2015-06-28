@@ -52,13 +52,4 @@ public abstract class ACategory<E extends AMember> extends ABase {
 	public FHqm getParent() {
 		return mParentHQM;
 	}
-
-	@Override
-	public boolean isInformation() {
-		return false;
-	}
-
-	@Override
-	public void setInformation( boolean information) {
-	}
 }

@@ -6,12 +6,14 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.Utils;
 
 public final class FQuestSet extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FQuestSet.class.getName());
 	public final FQuestSetCat mParentCategory;
-	final Vector<FQuest> mQuests = new Vector<>();
+	private LinkType mInformation = LinkType.NORM;
+	public final Vector<FQuest> mQuests = new Vector<>();
 	public String mDescr;
 
 	public FQuestSet( FQuestSetCat parent, String name) {
@@ -62,6 +64,11 @@ public final class FQuestSet extends AMember {
 	}
 
 	@Override
+	public LinkType getInformation() {
+		return mInformation;
+	}
+
+	@Override
 	public FQuestSetCat getParent() {
 		return mParentCategory;
 	}
@@ -87,5 +94,10 @@ public final class FQuestSet extends AMember {
 
 	public void remove() {
 		ABase.remove( mParentCategory.mArr, this);
+	}
+
+	@Override
+	public void setInformation( LinkType information) {
+		mInformation = information;
 	}
 }

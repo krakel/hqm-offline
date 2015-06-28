@@ -69,10 +69,6 @@ abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 	}
 
 	@Override
-	public void baseModified( ModelEvent event) {
-	}
-
-	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
 		if (mCategory.equals( base.getParent())) {
@@ -80,6 +76,10 @@ abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 			updateActive( getFirst(), true);
 			updateMoveActions();
 		}
+	}
+
+	@Override
+	public void baseTreeChange( ModelEvent event) {
 	}
 
 	@Override

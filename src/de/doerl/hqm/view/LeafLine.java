@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.utils.ResourceManager;
@@ -33,12 +34,12 @@ class LeafLine extends JPanel {
 		updateBounds( x1, y1, x2, y2);
 	}
 
-	public FQuest getFrom() {
-		return mFrom;
+	public boolean match( FQuest quest) {
+		return mFrom.equals( quest) || mTo.equals( quest);
 	}
 
-	public FQuest getTo() {
-		return mTo;
+	public boolean match( FQuest from, FQuest to) {
+		return mFrom.equals( from) && mTo.equals( to);
 	}
 
 	@Override
@@ -76,12 +77,7 @@ class LeafLine extends JPanel {
 	}
 
 	public void updateBounds( FQuest quest, int x, int y) {
-		if (Utils.equals( mFrom, quest)) {
-			updateBoundsFrom( x, y);
-		}
-		if (Utils.equals( quest, mTo)) {
-			updateBoundsTo( x, y);
-		}
+		SwingUtilities.invokeLater( new UpdateBounds( quest, x, y));
 	}
 
 	private void updateBounds( int x1, int y1, int x2, int y2) {
@@ -108,5 +104,27 @@ class LeafLine extends JPanel {
 		int x2 = x + AEntity.ZOOM * ResourceManager.getW5( mTo.mBig);
 		int y2 = y + AEntity.ZOOM * ResourceManager.getH5( mTo.mBig);
 		updateBounds( x1, y1, x2, y2);
+	}
+
+	private final class UpdateBounds implements Runnable {
+		private FQuest mQuest;
+		private int mX;
+		private int mY;
+
+		private UpdateBounds( FQuest quest, int x, int y) {
+			mQuest = quest;
+			mX = x;
+			mY = y;
+		}
+
+		@Override
+		public void run() {
+			if (Utils.equals( mQuest, mFrom)) {
+				updateBoundsFrom( mX, mY);
+			}
+			if (Utils.equals( mQuest, mTo)) {
+				updateBoundsTo( mX, mY);
+			}
+		}
 	}
 }

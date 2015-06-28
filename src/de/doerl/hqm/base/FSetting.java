@@ -40,11 +40,6 @@ public final class FSetting extends ABase implements IElement {
 	}
 
 	@Override
-	public boolean isInformation() {
-		return false;
-	}
-
-	@Override
 	public boolean isLast() {
 		return ABase.isLast( mParentTask.mSettings, this);
 	}
@@ -62,9 +57,5 @@ public final class FSetting extends ABase implements IElement {
 	@Override
 	public void remove() {
 		ABase.remove( mParentTask.mSettings, this);
-	}
-
-	@Override
-	public void setInformation( boolean information) {
 	}
 }

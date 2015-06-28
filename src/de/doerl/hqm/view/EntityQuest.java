@@ -169,10 +169,6 @@ public class EntityQuest extends AEntity<FQuest> {
 	}
 
 	@Override
-	public void baseModified( ModelEvent event) {
-	}
-
-	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
 		if (mQuest.equals( base.getParent())) {
@@ -180,6 +176,10 @@ public class EntityQuest extends AEntity<FQuest> {
 			updateActive( getFirstBox());
 			updateMoveActions();
 		}
+	}
+
+	@Override
+	public void baseTreeChange( ModelEvent event) {
 	}
 
 	private Box createChoiseBox() {

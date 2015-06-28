@@ -11,8 +11,11 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import de.doerl.hqm.base.ABase;
+
 public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
 	private static final long serialVersionUID = -6396554354333766086L;
+	private static final Color DARK_GREEN = new Color( 0, 128, 0);
 
 	public ElementTreeCellRenderer() {
 		super.setIcon( null);
@@ -34,15 +37,26 @@ public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
 		try {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 			ANode nn = (ANode) node.getUserObject();
-			if (nn.getBase().isInformation()) {
-				setFont( tree.getFont().deriveFont( Font.BOLD));
-				setForeground( Color.MAGENTA);
-			}
-			else {
-				setFont( tree.getFont());
+			ABase base = nn.getBase();
+			switch (base.getInformation()) {
+				case BASE:
+					setFont( tree.getFont().deriveFont( Font.BOLD));
+					setForeground( DARK_GREEN);
+					break;
+				case PREF:
+					setFont( tree.getFont().deriveFont( Font.BOLD));
+					setForeground( Color.BLUE);
+					break;
+				case POST:
+					setFont( tree.getFont().deriveFont( Font.BOLD));
+					setForeground( Color.RED);
+					break;
+				default:
+					setFont( tree.getFont());
 			}
 		}
 		catch (Exception ex) {
+			setFont( tree.getFont());
 		}
 		return this;
 	}

@@ -23,8 +23,8 @@ public class EditModel {
 		}
 	}
 
-	public void fireBaseActivate( ABase base) {
-		ModelEvent event = new ModelEvent( base);
+	public void fireBaseActivate( ABase base, boolean ctrlKey) {
+		ModelEvent event = new ModelEvent( base, ctrlKey);
 		for (IModelListener l : mListener.toArray( EMPTY)) {
 			try {
 				l.baseActivate( event);
@@ -36,7 +36,7 @@ public class EditModel {
 	}
 
 	public void fireBaseAdded( ABase base) {
-		ModelEvent event = new ModelEvent( base);
+		ModelEvent event = new ModelEvent( base, false);
 		for (IModelListener l : mListener.toArray( EMPTY)) {
 			try {
 				l.baseAdded( event);
@@ -48,7 +48,7 @@ public class EditModel {
 	}
 
 	public void fireBaseChanged( ABase base) {
-		ModelEvent event = new ModelEvent( base);
+		ModelEvent event = new ModelEvent( base, false);
 		for (IModelListener l : mListener.toArray( EMPTY)) {
 			try {
 				l.baseChanged( event);
@@ -60,10 +60,10 @@ public class EditModel {
 	}
 
 	public void fireBaseModified( ABase base) {
-		ModelEvent event = new ModelEvent( base);
+		ModelEvent event = new ModelEvent( base, false);
 		for (IModelListener l : mListener.toArray( EMPTY)) {
 			try {
-				l.baseModified( event);
+				l.baseTreeChange( event);
 			}
 			catch (Exception ex) {
 				Utils.logThrows( LOGGER, Level.WARNING, ex);
@@ -72,7 +72,7 @@ public class EditModel {
 	}
 
 	public void fireBaseRemoved( ABase base) {
-		ModelEvent event = new ModelEvent( base);
+		ModelEvent event = new ModelEvent( base, false);
 		for (IModelListener l : mListener.toArray( EMPTY)) {
 			try {
 				l.baseRemoved( event);
@@ -103,13 +103,13 @@ public class EditModel {
 	public void loadHQM( FHqm hqm) {
 		mHQMs.add( hqm);
 		fireBaseAdded( hqm);
-		fireBaseActivate( hqm);
+		fireBaseActivate( hqm, false);
 	}
 
 	public void removeHQM( FHqm hqm) {
 		mHQMs.remove( hqm);
 		fireBaseRemoved( hqm);
-		fireBaseActivate( null);
+		fireBaseActivate( null, false);
 	}
 
 	public void removeListener( IModelListener l) {

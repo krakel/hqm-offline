@@ -111,10 +111,6 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 	}
 
 	@Override
-	public void baseModified( ModelEvent event) {
-	}
-
-	@Override
 	public void baseRemoved( ModelEvent event) {
 		ABase base = event.mBase;
 		if (mTier.equals( base.getParent())) {
@@ -122,6 +118,10 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 			updateActive( GroupSetFirst.get( mTier), true);
 			updateMoveActions();
 		}
+	}
+
+	@Override
+	public void baseTreeChange( ModelEvent event) {
 	}
 
 	@Override

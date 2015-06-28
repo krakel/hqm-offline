@@ -31,14 +31,7 @@ class SelectHandler implements MouseListener {
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) obj;
 					ANode user = (ANode) node.getUserObject();
 					ABase base = user.getBase();
-					if (evt.isControlDown()) {
-						mCtrl.fireActive( base.getParent());
-						base.setInformation( true);
-						mCtrl.fireModified( base);
-					}
-					else {
-						mCtrl.fireActive( base);
-					}
+					mCtrl.fireActive( base, evt.isControlDown());
 				}
 			}
 		}

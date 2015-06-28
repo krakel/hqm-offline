@@ -29,11 +29,11 @@ class EntityEmpty extends AEntity<ABase> {
 	}
 
 	@Override
-	public void baseModified( ModelEvent event) {
+	public void baseRemoved( ModelEvent event) {
 	}
 
 	@Override
-	public void baseRemoved( ModelEvent event) {
+	public void baseTreeChange( ModelEvent event) {
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Vector;
 import de.doerl.hqm.base.dispatch.IDispatcher;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.ToString;
 
 public abstract class ABase implements IDispatcher {
@@ -82,11 +83,14 @@ public abstract class ABase implements IDispatcher {
 
 	public abstract FHqm getHqm();
 
+	public LinkType getInformation() {
+		return LinkType.NORM;
+	}
+
 	public abstract ABase getParent();
 
-	public abstract boolean isInformation();
-
-	public abstract void setInformation( boolean information);
+	public void setInformation( LinkType information) {
+	}
 
 	@Override
 	public String toString() {

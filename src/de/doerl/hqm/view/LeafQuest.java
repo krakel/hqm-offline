@@ -5,17 +5,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.dispatch.SizeOf;
+import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.ResourceManager;
 
 class LeafQuest extends JLabel {
 	private static final long serialVersionUID = -2797500791761791369L;
 	private ClickHandler mHandler = new ClickHandler();
 	private FQuest mQuest;
-	private Type mType = Type.NORM;
+	private LinkType mType = LinkType.NORM;
 
 	public LeafQuest( FQuest quest) {
 		mQuest = quest;
@@ -77,10 +79,8 @@ class LeafQuest extends JLabel {
 		mHandler.removeClickListener( l);
 	}
 
-	public void update( Type type) {
-		updateType( type);
-		updateBounds();
-		updateIcon();
+	public void update( LinkType type) {
+		SwingUtilities.invokeLater( new ChangeType( type));
 	}
 
 	public void updateBounds() {
@@ -112,44 +112,30 @@ class LeafQuest extends JLabel {
 		setLocation( x, y);
 	}
 
-	private void updateType( Type type) {
-		if (type != Type.NORM) {
+	private void updateType( LinkType type) {
+		if (type != LinkType.NORM) {
 			mType = type;
 		}
 		else if (mQuest.isFree()) {
-			mType = Type.NORM;
+			mType = LinkType.NORM;
 		}
 		else {
-			mType = Type.DARK;
+			mType = LinkType.DARK;
 		}
 	}
 
-	public static enum Type {
-		NORM( "hqm.quest.normA", "hqm.quest.bigA", "hqm.quest.normB", "hqm.quest.bigB"),
-		DARK( "hqm.dark.normA", "hqm.dark.bigA", "hqm.dark.normB", "hqm.dark.bigB"),
-		BASE( "hqm.base.normA", "hqm.base.bigA", "hqm.base.normB", "hqm.base.bigB"),
-		LINK( "hqm.link.normA", "hqm.link.bigA", "hqm.link.normB", "hqm.link.bigB"),
-		PREF( "hqm.pref.normA", "hqm.pref.bigA", "hqm.pref.normB", "hqm.pref.bigB"),
-		POST( "hqm.post.normA", "hqm.post.bigA", "hqm.post.normB", "hqm.post.bigB");
-		private String mNormKeyA;
-		private String mBigKeyA;
-		private String mNormKeyB;
-		private String mBigKeyB;
+	private final class ChangeType implements Runnable {
+		private LinkType mType;
 
-		private Type( String normKeyA, String bigKeyA, String normKeyB, String bigKeyB) {
-			mNormKeyA = normKeyA;
-			mBigKeyA = bigKeyA;
-			mNormKeyB = normKeyB;
-			mBigKeyB = bigKeyB;
+		private ChangeType( LinkType type) {
+			mType = type;
 		}
 
-		String getKey( boolean big, boolean alt) {
-			if (alt) {
-				return big ? mBigKeyB : mNormKeyB;
-			}
-			else {
-				return big ? mBigKeyA : mNormKeyA;
-			}
+		@Override
+		public void run() {
+			updateType( mType);
+			updateBounds();
+			updateIcon();
 		}
 	}
 }

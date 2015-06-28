@@ -8,13 +8,14 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.quest.TriggerType;
+import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
 public final class FQuest extends ANamed implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private FQuestSet mParentQuestSet;
-	private boolean mInformation;
+	private LinkType mInformation = LinkType.NORM;
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
@@ -149,6 +150,11 @@ public final class FQuest extends ANamed implements IElement {
 	}
 
 	@Override
+	public LinkType getInformation() {
+		return mInformation;
+	}
+
+	@Override
 	public FQuestSet getParent() {
 		return mParentQuestSet;
 	}
@@ -160,11 +166,6 @@ public final class FQuest extends ANamed implements IElement {
 
 	public boolean isFree() {
 		return mRequirements.isEmpty();
-	}
-
-	@Override
-	public boolean isInformation() {
-		return mInformation;
 	}
 
 	@Override
@@ -193,7 +194,7 @@ public final class FQuest extends ANamed implements IElement {
 	}
 
 	@Override
-	public void setInformation( boolean information) {
+	public void setInformation( LinkType information) {
 		mInformation = information;
 	}
 }
