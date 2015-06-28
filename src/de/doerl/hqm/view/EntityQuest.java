@@ -36,6 +36,7 @@ import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.TaskTyp;
+import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.ResourceManager;
@@ -241,6 +242,10 @@ public class EntityQuest extends AEntity<FQuest> {
 		return model.size() > 0 ? model.elementAt( 0) : null;
 	}
 
+	private boolean isTriggerQuest() {
+		return mQuest.mTriggerType == TriggerType.QUEST_TRIGGER;
+	}
+
 	private void update() {
 		mTitle.setText( mQuest.mName);
 		mDesc.setText( mQuest.mDescr);
@@ -248,6 +253,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		mRepIcon.setIcon( new StackIcon( REPUTATION_BACK, ReputationFactory.get( mQuest), 1.0));
 		updateStacks( mRewardList, mQuest.mRewards);
 		updateStacks( mChoiceList, mQuest.mChoices);
+		updateTrigger( !isTriggerQuest());
 	}
 
 	private void updateActions( boolean enabled) {
@@ -298,6 +304,15 @@ public class EntityQuest extends AEntity<FQuest> {
 		mTaskListAction.setEnabled( enabled);
 	}
 
+	private void updateTrigger( boolean value) {
+		mRewardAction.setEnabled( value);
+		mChoiceAction.setEnabled( value);
+		mReputationAction.setEnabled( value);
+		mRewardList.setEnabled( value);
+		mChoiceList.setEnabled( value);
+		mRepIcon.setEnabled( value);
+	}
+
 	private final class ChoiceAction extends ABundleAction {
 		private static final long serialVersionUID = 3689054802238865168L;
 
@@ -307,7 +322,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (DialogListItems.update( mQuest.mChoices, mCtrl.getFrame())) {
+			if (!isTriggerQuest() && DialogListItems.update( mQuest.mChoices, mCtrl.getFrame())) {
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -356,7 +371,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (DialogReputation.update( mQuest, mCtrl.getFrame())) {
+			if (!isTriggerQuest() && DialogReputation.update( mQuest, mCtrl.getFrame())) {
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -403,7 +418,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			if (DialogListItems.update( mQuest.mRewards, mCtrl.getFrame())) {
+			if (!isTriggerQuest() && DialogListItems.update( mQuest.mRewards, mCtrl.getFrame())) {
 				mCtrl.fireChanged( mQuest);
 			}
 		}

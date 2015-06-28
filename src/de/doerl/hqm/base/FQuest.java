@@ -159,13 +159,29 @@ public final class FQuest extends ANamed implements IElement {
 		return mParentQuestSet;
 	}
 
+	public boolean isEnabled() {
+		switch (mTriggerType) {
+			case ANTI_TRIGGER:
+				return false;
+			case NONE:
+				int allowed = mCount != null ? mRequirements.size() - mCount.intValue() : 0;
+				if (allowed < 0) {
+					return false;
+				}
+				for (FQuest req : mRequirements) {
+					if (!req.isEnabled() && --allowed < 0) {
+						return false;
+					}
+				}
+			case QUEST_TRIGGER:
+			case TASK_TRIGGER:
+		}
+		return true;
+	}
+
 	@Override
 	public boolean isFirst() {
 		return ABase.isFirst( mParentQuestSet.mQuests, this);
-	}
-
-	public boolean isFree() {
-		return mRequirements.isEmpty();
 	}
 
 	@Override

@@ -44,8 +44,4 @@ public enum TriggerType {
 	public boolean isUseTaskCount() {
 		return TASK_TRIGGER == this;
 	}
-
-	public boolean isWorkAsInvisible() {
-		return QUEST_TRIGGER == this || TASK_TRIGGER == this;
-	}
 }

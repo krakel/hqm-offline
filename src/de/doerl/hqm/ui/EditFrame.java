@@ -119,7 +119,7 @@ public class EditFrame extends JFrame implements IModelListener {
 	public void baseActivate( ModelEvent event) {
 		ABase base = event.mBase;
 		if (base != null) {
-			JToolBar tool = mView.getToolBar( base);
+			JToolBar tool = mView.getToolBar( event.mCtrlKey ? base.getParent() : base);
 			SwingUtilities.invokeLater( new ToolUpdate( tool));
 			mCB.fireActionUpdate();
 			if (base instanceof FHqm) {

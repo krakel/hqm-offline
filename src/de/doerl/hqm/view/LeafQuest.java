@@ -48,7 +48,7 @@ class LeafQuest extends JLabel {
 		if (mQuest.mIcon != null) {
 			sb.append( String.format( "<div align=left>Icon: %s<br>", mQuest.mIcon));
 		}
-		if (!mQuest.isFree()) {
+		if (!mQuest.isEnabled()) {
 			sb.append( "<div align=left style='color:#808080'>Locked Quest<br>");
 		}
 		int s1 = mQuest.mRequirements.size();
@@ -116,7 +116,7 @@ class LeafQuest extends JLabel {
 		if (type != LinkType.NORM) {
 			mType = type;
 		}
-		else if (mQuest.isFree()) {
+		else if (mQuest.isEnabled()) {
 			mType = LinkType.NORM;
 		}
 		else {

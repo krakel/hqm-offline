@@ -192,7 +192,7 @@ class EntityQuestSetCat extends AEntityCat<FQuestSet> {
 
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
-			if (quest.isFree()) {
+			if (quest.isEnabled()) {
 				return Boolean.TRUE;
 			}
 			return null;

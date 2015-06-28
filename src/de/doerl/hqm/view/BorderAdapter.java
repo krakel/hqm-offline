@@ -19,13 +19,17 @@ class BorderAdapter extends MouseAdapter {
 
 	@Override
 	public void mouseEntered( MouseEvent e) {
-		mOldBorder = mComp.getBorder();
-		mComp.setBorder( BORDER);
+		if (mComp.isEnabled()) {
+			mOldBorder = mComp.getBorder();
+			mComp.setBorder( BORDER);
+		}
 	}
 
 	@Override
 	public void mouseExited( MouseEvent e) {
-		mComp.setBorder( mOldBorder);
-		mOldBorder = null;
+		if (mComp.isEnabled()) {
+			mComp.setBorder( mOldBorder);
+			mOldBorder = null;
+		}
 	}
 }
