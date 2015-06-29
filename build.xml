@@ -35,6 +35,7 @@
 			<fileset dir="${basedir}">
 				<include name="*.sh" />
 				<include name="*.bat" />
+				<include name="*.txt" />
 			</fileset>
 		</copy>
 		<chmod file="${dist.dir}/*.sh" perm="ugo+rx" />
@@ -124,6 +125,7 @@
 				<include name="*.jar" />
 				<include name="*.bat" />
 				<include name="*.sh" />
+				<include name="*.txt" />
 				<include name="*.zip" />
 			</fileset>
 		</zip>
