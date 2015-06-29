@@ -10,7 +10,7 @@ import de.doerl.hqm.utils.Utils;
 public abstract class ACategory<E extends AMember> extends ABase {
 	private static final Logger LOGGER = Logger.getLogger( ACategory.class.getName());
 	public final FHqm mParentHQM;
-	public final Vector<E> mArr = new Vector<>();
+	final Vector<E> mArr = new Vector<>();
 
 	ACategory( FHqm parent) {
 		mParentHQM = parent;

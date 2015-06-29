@@ -113,6 +113,9 @@ class LeafQuest extends JLabel {
 	}
 
 	private void updateType( LinkType type) {
+		if (type == null) {
+			type = mType != LinkType.DARK ? mType : LinkType.NORM;
+		}
 		if (type != LinkType.NORM) {
 			mType = type;
 		}

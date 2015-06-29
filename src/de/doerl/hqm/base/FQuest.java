@@ -29,7 +29,7 @@ public final class FQuest extends ANamed implements IElement {
 	public final Vector<FQuest> mOptionLinks = new Vector<>();
 	public final Vector<FQuest> mPosts = new Vector<>();
 	public final Vector<FReputationReward> mRepRewards = new Vector<>();
-	public FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
+	public final FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	final Vector<AQuestTask> mTasks = new Vector<>();
 
 	public FQuest( FQuestSet parent, String name) {

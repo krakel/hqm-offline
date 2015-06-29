@@ -22,6 +22,7 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.DataBitHelper;
@@ -96,7 +97,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	public void activeLeaf( FQuest base) {
+	void activeLeaf( FQuest base) {
 		LeafQuest lq = getLeafQuest( base);
 		if (lq != null) {
 			SwingUtilities.invokeLater( new ActivateLeaf( lq));
@@ -269,7 +270,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 	boolean handleClickFor( LeafQuest current, MouseEvent evt) {
 		if (mActiv != null && mGroupLink.isSelected()) {
-			if (Utils.different( mActiv, current)) {
+			if (Utils.different( mActiv, current) && notLoop( mActiv.getQuest(), current.getQuest())) {
 				FQuest quest = mActiv.getQuest();
 				FQuest other = current.getQuest();
 				if (evt.isControlDown()) {
@@ -326,6 +327,19 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
+	private boolean notLoop( FQuest src, FQuest quest) {
+		for (FQuest post : src.mPosts) {
+			if (Utils.equals( post, quest)) {
+				WarnDialogs.warnLoop( mCtrl.getFrame());
+				return false;
+			}
+			if (!notLoop( post, quest)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private void removeLeafLine( FQuest from, FQuest to) {
 		for (Component cc : mLeaf.getComponents()) {
 			if (cc instanceof LeafLine) {
@@ -367,7 +381,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		for (Component cc : mLeaf.getComponents()) {
 			if (cc instanceof LeafQuest) {
 				LeafQuest lq = (LeafQuest) cc;
-				if (Utils.equals( lq.getQuest().getParent(), mSet)) {
+				if (IndexOf.getQuest( lq.getQuest()) < 0) {
 					removeLeafQuest( lq);
 				}
 			}
@@ -404,6 +418,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		if (activ != null) {
 			activ.update( activ.getQuest().containExt() ? LinkType.LINK : LinkType.BASE);
 			mBigAction.setSelected( activ.getQuest().mBig);
+			updateDepend( activ.getQuest());
 		}
 		else {
 			mBigAction.setSelected( false);
@@ -424,6 +439,15 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			mMoveDownAction.setEnabled( !quest.isLast());
 		}
 		updateActions( enableQuest);
+	}
+
+	private void updateDepend( FQuest quest) {
+		for (FQuest post : quest.mPosts) {
+			if (mSet.equals( post.getParent())) {
+				updateDepend( post);
+				updateLeaf( post, null);
+			}
+		}
 	}
 
 	void updateLeaf( FQuest quest, LinkType type) {

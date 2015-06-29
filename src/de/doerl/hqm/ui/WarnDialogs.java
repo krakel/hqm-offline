@@ -25,6 +25,13 @@ public class WarnDialogs {
 		return JOptionPane.showConfirmDialog( owner, msg, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
 	}
 
+	public static boolean warnLoop( Window owner) {
+		String msg = ResourceManager.getString( "warn.loop.comment");
+		String title = ResourceManager.getString( "warn.loop.title");
+		JOptionPane.showMessageDialog( owner, msg, title, JOptionPane.WARNING_MESSAGE);
+		return true;
+	}
+
 	public static boolean warnOk( Window owner) {
 		String msg = ResourceManager.getString( "warn.complete.comment");
 		String title = ResourceManager.getString( "warn.complete.title");

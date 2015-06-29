@@ -11,9 +11,9 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuestSet extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FQuestSet.class.getName());
-	public final FQuestSetCat mParentCategory;
 	private LinkType mInformation = LinkType.NORM;
-	public final Vector<FQuest> mQuests = new Vector<>();
+	final Vector<FQuest> mQuests = new Vector<>();
+	public final FQuestSetCat mParentCategory;
 	public String mDescr;
 
 	public FQuestSet( FQuestSetCat parent, String name) {
