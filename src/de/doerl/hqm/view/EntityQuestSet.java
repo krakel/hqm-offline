@@ -105,19 +105,15 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	}
 
 	private void activeSet( LeafQuest activ, boolean enableQuest) {
-		mView.updateActiveSetClear();
-		mActiv = activ;
 		if (activ != null) {
-			mView.updateLinked( this, activ);
+			activ.update( activ.getQuest().containExt() ? LinkType.LINK : LinkType.BASE);
+			mBigAction.setSelected( activ.getQuest().mBig);
+			updateDepend( activ.getQuest());
 		}
-		updateActive( activ);
+		else {
+			mBigAction.setSelected( false);
+		}
 		updateCtrls( true, enableQuest);
-	}
-
-	private void activRemove() {
-		mView.updateActiveSetClear();
-		updateCtrls( false, false);
-		selectGroupNothing();
 	}
 
 	@Override
@@ -150,9 +146,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				set.forEachQuest( mLineWorker, null);
 				if (mActiv != null) {
 					FQuest old = mActiv.getQuest();
-					LeafQuest newActiv = getLeafQuest( old);
-					updateActive( newActiv);
-					updateCtrls( true, true);
+					linkedChange( getLeafQuest( old), true);
 				}
 			}
 		}
@@ -181,36 +175,14 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	public void baseTreeChange( ModelEvent event) {
 	}
 
-	private boolean containLeafLine( FQuest from, FQuest to) {
-		for (Component cc : mLeaf.getComponents()) {
-			if (cc instanceof LeafLine) {
-				LeafLine ll = (LeafLine) cc;
-				if (ll.match( from, to)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private boolean containLeafQuest( FQuest quest) {
-		for (Component cc : mLeaf.getComponents()) {
-			if (cc instanceof LeafQuest) {
-				LeafQuest lq = (LeafQuest) cc;
-				if (Utils.equals( lq.getQuest(), quest)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private void createLeafLine( FQuest from, FQuest to) {
-		if (!containLeafLine( from, to)) {
-			LeafLine ll = new LeafLine( from, to);
+	private LeafLine createLeafLine( FQuest from, FQuest to) {
+		LeafLine ll = getLeafLine( from, to);
+		if (ll == null) {
+			ll = new LeafLine( from, to);
 			mLeaf.add( ll);
 			ll.repaint();
 		}
+		return ll;
 	}
 
 	private void createLeafLines( FQuest quest) {
@@ -221,15 +193,17 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private void createLeafQuest( FQuest quest) {
-		if (!containLeafQuest( quest)) {
-			LeafQuest comp = new LeafQuest( quest);
-			mLeaf.add( comp, 0);
-			comp.update( LinkType.NORM);
-			comp.addMouseListener( mQuestClickHandler);
-			comp.addMouseListener( mQuestMoveHandler);
-			comp.addMouseMotionListener( mQuestMoveHandler);
+	private LeafQuest createLeafQuest( FQuest quest) {
+		LeafQuest leaf = getLeafQuest( quest);
+		if (leaf == null) {
+			leaf = new LeafQuest( quest);
+			mLeaf.add( leaf, 0);
+			leaf.update( LinkType.NORM);
+			leaf.addMouseListener( mQuestClickHandler);
+			leaf.addMouseListener( mQuestMoveHandler);
+			leaf.addMouseMotionListener( mQuestMoveHandler);
 		}
+		return leaf;
 	}
 
 	@Override
@@ -254,6 +228,18 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	@Override
 	public FQuestSet getBase() {
 		return mSet;
+	}
+
+	private LeafLine getLeafLine( FQuest from, FQuest to) {
+		for (Component cc : mLeaf.getComponents()) {
+			if (cc instanceof LeafLine) {
+				LeafLine ll = (LeafLine) cc;
+				if (ll.match( from, to)) {
+					return ll;
+				}
+			}
+		}
+		return null;
 	}
 
 	private LeafQuest getLeafQuest( FQuest quest) {
@@ -327,6 +313,21 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
+	private void linkedChange( LeafQuest activ, boolean enableQuest) {
+		mView.updateActiveSetClear();
+		mActiv = activ;
+		if (activ != null) {
+			mView.updateLinked( this, activ);
+		}
+		activeSet( activ, enableQuest);
+	}
+
+	private void linkedRemove() {
+		mView.updateActiveSetClear();
+		updateCtrls( false, false);
+		selectGroupNothing();
+	}
+
 	private boolean notLoop( FQuest src, FQuest quest) {
 		for (FQuest post : src.mPosts) {
 			if (Utils.equals( post, quest)) {
@@ -373,7 +374,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		removeLeafLines( lq.getQuest());
 		if (Utils.equals( mActiv, lq)) {
 			mActiv.setVisible( false);
-			activRemove();
+			linkedRemove();
 		}
 	}
 
@@ -412,17 +413,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mTriggerAction.setEnabled( value);
 		mIconAction.setEnabled( value);
 		mDeleteAction.setEnabled( value);
-	}
-
-	private void updateActive( LeafQuest activ) {
-		if (activ != null) {
-			activ.update( activ.getQuest().containExt() ? LinkType.LINK : LinkType.BASE);
-			mBigAction.setSelected( activ.getQuest().mBig);
-			updateDepend( activ.getQuest());
-		}
-		else {
-			mBigAction.setSelected( false);
-		}
 	}
 
 	private void updateCtrls( boolean enableGroups, boolean enableQuest) {
@@ -466,7 +456,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 		@Override
 		public void run() {
-			activeSet( mCurrent, true);
+			linkedChange( mCurrent, true);
 			selectGroupNothing();
 		}
 	}
@@ -502,8 +492,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				if (DialogCount.update( quest, mCtrl.getFrame())) {
-					updateActive( getLeafQuest( quest));
-					updateCtrls( true, true);
+					activeSet( getLeafQuest( quest), true);
 					mCtrl.fireChanged( quest);
 				}
 			}
@@ -522,9 +511,9 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null && WarnDialogs.askDelete( mCtrl.getFrame())) {
 				mActiv.setVisible( false);
-				FQuest quest = mActiv.getQuest();
-				activRemove();
-				mCtrl.questDelete( quest);
+				FQuest old = mActiv.getQuest();
+				linkedRemove();
+				mCtrl.questDelete( old);
 			}
 		}
 	}
@@ -639,14 +628,12 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 					int y = mLeaf.stepY( evt.getY()) / AEntity.ZOOM - ResourceManager.getH5( false);
 					FQuest quest = mCtrl.questCreate( mSet, result, x, y);
 					quest.mDescr = "Unnamed quest";
-					createLeafQuest( quest);
-					updateActive( getLeafQuest( quest));
-					updateCtrls( true, false);
+					linkedChange( createLeafQuest( quest), false);
 					mCtrl.fireAdded( quest);
 				}
 			}
 			else {
-				activRemove();
+				linkedRemove();
 			}
 		}
 	}
@@ -849,8 +836,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				if (DialogRepeat.update( quest.mRepeatInfo, mCtrl.getFrame())) {
-					updateActive( getLeafQuest( quest));
-					updateCtrls( true, true);
+					activeSet( getLeafQuest( quest), true);
 					mCtrl.fireChanged( quest);
 				}
 			}
@@ -875,7 +861,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( hqm, result);
 					if (set != null && Utils.different( mSet, set)) {
-						activRemove();
+						linkedRemove();
 						mCtrl.questMoveTo( quest, set);
 					}
 				}
@@ -895,8 +881,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				if (DialogTrigger.update( quest, mCtrl.getFrame())) {
-					updateActive( getLeafQuest( quest));
-					updateCtrls( true, true);
+					activeSet( getLeafQuest( quest), true);
 					mCtrl.fireChanged( quest);
 				}
 			}
