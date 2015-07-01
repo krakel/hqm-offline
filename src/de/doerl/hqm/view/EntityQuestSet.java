@@ -371,6 +371,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		lq.removeMouseListener( mQuestClickHandler);
 		lq.removeMouseListener( mQuestMoveHandler);
 		lq.removeMouseMotionListener( mQuestMoveHandler);
+		lq.setVisible( false);
 		removeLeafLines( lq.getQuest());
 		if (Utils.equals( mActiv, lq)) {
 			mActiv.setVisible( false);
@@ -861,7 +862,6 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( hqm, result);
 					if (set != null && Utils.different( mSet, set)) {
-						linkedRemove();
 						mCtrl.questMoveTo( quest, set);
 					}
 				}
