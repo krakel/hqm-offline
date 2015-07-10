@@ -10,7 +10,7 @@ class KeyAdaptorInterger extends KeyAdapter {
 		try {
 			if (ch == '-') {
 				JTextField fld = (JTextField) src;
-				return fld.getText() == null || "".equals( fld.getText().trim());
+				return fld.getText() == null || "".equals( fld.getText().trim()) || fld.getCaretPosition() == 0;
 			}
 		}
 		catch (ClassCastException ex) {
