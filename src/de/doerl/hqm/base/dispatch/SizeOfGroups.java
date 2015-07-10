@@ -11,15 +11,15 @@ public class SizeOfGroups extends AHQMWorker<Object, Object> {
 	}
 
 	public static Object get( FGroupTier tier) {
-		SizeOfGroups size = new SizeOfGroups();
-		tier.forEachGroup( size, null);
-		return size.mResult;
+		SizeOfGroups worker = new SizeOfGroups();
+		tier.forEachGroup( worker, null);
+		return worker.mResult;
 	}
 
 	public static int get( FGroupTierCat cat) {
-		SizeOfGroups size = new SizeOfGroups();
-		cat.forEachMember( size, null);
-		return size.mResult;
+		SizeOfGroups worker = new SizeOfGroups();
+		cat.forEachMember( worker, null);
+		return worker.mResult;
 	}
 
 	@Override

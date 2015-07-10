@@ -37,7 +37,7 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.IndexOfGroup;
-import de.doerl.hqm.base.dispatch.IndexOfQuest;
+import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
@@ -334,7 +334,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 
 	private void writeQuest( FQuest quest) {
 		mDst.beginObject();
-		mDst.print( QUEST_ID, IndexOfQuest.get( quest));
+		mDst.print( QUEST_ID, quest.mID);
 		mDst.print( QUEST_NAME, quest.mName);
 		mDst.print( QUEST_DESC, quest.mDescr);
 		mDst.print( QUEST_X, quest.mX);
@@ -360,7 +360,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 			mDst.beginArray( key);
 			for (FQuest quest : arr) {
 				if (quest != null) {
-					mDst.printValue( toID( IndexOfQuest.get( quest), quest.mName));
+					mDst.printValue( toID( quest.mID, quest.mName));
 				}
 			}
 			mDst.endArray();
@@ -368,6 +368,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	private void writeQuests( FQuestSetCat cat) {
+		ReindexOfQuests.get( cat);
 		mDst.beginArray( HQM_QUESTS);
 		cat.forEachMember( mQuestWorker, null);
 		mDst.endArray();

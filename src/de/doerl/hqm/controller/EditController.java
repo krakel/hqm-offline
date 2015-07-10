@@ -11,6 +11,7 @@ import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.dispatch.MaxIdOfQuests;
 import de.doerl.hqm.model.EditModel;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.quest.TaskTyp;
@@ -76,7 +77,8 @@ public class EditController {
 	}
 
 	public FQuest questCreate( FQuestSet set, String name, int x, int y) {
-		FQuest quest = set.createQuest( name);
+		int maxID = MaxIdOfQuests.get( set.mParentCategory);
+		FQuest quest = set.createQuest( name, maxID + 1);
 		quest.mX = x;
 		quest.mY = y;
 		return quest;

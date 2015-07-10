@@ -76,6 +76,16 @@ public final class FValue implements IJson {
 		}
 	}
 
+	public static int toInt( IJson json, int def) {
+		Integer obj = toIntObj( json);
+		if (obj != null) {
+			return obj.intValue();
+		}
+		else {
+			return def;
+		}
+	}
+
 	public static Integer toIntObj( IJson json) {
 		Object obj = toObject( json);
 		if (obj instanceof Integer) {

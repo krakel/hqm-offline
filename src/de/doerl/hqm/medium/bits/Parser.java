@@ -42,6 +42,7 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
+import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.BagTier;
@@ -56,13 +57,12 @@ import de.doerl.hqm.utils.Utils;
 
 class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
-	private final FQuest mDelQuest = new FQuest( null, "__DELETED__");
 	private BitInputStream mSrc;
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
 	private HashMap<Integer, FReputation> mReps = new HashMap<>();
-	private Vector<FQuest> mQuests = new Vector<>();
+	private HashMap<Integer, FQuest> mQuests = new HashMap<>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
@@ -262,7 +262,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 				else {
 					qs = hqm.mQuestSetCat.createMember( "__Default__");
 				}
-				FQuest quest = qs.createQuest( name);
+				FQuest quest = qs.createQuest( name, i);
 				quest.mDescr = descr;
 				quest.mX = x;
 				quest.mY = y;
@@ -295,10 +295,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 				if (version.contains( FileVersion.REPUTATION)) {
 					readRewards( quest);
 				}
-				mQuests.add( quest);
-			}
-			else {
-				mQuests.add( mDelQuest);
+				mQuests.put( quest.mID, quest);
 			}
 		}
 	}
@@ -359,6 +356,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 			readGroupTiers( hqm.mGroupTierCat);
 			readGroup( hqm.mGroupTierCat, version);
 		}
+		ReindexOfQuests.get( hqm);
 		updateRequirements( hqm);
 		updateOptionLinks( hqm);
 		updatePosts( hqm);
@@ -400,9 +398,9 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 			FQuest quest = e.getKey();
 			int[] ids = e.getValue();
 			for (int i = 0; i < ids.length; ++i) {
-				int id = ids[i];
+				Integer id = ids[i];
 				FQuest req = mQuests.get( id);
-				if (req == null || req.getParent() == null) {
+				if (req == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing OptionLink [{0}] {1} for {2}", i, id, quest.mName);
 				}
 				else {
@@ -414,14 +412,13 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 
 	private void updatePosts( FHqm hqm) {
 		for (Map.Entry<Integer, Vector<FQuest>> e : mPosts.entrySet()) {
-			int id = e.getKey();
-			Vector<FQuest> posts = e.getValue();
+			Integer id = e.getKey();
 			FQuest quest = mQuests.get( id);
-			if (quest == null || quest.getParent() == null) {
+			if (quest == null) {
 				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
 			}
 			else {
-				quest.mPosts.addAll( posts);
+				quest.mPosts.addAll( e.getValue());
 			}
 		}
 	}
@@ -431,9 +428,9 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 			FQuest quest = e.getKey();
 			int[] ids = e.getValue();
 			for (int i = 0; i < ids.length; ++i) {
-				int id = ids[i];
+				Integer id = ids[i];
 				FQuest req = mQuests.get( id);
-				if (req == null || req.getParent() == null) {
+				if (req == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{0}] {1} for {2}", i, id, quest.mName);
 				}
 				else {

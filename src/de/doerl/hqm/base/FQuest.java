@@ -16,6 +16,7 @@ public final class FQuest extends ANamed implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private FQuestSet mParentQuestSet;
 	private LinkType mInformation = LinkType.NORM;
+	public int mID;
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
@@ -32,9 +33,10 @@ public final class FQuest extends ANamed implements IElement {
 	public final FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	final Vector<AQuestTask> mTasks = new Vector<>();
 
-	public FQuest( FQuestSet parent, String name) {
+	public FQuest( FQuestSet parent, String name, int id) {
 		super( name);
 		mParentQuestSet = parent;
+		mID = id;
 	}
 
 	@Override

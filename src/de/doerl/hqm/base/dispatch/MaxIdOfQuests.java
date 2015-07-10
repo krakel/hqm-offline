@@ -1,36 +1,35 @@
 package de.doerl.hqm.base.dispatch;
 
+import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
 
-public class SizeOfQuests extends AHQMWorker<Object, Object> {
-	private int mResult = 0;
+public class MaxIdOfQuests extends AHQMWorker<Object, Object> {
+	private int mResult = -1;
 
-	private SizeOfQuests() {
+	private MaxIdOfQuests() {
 	}
 
-	public static Object get( FQuestSet set) {
-		SizeOfQuests worker = new SizeOfQuests();
-		set.forEachQuest( worker, null);
-		return worker.mResult;
+	public static int get( FHqm hqm) {
+		return get( hqm.mQuestSetCat);
 	}
 
 	public static int get( FQuestSetCat cat) {
-		SizeOfQuests worker = new SizeOfQuests();
+		MaxIdOfQuests worker = new MaxIdOfQuests();
 		cat.forEachMember( worker, null);
 		return worker.mResult;
 	}
 
 	@Override
 	public Object forQuest( FQuest quest, Object p) {
-		++mResult;
+		mResult = Math.max( mResult, quest.mID);
 		return null;
 	}
 
 	@Override
 	public Object forQuestSet( FQuestSet set, Object p) {
-		set.forEachQuest( this, p);
+		set.forEachQuest( this, null);
 		return null;
 	}
 }

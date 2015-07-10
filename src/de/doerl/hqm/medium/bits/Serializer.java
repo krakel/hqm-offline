@@ -32,10 +32,10 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.IndexOfGroup;
-import de.doerl.hqm.base.dispatch.IndexOfQuest;
+import de.doerl.hqm.base.dispatch.QuestOfID;
+import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.base.dispatch.SizeOfGroups;
-import de.doerl.hqm.base.dispatch.SizeOfQuests;
 import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
@@ -43,7 +43,6 @@ import de.doerl.hqm.quest.TriggerType;
 
 class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 //	private static final Logger LOGGER = Logger.getLogger( Serializer.class.getName());
-	private QuestWorker mQuestWorker = new QuestWorker();
 	private GroupWorker mGroupWorker = new GroupWorker();
 	private BitOutputStream mDst;
 
@@ -290,7 +289,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 			for (int i = 0; i < size; ++i) {
 				FQuest quest = lst.get( i);
 				if (quest != null) {
-					mDst.writeData( IndexOfQuest.get( quest), bits, version);
+					mDst.writeData( quest.mID, bits, version);
 				}
 			}
 		}
@@ -354,8 +353,17 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	}
 
 	private void writeQuests( FQuestSetCat cat, FileVersion version) {
-		mDst.writeData( SizeOfQuests.get( cat), DataBitHelper.QUESTS, version);
-		cat.forEachMember( mQuestWorker, version);
+		int count = ReindexOfQuests.get( cat) + 1;
+		mDst.writeData( count, DataBitHelper.QUESTS, version);
+		for (int i = 0; i < count; ++i) {
+			FQuest quest = QuestOfID.get( cat, i);
+			if (quest != null) {
+				writeQuest( quest, version);
+			}
+			else {
+				mDst.writeBoolean( false);
+			}
+		}
 	}
 
 	private void writeQuestSetCat( FQuestSetCat cat, FileVersion version) {
@@ -409,20 +417,6 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 		@Override
 		public Object forGroupTier( FGroupTier tier, FileVersion version) {
 			tier.forEachGroup( this, version);
-			return null;
-		}
-	}
-
-	private final class QuestWorker extends AHQMWorker<Object, FileVersion> {
-		@Override
-		public Object forQuest( FQuest quest, FileVersion version) {
-			writeQuest( quest, version);
-			return null;
-		}
-
-		@Override
-		public Object forQuestSet( FQuestSet set, FileVersion version) {
-			set.forEachQuest( this, version);
 			return null;
 		}
 	}

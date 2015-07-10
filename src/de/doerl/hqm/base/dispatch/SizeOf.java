@@ -23,15 +23,15 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 	}
 
 	public static int getLocations( FQuestTaskLocation task) {
-		SizeOf size = new SizeOf();
-		task.forEachLocation( size, null);
-		return size.mResult;
+		SizeOf worker = new SizeOf();
+		task.forEachLocation( worker, null);
+		return worker.mResult;
 	}
 
 	public static int getMarker( FReputation rep) {
-		SizeOf size = new SizeOf();
-		rep.forEachMarker( size, null);
-		return size.mResult;
+		SizeOf worker = new SizeOf();
+		rep.forEachMarker( worker, null);
+		return worker.mResult;
 	}
 
 	public static int getMember( ACategory<?> cat) {
@@ -41,33 +41,33 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 	}
 
 	public static int getMobs( FQuestTaskMob task) {
-		SizeOf size = new SizeOf();
-		task.forEachMob( size, null);
-		return size.mResult;
+		SizeOf worker = new SizeOf();
+		task.forEachMob( worker, null);
+		return worker.mResult;
 	}
 
 	public static int getRequirements( AQuestTaskItems task) {
-		SizeOf size = new SizeOf();
-		task.forEachRequirement( size, null);
-		return size.mResult;
+		SizeOf worker = new SizeOf();
+		task.forEachRequirement( worker, null);
+		return worker.mResult;
 	}
 
 	public static int getReward( FQuest quest) {
-		SizeOf size = new SizeOf();
-		quest.forEachReward( size, null);
-		return size.mResult;
+		SizeOf worker = new SizeOf();
+		quest.forEachReward( worker, null);
+		return worker.mResult;
 	}
 
 	public static int getSettings( FQuestTaskReputationTarget task) {
-		SizeOf size = new SizeOf();
-		task.forEachSetting( size, null);
-		return size.mResult;
+		SizeOf worker = new SizeOf();
+		task.forEachSetting( worker, null);
+		return worker.mResult;
 	}
 
 	public static int getTasks( FQuest quest) {
-		SizeOf size = new SizeOf();
-		quest.forEachTask( size, null);
-		return size.mResult;
+		SizeOf worker = new SizeOf();
+		quest.forEachTask( worker, null);
+		return worker.mResult;
 	}
 
 	@Override

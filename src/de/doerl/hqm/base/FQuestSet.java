@@ -35,8 +35,8 @@ public final class FQuestSet extends AMember {
 		}
 	}
 
-	public FQuest createQuest( String name) {
-		FQuest quest = new FQuest( this, name);
+	public FQuest createQuest( String name, int id) {
+		FQuest quest = new FQuest( this, name, id);
 		mQuests.add( quest);
 		return quest;
 	}
