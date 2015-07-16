@@ -77,6 +77,10 @@ public abstract class ABase implements IDispatcher {
 		}
 	}
 
+	public static String toID( String base, int idx) {
+		return String.format( "%s%03d", base, idx);
+	}
+
 	public abstract <T, U> T accept( IHQMWorker<T, U> w, U p);
 
 	public abstract ElementTyp getElementTyp();

@@ -41,7 +41,7 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
-import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
+import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
@@ -252,15 +252,18 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 				FItemStack icon = null;
 				FQuestSet qs;
 				if (version.contains( FileVersion.SETS)) {
-					int setID = mSrc.readData( DataBitHelper.QUEST_SETS);
-					qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
+					String setID = FQuestSet.toID( mSrc.readData( DataBitHelper.QUEST_SETS));
+					qs = QuestSetOfID.get( hqm.mQuestSetCat, setID);
 					if (qs == null) {
+						Utils.log( LOGGER, Level.WARNING, "missing set of quest {0}", name);
 						qs = hqm.mQuestSetCat.createMember( "__Missing__");
+						qs.mID = "set999";
 					}
 					icon = mSrc.readIconIf( version);
 				}
 				else {
 					qs = hqm.mQuestSetCat.createMember( "__Default__");
+					qs.mID = "set000";
 				}
 				FQuest quest = qs.createQuest( name, i);
 				quest.mDescr = descr;
@@ -346,7 +349,8 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 			readQuestSetCat( hqm.mQuestSetCat);
 		}
 		else {
-			hqm.mQuestSetCat.createMember( "__Missing__");
+			FQuestSet qs = hqm.mQuestSetCat.createMember( "__Default__");
+			qs.mID = "set000";
 		}
 		if (version.contains( FileVersion.REPUTATION)) {
 			readReputations( hqm.mReputationCat);

@@ -36,8 +36,9 @@ import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
+import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
-import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
+import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
@@ -75,6 +76,20 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 		else {
 			Utils.log( LOGGER, Level.WARNING, "wrong index {0}", s);
 			return 0;
+		}
+	}
+
+	private static String parseID( String s, String base) {
+		int pos = s.indexOf( " - ");
+		if (pos > 0) {
+			return String.format( "%s%03d", base, Utils.parseInteger( s.substring( 0, pos), 0));
+		}
+		else if (s.startsWith( base)) {
+			return s;
+		}
+		else {
+			Utils.log( LOGGER, Level.WARNING, "wrong index {0}", s);
+			return null;
 		}
 	}
 
@@ -282,12 +297,20 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 //						mQuests.add( mDelQuest);
 					}
 					else {
-						int setID = parseID( FValue.toString( obj.get( IToken.QUEST_SET)));
-						FQuestSet qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
-						if (qs == null) {
-							qs = hqm.mQuestSetCat.createMember( "__Missing__");
-						}
 						String name = FValue.toString( obj.get( IToken.QUEST_NAME));
+						String setID = parseID( FValue.toString( obj.get( IToken.QUEST_SET)), "set");
+						FQuestSet qs = null;
+						if (setID == null) {
+							Utils.log( LOGGER, Level.WARNING, "missing setID of quest {0}", name);
+						}
+						else {
+							qs = QuestSetOfID.get( hqm.mQuestSetCat, setID);
+						}
+						if (qs == null) {
+							Utils.log( LOGGER, Level.WARNING, "missing set of quest {0}", name);
+							qs = hqm.mQuestSetCat.createMember( "__Missing__");
+							qs.mID = "set999";
+						}
 						int id = FValue.toInt( obj.get( IToken.QUEST_ID), -1);
 						FQuest quest = qs.createQuest( name, id);
 						quest.mDescr = FValue.toString( obj.get( IToken.QUEST_DESC));
@@ -322,8 +345,15 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					FQuestSet member = cat.createMember( FValue.toString( obj.get( IToken.QUEST_SET_NAME)));
-					member.mDescr = FValue.toString( obj.get( IToken.QUEST_SET_DECR));
+					FQuestSet set = cat.createMember( FValue.toString( obj.get( IToken.QUEST_SET_NAME)));
+					set.mDescr = FValue.toString( obj.get( IToken.QUEST_SET_DECR));
+					String id = FValue.toString( obj.get( IToken.QUEST_SET_ID));
+					if (id != null) {
+						set.mID = id;
+					}
+					else {
+						set.mID = FQuestSet.toID( IndexOf.getMember( set));
+					}
 				}
 			}
 		}

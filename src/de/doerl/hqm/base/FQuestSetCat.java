@@ -18,12 +18,12 @@ public final class FQuestSetCat extends ACategory<FQuestSet> {
 
 	@Override
 	public FQuestSet createMember( String name) {
-		FQuestSet result = QuestSetOfName.get( this, name);
-		if (result == null) {
-			result = new FQuestSet( this, name);
-			addMember( result);
+		FQuestSet set = QuestSetOfName.get( this, name);
+		if (set == null) {
+			set = new FQuestSet( this, name);
+			addMember( set);
 		}
-		return result;
+		return set;
 	}
 
 	@Override

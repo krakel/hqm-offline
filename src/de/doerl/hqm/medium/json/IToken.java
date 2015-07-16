@@ -10,6 +10,7 @@ interface IToken {
 	static final String HQM_GROUP_TIER_CAT = "groupTierCatalog";
 	static final String HQM_GROUP_CAT = "groupCatalog";
 	//
+	static final String QUEST_SET_ID = "id";
 	static final String QUEST_SET_NAME = "name";
 	static final String QUEST_SET_DECR = "decription";
 	//

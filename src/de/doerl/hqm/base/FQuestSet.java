@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
+import de.doerl.hqm.base.dispatch.MaxIdOfQuestSet;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.Utils;
@@ -14,11 +15,17 @@ public final class FQuestSet extends AMember {
 	private LinkType mInformation = LinkType.NORM;
 	final Vector<FQuest> mQuests = new Vector<>();
 	public final FQuestSetCat mParentCategory;
+	public String mID;
 	public String mDescr;
 
-	public FQuestSet( FQuestSetCat parent, String name) {
+	FQuestSet( FQuestSetCat parent, String name) {
 		super( name);
 		mParentCategory = parent;
+		mID = toID( MaxIdOfQuestSet.get( parent) + 1);
+	}
+
+	public static String toID( int idx) {
+		return String.format( "set%03d", idx);
 	}
 
 	@Override
