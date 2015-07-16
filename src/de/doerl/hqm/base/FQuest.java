@@ -15,6 +15,7 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuest extends ANamed implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
+	private static final String BASE = "quest";
 	private FQuestSet mParentQuestSet;
 	private LinkType mInformation = LinkType.NORM;
 	private int mID;
@@ -41,26 +42,11 @@ public final class FQuest extends ANamed implements IElement {
 	}
 
 	public static int fromIdent( String ident) {
-		if (ident == null) {
-			return -1;
-		}
-		else {
-			int pos = ident.indexOf( " - ");
-			if (pos > 0) {
-				return Utils.parseInteger( ident.substring( 0, pos), -1);
-			}
-			else if (ident.startsWith( "quest")) {
-				return Utils.parseInteger( ident.substring( 5), -1);
-			}
-			else {
-				Utils.log( LOGGER, Level.WARNING, "wrong ident {0}", ident);
-				return -1;
-			}
-		}
+		return fromIdent( BASE, ident);
 	}
 
 	public static String toIdent( int idx) {
-		return String.format( "quest%03d", idx);
+		return toIdent( BASE, idx);
 	}
 
 	@Override

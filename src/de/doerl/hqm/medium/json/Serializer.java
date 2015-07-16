@@ -164,6 +164,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	@Override
 	public Object forReputation( FReputation rep, Object p) {
 		mDst.beginObject();
+		mDst.print( REPUTATION_ID, rep.toIdent());
 		mDst.print( REPUTATION_NAME, rep.mName);
 		mDst.print( REPUTATION_NEUTRAL, rep.mNeutral);
 		writeMarkers( rep);
@@ -174,7 +175,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	@Override
 	public Object forReputationReward( FReputationReward rr, Object p) {
 		mDst.beginObject();
-		mDst.print( REWARD_REPUTATION, toID( IndexOf.getMember( rr.mRep), rr.mRep.mName));
+		mDst.print( REWARD_REPUTATION, rr.mRep.toIdent());
 		mDst.print( REWARD_VALUE, rr.mValue);
 		mDst.endObject();
 		return null;
@@ -183,7 +184,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	@Override
 	public Object forSetting( FSetting rs, Object p) {
 		mDst.beginObject();
-		mDst.print( SETTING_REPUTATION, toID( IndexOf.getMember( rs.mRep), rs.mRep.mName));
+		mDst.print( SETTING_REPUTATION, rs.mRep.toIdent());
 		if (rs.mLower != null) {
 			mDst.print( SETTING_LOWER, toID( IndexOf.getMarker( rs.mLower), rs.mLower.mName));
 		}

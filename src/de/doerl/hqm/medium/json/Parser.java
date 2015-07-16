@@ -39,7 +39,7 @@ import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
-import de.doerl.hqm.base.dispatch.ReputationOfIdx;
+import de.doerl.hqm.base.dispatch.ReputationOfID;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.FileVersion;
@@ -172,7 +172,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				FObject oo = FObject.to( json);
 				if (oo != null) {
 					FSetting res = task.createSetting();
-					res.mRep = ReputationOfIdx.get( task, parseID( FValue.toString( oo.get( IToken.SETTING_REPUTATION))));
+					int repID = FReputation.fromIdent( FValue.toString( oo.get( IToken.SETTING_REPUTATION)));
+					if (repID < 0) {
+						Utils.log( LOGGER, Level.WARNING, "missing repID");
+					}
+					else {
+						res.mRep = ReputationOfID.get( task, repID);
+					}
 					String low = FValue.toString( oo.get( IToken.SETTING_LOWER));
 					if (low != null) {
 						res.mLower = MarkerOfIdx.get( res.mRep, parseID( low));
@@ -348,9 +354,10 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					FReputation member = cat.createMember( FValue.toString( obj.get( IToken.REPUTATION_NAME)));
-					member.mNeutral = FValue.toString( obj.get( IToken.REPUTATION_NEUTRAL));
-					readMarker( member, FArray.to( obj.get( IToken.REPUTATION_MARKERS)));
+					FReputation rep = cat.createMember( FValue.toString( obj.get( IToken.REPUTATION_NAME)));
+					rep.mNeutral = FValue.toString( obj.get( IToken.REPUTATION_NEUTRAL));
+					rep.setID( FValue.toString( obj.get( IToken.REPUTATION_ID)));
+					readMarker( rep, FArray.to( obj.get( IToken.REPUTATION_MARKERS)));
 				}
 			}
 		}
@@ -362,7 +369,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FReputationReward reward = quest.createRepReward();
-					reward.mRep = ReputationOfIdx.get( quest.getHqm(), parseID( FValue.toString( obj.get( IToken.REWARD_REPUTATION))));
+					int repID = FReputation.fromIdent( FValue.toString( obj.get( IToken.REWARD_REPUTATION)));
+					if (repID < 0) {
+						Utils.log( LOGGER, Level.WARNING, "missing repID");
+					}
+					else {
+						reward.mRep = ReputationOfID.get( quest.getHqm(), repID);
+					}
 					reward.mValue = FValue.toInt( obj.get( IToken.REWARD_VALUE));
 				}
 			}

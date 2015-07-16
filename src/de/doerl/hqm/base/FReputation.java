@@ -6,18 +6,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
+import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.utils.Utils;
 
 public final class FReputation extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
+	private static final String BASE = "rep";
 	public final FReputationCat mParentCategory;
+	private int mID;
 	public final Vector<FMarker> mMarker = new Vector<>();
 	public String mNeutral;
 
 	public FReputation( FReputationCat parent, String name) {
 		super( name);
 		mParentCategory = parent;
+		mID = MaxIdOf.getReputation( parent) + 1;
+	}
+
+	public static int fromIdent( String ident) {
+		return fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -53,6 +61,10 @@ public final class FReputation extends AMember {
 		return ElementTyp.REPUTATION;
 	}
 
+	public int getID() {
+		return mID;
+	}
+
 	@Override
 	public FReputationCat getParent() {
 		return mParentCategory;
@@ -81,8 +93,21 @@ public final class FReputation extends AMember {
 		ABase.remove( mParentCategory.mArr, this);
 	}
 
+	public void setID( String ident) {
+		if (ident != null) {
+			int id = fromIdent( ident);
+			if (id >= 0) {
+				mID = id;
+			}
+		}
+	}
+
 	public void sort() {
 		Collections.sort( mMarker);
+	}
+
+	public String toIdent() {
+		return toIdent( BASE, mID);
 	}
 
 	@Override

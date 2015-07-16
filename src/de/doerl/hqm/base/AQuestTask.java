@@ -1,15 +1,11 @@
 package de.doerl.hqm.base;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.TaskTyp;
-import de.doerl.hqm.utils.Utils;
 
 public abstract class AQuestTask extends ANamed implements IElement {
-	private static final Logger LOGGER = Logger.getLogger( AQuestTask.class.getName());
+	private static final String BASE = "task";
 	public final FQuest mParentQuest;
 	private int mID;
 	public String mDescr;
@@ -22,22 +18,7 @@ public abstract class AQuestTask extends ANamed implements IElement {
 	}
 
 	public static int fromIdent( String ident) {
-		if (ident == null) {
-			return -1;
-		}
-		else {
-			int pos = ident.indexOf( " - ");
-			if (pos > 0) {
-				return Utils.parseInteger( ident.substring( 0, pos), -1);
-			}
-			else if (ident.startsWith( "task")) {
-				return Utils.parseInteger( ident.substring( 3), -1);
-			}
-			else {
-				Utils.log( LOGGER, Level.WARNING, "wrong ident {0}", ident);
-				return -1;
-			}
-		}
+		return fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -89,6 +70,6 @@ public abstract class AQuestTask extends ANamed implements IElement {
 	}
 
 	public String toIdent() {
-		return String.format( "task%03d", mID);
+		return toIdent( BASE, mID);
 	}
 }

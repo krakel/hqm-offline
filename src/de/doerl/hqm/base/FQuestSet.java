@@ -12,6 +12,7 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuestSet extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FQuestSet.class.getName());
+	private static final String BASE = "set";
 	private LinkType mInformation = LinkType.NORM;
 	final Vector<FQuest> mQuests = new Vector<>();
 	public final FQuestSetCat mParentCategory;
@@ -25,22 +26,7 @@ public final class FQuestSet extends AMember {
 	}
 
 	public static int fromIdent( String ident) {
-		if (ident == null) {
-			return -1;
-		}
-		else {
-			int pos = ident.indexOf( " - ");
-			if (pos > 0) {
-				return Utils.parseInteger( ident.substring( 0, pos), -1);
-			}
-			else if (ident.startsWith( "set")) {
-				return Utils.parseInteger( ident.substring( 3), -1);
-			}
-			else {
-				Utils.log( LOGGER, Level.WARNING, "wrong ident {0}", ident);
-				return -1;
-			}
-		}
+		return fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -137,6 +123,6 @@ public final class FQuestSet extends AMember {
 	}
 
 	public String toIdent() {
-		return String.format( "set%03d", mID);
+		return toIdent( BASE, mID);
 	}
 }
