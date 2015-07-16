@@ -11,12 +11,12 @@ public class ReputationOfID extends AHQMWorker<FReputation, Integer> {
 	private ReputationOfID() {
 	}
 
-	public static FReputation get( FHqm hqm, int idx) {
-		return get( hqm.mReputationCat, idx);
+	public static FReputation get( FHqm hqm, int id) {
+		return get( hqm.mReputationCat, id);
 	}
 
-	public static FReputation get( FQuestTaskReputationTarget task, int idx) {
-		return get( task.getHqm().mReputationCat, idx);
+	public static FReputation get( FQuestTaskReputationTarget task, int id) {
+		return get( task.getHqm().mReputationCat, id);
 	}
 
 	public static FReputation get( FReputationCat set, int id) {

@@ -240,6 +240,6 @@ public final class FQuest extends ANamed implements IElement {
 	}
 
 	public String toIdent() {
-		return toIdent( mID);
+		return toIdent( BASE, mID);
 	}
 }

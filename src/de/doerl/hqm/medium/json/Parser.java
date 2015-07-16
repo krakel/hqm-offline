@@ -35,7 +35,7 @@ import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
+import de.doerl.hqm.base.dispatch.GroupTierOfID;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
 import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
@@ -199,8 +199,20 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					FGroupTier tier = GroupTierOfIdx.get( cat, parseID( FValue.toString( obj.get( IToken.GROUP_TIER))));
-					FGroup grp = tier.createGroup( FValue.toString( obj.get( IToken.GROUP_NAME)));
+					String name = FValue.toString( obj.get( IToken.GROUP_NAME));
+					FGroupTier tier = null;
+					int tierID = FGroupTier.fromIdent( FValue.toString( obj.get( IToken.GROUP_TIER)));
+					if (tierID < 0) {
+						Utils.log( LOGGER, Level.WARNING, "missing tierID of group {0}", name);
+					}
+					else {
+						tier = GroupTierOfID.get( cat, tierID);
+					}
+					if (tier == null) {
+						Utils.log( LOGGER, Level.WARNING, "missing tierID of group {0}", name);
+						tier = cat.createMember( "__Missing__");
+					}
+					FGroup grp = tier.createGroup( name);
 					grp.mLimit = FValue.toIntObj( obj.get( IToken.GROUP_LIMIT));
 					readStacks( grp.mStacks, FArray.to( obj.get( IToken.GROUP_STACKS)));
 				}
@@ -214,6 +226,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FGroupTier tier = cat.createMember( FValue.toString( obj.get( IToken.GROUP_TIER_NAME)));
+					Integer idx = FValue.toIntObj( obj.get( IToken.GROUP_TIER_ID));
+					if (idx != null) {
+						tier.setID( FGroupTier.toIdent( idx.intValue()));
+					}
+					else {
+						tier.setID( FValue.toString( obj.get( IToken.GROUP_TIER_ID)));
+					}
 					tier.mColorID = FValue.toInt( obj.get( IToken.GROUP_TIER_COLOR));
 					FArray weights = FArray.to( obj.get( IToken.GROUP_TIER_WEIGHTS));
 					if (weights != null) {

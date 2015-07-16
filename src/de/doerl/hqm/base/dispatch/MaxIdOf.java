@@ -1,6 +1,8 @@
 package de.doerl.hqm.base.dispatch;
 
 import de.doerl.hqm.base.AQuestTask;
+import de.doerl.hqm.base.FGroupTier;
+import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
@@ -23,9 +25,21 @@ public class MaxIdOf extends AHQMWorker<Object, Object> {
 		return worker.mResult;
 	}
 
+	public static int getTier( FGroupTierCat cat) {
+		MaxIdOf worker = new MaxIdOf();
+		cat.forEachMember( worker, null);
+		return worker.mResult;
+	}
+
 	@Override
 	protected Object doTask( AQuestTask task, Object p) {
 		mResult = Math.max( mResult, task.getID());
+		return null;
+	}
+
+	@Override
+	public Object forGroupTier( FGroupTier tier, Object p) {
+		mResult = Math.max( mResult, tier.getID());
 		return null;
 	}
 

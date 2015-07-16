@@ -82,7 +82,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	@Override
 	public Object forGroupTier( FGroupTier tier, Object p) {
 		mDst.beginObject();
-		mDst.print( GROUP_TIER_ID, IndexOf.getMember( tier));
+		mDst.print( GROUP_TIER_ID, tier.toIdent());
 		mDst.print( GROUP_TIER_NAME, tier.mName);
 		mDst.print( GROUP_TIER_COLOR, tier.mColorID);
 		mDst.printArr( GROUP_TIER_WEIGHTS, tier.mWeights);
