@@ -5,32 +5,27 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
 
-public class QuestOfID extends AHQMWorker<FQuest, Object> {
-	private int mIndex;
+public class QuestOfID extends AHQMWorker<FQuest, Integer> {
+	private static final QuestOfID WORKER = new QuestOfID();
 
-	private QuestOfID( int index) {
-		mIndex = index;
+	private QuestOfID() {
 	}
 
-	public static FQuest get( FHqm hqm, int index) {
-		return get( hqm.mQuestSetCat, index);
+	public static FQuest get( FHqm hqm, int id) {
+		return get( hqm.mQuestSetCat, id);
 	}
 
-	public static FQuest get( FQuestSetCat cat, int index) {
-		QuestOfID worker = new QuestOfID( index);
-		return cat.forEachMember( worker, null);
-	}
-
-	@Override
-	public FQuest forQuest( FQuest quest, Object p) {
-		if (mIndex == quest.mID) {
-			return quest;
-		}
-		return null;
+	public static FQuest get( FQuestSetCat cat, int id) {
+		return cat.forEachMember( WORKER, id);
 	}
 
 	@Override
-	public FQuest forQuestSet( FQuestSet set, Object p) {
-		return set.forEachQuest( this, null);
+	public FQuest forQuest( FQuest quest, Integer id) {
+		return quest.getID() == id.intValue() ? quest : null;
+	}
+
+	@Override
+	public FQuest forQuestSet( FQuestSet set, Integer id) {
+		return set.forEachQuest( this, id);
 	}
 }

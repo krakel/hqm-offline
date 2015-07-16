@@ -289,7 +289,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 			for (int i = 0; i < size; ++i) {
 				FQuest quest = lst.get( i);
 				if (quest != null) {
-					mDst.writeData( quest.mID, bits, version);
+					mDst.writeData( quest.getID(), bits, version);
 				}
 			}
 		}

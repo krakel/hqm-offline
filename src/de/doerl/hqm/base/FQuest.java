@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
+import de.doerl.hqm.base.dispatch.MaxIdOfQuest;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.quest.TriggerType;
@@ -16,7 +17,7 @@ public final class FQuest extends ANamed implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private FQuestSet mParentQuestSet;
 	private LinkType mInformation = LinkType.NORM;
-	public int mID;
+	private int mID = -1;
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
@@ -33,10 +34,33 @@ public final class FQuest extends ANamed implements IElement {
 	public final FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	final Vector<AQuestTask> mTasks = new Vector<>();
 
-	public FQuest( FQuestSet parent, String name, int id) {
+	FQuest( FQuestSet parent, String name) {
 		super( name);
 		mParentQuestSet = parent;
-		mID = id;
+		mID = MaxIdOfQuest.get( parent) + 1;
+	}
+
+	public static int fromIdent( String ident) {
+		if (ident == null) {
+			return -1;
+		}
+		else {
+			int pos = ident.indexOf( " - ");
+			if (pos > 0) {
+				return Utils.parseInteger( ident.substring( 0, pos), -1);
+			}
+			else if (ident.startsWith( "quest")) {
+				return Utils.parseInteger( ident.substring( 5), -1);
+			}
+			else {
+				Utils.log( LOGGER, Level.WARNING, "wrong ident {0}", ident);
+				return -1;
+			}
+		}
+	}
+
+	public static String toIdent( int idx) {
+		return String.format( "quest%03d", idx);
 	}
 
 	@Override
@@ -151,6 +175,10 @@ public final class FQuest extends ANamed implements IElement {
 		return mParentQuestSet.getHqm();
 	}
 
+	public int getID() {
+		return mID;
+	}
+
 	@Override
 	public LinkType getInformation() {
 		return mInformation;
@@ -211,8 +239,18 @@ public final class FQuest extends ANamed implements IElement {
 		ABase.remove( mParentQuestSet.mQuests, this);
 	}
 
+	public void setID( String id) {
+		if (id != null) {
+			mID = fromIdent( id);
+		}
+	}
+
 	@Override
 	public void setInformation( LinkType information) {
 		mInformation = information;
+	}
+
+	public String toIdent() {
+		return toIdent( mID);
 	}
 }

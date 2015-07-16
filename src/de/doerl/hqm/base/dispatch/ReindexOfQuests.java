@@ -17,7 +17,7 @@ public class ReindexOfQuests extends AHQMWorker<Object, Object> {
 	}
 
 	public static int get( FQuestSetCat cat) {
-		int old = MaxIdOfQuests.get( cat);
+		int old = MaxIdOfQuest.get( cat);
 		ReindexOfQuests worker = new ReindexOfQuests( old);
 		cat.forEachMember( worker, null);
 		return worker.mMax;
@@ -25,8 +25,8 @@ public class ReindexOfQuests extends AHQMWorker<Object, Object> {
 
 	@Override
 	public Object forQuest( FQuest quest, Object p) {
-		if (quest.mID < 0) {
-			quest.mID = ++mMax;
+		if (quest.getID() < 0) {
+			quest.setID( FQuest.toIdent( ++mMax));
 		}
 		return null;
 	}

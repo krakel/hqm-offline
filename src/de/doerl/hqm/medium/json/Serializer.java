@@ -142,7 +142,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	@Override
 	public Object forQuestSet( FQuestSet set, Object p) {
 		mDst.beginObject();
-		mDst.print( QUEST_SET_ID, set.mID);
+		mDst.print( QUEST_SET_ID, set.toIdent());
 		mDst.print( QUEST_SET_NAME, set.mName);
 		mDst.print( QUEST_SET_DECR, set.mDescr);
 		mDst.endObject();
@@ -335,14 +335,13 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 
 	private void writeQuest( FQuest quest) {
 		mDst.beginObject();
-		mDst.print( QUEST_ID, quest.mID);
+		mDst.print( QUEST_ID, quest.toIdent());
 		mDst.print( QUEST_NAME, quest.mName);
 		mDst.print( QUEST_DESC, quest.mDescr);
 		mDst.print( QUEST_X, quest.mX);
 		mDst.print( QUEST_Y, quest.mY);
 		mDst.print( QUEST_BIG, quest.mBig);
-//		mDst.print( QUEST_SET, toID( IndexOf.getMember( quest.getParent()), quest.getParent().mName));
-		mDst.print( QUEST_SET, quest.getParent().mID);
+		mDst.print( QUEST_SET, quest.getParent().toIdent());
 		writeIcon( QUEST_ICON, quest.mIcon);
 		writeQuestArr( QUEST_REQUIREMENTS, quest.mRequirements);
 		writeQuestArr( QUEST_OPTION_LINKS, quest.mOptionLinks);
@@ -362,7 +361,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 			mDst.beginArray( key);
 			for (FQuest quest : arr) {
 				if (quest != null) {
-					mDst.printValue( toID( quest.mID, quest.mName));
+					mDst.printValue( quest.toIdent());
 				}
 			}
 			mDst.endArray();

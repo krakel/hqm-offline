@@ -3,7 +3,6 @@ package de.doerl.hqm.base.dispatch;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
-import de.doerl.hqm.utils.Utils;
 
 public class MaxIdOfQuestSet extends AHQMWorker<Object, Object> {
 	private int mResult = -1;
@@ -23,9 +22,7 @@ public class MaxIdOfQuestSet extends AHQMWorker<Object, Object> {
 
 	@Override
 	public Object forQuestSet( FQuestSet set, Object p) {
-		if (set.mID != null && set.mID.length() > 3) {
-			mResult = Math.max( mResult, Utils.parseInteger( set.mID.substring( 3), 0));
-		}
+		mResult = Math.max( mResult, set.getID());
 		return null;
 	}
 }
