@@ -122,6 +122,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	@Override
 	public Object forMarker( FMarker mark, Object p) {
 		mDst.beginObject();
+		mDst.print( MARKER_ID, mark.toIdent());
 		mDst.print( MARKER_NAME, mark.mName);
 		mDst.print( MARKER_VALUE, mark.mMark);
 		mDst.endObject();

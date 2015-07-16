@@ -19,6 +19,7 @@ interface IToken {
 	static final String REPUTATION_NEUTRAL = "neutral";
 	static final String REPUTATION_MARKERS = "markers";
 	//
+	static final String MARKER_ID = "id";
 	static final String MARKER_NAME = "name";
 	static final String MARKER_VALUE = "value";
 	//

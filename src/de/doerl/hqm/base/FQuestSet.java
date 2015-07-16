@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
-import de.doerl.hqm.base.dispatch.MaxIdOfQuestSet;
+import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.Utils;
@@ -22,7 +22,7 @@ public final class FQuestSet extends AMember {
 	FQuestSet( FQuestSetCat parent, String name) {
 		super( name);
 		mParentCategory = parent;
-		mID = MaxIdOfQuestSet.get( parent) + 1;
+		mID = MaxIdOf.getQuestSet( parent) + 1;
 	}
 
 	public static int fromIdent( String ident) {

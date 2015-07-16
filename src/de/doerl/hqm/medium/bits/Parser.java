@@ -41,9 +41,9 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
 import de.doerl.hqm.base.dispatch.MarkerOfIdx;
-import de.doerl.hqm.base.dispatch.QuestSetOfID;
+import de.doerl.hqm.base.dispatch.QuestSetOfIdx;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
-import de.doerl.hqm.base.dispatch.ReputationOfID;
+import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.DataBitHelper;
@@ -189,7 +189,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
 		for (int i = 0; i < count; i++) {
 			FSetting set = task.createSetting();
-			set.mRep = ReputationOfID.get( task, mSrc.readData( DataBitHelper.REPUTATION));
+			set.mRep = ReputationOfIdx.get( task, mSrc.readData( DataBitHelper.REPUTATION));
 			set.mLower = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
 			set.mUpper = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
 			set.mInverted = mSrc.readBoolean();
@@ -253,7 +253,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 				FQuestSet qs;
 				if (version.contains( FileVersion.SETS)) {
 					int setID = mSrc.readData( DataBitHelper.QUEST_SETS);
-					qs = QuestSetOfID.get( hqm.mQuestSetCat, setID);
+					qs = QuestSetOfIdx.get( hqm.mQuestSetCat, setID);
 					if (qs == null) {
 						Utils.log( LOGGER, Level.WARNING, "missing set of quest {0}", name);
 						qs = hqm.mQuestSetCat.createMember( "__Missing__");

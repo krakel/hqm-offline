@@ -36,7 +36,7 @@ import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfID;
-import de.doerl.hqm.base.dispatch.MarkerOfIdx;
+import de.doerl.hqm.base.dispatch.MarkerOfID;
 import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.ReputationOfID;
@@ -65,17 +65,6 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new JsonReader( is);
-	}
-
-	private static int parseID( String s) {
-		int pos = s.indexOf( " - ");
-		if (pos > 0) {
-			return Utils.parseInteger( s.substring( 0, pos), 0);
-		}
-		else {
-			Utils.log( LOGGER, Level.WARNING, "wrong index {0}", s);
-			return 0;
-		}
 	}
 
 	private void addPost( FQuest quest, String id) {
@@ -181,11 +170,23 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 					}
 					String low = FValue.toString( oo.get( IToken.SETTING_LOWER));
 					if (low != null) {
-						res.mLower = MarkerOfIdx.get( res.mRep, parseID( low));
+						int lowerID = FMarker.fromIdent( low);
+						if (lowerID < 0) {
+							Utils.log( LOGGER, Level.WARNING, "missing lowerID");
+						}
+						else {
+							res.mLower = MarkerOfID.get( res.mRep, lowerID);
+						}
 					}
 					String upp = FValue.toString( oo.get( IToken.SETTING_UPPER));
 					if (upp != null) {
-						res.mUpper = MarkerOfIdx.get( res.mRep, parseID( upp));
+						int upperID = FMarker.fromIdent( upp);
+						if (upperID < 0) {
+							Utils.log( LOGGER, Level.WARNING, "missing upperID");
+						}
+						else {
+							res.mUpper = MarkerOfID.get( res.mRep, upperID);
+						}
 					}
 					res.mInverted = FValue.toBoolean( oo.get( IToken.SETTING_INVERTED));
 				}
@@ -267,6 +268,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FMarker marker = rep.createMarker( FValue.toString( obj.get( IToken.MARKER_NAME)));
+					marker.setID( FValue.toString( obj.get( IToken.MARKER_ID)));
 					marker.mMark = FValue.toInt( obj.get( IToken.MARKER_VALUE));
 				}
 			}
