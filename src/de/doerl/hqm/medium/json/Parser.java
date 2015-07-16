@@ -427,6 +427,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 					TaskTyp type = TaskTyp.parse( FValue.toString( obj.get( IToken.TASK_TYPE)));
 					AQuestTask task = quest.createQuestTask( type, FValue.toString( obj.get( IToken.TASK_NAME)));
 					task.mDescr = FValue.toString( obj.get( IToken.TASK_DESC));
+					task.setID( FValue.toString( obj.get( IToken.TASK_ID)));
 					task.accept( this, obj);
 				}
 			}

@@ -17,7 +17,7 @@ public final class FQuest extends ANamed implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private FQuestSet mParentQuestSet;
 	private LinkType mInformation = LinkType.NORM;
-	private int mID = -1;
+	private int mID;
 	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
@@ -239,9 +239,12 @@ public final class FQuest extends ANamed implements IElement {
 		ABase.remove( mParentQuestSet.mQuests, this);
 	}
 
-	public void setID( String id) {
-		if (id != null) {
-			mID = fromIdent( id);
+	public void setID( String ident) {
+		if (ident != null) {
+			int id = fromIdent( ident);
+			if (id >= 0) {
+				mID = id;
+			}
 		}
 	}
 

@@ -52,6 +52,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	private void doTask( AQuestTask task) {
+		mDst.print( TASK_ID, task.toIdent());
 		mDst.print( TASK_TYPE, task.getTaskTyp());
 		mDst.print( TASK_NAME, task.mName);
 		mDst.print( TASK_DESC, task.mDescr);

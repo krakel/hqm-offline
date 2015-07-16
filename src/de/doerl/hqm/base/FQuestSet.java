@@ -124,7 +124,10 @@ public final class FQuestSet extends AMember {
 
 	public void setID( String ident) {
 		if (ident != null) {
-			mID = fromIdent( ident);
+			int id = fromIdent( ident);
+			if (id >= 0) {
+				mID = id;
+			}
 		}
 	}
 

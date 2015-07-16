@@ -45,6 +45,7 @@ interface IToken {
 	static final String REPEAT_INFO_TYPE = "type";
 	static final String REPEAT_INFO_TOTAL = "total";
 	//
+	static final String TASK_ID = "id";
 	static final String TASK_TYPE = "type";
 	static final String TASK_NAME = "name";
 	static final String TASK_DESC = "description";
