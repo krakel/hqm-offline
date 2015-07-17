@@ -1,14 +1,15 @@
 package de.doerl.hqm.base;
 
 public abstract class ANamed extends ABase {
-	public String mName;
-
-	ANamed( String name) {
-		mName = name;
+	ANamed() {
 	}
 
 	@Override
 	public FHqm getHqm() {
 		return getParent().getHqm();
 	}
+
+	public abstract String getName();
+
+	public abstract void setName( String name);
 }

@@ -12,8 +12,8 @@ public final class FQuestTaskReputationTarget extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( FQuestTaskReputationTarget.class.getName());
 	public final Vector<FSetting> mSettings = new Vector<>();
 
-	public FQuestTaskReputationTarget( FQuest parent, String name) {
-		super( parent, name);
+	FQuestTaskReputationTarget( FQuest parent) {
+		super( parent);
 	}
 
 	@Override

@@ -6,8 +6,8 @@ import de.doerl.hqm.quest.TaskTyp;
 public final class FQuestTaskDeath extends AQuestTask {
 	public int mDeaths;
 
-	public FQuestTaskDeath( FQuest parent, String name) {
-		super( parent, name);
+	FQuestTaskDeath( FQuest parent) {
+		super( parent);
 	}
 
 	@Override

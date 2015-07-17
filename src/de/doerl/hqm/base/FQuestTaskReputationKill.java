@@ -6,8 +6,8 @@ import de.doerl.hqm.quest.TaskTyp;
 public class FQuestTaskReputationKill extends AQuestTask {
 	public int mKills;
 
-	public FQuestTaskReputationKill( FQuest parent, String name) {
-		super( parent, name);
+	FQuestTaskReputationKill( FQuest parent) {
+		super( parent);
 	}
 
 	@Override

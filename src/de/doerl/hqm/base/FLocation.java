@@ -1,5 +1,7 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
+
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.Visibility;
@@ -11,9 +13,9 @@ public final class FLocation extends ANamed implements IElement {
 	public int mRadius;
 	public int mDim;
 	public Visibility mVisibility;
+	private HashMap<String, String> mInfo = new HashMap<>();
 
-	public FLocation( FQuestTaskLocation parent, String name) {
-		super( name);
+	FLocation( FQuestTaskLocation parent) {
 		mParentTask = parent;
 	}
 
@@ -25,6 +27,11 @@ public final class FLocation extends ANamed implements IElement {
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.LOCATION;
+	}
+
+	@Override
+	public String getName() {
+		return mInfo.get( getHqm().mLang);
 	}
 
 	@Override
@@ -55,5 +62,10 @@ public final class FLocation extends ANamed implements IElement {
 	@Override
 	public void remove() {
 		ABase.remove( mParentTask.mLocations, this);
+	}
+
+	@Override
+	public void setName( String name) {
+		mInfo.put( getHqm().mLang, name);
 	}
 }

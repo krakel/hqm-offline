@@ -182,7 +182,7 @@ class DialogReputation extends ADialogList<FReputationReward> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FReputationReward> list, FReputationReward value, int index, boolean isSelected, boolean cellHasFocus) {
-			mName.setText( value.mRep.mName);
+			mName.setText( value.mRep.getName());
 			mInfo.setText( String.valueOf( value.mValue));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

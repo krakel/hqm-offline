@@ -229,7 +229,7 @@ public class DialogListSettings extends ADialogList<FSetting> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FSetting> list, FSetting value, int index, boolean isSelected, boolean cellHasFocus) {
-			mName.setText( value.mRep.mName);
+			mName.setText( value.mRep.getName());
 			mInfo.setText( String.format( "%c [%s %s]", value.mInverted ? '-' : '+', String.valueOf( value.mLower), String.valueOf( value.mUpper)));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

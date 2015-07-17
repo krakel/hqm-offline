@@ -317,7 +317,8 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 		}
 
 		public Component getListCellRendererComponent( JList<? extends FGroup> list, FGroup grp, int index, boolean isSelected, boolean cellHasFocus) {
-			mTitle.setText( Utils.validString( grp.mName) ? grp.mName : "~missing~");
+			String name = grp.getName();
+			mTitle.setText( Utils.validString( name) ? name : "~missing~");
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			return this;
 		}
@@ -365,9 +366,9 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = DialogTextField.update( mActiv.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
-					mActiv.mName = result;
+					mActiv.setName( result);
 					mCtrl.fireChanged( mTier);
 				}
 			}

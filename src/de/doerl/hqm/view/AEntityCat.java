@@ -224,9 +224,9 @@ abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = DialogTextField.update( mActiv.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
-					mActiv.mName = result;
+					mActiv.setName( result);
 					mCtrl.fireChanged( mCategory);
 				}
 			}

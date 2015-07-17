@@ -1,5 +1,6 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,17 +17,15 @@ public final class FQuestSet extends AMember {
 	private LinkType mInformation = LinkType.NORM;
 	final Vector<FQuest> mQuests = new Vector<>();
 	public final FQuestSetCat mParentCategory;
-	private int mID;
-	public String mDescr;
+	private HashMap<String, LangInfo> mInfo = new HashMap<>();
 
-	FQuestSet( FQuestSetCat parent, String name) {
-		super( name);
+	FQuestSet( FQuestSetCat parent) {
+		super( BASE, MaxIdOf.getQuestSet( parent) + 1);
 		mParentCategory = parent;
-		mID = MaxIdOf.getQuestSet( parent) + 1;
 	}
 
 	public static int fromIdent( String ident) {
-		return fromIdent( BASE, ident);
+		return AIdented.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -43,8 +42,14 @@ public final class FQuestSet extends AMember {
 		}
 	}
 
-	public FQuest createQuest( String name) {
-		FQuest quest = new FQuest( this, name);
+	public FQuest createQuest() {
+		FQuest quest = new FQuest( this);
+		mQuests.add( quest);
+		return quest;
+	}
+
+	public FQuest createQuest( int id) {
+		FQuest quest = new FQuest( this, id);
 		mQuests.add( quest);
 		return quest;
 	}
@@ -66,18 +71,33 @@ public final class FQuestSet extends AMember {
 		return null;
 	}
 
+	public String getDescr() {
+		return getInfo().mDescr;
+	}
+
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST_SET;
 	}
 
-	public int getID() {
-		return mID;
+	private LangInfo getInfo() {
+		String lang = getHqm().mLang;
+		LangInfo info = mInfo.get( lang);
+		if (info == null) {
+			info = new LangInfo();
+			mInfo.put( lang, info);
+		}
+		return info;
 	}
 
 	@Override
 	public LinkType getInformation() {
 		return mInformation;
+	}
+
+	@Override
+	public String getName() {
+		return getInfo().mName;
 	}
 
 	@Override
@@ -108,13 +128,8 @@ public final class FQuestSet extends AMember {
 		ABase.remove( mParentCategory.mArr, this);
 	}
 
-	public void setID( String ident) {
-		if (ident != null) {
-			int id = fromIdent( ident);
-			if (id >= 0) {
-				mID = id;
-			}
-		}
+	public void setDescr( String descr) {
+		getInfo().mDescr = descr;
 	}
 
 	@Override
@@ -122,7 +137,13 @@ public final class FQuestSet extends AMember {
 		mInformation = information;
 	}
 
-	public String toIdent() {
-		return toIdent( BASE, mID);
+	@Override
+	public void setName( String name) {
+		getInfo().mName = name;
+	}
+
+	private static class LangInfo {
+		public String mName;
+		public String mDescr;
 	}
 }

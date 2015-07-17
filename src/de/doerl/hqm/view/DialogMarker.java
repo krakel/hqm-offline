@@ -33,9 +33,10 @@ class DialogMarker extends ADialog {
 		mName.setText( "unknown");
 		mMark.setText( "0");
 		if (showDialog() == DialogResult.APPROVE) {
-			FMarker entry = rep.createMarker( "unknown");
-			updateResult( entry);
-			return entry;
+			FMarker marker = rep.createMarker();
+			marker.setName( "unknown");
+			updateResult( marker);
+			return marker;
 		}
 		else {
 			return null;
@@ -43,7 +44,7 @@ class DialogMarker extends ADialog {
 	}
 
 	public FMarker changeElement( FMarker entry) {
-		mName.setText( entry.mName);
+		mName.setText( entry.getName());
 		mMark.setText( String.valueOf( entry.mMark));
 		if (showDialog() == DialogResult.APPROVE) {
 			updateResult( entry);
@@ -76,7 +77,7 @@ class DialogMarker extends ADialog {
 	}
 
 	private void updateResult( FMarker entry) {
-		entry.mName = DataBitHelper.NAME_LENGTH.truncate( mName.getText());
+		entry.setName( DataBitHelper.NAME_LENGTH.truncate( mName.getText()));
 		entry.mMark = Utils.parseInteger( mMark.getText(), 0);
 	}
 }

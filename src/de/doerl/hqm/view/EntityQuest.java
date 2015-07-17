@@ -247,8 +247,8 @@ public class EntityQuest extends AEntity<FQuest> {
 	}
 
 	private void update() {
-		mTitle.setText( mQuest.mName);
-		mDesc.setText( mQuest.mDescr);
+		mTitle.setText( mQuest.getName());
+		mDesc.setText( mQuest.getDescr());
 		TaskBoxUpdate.get( mQuest, mCtrl, mTaskList.getModel());
 		mRepIcon.setIcon( new StackIcon( REPUTATION_BACK, ReputationFactory.get( mQuest), 1.0));
 		updateStacks( mRewardList, mQuest.mRewards);
@@ -274,7 +274,7 @@ public class EntityQuest extends AEntity<FQuest> {
 			mActiv = BOX_EMPTY;
 		}
 		else {
-			mTaskDesc.setText( box.getTask().mDescr);
+			mTaskDesc.setText( box.getTask().getDescr());
 			mTaskList.setSelectedValue( box, true);
 			mTaskContent.removeAll();
 			mTaskContent.add( box);
@@ -337,9 +337,9 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextBox.update( mQuest.mDescr, mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+			String result = DialogTextBox.update( mQuest.getDescr(), mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 			if (result != null) {
-				mQuest.mDescr = result;
+				mQuest.setDescr( result);
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -354,9 +354,9 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( mQuest.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+			String result = DialogTextField.update( mQuest.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
-				mQuest.mName = result;
+				mQuest.setName( result);
 				mCtrl.fireChanged( mQuest);
 			}
 		}
@@ -515,9 +515,9 @@ public class EntityQuest extends AEntity<FQuest> {
 		public void actionPerformed( ActionEvent evt) {
 			AQuestTask task = mActiv.getTask();
 			if (task != null) {
-				String result = DialogTextBox.update( task.mDescr, mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+				String result = DialogTextBox.update( task.getDescr(), mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 				if (result != null) {
-					task.mDescr = result;
+					task.setDescr( result);
 					mCtrl.fireChanged( mQuest);
 				}
 			}
@@ -565,7 +565,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		public Component getListCellRendererComponent( JList<? extends ATaskBox> list, ATaskBox box, int index, boolean isSelected, boolean cellHasFocus) {
 			mTitle.setIcon( ResourceManager.getIcon( box.getTask().getTaskTyp().getIcon()));
-			mTitle.setText( box.getTask().mName);
+			mTitle.setText( box.getTask().getName());
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			return this;
 		}
@@ -616,9 +616,9 @@ public class EntityQuest extends AEntity<FQuest> {
 		public void actionPerformed( ActionEvent evt) {
 			AQuestTask task = mActiv.getTask();
 			if (task != null) {
-				String result = DialogTextField.update( task.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = DialogTextField.update( task.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
-					task.mName = result;
+					task.setName( result);
 					mCtrl.fireChanged( mQuest);
 				}
 			}

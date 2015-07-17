@@ -44,7 +44,7 @@ class LeafQuest extends JLabel {
 	public String getToolTipText( MouseEvent event) {
 		StringBuffer sb = new StringBuffer();
 		sb.append( "<html><body bgcolor=#202020 text=#FFFFFF>");
-		sb.append( String.format( "<div align=center>%s<br>", mQuest.mName));
+		sb.append( String.format( "<div align=center>%s<br>", mQuest.getName()));
 		if (mQuest.mIcon != null) {
 			sb.append( String.format( "<div align=left>Icon: %s<br>", mQuest.mIcon));
 		}

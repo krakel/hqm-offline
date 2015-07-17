@@ -3,7 +3,6 @@ package de.doerl.hqm.base;
 import java.util.Vector;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
-import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FQuestSetCat extends ACategory<FQuestSet> {
@@ -17,12 +16,9 @@ public final class FQuestSetCat extends ACategory<FQuestSet> {
 	}
 
 	@Override
-	public FQuestSet createMember( String name) {
-		FQuestSet set = QuestSetOfName.get( this, name);
-		if (set == null) {
-			set = new FQuestSet( this, name);
-			addMember( set);
-		}
+	public FQuestSet createMember() {
+		FQuestSet set = new FQuestSet( this);
+		addMember( set);
 		return set;
 	}
 

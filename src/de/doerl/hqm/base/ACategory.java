@@ -20,7 +20,7 @@ public abstract class ACategory<E extends AMember> extends ABase {
 		mArr.add( member);
 	}
 
-	public abstract E createMember( String name);
+	public abstract E createMember();
 
 	public <T, U> T forEachMember( IHQMWorker<T, U> worker, U p) {
 		for (E disp : mArr) {

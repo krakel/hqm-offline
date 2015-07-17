@@ -628,7 +628,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 					int x = mLeaf.stepX( evt.getX()) / AEntity.ZOOM - ResourceManager.getW5( false);
 					int y = mLeaf.stepY( evt.getY()) / AEntity.ZOOM - ResourceManager.getH5( false);
 					FQuest quest = mCtrl.questCreate( mSet, result, x, y);
-					quest.mDescr = "Unnamed quest";
+					quest.setDescr( "Unnamed quest");
 					linkedChange( createLeafQuest( quest), false);
 					mCtrl.fireAdded( quest);
 				}
@@ -690,9 +690,9 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
-				String result = DialogTextField.update( quest.mName, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = DialogTextField.update( quest.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
-					quest.mName = result;
+					quest.setName( result);
 					mCtrl.fireChanged( quest);
 				}
 			}
@@ -820,7 +820,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 
 		@Override
 		public Object forQuestSet( FQuestSet set, Vector<String> arr) {
-			arr.add( set.mName);
+			arr.add( set.getName());
 			return null;
 		}
 	}
@@ -858,7 +858,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 				FQuest quest = mActiv.getQuest();
 				FHqm hqm = quest.getHqm();
 				Vector<String> names = QuestSetNames.get( hqm);
-				String result = DialogListNames.update( names, mSet.mName, mCtrl.getFrame());
+				String result = DialogListNames.update( names, mSet.getName(), mCtrl.getFrame());
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( hqm, result);
 					if (set != null && Utils.different( mSet, set)) {

@@ -1,6 +1,7 @@
 package de.doerl.hqm.base;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,18 +15,21 @@ public final class FReputation extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
 	private static final String BASE = "rep";
 	public final FReputationCat mParentCategory;
-	private int mID;
 	public final Vector<FMarker> mMarker = new Vector<>();
-	public String mNeutral;
+	private HashMap<String, LangInfo> mInfo = new HashMap<>();
 
-	public FReputation( FReputationCat parent, String name) {
-		super( name);
+	FReputation( FReputationCat parent) {
+		super( BASE, MaxIdOf.getReputation( parent) + 1);
 		mParentCategory = parent;
-		mID = MaxIdOf.getReputation( parent) + 1;
+	}
+
+	FReputation( FReputationCat parent, int id) {
+		super( BASE, id);
+		mParentCategory = parent;
 	}
 
 	public static int fromIdent( String ident) {
-		return fromIdent( BASE, ident);
+		return AIdented.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -33,8 +37,8 @@ public final class FReputation extends AMember {
 		return w.forReputation( this, p);
 	}
 
-	public FMarker createMarker( String name) {
-		FMarker marker = new FMarker( this, name);
+	public FMarker createMarker() {
+		FMarker marker = new FMarker( this);
 		mMarker.add( marker);
 		return marker;
 	}
@@ -61,8 +65,23 @@ public final class FReputation extends AMember {
 		return ElementTyp.REPUTATION;
 	}
 
-	public int getID() {
-		return mID;
+	private LangInfo getInfo() {
+		String lang = getHqm().mLang;
+		LangInfo info = mInfo.get( lang);
+		if (info == null) {
+			info = new LangInfo();
+			mInfo.put( lang, info);
+		}
+		return info;
+	}
+
+	@Override
+	public String getName() {
+		return getInfo().mName;
+	}
+
+	public String getNeutral() {
+		return getInfo().mNeutral;
 	}
 
 	@Override
@@ -93,25 +112,27 @@ public final class FReputation extends AMember {
 		ABase.remove( mParentCategory.mArr, this);
 	}
 
-	public void setID( String ident) {
-		if (ident != null) {
-			int id = fromIdent( ident);
-			if (id >= 0) {
-				mID = id;
-			}
-		}
+	@Override
+	public void setName( String name) {
+		getInfo().mName = name;
+	}
+
+	public void setNeutral( String neutral) {
+		getInfo().mNeutral = neutral;
 	}
 
 	public void sort() {
 		Collections.sort( mMarker);
 	}
 
-	public String toIdent() {
-		return toIdent( BASE, mID);
-	}
-
 	@Override
 	public String toString() {
-		return String.format( "%s [%s]", mName, mNeutral);
+		LangInfo info = getInfo();
+		return String.format( "%s [%s]", info.mName, info.mNeutral);
+	}
+
+	private static class LangInfo {
+		public String mName;
+		public String mNeutral;
 	}
 }

@@ -200,7 +200,7 @@ class DialogListMarker extends ADialog {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMarker> list, FMarker value, int index, boolean isSelected, boolean cellHasFocus) {
-			mName.setText( value.mName);
+			mName.setText( value.getName());
 			mMark.setText( String.format( "%6d", value.mMark));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

@@ -32,8 +32,8 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.base.dispatch.IndexOfGroup;
+import de.doerl.hqm.base.dispatch.MaxIdOfQuest;
 import de.doerl.hqm.base.dispatch.QuestOfID;
-import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.base.dispatch.SizeOfGroups;
 import de.doerl.hqm.medium.IHqmWriter;
@@ -53,8 +53,8 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	@Override
 	protected Object doTask( AQuestTask task, FileVersion version) {
 		mDst.writeData( task.getTaskTyp().ordinal(), DataBitHelper.TASK_TYPE, version);
-		mDst.writeString( task.mName, DataBitHelper.QUEST_NAME_LENGTH);
-		mDst.writeString( task.mDescr, DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+		mDst.writeString( task.getName(), DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( task.getDescr(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		return null;
 	}
 
@@ -79,7 +79,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 
 	@Override
 	public Object forGroupTier( FGroupTier tier, FileVersion version) {
-		mDst.writeString( tier.mName, DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( tier.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 		mDst.writeData( tier.mColorID, DataBitHelper.COLOR);
 		int[] weights = tier.mWeights;
 		for (int i = 0; i < weights.length; ++i) {
@@ -100,7 +100,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	@Override
 	public Object forLocation( FLocation loc, FileVersion version) {
 		mDst.writeIconIf( loc.mIcon, version);
-		mDst.writeString( loc.mName, DataBitHelper.NAME_LENGTH);
+		mDst.writeString( loc.getName(), DataBitHelper.NAME_LENGTH);
 		mDst.writeData( loc.mX, DataBitHelper.WORLD_COORDINATE);
 		mDst.writeData( loc.mY, DataBitHelper.WORLD_COORDINATE);
 		mDst.writeData( loc.mZ, DataBitHelper.WORLD_COORDINATE);
@@ -112,7 +112,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 
 	@Override
 	public Object forMarker( FMarker mark, FileVersion version) {
-		mDst.writeString( mark.mName, DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( mark.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 		mDst.writeData( mark.mMark, DataBitHelper.REPUTATION_VALUE);
 		return null;
 	}
@@ -120,7 +120,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	@Override
 	public Object forMob( FMob mob, FileVersion version) {
 		mDst.writeIconIf( mob.mIcon, version);
-		mDst.writeString( mob.mName, DataBitHelper.NAME_LENGTH);
+		mDst.writeString( mob.getName(), DataBitHelper.NAME_LENGTH);
 		mDst.writeString( mob.mMob, DataBitHelper.MOB_ID_LENGTH);
 		mDst.writeData( mob.mKills, DataBitHelper.KILL_COUNT);
 		mDst.writeBoolean( mob.mExact);
@@ -129,8 +129,8 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 
 	@Override
 	public Object forQuestSet( FQuestSet set, FileVersion version) {
-		mDst.writeString( set.mName, DataBitHelper.QUEST_NAME_LENGTH);
-		mDst.writeString( set.mDescr, DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+		mDst.writeString( set.getName(), DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( set.getDescr(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		return null;
 	}
 
@@ -146,8 +146,8 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	@Override
 	public Object forReputation( FReputation rep, FileVersion version) {
 		mDst.writeData( IndexOf.getMember( rep), DataBitHelper.REPUTATION);
-		mDst.writeString( rep.mName, DataBitHelper.QUEST_NAME_LENGTH);
-		mDst.writeString( rep.mNeutral, DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( rep.getName(), DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( rep.getNeutral(), DataBitHelper.QUEST_NAME_LENGTH);
 		writeMarker( rep, version);
 		return null;
 	}
@@ -235,7 +235,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 			mDst.writeString( hqm.mPassCode, DataBitHelper.PASS_CODE);
 		}
 		if (version.contains( FileVersion.LORE)) {
-			mDst.writeString( hqm.mDescr, DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+			mDst.writeString( hqm.getDescr(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		}
 		if (version.contains( FileVersion.SETS)) {
 			writeQuestSetCat( hqm.mQuestSetCat, version);
@@ -247,24 +247,6 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 		if (version.contains( FileVersion.BAGS)) {
 			writeGroupTiers( hqm.mGroupTierCat, version);
 			writeGroups( hqm.mGroupTierCat, version);
-		}
-	}
-
-	private void writeGroup( FGroup grp, FileVersion version) {
-		if (version.contains( FileVersion.BAG_LIMITS)) {
-			mDst.writeData( IndexOfGroup.get( grp), DataBitHelper.GROUP_COUNT);
-		}
-		mDst.writeString( grp.mName, DataBitHelper.QUEST_NAME_LENGTH);
-		mDst.writeData( IndexOf.getMember( grp.mParentTier), DataBitHelper.TIER_COUNT);
-		writeStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
-		if (version.contains( FileVersion.BAG_LIMITS)) {
-			if (grp.mLimit == null) {
-				mDst.writeBoolean( false);
-			}
-			else {
-				mDst.writeBoolean( true);
-				mDst.writeData( grp.mLimit, DataBitHelper.LIMIT);
-			}
 		}
 	}
 
@@ -311,9 +293,8 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	}
 
 	private void writeQuest( FQuest quest, FileVersion version) {
-		mDst.writeBoolean( true);
-		mDst.writeString( quest.mName, DataBitHelper.QUEST_NAME_LENGTH);
-		mDst.writeString( quest.mDescr, DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+		mDst.writeString( quest.getName(), DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( quest.getDescr(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		mDst.writeData( quest.mX, DataBitHelper.QUEST_POS_X);
 		mDst.writeData( quest.mY, DataBitHelper.QUEST_POS_Y);
 		mDst.writeBoolean( quest.mBig);
@@ -353,15 +334,16 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	}
 
 	private void writeQuests( FQuestSetCat cat, FileVersion version) {
-		int count = ReindexOfQuests.get( cat) + 1;
+		int count = MaxIdOfQuest.get( cat) + 1;
 		mDst.writeData( count, DataBitHelper.QUESTS, version);
-		for (int i = 0; i < count; ++i) {
-			FQuest quest = QuestOfID.get( cat, i);
-			if (quest != null) {
-				writeQuest( quest, version);
+		for (int id = 0; id < count; ++id) {
+			FQuest quest = QuestOfID.get( cat, id);
+			if (quest == null) {
+				mDst.writeBoolean( false);
 			}
 			else {
-				mDst.writeBoolean( false);
+				mDst.writeBoolean( true);
+				writeQuest( quest, version);
 			}
 		}
 	}
@@ -410,7 +392,21 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 	private final class GroupWorker extends AHQMWorker<Object, FileVersion> {
 		@Override
 		public Object forGroup( FGroup grp, FileVersion version) {
-			writeGroup( grp, version);
+			if (version.contains( FileVersion.BAG_LIMITS)) {
+				mDst.writeData( IndexOfGroup.get( grp), DataBitHelper.GROUP_COUNT);
+			}
+			mDst.writeString( grp.getName(), DataBitHelper.QUEST_NAME_LENGTH);
+			mDst.writeData( IndexOf.getMember( grp.mParentTier), DataBitHelper.TIER_COUNT);
+			writeStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
+			if (version.contains( FileVersion.BAG_LIMITS)) {
+				if (grp.mLimit == null) {
+					mDst.writeBoolean( false);
+				}
+				else {
+					mDst.writeBoolean( true);
+					mDst.writeData( grp.mLimit, DataBitHelper.LIMIT);
+				}
+			}
 			return null;
 		}
 

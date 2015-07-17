@@ -73,7 +73,9 @@ class DialogListLocations extends ADialogList<FLocation> {
 
 		@Override
 		public FLocation addElement() {
-			return mTask.createLocation( "new");
+			FLocation loc = mTask.createLocation();
+			loc.setName( "new");
+			return loc;
 		}
 
 		public ABase getBase() {
@@ -145,7 +147,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 			else {
 				mIconDmg.setText( "0");
 			}
-			mName.setText( entry.mName);
+			mName.setText( entry.getName());
 			mX.setText( String.valueOf( entry.mX));
 			mY.setText( String.valueOf( entry.mY));
 			mZ.setText( String.valueOf( entry.mZ));
@@ -206,7 +208,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 			else {
 				entry.mIcon = null;
 			}
-			entry.mName = DataBitHelper.NAME_LENGTH.truncate( mName.getText());
+			entry.setName( DataBitHelper.NAME_LENGTH.truncate( mName.getText()));
 			entry.mX = Utils.parseInteger( mX.getText(), 0);
 			entry.mY = Utils.parseInteger( mY.getText(), 0);
 			entry.mZ = Utils.parseInteger( mZ.getText(), 0);
@@ -248,7 +250,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FLocation> list, FLocation value, int index, boolean isSelected, boolean cellHasFocus) {
 			mIcon.setIcon( new StackIcon( ImageLoader.getImage( value.mIcon, createUpdater( list)), ICON_ZOOM));
-			mName.setText( value.mName);
+			mName.setText( value.getName());
 			mInfo.setText( String.format( "%s (dim %d) (%d, %d, %d)[radius %d]", value.mVisibility, value.mDim, value.mX, value.mY, value.mZ, value.mRadius));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

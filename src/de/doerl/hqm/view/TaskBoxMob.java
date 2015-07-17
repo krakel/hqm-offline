@@ -103,7 +103,7 @@ class TaskBoxMob extends ATaskBox {
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob mob, int index, boolean isSelected, boolean cellHasFocus) {
 			Image img = ImageLoader.getImage( mob.mIcon, createUpdater( list));
 			mIcon.setIcon( new StackIcon( img, ICON_ZOOM));
-			mName.setText( mob.mName);
+			mName.setText( mob.getName());
 			mTotal.setText( String.format( "%s Kill a total of %d", mob.mExact ? '!' : '~', mob.mKills));
 			return this;
 		}

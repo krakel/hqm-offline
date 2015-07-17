@@ -56,7 +56,8 @@ public class EditController {
 	}
 
 	public void groupCreate( FGroupTier tier, String name) {
-		FGroup grp = tier.createGroup( name);
+		FGroup grp = tier.createGroup();
+		grp.setName( name);
 		fireAdded( grp);
 	}
 
@@ -71,12 +72,14 @@ public class EditController {
 	}
 
 	public <E extends AMember> void memberCreate( ACategory<E> cat, String name) {
-		E member = cat.createMember( name);
+		E member = cat.createMember();
+		member.setName( name);
 		fireAdded( member);
 	}
 
 	public FQuest questCreate( FQuestSet set, String name, int x, int y) {
-		FQuest quest = set.createQuest( name);
+		FQuest quest = set.createQuest();
+		quest.setName( name);
 		quest.mX = x;
 		quest.mY = y;
 		return quest;
@@ -100,7 +103,9 @@ public class EditController {
 	}
 
 	public void questTaskCreate( FQuest quest, TaskTyp type, String name) {
-		AQuestTask task = quest.createQuestTask( type, name);
+		AQuestTask task = quest.createQuestTask( type);
+		task.setName( name);
+		task.setDescr( task.getTaskTyp().getDescr());
 		fireAdded( task);
 	}
 

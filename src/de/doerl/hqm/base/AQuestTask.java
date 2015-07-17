@@ -1,24 +1,23 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
+
 import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.TaskTyp;
 
-public abstract class AQuestTask extends ANamed implements IElement {
+public abstract class AQuestTask extends AIdented implements IElement {
 	private static final String BASE = "task";
 	public final FQuest mParentQuest;
-	private int mID;
-	public String mDescr;
+	private HashMap<String, LangInfo> mInfo = new HashMap<>();
 
-	AQuestTask( FQuest parent, String name) {
-		super( name);
+	AQuestTask( FQuest parent) {
+		super( BASE, MaxIdOf.getTasks( parent) + 1);
 		mParentQuest = parent;
-		mDescr = getTaskTyp().getDescr();
-		mID = MaxIdOf.getTasks( parent) + 1;
 	}
 
-	public static int fromIdent( String ident) {
-		return fromIdent( BASE, ident);
+	public String getDescr() {
+		return getInfo().mDescr;
 	}
 
 	@Override
@@ -26,8 +25,19 @@ public abstract class AQuestTask extends ANamed implements IElement {
 		return ElementTyp.QUEST_TASK;
 	}
 
-	public int getID() {
-		return mID;
+	private LangInfo getInfo() {
+		String lang = getHqm().mLang;
+		LangInfo info = mInfo.get( lang);
+		if (info == null) {
+			info = new LangInfo();
+			mInfo.put( lang, info);
+		}
+		return info;
+	}
+
+	@Override
+	public String getName() {
+		return getInfo().mName;
 	}
 
 	@Override
@@ -60,16 +70,17 @@ public abstract class AQuestTask extends ANamed implements IElement {
 		ABase.remove( mParentQuest.mTasks, this);
 	}
 
-	public void setID( String ident) {
-		if (ident != null) {
-			int id = fromIdent( ident);
-			if (id >= 0) {
-				mID = id;
-			}
-		}
+	public void setDescr( String descr) {
+		getInfo().mDescr = descr;
 	}
 
-	public String toIdent() {
-		return toIdent( BASE, mID);
+	@Override
+	public void setName( String name) {
+		getInfo().mName = name;
+	}
+
+	private static class LangInfo {
+		public String mName;
+		public String mDescr;
 	}
 }

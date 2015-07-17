@@ -147,7 +147,7 @@ class Tokenizer {
 				return Token.VALUE;
 			}
 			else {
-				mValue = new FValue( Integer.valueOf( mBuffer.toString()));
+				mValue = new FValue( Long.valueOf( mBuffer.toString()));
 				return Token.VALUE;
 			}
 		}

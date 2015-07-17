@@ -27,22 +27,30 @@ public final class FValue implements IJson {
 	}
 
 	public static byte toByte( IJson json) {
-		Integer obj = toIntObj( json);
+		return toByte( json, (byte) 0);
+	}
+
+	public static byte toByte( IJson json, byte def) {
+		Long obj = toLongObj( json);
 		if (obj != null) {
 			return obj.byteValue();
 		}
 		else {
-			return 0;
+			return def;
 		}
 	}
 
 	public static double toDouble( IJson json) {
+		return toDouble( json, 0);
+	}
+
+	public static double toDouble( IJson json, double def) {
 		Double obj = toDoubleObj( json);
 		if (obj != null) {
 			return obj.doubleValue();
 		}
 		else {
-			return 0;
+			return def;
 		}
 	}
 
@@ -57,27 +65,25 @@ public final class FValue implements IJson {
 	}
 
 	public static float toFloat( IJson json) {
+		return toFloat( json, 0);
+	}
+
+	public static float toFloat( IJson json, float def) {
 		Double obj = toDoubleObj( json);
 		if (obj != null) {
 			return obj.floatValue();
 		}
 		else {
-			return 0;
+			return def;
 		}
 	}
 
 	public static int toInt( IJson json) {
-		Integer obj = toIntObj( json);
-		if (obj != null) {
-			return obj.intValue();
-		}
-		else {
-			return 0;
-		}
+		return toInt( json, 0);
 	}
 
 	public static int toInt( IJson json, int def) {
-		Integer obj = toIntObj( json);
+		Long obj = toLongObj( json);
 		if (obj != null) {
 			return obj.intValue();
 		}
@@ -87,9 +93,9 @@ public final class FValue implements IJson {
 	}
 
 	public static Integer toIntObj( IJson json) {
-		Object obj = toObject( json);
-		if (obj instanceof Integer) {
-			return (Integer) obj;
+		Long obj = toLongObj( json);
+		if (obj != null) {
+			return obj.intValue();
 		}
 		else {
 			return null;
@@ -97,12 +103,16 @@ public final class FValue implements IJson {
 	}
 
 	public static long toLong( IJson json) {
+		return toLong( json, 0L);
+	}
+
+	public static long toLong( IJson json, long def) {
 		Long obj = toLongObj( json);
 		if (obj != null) {
 			return obj.longValue();
 		}
 		else {
-			return 0;
+			return def;
 		}
 	}
 
@@ -126,12 +136,16 @@ public final class FValue implements IJson {
 	}
 
 	public static short toShort( IJson json) {
-		Integer obj = toIntObj( json);
+		return toShort( json, (short) 0);
+	}
+
+	public static short toShort( IJson json, short def) {
+		Long obj = toLongObj( json);
 		if (obj != null) {
 			return obj.shortValue();
 		}
 		else {
-			return 0;
+			return def;
 		}
 	}
 
@@ -142,6 +156,16 @@ public final class FValue implements IJson {
 		}
 		else {
 			return null;
+		}
+	}
+
+	public static String toString( IJson json, String def) {
+		Object obj = toObject( json);
+		if (obj != null) {
+			return String.valueOf( obj);
+		}
+		else {
+			return def;
 		}
 	}
 

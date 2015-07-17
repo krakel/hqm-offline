@@ -99,7 +99,7 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 		}
 		else {
 			mIcon.setIcon( new ReputationIcon( rep));
-			mNeutral.setText( rep.mNeutral);
+			mNeutral.setText( rep.getNeutral());
 			MarkerUpdate.get( rep, mCtrl, mMarker.getModel());
 			mList.setSelectedValue( rep, true);
 			updateActions( true);
@@ -126,7 +126,7 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 		}
 
 		public Component getListCellRendererComponent( JList<? extends FReputation> list, FReputation qs, int index, boolean isSelected, boolean cellHasFocus) {
-			mTitle.setText( qs.mName);
+			mTitle.setText( qs.getName());
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			return this;
 		}
@@ -163,7 +163,7 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 		}
 
 		public Component getListCellRendererComponent( JList<? extends FMarker> list, FMarker mark, int index, boolean isSelected, boolean cellHasFocus) {
-			mName.setText( mark.mName);
+			mName.setText( mark.getName());
 			mMark.setText( String.format( "%6d", mark.mMark));
 			return this;
 		}
@@ -198,9 +198,9 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 
 		@Override
 		public void actionPerformed( ActionEvent e) {
-			String result = DialogTextField.update( mActiv.mNeutral, mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+			String result = DialogTextField.update( mActiv.getNeutral(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
-				mActiv.mNeutral = result;
+				mActiv.setNeutral( result);
 				mCtrl.fireChanged( mActiv);
 			}
 		}

@@ -16,6 +16,6 @@ class NamedNode extends ANode {
 
 	@Override
 	public String toString() {
-		return String.valueOf( mNamed.mName);
+		return String.valueOf( mNamed.getName());
 	}
 }

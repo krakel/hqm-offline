@@ -12,8 +12,8 @@ public final class FQuestTaskMob extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( FQuestTaskMob.class.getName());
 	public final Vector<FMob> mMobs = new Vector<>();
 
-	public FQuestTaskMob( FQuest parent, String name) {
-		super( parent, name);
+	FQuestTaskMob( FQuest parent) {
+		super( parent);
 	}
 
 	@Override
@@ -21,10 +21,10 @@ public final class FQuestTaskMob extends AQuestTask {
 		return w.forTaskMob( this, p);
 	}
 
-	public FMob createMob( String name) {
-		FMob res = new FMob( this, name);
-		mMobs.add( res);
-		return res;
+	public FMob createMob() {
+		FMob mob = new FMob( this);
+		mMobs.add( mob);
+		return mob;
 	}
 
 	public <T, U> T forEachMob( IHQMWorker<T, U> worker, U p) {

@@ -1,17 +1,26 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
+import de.doerl.hqm.base.dispatch.MaxIdOfGroup;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FGroup extends ANamed implements IElement {
+public final class FGroup extends AIdented implements IElement {
+	private static final String BASE = "grp";
 	public final FGroupTier mParentTier;
 	public Integer mLimit;
 	public Vector<FItemStack> mStacks = new Vector<>();
+	private HashMap<String, String> mInfo = new HashMap<>();
 
-	public FGroup( FGroupTier parent, String name) {
-		super( name);
+	FGroup( FGroupTier parent) {
+		super( BASE, MaxIdOfGroup.get( parent) + 1);
+		mParentTier = parent;
+	}
+
+	FGroup( FGroupTier parent, int id) {
+		super( BASE, id);
 		mParentTier = parent;
 	}
 
@@ -23,6 +32,11 @@ public final class FGroup extends ANamed implements IElement {
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.GROUP;
+	}
+
+	@Override
+	public String getName() {
+		return mInfo.get( getHqm().mLang);
 	}
 
 	@Override
@@ -51,5 +65,10 @@ public final class FGroup extends ANamed implements IElement {
 
 	public void remove() {
 		ABase.remove( mParentTier.mGroups, this);
+	}
+
+	@Override
+	public void setName( String name) {
+		mInfo.put( getHqm().mLang, name);
 	}
 }

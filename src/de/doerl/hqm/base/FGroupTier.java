@@ -1,5 +1,6 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,23 +14,23 @@ public final class FGroupTier extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FGroupTier.class.getName());
 	private static final String BASE = "tier";
 	public final FGroupTierCat mParentCategory;
-	private int mID;
 	final Vector<FGroup> mGroups = new Vector<>();
 	public int mColorID;
 	public int[] mWeights;
+	private HashMap<String, String> mInfo = new HashMap<>();
 
-	public FGroupTier( FGroupTierCat parent, String name) {
-		super( name);
+	FGroupTier( FGroupTierCat parent) {
+		super( BASE, MaxIdOf.getTier( parent) + 1);
 		mParentCategory = parent;
-		mID = MaxIdOf.getTier( parent) + 1;
+	}
+
+	FGroupTier( FGroupTierCat parent, int id) {
+		super( BASE, id);
+		mParentCategory = parent;
 	}
 
 	public static int fromIdent( String ident) {
-		return fromIdent( BASE, ident);
-	}
-
-	public static String toIdent( int idx) {
-		return toIdent( BASE, idx);
+		return AIdented.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -37,8 +38,14 @@ public final class FGroupTier extends AMember {
 		return w.forGroupTier( this, p);
 	}
 
-	public FGroup createGroup( String name) {
-		FGroup grp = new FGroup( this, name);
+	public FGroup createGroup() {
+		FGroup grp = new FGroup( this);
+		mGroups.add( grp);
+		return grp;
+	}
+
+	public FGroup createGroup( int id) {
+		FGroup grp = new FGroup( this, id);
 		mGroups.add( grp);
 		return grp;
 	}
@@ -65,8 +72,9 @@ public final class FGroupTier extends AMember {
 		return ElementTyp.GROUP_TIER;
 	}
 
-	public int getID() {
-		return mID;
+	@Override
+	public String getName() {
+		return mInfo.get( getHqm().mLang);
 	}
 
 	@Override
@@ -97,16 +105,8 @@ public final class FGroupTier extends AMember {
 		ABase.remove( mParentCategory.mArr, this);
 	}
 
-	public void setID( String ident) {
-		if (ident != null) {
-			int id = fromIdent( ident);
-			if (id >= 0) {
-				mID = id;
-			}
-		}
-	}
-
-	public String toIdent() {
-		return toIdent( BASE, mID);
+	@Override
+	public void setName( String name) {
+		mInfo.put( getHqm().mLang, name);
 	}
 }

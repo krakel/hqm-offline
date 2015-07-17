@@ -16,10 +16,16 @@ public final class FGroupTierCat extends ACategory<FGroupTier> {
 	}
 
 	@Override
-	public FGroupTier createMember( String name) {
-		FGroupTier reward = new FGroupTier( this, name);
-		addMember( reward);
-		return reward;
+	public FGroupTier createMember() {
+		FGroupTier tier = new FGroupTier( this);
+		addMember( tier);
+		return tier;
+	}
+
+	public FGroupTier createMember( int id) {
+		FGroupTier tier = new FGroupTier( this, id);
+		addMember( tier);
+		return tier;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
+
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
@@ -9,9 +11,9 @@ public final class FMob extends ANamed implements IElement {
 	public String mMob;
 	public int mKills;
 	public boolean mExact;
+	private HashMap<String, String> mInfo = new HashMap<>();
 
-	public FMob( FQuestTaskMob parent, String name) {
-		super( name);
+	FMob( FQuestTaskMob parent) {
 		mParentTask = parent;
 	}
 
@@ -23,6 +25,11 @@ public final class FMob extends ANamed implements IElement {
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.MOB;
+	}
+
+	@Override
+	public String getName() {
+		return mInfo.get( getHqm().mLang);
 	}
 
 	@Override
@@ -53,5 +60,10 @@ public final class FMob extends ANamed implements IElement {
 	@Override
 	public void remove() {
 		ABase.remove( mParentTask.mMobs, this);
+	}
+
+	@Override
+	public void setName( String name) {
+		mInfo.put( getHqm().mLang, name);
 	}
 }

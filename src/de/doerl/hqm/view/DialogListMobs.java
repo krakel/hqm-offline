@@ -74,7 +74,9 @@ class DialogListMobs extends ADialogList<FMob> {
 
 		@Override
 		public FMob addElement() {
-			return mTask.createMob( "new");
+			FMob mob = mTask.createMob();
+			mob.setName( "new mob");
+			return mob;
 		}
 
 		public ABase getBase() {
@@ -143,7 +145,7 @@ class DialogListMobs extends ADialogList<FMob> {
 			else {
 				mIconDmg.setText( "0");
 			}
-			mName.setText( entry.mName);
+			mName.setText( entry.getName());
 			mMob.setText( entry.mMob);
 			mKills.setText( String.valueOf( entry.mKills));
 			mExact.setSelected( entry.mExact);
@@ -198,7 +200,7 @@ class DialogListMobs extends ADialogList<FMob> {
 			else {
 				entry.mIcon = null;
 			}
-			entry.mName = DataBitHelper.NAME_LENGTH.truncate( mName.getText());
+			entry.setName( DataBitHelper.NAME_LENGTH.truncate( mName.getText()));
 			entry.mMob = DataBitHelper.MOB_ID_LENGTH.truncate( mMob.getText());
 			entry.mKills = Utils.parseInteger( mKills.getText(), 1);
 			entry.mExact = mExact.isSelected();
@@ -238,7 +240,7 @@ class DialogListMobs extends ADialogList<FMob> {
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob value, int index, boolean isSelected, boolean cellHasFocus) {
 			Image img = ImageLoader.getImage( value.mIcon, createUpdater( list));
 			mIcon.setIcon( new StackIcon( img, ICON_ZOOM, String.valueOf( value.mKills)));
-			mName.setText( value.mName);
+			mName.setText( value.getName());
 			mInfo.setText( String.format( "(%s %s) x%d", value.mExact ? '!' : '~', value.mMob, value.mKills));
 			if (isSelected) {
 				setBackground( list.getSelectionBackground());

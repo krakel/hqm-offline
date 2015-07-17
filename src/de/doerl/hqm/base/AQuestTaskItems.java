@@ -11,8 +11,8 @@ public abstract class AQuestTaskItems extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( AQuestTaskItems.class.getName());
 	public final Vector<ARequirement> mRequirements = new Vector<>();
 
-	AQuestTaskItems( FQuest parent, String name) {
-		super( parent, name);
+	AQuestTaskItems( FQuest parent) {
+		super( parent);
 	}
 
 	public FFluidRequirement createFluidRequirement() {

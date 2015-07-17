@@ -12,8 +12,8 @@ public final class FQuestTaskLocation extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( FQuestTaskLocation.class.getName());
 	public final Vector<FLocation> mLocations = new Vector<>();
 
-	public FQuestTaskLocation( FQuest parent, String name) {
-		super( parent, name);
+	FQuestTaskLocation( FQuest parent) {
+		super( parent);
 	}
 
 	@Override
@@ -21,8 +21,8 @@ public final class FQuestTaskLocation extends AQuestTask {
 		return w.forTaskLocation( this, p);
 	}
 
-	public FLocation createLocation( String name) {
-		FLocation loc = new FLocation( this, name);
+	public FLocation createLocation() {
+		FLocation loc = new FLocation( this);
 		mLocations.add( loc);
 		return loc;
 	}

@@ -1,27 +1,24 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
+
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FMarker extends ANamed implements Comparable<FMarker>, IElement {
+public final class FMarker extends AIdented implements Comparable<FMarker>, IElement {
 	private static final String BASE = "mark";
 	public final FReputation mParentRep;
-	private int mID;
 	public int mMark;
+	private HashMap<String, String> mInfo = new HashMap<>();
 
-	public FMarker( FReputation parent, String name) {
-		super( name);
+	FMarker( FReputation parent) {
+		super( BASE, MaxIdOf.getMarker( parent) + 1);
 		mParentRep = parent;
-		mID = MaxIdOf.getMarker( parent) + 1;
 	}
 
 	public static int fromIdent( String ident) {
-		return fromIdent( BASE, ident);
-	}
-
-	public static String toIdent( int idx) {
-		return toIdent( BASE, idx);
+		return AIdented.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -38,8 +35,9 @@ public final class FMarker extends ANamed implements Comparable<FMarker>, IEleme
 		return ElementTyp.REPUTATION_MARKER;
 	}
 
-	public int getID() {
-		return mID;
+	@Override
+	public String getName() {
+		return mInfo.get( getHqm().mLang);
 	}
 
 	@Override
@@ -72,21 +70,13 @@ public final class FMarker extends ANamed implements Comparable<FMarker>, IEleme
 		ABase.remove( mParentRep.mMarker, this);
 	}
 
-	public void setID( String ident) {
-		if (ident != null) {
-			int id = fromIdent( ident);
-			if (id >= 0) {
-				mID = id;
-			}
-		}
-	}
-
-	public String toIdent() {
-		return toIdent( BASE, mID);
+	@Override
+	public void setName( String name) {
+		mInfo.put( getHqm().mLang, name);
 	}
 
 	@Override
 	public String toString() {
-		return String.format( "%s(%d)", mName, mMark);
+		return String.format( "%s(%d)", getName(), mMark);
 	}
 }

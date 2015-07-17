@@ -4,8 +4,8 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.TaskTyp;
 
 public final class FQuestTaskItemsConsumeQDS extends AQuestTaskItems {
-	public FQuestTaskItemsConsumeQDS( FQuest parent, String name) {
-		super( parent, name);
+	FQuestTaskItemsConsumeQDS( FQuest parent) {
+		super( parent);
 	}
 
 	@Override

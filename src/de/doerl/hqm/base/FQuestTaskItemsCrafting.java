@@ -4,8 +4,8 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.TaskTyp;
 
 public final class FQuestTaskItemsCrafting extends AQuestTaskItems {
-	public FQuestTaskItemsCrafting( FQuest parent, String name) {
-		super( parent, name);
+	FQuestTaskItemsCrafting( FQuest parent) {
+		super( parent);
 	}
 
 	@Override

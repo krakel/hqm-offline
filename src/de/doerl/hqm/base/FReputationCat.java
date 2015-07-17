@@ -16,8 +16,14 @@ public final class FReputationCat extends ACategory<FReputation> {
 	}
 
 	@Override
-	public FReputation createMember( String name) {
-		FReputation reward = new FReputation( this, name);
+	public FReputation createMember() {
+		FReputation reward = new FReputation( this);
+		addMember( reward);
+		return reward;
+	}
+
+	public FReputation createMember( int id) {
+		FReputation reward = new FReputation( this, id);
 		addMember( reward);
 		return reward;
 	}

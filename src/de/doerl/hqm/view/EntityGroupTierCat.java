@@ -214,7 +214,7 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 		}
 
 		public Component getListCellRendererComponent( JList<? extends FGroupTier> list, FGroupTier tier, int index, boolean isSelected, boolean cellHasFocus) {
-			mTitle.setText( tier.mName);
+			mTitle.setText( tier.getName());
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			return this;
 		}

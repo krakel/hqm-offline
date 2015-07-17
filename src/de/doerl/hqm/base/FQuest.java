@@ -1,5 +1,6 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,13 +14,9 @@ import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
-public final class FQuest extends ANamed implements IElement {
+public final class FQuest extends AIdented implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private static final String BASE = "quest";
-	private FQuestSet mParentQuestSet;
-	private LinkType mInformation = LinkType.NORM;
-	private int mID;
-	public String mDescr;
 	public int mX, mY;
 	public boolean mBig;
 	public Integer mCount;
@@ -34,19 +31,26 @@ public final class FQuest extends ANamed implements IElement {
 	public final Vector<FReputationReward> mRepRewards = new Vector<>();
 	public final FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	final Vector<AQuestTask> mTasks = new Vector<>();
+	private FQuestSet mParentQuestSet;
+	private LinkType mInformation = LinkType.NORM;
+	private HashMap<String, LangInfo> mInfo = new HashMap<>();
 
-	FQuest( FQuestSet parent, String name) {
-		super( name);
+	FQuest( FQuestSet parent) {
+		super( BASE, MaxIdOfQuest.get( parent) + 1);
 		mParentQuestSet = parent;
-		mID = MaxIdOfQuest.get( parent) + 1;
+	}
+
+	FQuest( FQuestSet parent, int id) {
+		super( BASE, id);
+		mParentQuestSet = parent;
 	}
 
 	public static int fromIdent( String ident) {
-		return fromIdent( BASE, ident);
+		return AIdented.fromIdent( BASE, ident);
 	}
 
 	public static String toIdent( int idx) {
-		return toIdent( BASE, idx);
+		return AIdented.toIdent( BASE, idx);
 	}
 
 	@Override
@@ -68,38 +72,45 @@ public final class FQuest extends ANamed implements IElement {
 		return false;
 	}
 
-	public AQuestTask createQuestTask( TaskTyp type, String name) {
+	public AQuestTask createQuestTask( TaskTyp type) {
 		AQuestTask task = null;
 		switch (type) {
 			case TASK_ITEMS_CONSUME:
-				task = new FQuestTaskItemsConsume( this, name);
+				task = new FQuestTaskItemsConsume( this);
 				break;
 			case TASK_ITEMS_CRAFTING:
-				task = new FQuestTaskItemsCrafting( this, name);
+				task = new FQuestTaskItemsCrafting( this);
 				break;
 			case TASK_LOCATION:
-				task = new FQuestTaskLocation( this, name);
+				task = new FQuestTaskLocation( this);
 				break;
 			case TASK_ITEMS_CONSUME_QDS:
-				task = new FQuestTaskItemsConsumeQDS( this, name);
+				task = new FQuestTaskItemsConsumeQDS( this);
 				break;
 			case TASK_ITEMS_DETECT:
-				task = new FQuestTaskItemsDetect( this, name);
+				task = new FQuestTaskItemsDetect( this);
 				break;
 			case TASK_MOB:
-				task = new FQuestTaskMob( this, name);
+				task = new FQuestTaskMob( this);
 				break;
 			case TASK_DEATH:
-				task = new FQuestTaskDeath( this, name);
+				task = new FQuestTaskDeath( this);
 				break;
 			case TASK_REPUTATION_TARGET:
-				task = new FQuestTaskReputationTarget( this, name);
+				task = new FQuestTaskReputationTarget( this);
 				break;
 			case TASK_REPUTATION_KILL:
-				task = new FQuestTaskReputationKill( this, name);
+				task = new FQuestTaskReputationKill( this);
 				break;
 		}
 		mTasks.add( task);
+		return task;
+	}
+
+	public AQuestTask createQuestTask( TaskTyp type, String name) {
+		AQuestTask task = createQuestTask( type);
+		task.setName( name);
+		task.setDescr( task.getTaskTyp().getDescr());
 		return task;
 	}
 
@@ -151,6 +162,10 @@ public final class FQuest extends ANamed implements IElement {
 		return mY + ResourceManager.getH5( mBig);
 	}
 
+	public String getDescr() {
+		return getInfo().mDescr;
+	}
+
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST;
@@ -161,13 +176,24 @@ public final class FQuest extends ANamed implements IElement {
 		return mParentQuestSet.getHqm();
 	}
 
-	public int getID() {
-		return mID;
+	private LangInfo getInfo() {
+		String lang = getHqm().mLang;
+		LangInfo info = mInfo.get( lang);
+		if (info == null) {
+			info = new LangInfo();
+			mInfo.put( lang, info);
+		}
+		return info;
 	}
 
 	@Override
 	public LinkType getInformation() {
 		return mInformation;
+	}
+
+	@Override
+	public String getName() {
+		return getInfo().mName;
 	}
 
 	@Override
@@ -225,13 +251,8 @@ public final class FQuest extends ANamed implements IElement {
 		ABase.remove( mParentQuestSet.mQuests, this);
 	}
 
-	public void setID( String ident) {
-		if (ident != null) {
-			int id = fromIdent( ident);
-			if (id >= 0) {
-				mID = id;
-			}
-		}
+	public void setDescr( String descr) {
+		getInfo().mDescr = descr;
 	}
 
 	@Override
@@ -239,7 +260,13 @@ public final class FQuest extends ANamed implements IElement {
 		mInformation = information;
 	}
 
-	public String toIdent() {
-		return toIdent( BASE, mID);
+	@Override
+	public void setName( String name) {
+		getInfo().mName = name;
+	}
+
+	private static class LangInfo {
+		public String mName;
+		public String mDescr;
 	}
 }

@@ -1,39 +1,15 @@
 package de.doerl.hqm.base;
 
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IDispatcher;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.ToString;
-import de.doerl.hqm.utils.Utils;
 
 public abstract class ABase implements IDispatcher {
-	private static final Logger LOGGER = Logger.getLogger( ABase.class.getName());
-
 	ABase() {
-	}
-
-	static int fromIdent( String base, String ident) {
-		if (ident == null) {
-			return -1;
-		}
-		else {
-			int pos = ident.indexOf( " - ");
-			if (pos > 0) {
-				return Utils.parseInteger( ident.substring( 0, pos), -1);
-			}
-			else if (ident.startsWith( base)) {
-				return Utils.parseInteger( ident.substring( base.length()), -1);
-			}
-			else {
-				Utils.log( LOGGER, Level.WARNING, "wrong ident {0}", ident);
-				return -1;
-			}
-		}
 	}
 
 	static <T extends ABase> boolean isFirst( Vector<T> arr, T val) {
@@ -99,10 +75,6 @@ public abstract class ABase implements IDispatcher {
 		if (pos >= 0) {
 			arr.setElementAt( null, pos);
 		}
-	}
-
-	static String toIdent( String base, int idx) {
-		return String.format( "%s%03d", base, idx);
 	}
 
 	public abstract <T, U> T accept( IHQMWorker<T, U> w, U p);

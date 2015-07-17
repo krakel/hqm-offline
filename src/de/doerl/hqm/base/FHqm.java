@@ -1,28 +1,37 @@
 package de.doerl.hqm.base;
 
+import java.util.HashMap;
+
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.FileVersion;
 
 public final class FHqm extends ANamed {
 //	private static final Logger LOGGER = Logger.getLogger( FHqm.class.getName());
+	public static final String LANG_EN_US = "enUS";
+	public static final String LANG_DE_DE = "deDE";
 	private FileVersion mVersion;
 	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
 	public final FReputationCat mReputationCat = new FReputationCat( this);
 	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
-//	public final FGroupCat mGroupCat = new FGroupCat( this);
 	public String mPassCode;
-	public String mDescr;
+	public String mLang = LANG_EN_US;
+	public String mName;
+	private HashMap<String, String> mInfo = new HashMap<>();
 	private boolean mModified;
 
 	public FHqm( String name) {
-		super( name);
-		mDescr = "Hallo D:";
+		mName = name;
+		setDescr( "Hallo D:");
 	}
 
 	@Override
 	public <T, U> T accept( IHQMWorker<T, U> w, U p) {
 		return w.forHQM( this, p);
+	}
+
+	public String getDescr() {
+		return mInfo.get( mLang);
 	}
 
 	@Override
@@ -33,6 +42,11 @@ public final class FHqm extends ANamed {
 	@Override
 	public FHqm getHqm() {
 		return this;
+	}
+
+	@Override
+	public String getName() {
+		return mName;
 	}
 
 	@Override
@@ -48,8 +62,17 @@ public final class FHqm extends ANamed {
 		return mModified;
 	}
 
+	public void setDescr( String descr) {
+		mInfo.put( mLang, descr);
+	}
+
 	public void setModified( boolean value) {
 		mModified = value;
+	}
+
+	@Override
+	public void setName( String name) {
+		mName = name;
 	}
 
 	public void setVersion( FileVersion version) {

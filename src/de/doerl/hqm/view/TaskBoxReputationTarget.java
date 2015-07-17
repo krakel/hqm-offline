@@ -81,7 +81,7 @@ class TaskBoxReputationTarget extends ATaskBox {
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FSetting> list, FSetting rs, int index, boolean isSelected, boolean cellHasFocus) {
 			mIcon.setIcon( new ReputationIcon( rs.mRep));
-			mNeutral.setText( String.format( "    %s: %s (%d)", rs.mRep.mName, rs.mRep.mNeutral, 0));
+			mNeutral.setText( String.format( "    %s: %s (%d)", rs.mRep.getName(), rs.mRep.getNeutral(), 0));
 			return this;
 		}
 	}

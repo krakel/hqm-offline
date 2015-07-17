@@ -81,7 +81,7 @@ class EntityHQM extends AEntity<FHqm> {
 	}
 
 	public void update() {
-		mDesc.setText( mHQM.mDescr);
+		mDesc.setText( mHQM.getDescr());
 	}
 
 	private final class TextBoxAction extends ABundleAction {
@@ -94,9 +94,9 @@ class EntityHQM extends AEntity<FHqm> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextBox.update( mHQM.mDescr, mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+			String result = DialogTextBox.update( mHQM.getDescr(), mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 			if (result != null) {
-				mHQM.mDescr = result;
+				mHQM.setDescr( result);
 				mCtrl.fireChanged( mHQM);
 			}
 		}

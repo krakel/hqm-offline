@@ -106,7 +106,7 @@ class EntityQuestSetCat extends AEntityCat<FQuestSet> {
 		}
 		else {
 			mTotal.setText( String.format( "%d quests in total", SizeOfQuests.get( qs)));
-			mDesc.setText( qs.mDescr);
+			mDesc.setText( qs.getDescr());
 			mList.setSelectedValue( qs, true);
 			updateActions( true);
 			updateControls( true);
@@ -128,9 +128,9 @@ class EntityQuestSetCat extends AEntityCat<FQuestSet> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextBox.update( mActiv.mDescr, mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+				String result = DialogTextBox.update( mActiv.getDescr(), mCtrl.getFrame(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 				if (result != null) {
-					mActiv.mDescr = result;
+					mActiv.setDescr( result);
 					mCtrl.fireChanged( mCategory);
 				}
 			}
@@ -155,7 +155,7 @@ class EntityQuestSetCat extends AEntityCat<FQuestSet> {
 
 		public Component getListCellRendererComponent( JList<? extends FQuestSet> list, FQuestSet qs, int index, boolean isSelected, boolean cellHasFocus) {
 			int idx = IndexOf.getMember( qs) + 1;
-			mTitle.setText( String.format( "%d. %s", idx, qs.mName));
+			mTitle.setText( String.format( "%d. %s", idx, qs.getName()));
 			mTitle.setForeground( isSelected ? SELECTED : UNSELECTED);
 			boolean enabled = QuestSetIsEnabled.get( qs);
 			mComplete.setText( enabled ? "0% Completed" : "Locked");
