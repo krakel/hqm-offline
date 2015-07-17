@@ -7,13 +7,13 @@ interface IToken {
 	static final String HQM_DECRIPTION = "decription";
 	static final String HQM_QUEST_SET_CAT = "questSetCatalog";
 	static final String HQM_REPUTATION_CAT = "reputationCatalog";
-	static final String HQM_QUESTS = "quests";
 	static final String HQM_GROUP_TIER_CAT = "groupTierCatalog";
 	static final String HQM_GROUP_CAT = "groupCatalog";
 	//
 	static final String QUEST_SET_ID = "id";
 	static final String QUEST_SET_NAME = "name";
 	static final String QUEST_SET_DECR = "decription";
+	static final String QUEST_SET_QUESTS = "quests";
 	//
 	static final String REPUTATION_ID = "id";
 	static final String REPUTATION_NAME = "name";
@@ -30,7 +30,6 @@ interface IToken {
 	static final String QUEST_X = "x";
 	static final String QUEST_Y = "y";
 	static final String QUEST_BIG = "big";
-	static final String QUEST_SET = "setID";
 	static final String QUEST_ICON = "icon";
 	static final String QUEST_REQUIREMENTS = "requirements";
 	static final String QUEST_OPTION_LINKS = "optionLinks";

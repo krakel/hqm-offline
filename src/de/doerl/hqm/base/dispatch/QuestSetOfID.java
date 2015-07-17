@@ -14,6 +14,10 @@ public class QuestSetOfID extends AHQMWorker<FQuestSet, Integer> {
 		return hqm.mQuestSetCat.forEachMember( WORKER, id);
 	}
 
+	public static FQuestSet get( FQuestSet set, int id) {
+		return set.mParentCategory.forEachMember( WORKER, id);
+	}
+
 	public static FQuestSet get( FQuestSetCat cat, int id) {
 		return cat.forEachMember( WORKER, id);
 	}

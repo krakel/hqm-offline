@@ -37,7 +37,6 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupTierOfID;
 import de.doerl.hqm.base.dispatch.MarkerOfID;
 import de.doerl.hqm.base.dispatch.QuestOfID;
-import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.ReputationOfID;
 import de.doerl.hqm.medium.IHqmReader;
@@ -277,6 +276,32 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 		}
 	}
 
+	private void readQuest( FQuestSet set, FObject obj) {
+		FQuest quest = set.createQuest();
+		quest.setName( FValue.toString( obj.get( IToken.QUEST_NAME)));
+		quest.setIDObj( FValue.toObject( obj.get( IToken.QUEST_ID)));
+		quest.setDescr( FValue.toString( obj.get( IToken.QUEST_DESC)));
+		quest.mX = FValue.toInt( obj.get( IToken.QUEST_X));
+		quest.mY = FValue.toInt( obj.get( IToken.QUEST_Y));
+		quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));
+		quest.mIcon = readIcon( obj.get( IToken.QUEST_ICON));
+		readQuestArr( quest, mRequirements, FArray.to( obj.get( IToken.QUEST_REQUIREMENTS)), true);
+		readQuestArr( quest, mOptionLinks, FArray.to( obj.get( IToken.QUEST_OPTION_LINKS)), false);
+		readQuestInfo( quest.mRepeatInfo, FObject.to( obj.get( IToken.QUEST_REPEAT_INFO)));
+		String trigger = FValue.toString( obj.get( IToken.QUEST_TRIGGER_TYPE));
+		if (trigger != null) {
+			quest.mTriggerType = TriggerType.parse( trigger);
+			if (quest.mTriggerType.isUseTaskCount()) {
+				quest.mTriggerTasks = FValue.toInt( obj.get( IToken.QUEST_TRIGGER_TASKS));
+			}
+		}
+		quest.mCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT_COUNT));
+		readTasks( quest, FArray.to( obj.get( IToken.QUEST_TASKS)));
+		readStacks( quest.mRewards, FArray.to( obj.get( IToken.QUEST_REWARD)));
+		readStacks( quest.mChoices, FArray.to( obj.get( IToken.QUEST_CHOICE)));
+		readRewards( quest, FArray.to( obj.get( IToken.QUEST_REP_REWRDS)));
+	}
+
 	private void readQuestArr( FQuest quest, HashMap<FQuest, int[]> cache, FArray arr, boolean withPost) {
 		if (arr != null) {
 			int size = arr.size();
@@ -301,53 +326,12 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 		}
 	}
 
-	public void readQuests( FQuestSetCat cat, FArray arr) {
+	private void readQuests( FQuestSet set, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					if (FValue.toBoolean( obj.get( IToken.QUEST_DELETED))) {
-//						mQuests.add( mDelQuest);
-					}
-					else {
-						String name = FValue.toString( obj.get( IToken.QUEST_NAME));
-						FQuestSet set = null;
-						int setID = FQuestSet.fromIdent( FValue.toString( obj.get( IToken.QUEST_SET)));
-						if (setID < 0) {
-							Utils.log( LOGGER, Level.WARNING, "missing setID of quest {0}", name);
-						}
-						else {
-							set = QuestSetOfID.get( cat, setID);
-						}
-						if (set == null) {
-							Utils.log( LOGGER, Level.WARNING, "missing set of quest {0}", name);
-							set = cat.createMember();
-							set.setName( "__Missing__");
-						}
-						FQuest quest = set.createQuest();
-						quest.setName( name);
-						quest.setIDObj( FValue.toObject( obj.get( IToken.QUEST_ID)));
-						quest.setDescr( FValue.toString( obj.get( IToken.QUEST_DESC)));
-						quest.mX = FValue.toInt( obj.get( IToken.QUEST_X));
-						quest.mY = FValue.toInt( obj.get( IToken.QUEST_Y));
-						quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));
-						quest.mIcon = readIcon( obj.get( IToken.QUEST_ICON));
-						readQuestArr( quest, mRequirements, FArray.to( obj.get( IToken.QUEST_REQUIREMENTS)), true);
-						readQuestArr( quest, mOptionLinks, FArray.to( obj.get( IToken.QUEST_OPTION_LINKS)), false);
-						readQuestInfo( quest.mRepeatInfo, FObject.to( obj.get( IToken.QUEST_REPEAT_INFO)));
-						String trigger = FValue.toString( obj.get( IToken.QUEST_TRIGGER_TYPE));
-						if (trigger != null) {
-							quest.mTriggerType = TriggerType.parse( trigger);
-							if (quest.mTriggerType.isUseTaskCount()) {
-								quest.mTriggerTasks = FValue.toInt( obj.get( IToken.QUEST_TRIGGER_TASKS));
-							}
-						}
-						quest.mCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT_COUNT));
-						readTasks( quest, FArray.to( obj.get( IToken.QUEST_TASKS)));
-						readStacks( quest.mRewards, FArray.to( obj.get( IToken.QUEST_REWARD)));
-						readStacks( quest.mChoices, FArray.to( obj.get( IToken.QUEST_CHOICE)));
-						readRewards( quest, FArray.to( obj.get( IToken.QUEST_REP_REWRDS)));
-					}
+					readQuest( set, obj);
 				}
 			}
 		}
@@ -359,9 +343,10 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FQuestSet set = cat.createMember();
+					set.setID( FValue.toString( obj.get( IToken.QUEST_SET_ID)));
 					set.setName( FValue.toString( obj.get( IToken.QUEST_SET_NAME)));
 					set.setDescr( FValue.toString( obj.get( IToken.QUEST_SET_DECR)));
-					set.setID( FValue.toString( obj.get( IToken.QUEST_SET_ID)));
+					readQuests( set, FArray.to( obj.get( IToken.QUEST_SET_QUESTS)));
 				}
 			}
 		}
@@ -414,9 +399,8 @@ class Parser extends AHQMWorker<Object, FObject> implements IHqmReader, IToken {
 				if (hqm.getDescr() == null) {
 					hqm.setDescr( "No description");
 				}
-				readQuestSetCat( hqm.mQuestSetCat, FArray.to( obj.get( IToken.HQM_QUEST_SET_CAT)));
 				readReputations( hqm.mReputationCat, FArray.to( obj.get( IToken.HQM_REPUTATION_CAT)));
-				readQuests( hqm.mQuestSetCat, FArray.to( obj.get( IToken.HQM_QUESTS)));
+				readQuestSetCat( hqm.mQuestSetCat, FArray.to( obj.get( IToken.HQM_QUEST_SET_CAT)));
 				readGroupTiers( hqm.mGroupTierCat, FArray.to( obj.get( IToken.HQM_GROUP_TIER_CAT)));
 				readGroup( hqm.mGroupTierCat, FArray.to( obj.get( IToken.HQM_GROUP_CAT)));
 				ReindexOfQuests.get( hqm);

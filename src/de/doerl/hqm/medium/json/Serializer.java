@@ -41,7 +41,6 @@ import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
 
 class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToken {
-	private QuestWorker mQuestWorker = new QuestWorker();
 	private GroupWorker mGroupWorker = new GroupWorker();
 	private JsonWriter mDst;
 
@@ -140,11 +139,36 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	}
 
 	@Override
+	public Object forQuest( FQuest quest, Object p) {
+		mDst.beginObject();
+		mDst.print( QUEST_ID, quest.toIdent());
+		mDst.print( QUEST_NAME, quest.getName());
+		mDst.print( QUEST_DESC, quest.getDescr());
+		mDst.print( QUEST_X, quest.mX);
+		mDst.print( QUEST_Y, quest.mY);
+		mDst.print( QUEST_BIG, quest.mBig);
+		writeIcon( QUEST_ICON, quest.mIcon);
+		writeQuestArr( QUEST_REQUIREMENTS, quest.mRequirements);
+		writeQuestArr( QUEST_OPTION_LINKS, quest.mOptionLinks);
+		quest.mRepeatInfo.accept( this, null);
+		mDst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
+		mDst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
+		mDst.print( QUEST_PARENT_REQUIREMENT_COUNT, quest.mCount);
+		writeTasks( quest);
+		writeStackArr( QUEST_REWARD, quest.mRewards);
+		writeStackArr( QUEST_CHOICE, quest.mChoices);
+		writeRewards( quest);
+		mDst.endObject();
+		return null;
+	}
+
+	@Override
 	public Object forQuestSet( FQuestSet set, Object p) {
 		mDst.beginObject();
 		mDst.print( QUEST_SET_ID, set.toIdent());
 		mDst.print( QUEST_SET_NAME, set.getName());
 		mDst.print( QUEST_SET_DECR, set.getDescr());
+		writeQuests( set);
 		mDst.endObject();
 		return null;
 	}
@@ -280,7 +304,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		mDst.print( HQM_DECRIPTION, hqm.getDescr());
 		writeQuestSetCat( hqm.mQuestSetCat);
 		writeReputations( hqm.mReputationCat);
-		writeQuests( hqm.mQuestSetCat);
 		writeGroupTiers( hqm.mGroupTierCat);
 		writeGroups( hqm.mGroupTierCat);
 		mDst.endObject();
@@ -322,29 +345,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		mDst.endArray();
 	}
 
-	private void writeQuest( FQuest quest) {
-		mDst.beginObject();
-		mDst.print( QUEST_ID, quest.toIdent());
-		mDst.print( QUEST_NAME, quest.getName());
-		mDst.print( QUEST_DESC, quest.getDescr());
-		mDst.print( QUEST_X, quest.mX);
-		mDst.print( QUEST_Y, quest.mY);
-		mDst.print( QUEST_BIG, quest.mBig);
-		mDst.print( QUEST_SET, quest.getParent().toIdent());
-		writeIcon( QUEST_ICON, quest.mIcon);
-		writeQuestArr( QUEST_REQUIREMENTS, quest.mRequirements);
-		writeQuestArr( QUEST_OPTION_LINKS, quest.mOptionLinks);
-		quest.mRepeatInfo.accept( this, null);
-		mDst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
-		mDst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
-		mDst.print( QUEST_PARENT_REQUIREMENT_COUNT, quest.mCount);
-		writeTasks( quest);
-		writeStackArr( QUEST_REWARD, quest.mRewards);
-		writeStackArr( QUEST_CHOICE, quest.mChoices);
-		writeRewards( quest);
-		mDst.endObject();
-	}
-
 	private void writeQuestArr( String key, Vector<FQuest> arr) {
 		if (arr != null && !arr.isEmpty()) {
 			mDst.beginArray( key);
@@ -357,9 +357,9 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		}
 	}
 
-	private void writeQuests( FQuestSetCat cat) {
-		mDst.beginArray( HQM_QUESTS);
-		cat.forEachMember( mQuestWorker, null);
+	private void writeQuests( FQuestSet set) {
+		mDst.beginArray( QUEST_SET_QUESTS);
+		set.forEachQuest( this, null);
 		mDst.endArray();
 	}
 
@@ -422,20 +422,6 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 		@Override
 		public Object forGroupTier( FGroupTier tier, Object p) {
 			tier.forEachGroup( this, p);
-			return null;
-		}
-	}
-
-	private final class QuestWorker extends AHQMWorker<Object, Object> {
-		@Override
-		public Object forQuest( FQuest quest, Object p) {
-			writeQuest( quest);
-			return null;
-		}
-
-		@Override
-		public Object forQuestSet( FQuestSet set, Object p) {
-			set.forEachQuest( this, p);
 			return null;
 		}
 	}
