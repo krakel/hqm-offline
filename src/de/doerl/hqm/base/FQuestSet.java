@@ -75,13 +75,20 @@ public final class FQuestSet extends AMember {
 		return getInfo().mDescr;
 	}
 
+	public String getDescr( String lang) {
+		return getInfo( lang).mDescr;
+	}
+
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST_SET;
 	}
 
 	private LangInfo getInfo() {
-		String lang = getHqm().mLang;
+		return getInfo( getHqm().mLang);
+	}
+
+	private LangInfo getInfo( String lang) {
 		LangInfo info = mInfo.get( lang);
 		if (info == null) {
 			info = new LangInfo();
@@ -98,6 +105,10 @@ public final class FQuestSet extends AMember {
 	@Override
 	public String getName() {
 		return getInfo().mName;
+	}
+
+	public String getName( String lang) {
+		return getInfo( lang).mName;
 	}
 
 	@Override
@@ -132,6 +143,10 @@ public final class FQuestSet extends AMember {
 		getInfo().mDescr = descr;
 	}
 
+	public void setDescr( String lang, String descr) {
+		getInfo( lang).mDescr = descr;
+	}
+
 	@Override
 	public void setInformation( LinkType information) {
 		mInformation = information;
@@ -140,6 +155,10 @@ public final class FQuestSet extends AMember {
 	@Override
 	public void setName( String name) {
 		getInfo().mName = name;
+	}
+
+	public void setName( String lang, String name) {
+		getInfo( lang).mName = name;
 	}
 
 	private static class LangInfo {

@@ -1,6 +1,7 @@
 package de.doerl.hqm.base;
 
 import java.util.HashMap;
+import java.util.Vector;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
@@ -14,6 +15,7 @@ public final class FHqm extends ANamed {
 	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
 	public final FReputationCat mReputationCat = new FReputationCat( this);
 	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
+	public final Vector<String> mLanguages = new Vector<>();
 	public String mPassCode;
 	public String mLang = LANG_EN_US;
 	public String mName;
@@ -23,6 +25,7 @@ public final class FHqm extends ANamed {
 	public FHqm( String name) {
 		mName = name;
 		setDescr( "Hallo D:");
+		mLanguages.add( mLang);
 	}
 
 	@Override
@@ -32,6 +35,10 @@ public final class FHqm extends ANamed {
 
 	public String getDescr() {
 		return mInfo.get( mLang);
+	}
+
+	public String getDescr( String lang) {
+		return mInfo.get( lang);
 	}
 
 	@Override
@@ -64,6 +71,10 @@ public final class FHqm extends ANamed {
 
 	public void setDescr( String descr) {
 		mInfo.put( mLang, descr);
+	}
+
+	public void setDescr( String lang, String descr) {
+		mInfo.put( lang, descr);
 	}
 
 	public void setModified( boolean value) {

@@ -3,10 +3,12 @@ package de.doerl.hqm.base;
 import java.util.HashMap;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
+import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.Visibility;
 
-public final class FLocation extends ANamed implements IElement {
+public final class FLocation extends AIdented implements IElement {
+	private static final String BASE = "loc";
 	public final FQuestTaskLocation mParentTask;
 	public FItemStack mIcon;
 	public int mX, mY, mZ;
@@ -16,7 +18,17 @@ public final class FLocation extends ANamed implements IElement {
 	private HashMap<String, String> mInfo = new HashMap<>();
 
 	FLocation( FQuestTaskLocation parent) {
+		super( BASE, MaxIdOf.getLocation( parent) + 1);
 		mParentTask = parent;
+	}
+
+	FLocation( FQuestTaskLocation parent, int id) {
+		super( BASE, id);
+		mParentTask = parent;
+	}
+
+	public static int fromIdent( String ident) {
+		return AIdented.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -32,6 +44,10 @@ public final class FLocation extends ANamed implements IElement {
 	@Override
 	public String getName() {
 		return mInfo.get( getHqm().mLang);
+	}
+
+	public String getName( String lang) {
+		return mInfo.get( lang);
 	}
 
 	@Override
@@ -67,5 +83,9 @@ public final class FLocation extends ANamed implements IElement {
 	@Override
 	public void setName( String name) {
 		mInfo.put( getHqm().mLang, name);
+	}
+
+	public void setName( String lang, String name) {
+		mInfo.put( lang, name);
 	}
 }

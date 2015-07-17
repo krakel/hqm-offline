@@ -66,7 +66,10 @@ public final class FReputation extends AMember {
 	}
 
 	private LangInfo getInfo() {
-		String lang = getHqm().mLang;
+		return getInfo( getHqm().mLang);
+	}
+
+	private LangInfo getInfo( String lang) {
 		LangInfo info = mInfo.get( lang);
 		if (info == null) {
 			info = new LangInfo();
@@ -80,8 +83,16 @@ public final class FReputation extends AMember {
 		return getInfo().mName;
 	}
 
+	public String getName( String lang) {
+		return getInfo( lang).mName;
+	}
+
 	public String getNeutral() {
 		return getInfo().mNeutral;
+	}
+
+	public String getNeutral( String lang) {
+		return getInfo( lang).mNeutral;
 	}
 
 	@Override
@@ -117,8 +128,16 @@ public final class FReputation extends AMember {
 		getInfo().mName = name;
 	}
 
+	public void setName( String lang, String name) {
+		getInfo( lang).mName = name;
+	}
+
 	public void setNeutral( String neutral) {
 		getInfo().mNeutral = neutral;
+	}
+
+	public void setNeutral( String lang, String neutral) {
+		getInfo( lang).mNeutral = neutral;
 	}
 
 	public void sort() {

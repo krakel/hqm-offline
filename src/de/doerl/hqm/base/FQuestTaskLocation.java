@@ -27,6 +27,12 @@ public final class FQuestTaskLocation extends AQuestTask {
 		return loc;
 	}
 
+	public FLocation createLocation( int id) {
+		FLocation loc = new FLocation( this, id);
+		mLocations.add( loc);
+		return loc;
+	}
+
 	public <T, U> T forEachLocation( IHQMWorker<T, U> worker, U p) {
 		for (FLocation disp : mLocations) {
 			try {

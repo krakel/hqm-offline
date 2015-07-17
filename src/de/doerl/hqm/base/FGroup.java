@@ -24,6 +24,10 @@ public final class FGroup extends AIdented implements IElement {
 		mParentTier = parent;
 	}
 
+	public static int fromIdent( String ident) {
+		return AIdented.fromIdent( BASE, ident);
+	}
+
 	@Override
 	public <T, U> T accept( IHQMWorker<T, U> w, U p) {
 		return w.forGroup( this, p);
@@ -37,6 +41,10 @@ public final class FGroup extends AIdented implements IElement {
 	@Override
 	public String getName() {
 		return mInfo.get( getHqm().mLang);
+	}
+
+	public String getName( String lang) {
+		return mInfo.get( lang);
 	}
 
 	@Override
@@ -70,5 +78,9 @@ public final class FGroup extends AIdented implements IElement {
 	@Override
 	public void setName( String name) {
 		mInfo.put( getHqm().mLang, name);
+	}
+
+	public void setName( String lang, String name) {
+		mInfo.put( lang, name);
 	}
 }

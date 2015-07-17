@@ -40,6 +40,10 @@ public final class FMarker extends AIdented implements Comparable<FMarker>, IEle
 		return mInfo.get( getHqm().mLang);
 	}
 
+	public String getName( String lang) {
+		return mInfo.get( lang);
+	}
+
 	@Override
 	public FReputation getParent() {
 		return mParentRep;
@@ -73,6 +77,10 @@ public final class FMarker extends AIdented implements Comparable<FMarker>, IEle
 	@Override
 	public void setName( String name) {
 		mInfo.put( getHqm().mLang, name);
+	}
+
+	public void setName( String lang, String name) {
+		mInfo.put( lang, name);
 	}
 
 	@Override

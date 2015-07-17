@@ -146,8 +146,8 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 	@Override
 	public Object forTaskLocation( FQuestTaskLocation task, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TASK_LOCATION_COUNT);
-		for (int i = 0; i < count; i++) {
-			FLocation loc = task.createLocation();
+		for (int id = 0; id < count; id++) {
+			FLocation loc = task.createLocation( id);
 			loc.mIcon = mSrc.readIconIf( version);
 			loc.setName( mSrc.readString( DataBitHelper.NAME_LENGTH));
 			loc.mX = mSrc.readData( DataBitHelper.WORLD_COORDINATE);
@@ -163,8 +163,8 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 	@Override
 	public Object forTaskMob( FQuestTaskMob task, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TASK_MOB_COUNT);
-		for (int i = 0; i < count; i++) {
-			FMob mob = task.createMob();
+		for (int id = 0; id < count; id++) {
+			FMob mob = task.createMob( id);
 			mob.mIcon = mSrc.readIconIf( version);
 			mob.setName( mSrc.readString( DataBitHelper.NAME_LENGTH));
 			mob.mMob = mSrc.readString( DataBitHelper.MOB_ID_LENGTH);
@@ -221,8 +221,8 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 
 	private void readGroupTiers( FGroupTierCat cat) {
 		int count = mSrc.readData( DataBitHelper.TIER_COUNT);
-		for (int i = 0; i < count; ++i) {
-			FGroupTier tier = cat.createMember( i);
+		for (int id = 0; id < count; ++id) {
+			FGroupTier tier = cat.createMember( id);
 			tier.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			tier.mColorID = mSrc.readData( DataBitHelper.COLOR);
 			int[] weights = BagTier.newArray();

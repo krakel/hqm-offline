@@ -3,10 +3,14 @@ package de.doerl.hqm.base.dispatch;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
+import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
+import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
+import de.doerl.hqm.base.FQuestTaskLocation;
+import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
 
@@ -16,9 +20,21 @@ public class MaxIdOf extends AHQMWorker<Object, Object> {
 	private MaxIdOf() {
 	}
 
+	public static int getLocation( FQuestTaskLocation task) {
+		MaxIdOf worker = new MaxIdOf();
+		task.forEachLocation( worker, null);
+		return worker.mResult;
+	}
+
 	public static int getMarker( FReputation rep) {
 		MaxIdOf worker = new MaxIdOf();
 		rep.forEachMarker( worker, null);
+		return worker.mResult;
+	}
+
+	public static int getMob( FQuestTaskMob task) {
+		MaxIdOf worker = new MaxIdOf();
+		task.forEachMob( worker, null);
 		return worker.mResult;
 	}
 
@@ -59,8 +75,20 @@ public class MaxIdOf extends AHQMWorker<Object, Object> {
 	}
 
 	@Override
+	public Object forLocation( FLocation loc, Object p) {
+		mResult = Math.max( mResult, loc.getID());
+		return null;
+	}
+
+	@Override
 	public Object forMarker( FMarker mark, Object p) {
 		mResult = Math.max( mResult, mark.getID());
+		return null;
+	}
+
+	@Override
+	public Object forMob( FMob mob, Object p) {
+		mResult = Math.max( mResult, mob.getID());
 		return null;
 	}
 

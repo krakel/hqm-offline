@@ -16,8 +16,16 @@ public abstract class AQuestTask extends AIdented implements IElement {
 		mParentQuest = parent;
 	}
 
+	public static int fromIdent( String ident) {
+		return AIdented.fromIdent( BASE, ident);
+	}
+
 	public String getDescr() {
 		return getInfo().mDescr;
+	}
+
+	public String getDescr( String lang) {
+		return getInfo( lang).mDescr;
 	}
 
 	@Override
@@ -26,7 +34,10 @@ public abstract class AQuestTask extends AIdented implements IElement {
 	}
 
 	private LangInfo getInfo() {
-		String lang = getHqm().mLang;
+		return getInfo( getHqm().mLang);
+	}
+
+	private LangInfo getInfo( String lang) {
 		LangInfo info = mInfo.get( lang);
 		if (info == null) {
 			info = new LangInfo();
@@ -38,6 +49,10 @@ public abstract class AQuestTask extends AIdented implements IElement {
 	@Override
 	public String getName() {
 		return getInfo().mName;
+	}
+
+	public String getName( String lang) {
+		return getInfo( lang).mName;
 	}
 
 	@Override
@@ -74,9 +89,17 @@ public abstract class AQuestTask extends AIdented implements IElement {
 		getInfo().mDescr = descr;
 	}
 
+	public void setDescr( String lang, String descr) {
+		getInfo( lang).mDescr = descr;
+	}
+
 	@Override
 	public void setName( String name) {
 		getInfo().mName = name;
+	}
+
+	public void setName( String lang, String name) {
+		getInfo( lang).mName = name;
 	}
 
 	private static class LangInfo {

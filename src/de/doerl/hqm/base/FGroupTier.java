@@ -77,6 +77,10 @@ public final class FGroupTier extends AMember {
 		return mInfo.get( getHqm().mLang);
 	}
 
+	public String getName( String lang) {
+		return mInfo.get( lang);
+	}
+
 	@Override
 	public FGroupTierCat getParent() {
 		return mParentCategory;
@@ -108,5 +112,9 @@ public final class FGroupTier extends AMember {
 	@Override
 	public void setName( String name) {
 		mInfo.put( getHqm().mLang, name);
+	}
+
+	public void setName( String lang, String name) {
+		mInfo.put( lang, name);
 	}
 }

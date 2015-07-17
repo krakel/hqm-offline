@@ -27,6 +27,12 @@ public final class FQuestTaskMob extends AQuestTask {
 		return mob;
 	}
 
+	public FMob createMob( int id) {
+		FMob mob = new FMob( this, id);
+		mMobs.add( mob);
+		return mob;
+	}
+
 	public <T, U> T forEachMob( IHQMWorker<T, U> worker, U p) {
 		for (FMob disp : mMobs) {
 			try {

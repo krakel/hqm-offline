@@ -4,11 +4,11 @@ interface IToken {
 	static final String HQM_VERSION = "version";
 	static final String HQM_PASSCODE = "passcode";
 	static final String HQM_LANGUAGE = "language";
+	static final String HQM_PARENT = "parent";
 	static final String HQM_DECRIPTION = "decription";
 	static final String HQM_QUEST_SET_CAT = "questSetCatalog";
 	static final String HQM_REPUTATION_CAT = "reputationCatalog";
 	static final String HQM_GROUP_TIER_CAT = "groupTierCatalog";
-	static final String HQM_GROUP_CAT = "groupCatalog";
 	//
 	static final String QUEST_SET_ID = "id";
 	static final String QUEST_SET_NAME = "name";
@@ -57,6 +57,7 @@ interface IToken {
 	static final String TASK_KILLS = "kills";
 	static final String TASK_SETTINGS = "settings";
 	//
+	static final String LOCATION_ID = "id";
 	static final String LOCATION_NAME = "name";
 	static final String LOCATION_ICON = "icon";
 	static final String LOCATION_X = "x";
@@ -66,9 +67,10 @@ interface IToken {
 	static final String LOCATION_VISIBLE = "visible";
 	static final String LOCATION_DIM = "dim";
 	//
+	static final String MOB_ID = "id";
 	static final String MOB_NAME = "name";
 	static final String MOB_ICON = "icon";
-	static final String MOB_MOB2 = "mob";
+	static final String MOB_OBJECT = "mob";
 	static final String MOB_COUNT = "count";
 	static final String MOB_EXACT = "exact";
 	//
@@ -91,10 +93,10 @@ interface IToken {
 	static final String GROUP_TIER_NAME = "name";
 	static final String GROUP_TIER_COLOR = "color";
 	static final String GROUP_TIER_WEIGHTS = "weights";
+	static final String GROUP_TIER_GROUPS = "groups";
 	//
 	static final String GROUP_ID = "id";
 	static final String GROUP_NAME = "name";
-	static final String GROUP_TIER = "tierID";
 	static final String GROUP_LIMIT = "limit";
 	static final String GROUP_STACKS = "stacks";
 }

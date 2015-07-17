@@ -3,9 +3,11 @@ package de.doerl.hqm.base;
 import java.util.HashMap;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
+import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FMob extends ANamed implements IElement {
+public final class FMob extends AIdented implements IElement {
+	private static final String BASE = "mob";
 	public final FQuestTaskMob mParentTask;
 	public FItemStack mIcon;
 	public String mMob;
@@ -14,7 +16,17 @@ public final class FMob extends ANamed implements IElement {
 	private HashMap<String, String> mInfo = new HashMap<>();
 
 	FMob( FQuestTaskMob parent) {
+		super( BASE, MaxIdOf.getMob( parent) + 1);
 		mParentTask = parent;
+	}
+
+	FMob( FQuestTaskMob parent, int id) {
+		super( BASE, id);
+		mParentTask = parent;
+	}
+
+	public static int fromIdent( String ident) {
+		return AIdented.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -30,6 +42,10 @@ public final class FMob extends ANamed implements IElement {
 	@Override
 	public String getName() {
 		return mInfo.get( getHqm().mLang);
+	}
+
+	public String getName( String lang) {
+		return mInfo.get( lang);
 	}
 
 	@Override
@@ -65,5 +81,9 @@ public final class FMob extends ANamed implements IElement {
 	@Override
 	public void setName( String name) {
 		mInfo.put( getHqm().mLang, name);
+	}
+
+	public void setName( String lang, String name) {
+		mInfo.put( lang, name);
 	}
 }
