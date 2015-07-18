@@ -94,6 +94,12 @@ public final class FQuestSet extends AMember {
 	}
 
 	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo1 = "Unnamed Set";
+		info.mInfo2 = "No description";
+	}
+
+	@Override
 	public void moveDown() {
 		ABase.moveDown( mParentCategory.mArr, this);
 	}

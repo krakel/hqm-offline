@@ -2,6 +2,7 @@ package de.doerl.hqm.base;
 
 import java.util.Vector;
 
+import de.doerl.hqm.base.ANamed.LocaleInfo;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
@@ -35,5 +36,8 @@ public final class FQuestSetCat extends ACategory<FQuestSet> {
 	@Override
 	public String getNodeName() {
 		return "Quest Sets";
+	}
+
+	void localeDefault( LocaleInfo info) {
 	}
 }

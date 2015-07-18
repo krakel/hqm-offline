@@ -85,6 +85,11 @@ public final class FGroupTier extends AMember {
 	}
 
 	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo1 = "New Tier";
+	}
+
+	@Override
 	public void moveDown() {
 		ABase.moveDown( mParentCategory.mArr, this);
 	}

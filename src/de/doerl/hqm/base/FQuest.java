@@ -105,13 +105,6 @@ public final class FQuest extends AIdent implements IElement {
 		return task;
 	}
 
-	public AQuestTask createQuestTask( TaskTyp type, String name) {
-		AQuestTask task = createQuestTask( type);
-		task.setName( name);
-		task.setDescr( task.getTaskTyp().getDescr());
-		return task;
-	}
-
 	public FReputationReward createRepReward() {
 		FReputationReward reward = new FReputationReward( this);
 		mRepRewards.add( reward);
@@ -208,6 +201,12 @@ public final class FQuest extends AIdent implements IElement {
 	@Override
 	public boolean isLast() {
 		return ABase.isLast( mParentQuestSet.mQuests, this);
+	}
+
+	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo1 = "Unnamed Quest";
+		info.mInfo2 = "No description";
 	}
 
 	@Override

@@ -32,48 +32,48 @@ public class LangDeleteWorker extends AHQMWorker<Object, FLanguage> {
 
 	@Override
 	protected Object doNamed( ANamed named, FLanguage lang) {
-		named.deleteLang( lang);
+		named.deleteLocale( lang);
 		return null;
 	}
 
 	@Override
 	public Object forGroupTier( FGroupTier tier, FLanguage lang) {
-		tier.deleteLang( lang);
+		tier.deleteLocale( lang);
 		tier.forEachGroup( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forQuest( FQuest quest, FLanguage lang) {
-		quest.deleteLang( lang);
+		quest.deleteLocale( lang);
 		quest.forEachTask( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forQuestSet( FQuestSet set, FLanguage lang) {
-		set.deleteLang( lang);
+		set.deleteLocale( lang);
 		set.forEachQuest( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forReputation( FReputation rep, FLanguage lang) {
-		rep.deleteLang( lang);
+		rep.deleteLocale( lang);
 		rep.forEachMarker( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forTaskLocation( FQuestTaskLocation task, FLanguage lang) {
-		task.deleteLang( lang);
+		task.deleteLocale( lang);
 		task.forEachLocation( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forTaskMob( FQuestTaskMob task, FLanguage lang) {
-		task.deleteLang( lang);
+		task.deleteLocale( lang);
 		task.forEachMob( this, lang);
 		return null;
 	}

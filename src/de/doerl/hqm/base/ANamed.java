@@ -3,30 +3,31 @@ package de.doerl.hqm.base;
 import java.util.HashMap;
 
 public abstract class ANamed extends ABase {
-	private HashMap<FLanguage, LangInfo> mInfo = new HashMap<>();
+	private HashMap<FLanguage, LocaleInfo> mInfo = new HashMap<>();
 
 	ANamed() {
 	}
 
-	public LangInfo addLang( FLanguage lang) {
-		LangInfo info = mInfo.get( lang);
+	public LocaleInfo addLocale( FLanguage lang) {
+		LocaleInfo info = mInfo.get( lang);
 		if (info == null) {
-			info = new LangInfo();
+			info = new LocaleInfo();
 			mInfo.put( lang, info);
+			localeDefault( info);
 		}
 		return info;
 	}
 
-	public void deleteLang( FLanguage lang) {
+	public void deleteLocale( FLanguage lang) {
 		mInfo.remove( lang);
 	}
 
 	public String getDescr() {
-		return addLang( getHqm().mMain).mInfo2;
+		return addLocale( getHqm().mMain).mInfo2;
 	}
 
 	public String getDescr( FLanguage lang) {
-		return addLang( lang).mInfo2;
+		return addLocale( lang).mInfo2;
 	}
 
 	@Override
@@ -35,30 +36,32 @@ public abstract class ANamed extends ABase {
 	}
 
 	public String getName() {
-		return addLang( getHqm().mMain).mInfo1;
+		return addLocale( getHqm().mMain).mInfo1;
 	}
 
 	public String getName( FLanguage lang) {
-		return addLang( lang).mInfo1;
+		return addLocale( lang).mInfo1;
 	}
 
+	abstract void localeDefault( LocaleInfo info);
+
 	public void setDescr( FLanguage lang, String descr) {
-		addLang( lang).mInfo2 = descr;
+		addLocale( lang).mInfo2 = descr;
 	}
 
 	public void setDescr( String descr) {
-		addLang( getHqm().mMain).mInfo2 = descr;
+		addLocale( getHqm().mMain).mInfo2 = descr;
 	}
 
 	public void setName( FLanguage lang, String name) {
-		addLang( lang).mInfo1 = name;
+		addLocale( lang).mInfo1 = name;
 	}
 
 	public void setName( String name) {
-		addLang( getHqm().mMain).mInfo1 = name;
+		addLocale( getHqm().mMain).mInfo1 = name;
 	}
 
-	private static class LangInfo {
+	protected static class LocaleInfo {
 		public String mInfo1 = "unknown";
 		public String mInfo2 = "unknown";
 	}

@@ -105,7 +105,6 @@ public class EditController {
 	public void questTaskCreate( FQuest quest, TaskTyp type, String name) {
 		AQuestTask task = quest.createQuestTask( type);
 		task.setName( name);
-		task.setDescr( task.getTaskTyp().getDescr());
 		fireAdded( task);
 	}
 

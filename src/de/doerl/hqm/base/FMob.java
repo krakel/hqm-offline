@@ -52,6 +52,11 @@ public final class FMob extends AIdent implements IElement {
 	}
 
 	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo1 = "New Mob";
+	}
+
+	@Override
 	public void moveDown() {
 		ABase.moveDown( mParentTask.mMobs, this);
 	}

@@ -51,6 +51,11 @@ public final class FGroup extends AIdent implements IElement {
 	}
 
 	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo1 = "New Group";
+	}
+
+	@Override
 	public void moveDown() {
 		ABase.moveDown( mParentTier.mGroups, this);
 	}

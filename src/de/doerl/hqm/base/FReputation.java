@@ -78,6 +78,12 @@ public final class FReputation extends AMember {
 	}
 
 	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo1 = "Unnamed Reputation";
+		info.mInfo2 = "Neutral";
+	}
+
+	@Override
 	public void moveDown() {
 		ABase.moveDown( mParentCategory.mArr, this);
 	}

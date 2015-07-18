@@ -83,6 +83,11 @@ public final class FHqm extends ANamed {
 		return mModified;
 	}
 
+	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo2 = "No description";
+	}
+
 	public void removeLanguage( FLanguage old) {
 		if (old != null) {
 			mLanguages.remove( old);

@@ -54,6 +54,11 @@ public final class FLocation extends AIdent implements IElement {
 	}
 
 	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo1 = "New Location";
+	}
+
+	@Override
 	public void moveDown() {
 		ABase.moveDown( mParentTask.mLocations, this);
 	}

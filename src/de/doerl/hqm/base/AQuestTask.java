@@ -39,6 +39,13 @@ public abstract class AQuestTask extends AIdent implements IElement {
 	}
 
 	@Override
+	void localeDefault( LocaleInfo info) {
+		TaskTyp taskTyp = getTaskTyp();
+		info.mInfo1 = taskTyp.name();
+		info.mInfo2 = taskTyp.getDescr();
+	}
+
+	@Override
 	public void moveDown() {
 		ABase.moveDown( mParentQuest.mTasks, this);
 	}

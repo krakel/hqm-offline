@@ -32,48 +32,48 @@ public class LangAddWorker extends AHQMWorker<Object, FLanguage> {
 
 	@Override
 	protected Object doNamed( ANamed named, FLanguage lang) {
-		named.addLang( lang);
+		named.addLocale( lang);
 		return null;
 	}
 
 	@Override
 	public Object forGroupTier( FGroupTier tier, FLanguage lang) {
-		tier.addLang( lang);
+		tier.addLocale( lang);
 		tier.forEachGroup( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forQuest( FQuest quest, FLanguage lang) {
-		quest.addLang( lang);
+		quest.addLocale( lang);
 		quest.forEachTask( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forQuestSet( FQuestSet set, FLanguage lang) {
-		set.addLang( lang);
+		set.addLocale( lang);
 		set.forEachQuest( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forReputation( FReputation rep, FLanguage lang) {
-		rep.addLang( lang);
+		rep.addLocale( lang);
 		rep.forEachMarker( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forTaskLocation( FQuestTaskLocation task, FLanguage lang) {
-		task.addLang( lang);
+		task.addLocale( lang);
 		task.forEachLocation( this, lang);
 		return null;
 	}
 
 	@Override
 	public Object forTaskMob( FQuestTaskMob task, FLanguage lang) {
-		task.addLang( lang);
+		task.addLocale( lang);
 		task.forEachMob( this, lang);
 		return null;
 	}

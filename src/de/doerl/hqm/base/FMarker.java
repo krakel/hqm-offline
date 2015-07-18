@@ -48,6 +48,11 @@ public final class FMarker extends AIdent implements Comparable<FMarker>, IEleme
 	}
 
 	@Override
+	void localeDefault( LocaleInfo info) {
+		info.mInfo1 = "Unnamed";
+	}
+
+	@Override
 	public void moveDown() {
 		ABase.moveDown( mParentRep.mMarker, this);
 	}
