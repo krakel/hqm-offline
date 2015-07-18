@@ -58,11 +58,13 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 	private MouseAdapter mQuestClickHandler = new QuestClickHandler();
 	private MouseAdapter mQuestMoveHandler = new QuestMoveHandler();
 	private volatile LeafQuest mActiv;
+	private DialogTextField mEdit;
 
 	public EntityQuestSet( FQuestSet set, EditView view) {
 		super( view.getController(), new GridLayout( 1, 1));
 		mSet = set;
 		mView = view;
+		mEdit = new DialogTextField( mCtrl.getFrame());
 		add( mLeaf);
 		mSet.forEachQuest( mQuestWorker, null);
 		mSet.forEachQuest( mLineWorker, null);
@@ -623,7 +625,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		@Override
 		public void mouseClicked( MouseEvent evt) {
 			if (mGroupAdd.isSelected()) {
-				String result = DialogTextField.update( "Unnamed", mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = mEdit.change( "Unnamed", DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					int x = mLeaf.stepX( evt.getX()) / AEntity.ZOOM - ResourceManager.getW5( false);
 					int y = mLeaf.stepY( evt.getY()) / AEntity.ZOOM - ResourceManager.getH5( false);
@@ -690,7 +692,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
-				String result = DialogTextField.update( quest.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = mEdit.change( quest.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					quest.setName( result);
 					mCtrl.fireChanged( quest);

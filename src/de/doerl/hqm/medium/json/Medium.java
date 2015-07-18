@@ -3,7 +3,6 @@ package de.doerl.hqm.medium.json;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +13,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.base.FLanguage;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.IMediumWorker;
@@ -31,17 +31,6 @@ public class Medium implements IMedium {
 	public static final FileFilter FILTER = new FileNameExtensionFilter( "JSON file", "json");
 	public static final String MEDIUM = "json";
 	public static final String JSON_PATH = "json_path";
-
-	private static void findAllLangs( FHqm hqm, File file) {
-		String main = toName( file);
-		String[] result = file.getParentFile().list( new LangFiles( main + '_'));
-		for (int i = 0; i < result.length; ++i) {
-			String lang = toLang( result[i]);
-			if (lang != null && !hqm.mLanguages.contains( lang)) {
-				hqm.mLanguages.add( lang);
-			}
-		}
-	}
 
 	private static File fromLangFile( File file) {
 		String name = file.getName();
@@ -68,31 +57,47 @@ public class Medium implements IMedium {
 		String lang = toLang( file.getName());
 		if (lang != null) {
 			File main = fromLangFile( file);
-			return loadHqm( redJson( main), lang, main);
+			if (main.exists()) {
+				return loadHqm( redJson( main), lang, main, true);
+			}
+			else {
+				return null;
+			}
 		}
 		else {
 			FObject obj = redJson( file);
 			if (obj != null && obj.get( IToken.HQM_PARENT) != null) {
 				File main = fromLangFile( file, FValue.toString( obj.get( IToken.HQM_PARENT)));
-				return loadHqm( redJson( main), FHqm.LANG_EN_US, main);
+				if (main.exists()) {
+					return loadHqm( redJson( main), FHqm.LANG_EN_US, main, false);
+				}
+				else {
+					return null;
+				}
 			}
 			else {
-				return loadHqm( obj, FHqm.LANG_EN_US, file);
+				return loadHqm( obj, FHqm.LANG_EN_US, file, false);
 			}
 		}
 	}
 
-	private static FHqm loadHqm( FObject obj, String lang, File file) {
+	private static FHqm loadHqm( FObject obj, String text, File file, boolean override) {
 		String name = toName( file);
 		FHqm hqm = new FHqm( name);
-		readHqm( hqm, obj, lang, true, false);
-		findAllLangs( hqm, file);
+		hqm.setMain( text);
+		readHqm( hqm, obj, hqm.mMain, true, false);
 		MediaManager.setProperty( hqm, JSON_PATH, file);
 		MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
 		MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
-		for (String ll : hqm.mLanguages) {
-			FObject docu = redJson( toLangFile( file, ll));
-			readHqm( hqm, docu, ll, false, true);
+		for (FLanguage ll : hqm.mLanguages) {
+			File src = toLangFile( file, ll.mLocale);
+			if (src.exists()) {
+				FObject docu = redJson( src);
+				readHqm( hqm, docu, ll, false, true);
+			}
+		}
+		if (override) {
+			hqm.setMain( text);
 		}
 		return hqm;
 	}
@@ -101,7 +106,7 @@ public class Medium implements IMedium {
 		return MediumUtils.normalize( choose, ".json");
 	}
 
-	static void readHqm( FHqm hqm, FObject obj, String lang, boolean withMain, boolean withDocu) {
+	static void readHqm( FHqm hqm, FObject obj, FLanguage lang, boolean withMain, boolean withDocu) {
 		if (obj != null) {
 			Parser parser = new Parser( lang, withMain, withDocu);
 			parser.readSrc( hqm, obj);
@@ -130,10 +135,10 @@ public class Medium implements IMedium {
 		try {
 			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
-			writeHQM( hqm, os, hqm.mLang, true, false);
+			writeHQM( hqm, os, hqm.mMain, true, false);
 			MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
-			for (String lang : hqm.mLanguages) {
-				saveLang( hqm, lang, toLangFile( file, lang));
+			for (FLanguage lang : hqm.mLanguages) {
+				saveLang( hqm, lang, toLangFile( file, lang.mLocale));
 			}
 			return true;
 		}
@@ -146,12 +151,12 @@ public class Medium implements IMedium {
 		return false;
 	}
 
-	private static void saveLang( FHqm hqm, String lang, File file) {
+	private static void saveLang( FHqm hqm, FLanguage lang, File file) {
 		OutputStream os = null;
 		try {
 			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
-			writeHQM( hqm, os, hqm.mLang, false, true);
+			writeHQM( hqm, os, lang, false, true);
 		}
 		catch (Exception ex) {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
@@ -202,7 +207,7 @@ public class Medium implements IMedium {
 		return pos < 0 ? name : name.substring( 0, pos);
 	}
 
-	private static void writeHQM( FHqm hqm, OutputStream os, String lang, boolean withMain, boolean withDocu) throws IOException {
+	private static void writeHQM( FHqm hqm, OutputStream os, FLanguage lang, boolean withMain, boolean withDocu) throws IOException {
 		Serializer serializer = new Serializer( os, lang, withMain, withDocu);
 		serializer.writeDst( hqm);
 		serializer.flushDst();
@@ -251,25 +256,13 @@ public class Medium implements IMedium {
 
 	@Override
 	public void testLoad( FHqm hqm, InputStream is) throws IOException {
+		hqm.setMain( FHqm.LANG_EN_US);
 		JsonReader src = new JsonReader( is);
-		readHqm( hqm, FObject.to( src.doAll()), FHqm.LANG_EN_US, true, true);
+		readHqm( hqm, FObject.to( src.doAll()), hqm.mMain, true, true);
 	}
 
 	@Override
 	public void testSave( FHqm hqm, OutputStream os) throws IOException {
-		writeHQM( hqm, os, hqm.mLang, true, true);
-	}
-
-	private static final class LangFiles implements FilenameFilter {
-		private String mMain;
-
-		private LangFiles( String main) {
-			mMain = main;
-		}
-
-		@Override
-		public boolean accept( File dir, String name) {
-			return name.startsWith( mMain) && name.toLowerCase().endsWith( ".json");
-		}
+		writeHQM( hqm, os, hqm.mMain, true, true);
 	}
 }

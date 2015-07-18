@@ -15,6 +15,7 @@ import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FItemStack;
+import de.doerl.hqm.base.FLanguage;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
@@ -60,11 +61,11 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
-	private String mLang;
+	private FLanguage mLang;
 	private boolean mMain;
 	private boolean mDocu;
 
-	public Parser( String lang, boolean withMain, boolean withDocu) {
+	public Parser( FLanguage lang, boolean withMain, boolean withDocu) {
 		mLang = lang;
 		mMain = withMain;
 		mDocu = withDocu;
@@ -202,6 +203,20 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			return FItemStack.parse( str);
 		}
 		return null;
+	}
+
+	private void readLanguages( FHqm hqm, FArray arr) {
+		if (arr != null) {
+			for (IJson json : arr) {
+				String lang = FValue.toString( json);
+				if (lang != null && hqm.getLanguage( lang) == null) {
+					hqm.createLanguage( lang);
+				}
+			}
+		}
+		if (hqm.mLanguages.size() == 0) {
+			hqm.createLanguage( FHqm.LANG_EN_US);
+		}
 	}
 
 	private void readMarker( FReputation rep, FArray arr) {
@@ -378,11 +393,11 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	}
 
 	void readSrc( FHqm hqm, FObject obj) {
-		mLang = FValue.toString( obj.get( IToken.HQM_LANGUAGE), mLang);
 		if (mMain) {
 			hqm.setVersion( FileVersion.parse( FValue.toString( obj.get( IToken.HQM_VERSION))));
 			hqm.mPassCode = FValue.toString( obj.get( IToken.HQM_PASSCODE));
-			hqm.mLang = mLang;
+			readLanguages( hqm, FArray.to( obj.get( IToken.HQM_LANGUAGES)));
+			hqm.setMain( FValue.toString( obj.get( IToken.HQM_MAIN), mLang.mLocale));
 		}
 		if (mDocu) {
 			String descr = FValue.toString( obj.get( IToken.HQM_DECRIPTION));

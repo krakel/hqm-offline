@@ -12,20 +12,29 @@ class DialogTextField extends ADialog {
 	private static final long serialVersionUID = -520943310358443074L;
 	private JTextField mField = new TextFieldAscii();
 
-	private DialogTextField( Window owner) {
+	public DialogTextField( Window owner) {
 		super( owner);
 		setTheme( "edit.textfield.theme");
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
+		createMain();
 		addEscapeAction();
 	}
 
-	public static String update( String value, Window owner, DataBitHelper bits) {
-		DialogTextField dlg = new DialogTextField( owner);
-		dlg.createMain();
-		dlg.updateMain( value);
-		if (dlg.showDialog() == DialogResult.APPROVE) {
-			return dlg.getText( bits);
+	public String change( String value) {
+		updateMain( value);
+		if (showDialog() == DialogResult.APPROVE) {
+			return mField.getText();
+		}
+		else {
+			return null;
+		}
+	}
+
+	public String change( String value, DataBitHelper bits) {
+		updateMain( value);
+		if (showDialog() == DialogResult.APPROVE) {
+			return getText( bits);
 		}
 		else {
 			return null;

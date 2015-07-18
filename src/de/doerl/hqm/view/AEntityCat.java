@@ -31,10 +31,12 @@ abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 	protected ABundleAction mDeleteAction = new DeleteAction();
 	protected LeafList<T> mList = new LeafList<>();
 	protected volatile T mActiv;
+	private DialogTextField mEdit;
 
 	public AEntityCat( ACategory<T> cat, EditController ctrl, AListCellRenderer<T> renderer) {
 		super( ctrl, new GridLayout( 1, 2));
 		mCategory = cat;
+		mEdit = new DialogTextField( ctrl.getFrame());
 		mList.setCellRenderer( renderer);
 	}
 
@@ -146,7 +148,7 @@ abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( "new", mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+			String result = mEdit.change( "new", DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
 				mCtrl.memberCreate( mCategory, result);
 			}
@@ -224,7 +226,7 @@ abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = mEdit.change( mActiv.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					mActiv.setName( result);
 					mCtrl.fireChanged( mCategory);

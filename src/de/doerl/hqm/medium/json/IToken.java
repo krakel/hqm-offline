@@ -3,7 +3,8 @@ package de.doerl.hqm.medium.json;
 interface IToken {
 	static final String HQM_VERSION = "version";
 	static final String HQM_PASSCODE = "passcode";
-	static final String HQM_LANGUAGE = "language";
+	static final String HQM_MAIN = "main";
+	static final String HQM_LANGUAGES = "languages";
 	static final String HQM_PARENT = "parent";
 	static final String HQM_DECRIPTION = "decription";
 	static final String HQM_QUEST_SET_CAT = "questSetCatalog";

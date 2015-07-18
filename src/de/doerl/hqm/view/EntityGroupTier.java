@@ -45,6 +45,7 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 	private LeafTextField mLimit = new LeafTextField();
 	private LeafFloating mStacks = new LeafFloating();
 	protected volatile FGroup mActiv;
+	private DialogTextField mEdit;
 
 	EntityGroupTier( FGroupTier tier, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
@@ -53,6 +54,7 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 		mLimit.setPreferredSize( new Dimension( WIDTH, 2 * getFont().getSize()));
 		mLimit.setMaximumSize( new Dimension( Short.MAX_VALUE, 2 * getFont().getSize()));
 		mStacks.setPreferredSize( new Dimension( WIDTH, 6 * AEntity.ICON_SIZE));
+		mEdit = new DialogTextField( ctrl.getFrame());
 		createLeafs();
 		GroupUpdate.get( mTier, mList.getModel());
 		updateActive( GroupSetFirst.get( mTier), true);
@@ -215,7 +217,7 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( "new", mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+			String result = mEdit.change( "new", DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
 				mCtrl.groupCreate( mTier, result);
 			}
@@ -366,7 +368,7 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 		@Override
 		public void actionPerformed( ActionEvent evt) {
 			if (mActiv != null) {
-				String result = DialogTextField.update( mActiv.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = mEdit.change( mActiv.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					mActiv.setName( result);
 					mCtrl.fireChanged( mTier);

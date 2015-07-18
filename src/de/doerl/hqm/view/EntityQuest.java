@@ -71,6 +71,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	private Box mTaskContent = Box.createHorizontalBox();
 	private LeafList<ATaskBox> mTaskList = new LeafList<>();
 	private volatile ATaskBox mActiv = BOX_EMPTY;
+	private DialogTextField mEdit;
 
 	public EntityQuest( FQuest quest, EditController ctrl) {
 		super( ctrl, new GridLayout( 1, 2));
@@ -79,6 +80,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		mChoiceList = new LeafStacks();
 		mTaskList.setCellRenderer( new TaskListRenderer());
 		mTaskContent.setAlignmentX( LEFT_ALIGNMENT);
+		mEdit = new DialogTextField( ctrl.getFrame());
 		createLeafs();
 		update();
 		updateActive( getFirstBox());
@@ -354,7 +356,7 @@ public class EntityQuest extends AEntity<FQuest> {
 
 		@Override
 		public void actionPerformed( ActionEvent evt) {
-			String result = DialogTextField.update( mQuest.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+			String result = mEdit.change( mQuest.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
 				mQuest.setName( result);
 				mCtrl.fireChanged( mQuest);
@@ -616,7 +618,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		public void actionPerformed( ActionEvent evt) {
 			AQuestTask task = mActiv.getTask();
 			if (task != null) {
-				String result = DialogTextField.update( task.getName(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+				String result = mEdit.change( task.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 				if (result != null) {
 					task.setName( result);
 					mCtrl.fireChanged( mQuest);

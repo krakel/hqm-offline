@@ -14,6 +14,7 @@ import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FItemRequirement;
 import de.doerl.hqm.base.FItemStack;
+import de.doerl.hqm.base.FLanguage;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
@@ -37,11 +38,11 @@ import de.doerl.hqm.utils.json.JsonWriter;
 
 class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	private JsonWriter mDst;
-	private String mLang;
+	private FLanguage mLang;
 	private boolean mMain;
 	private boolean mDocu;
 
-	public Serializer( OutputStream os, String lang, boolean withMain, boolean withDocu) throws IOException {
+	public Serializer( OutputStream os, FLanguage lang, boolean withMain, boolean withDocu) throws IOException {
 		mDst = new JsonWriter( os);
 		mLang = lang;
 		mMain = withMain;
@@ -334,16 +335,16 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		if (mMain) {
 			mDst.print( HQM_VERSION, hqm.getVersion());
 			mDst.printIf( HQM_PASSCODE, hqm.mPassCode);
+			writeLanguages( hqm.mLanguages);
 		}
 		else {
 			mDst.print( HQM_PARENT, hqm.getName());
 		}
 		if (mDocu) {
-			mDst.print( HQM_LANGUAGE, mLang);
 			mDst.print( HQM_DECRIPTION, hqm.getDescr( mLang));
 		}
 		else {
-			mDst.print( HQM_LANGUAGE, hqm.mLang);
+			mDst.print( HQM_MAIN, hqm.mMain.mLocale);
 		}
 		writeQuestSetCat( hqm.mQuestSetCat);
 		writeReputations( hqm.mReputationCat);
@@ -379,6 +380,16 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 				mDst.print( key, icon);
 			}
 		}
+	}
+
+	private void writeLanguages( Vector<FLanguage> languages) {
+		mDst.beginArray( HQM_LANGUAGES);
+		for (FLanguage lang : languages) {
+			if (lang != null) {
+				mDst.printValue( lang.mLocale);
+			}
+		}
+		mDst.endArray();
 	}
 
 	private void writeMarkers( FReputation rep) {

@@ -34,9 +34,11 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 	private LeafIcon mIcon = new LeafIcon( new Dimension( 260, 22));
 	private LeafTextField mNeutral = new LeafTextField( false);
 	private LeafList<FMarker> mMarker = new LeafList<>();
+	private DialogTextField mEdit;
 
 	EntityReputationCat( FReputationCat cat, EditController ctrl) {
 		super( cat, ctrl, new ListRenderer());
+		mEdit = new DialogTextField( ctrl.getFrame());
 		mMarker.setCellRenderer( new MarkerRenderer());
 		init();
 		mMarker.addMouseListener( new BorderAdapter( mMarker));
@@ -198,7 +200,7 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 
 		@Override
 		public void actionPerformed( ActionEvent e) {
-			String result = DialogTextField.update( mActiv.getDescr(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+			String result = mEdit.change( mActiv.getDescr(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
 				mActiv.setDescr( result);
 				mCtrl.fireChanged( mActiv);

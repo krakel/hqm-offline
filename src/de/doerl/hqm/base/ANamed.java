@@ -3,27 +3,30 @@ package de.doerl.hqm.base;
 import java.util.HashMap;
 
 public abstract class ANamed extends ABase {
-	private HashMap<String, LangInfo> mInfo = new HashMap<>();
+	private HashMap<FLanguage, LangInfo> mInfo = new HashMap<>();
 
 	ANamed() {
 	}
 
-	public LangInfo addLang( String lang) {
-		LangInfo info = new LangInfo();
-		mInfo.put( lang, info);
+	public LangInfo addLang( FLanguage lang) {
+		LangInfo info = mInfo.get( lang);
+		if (info == null) {
+			info = new LangInfo();
+			mInfo.put( lang, info);
+		}
 		return info;
 	}
 
-	public void deleteLang( String lang) {
+	public void deleteLang( FLanguage lang) {
 		mInfo.remove( lang);
 	}
 
 	public String getDescr() {
-		return getInfo().mInfo2;
+		return addLang( getHqm().mMain).mInfo2;
 	}
 
-	public String getDescr( String lang) {
-		return getInfo( lang).mInfo2;
+	public String getDescr( FLanguage lang) {
+		return addLang( lang).mInfo2;
 	}
 
 	@Override
@@ -31,40 +34,28 @@ public abstract class ANamed extends ABase {
 		return getParent().getHqm();
 	}
 
-	protected LangInfo getInfo() {
-		return getInfo( getHqm().mLang);
-	}
-
-	protected LangInfo getInfo( String lang) {
-		LangInfo info = mInfo.get( lang);
-		if (info == null) {
-			info = addLang( lang);
-		}
-		return info;
-	}
-
 	public String getName() {
-		return getInfo().mInfo1;
+		return addLang( getHqm().mMain).mInfo1;
 	}
 
-	public String getName( String lang) {
-		return getInfo( lang).mInfo1;
+	public String getName( FLanguage lang) {
+		return addLang( lang).mInfo1;
+	}
+
+	public void setDescr( FLanguage lang, String descr) {
+		addLang( lang).mInfo2 = descr;
 	}
 
 	public void setDescr( String descr) {
-		getInfo().mInfo2 = descr;
+		addLang( getHqm().mMain).mInfo2 = descr;
 	}
 
-	public void setDescr( String lang, String descr) {
-		getInfo( lang).mInfo2 = descr;
+	public void setName( FLanguage lang, String name) {
+		addLang( lang).mInfo1 = name;
 	}
 
 	public void setName( String name) {
-		getInfo().mInfo1 = name;
-	}
-
-	public void setName( String lang, String name) {
-		getInfo( lang).mInfo1 = name;
+		addLang( getHqm().mMain).mInfo1 = name;
 	}
 
 	private static class LangInfo {

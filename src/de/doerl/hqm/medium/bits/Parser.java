@@ -337,7 +337,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	void readSrc( FHqm hqm) {
 		FileVersion version = FileVersion.get( mSrc.readByte());
 		hqm.setVersion( version);
-		hqm.mLang = FHqm.LANG_EN_US;
+		hqm.setMain( FHqm.LANG_EN_US);
 		if (version.contains( FileVersion.LOCK)) {
 			hqm.mPassCode = mSrc.readString( DataBitHelper.PASS_CODE);
 		}

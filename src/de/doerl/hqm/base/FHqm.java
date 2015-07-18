@@ -5,6 +5,7 @@ import java.util.Vector;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.FileVersion;
+import de.doerl.hqm.utils.Utils;
 
 public final class FHqm extends ANamed {
 //	private static final Logger LOGGER = Logger.getLogger( FHqm.class.getName());
@@ -14,21 +15,35 @@ public final class FHqm extends ANamed {
 	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
 	public final FReputationCat mReputationCat = new FReputationCat( this);
 	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
-	public final Vector<String> mLanguages = new Vector<>();
+	public final Vector<FLanguage> mLanguages = new Vector<>();
 	public String mPassCode;
-	public String mLang = LANG_EN_US;
+	public FLanguage mMain;
 	public String mName;
 	private boolean mModified;
 
 	public FHqm( String name) {
 		mName = name;
-		setDescr( "Hallo D:");
-		mLanguages.add( mLang);
 	}
 
 	@Override
 	public <T, U> T accept( IHQMWorker<T, U> w, U p) {
 		return w.forHQM( this, p);
+	}
+
+	public void addLanguage( String text) {
+		if (getLanguage( text) == null) {
+			createLanguage( text);
+		}
+	}
+
+	public boolean containsLanguage( String text) {
+		return getLanguage( text) != null;
+	}
+
+	public FLanguage createLanguage( String text) {
+		FLanguage res = new FLanguage( this, text);
+		mLanguages.add( res);
+		return res;
 	}
 
 	@Override
@@ -39,6 +54,15 @@ public final class FHqm extends ANamed {
 	@Override
 	public FHqm getHqm() {
 		return this;
+	}
+
+	public FLanguage getLanguage( String text) {
+		for (FLanguage ll : mLanguages) {
+			if (Utils.equals( ll.mLocale, text)) {
+				return ll;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -57,6 +81,26 @@ public final class FHqm extends ANamed {
 
 	public boolean isModified() {
 		return mModified;
+	}
+
+	public void removeLanguage( FLanguage old) {
+		if (old != null) {
+			mLanguages.remove( old);
+		}
+		if (mLanguages.size() == 0) {
+			createLanguage( LANG_EN_US);
+		}
+		if (Utils.equals( mMain, old.mLocale)) {
+			mMain = mLanguages.firstElement();
+		}
+	}
+
+	public void setMain( String text) {
+		FLanguage lang = getLanguage( text);
+		if (lang == null) {
+			lang = createLanguage( text);
+		}
+		mMain = lang;
 	}
 
 	public void setModified( boolean value) {

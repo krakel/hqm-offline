@@ -21,6 +21,7 @@ class EntityHQM extends AEntity<FHqm> {
 	private FHqm mHQM;
 	private ABundleAction mDescAction = new TextBoxAction();
 	private ABundleAction mVersionAction = new VersionAction();
+	private ABundleAction mLangAction = new LangAction();
 	private JLabel mLogo = new LeafImage( ResourceManager.getImageUI( "hqm.default"));
 	private LeafTextBox mDesc = new LeafTextBox();
 
@@ -32,6 +33,7 @@ class EntityHQM extends AEntity<FHqm> {
 		mDesc.addClickListener( mDescAction);
 		mTool.add( mDescAction);
 		mTool.add( mVersionAction);
+		mTool.add( mLangAction);
 		mTool.addSeparator();
 	}
 
@@ -82,6 +84,21 @@ class EntityHQM extends AEntity<FHqm> {
 
 	public void update() {
 		mDesc.setText( mHQM.getDescr());
+	}
+
+	private final class LangAction extends ABundleAction {
+		private static final long serialVersionUID = -1837921138808186880L;
+
+		public LangAction() {
+			super( "entity.hqm.lang");
+		}
+
+		@Override
+		public void actionPerformed( ActionEvent evt) {
+			if (DialogListLangs.update( mHQM, mCtrl.getFrame())) {
+				mCtrl.fireChanged( mHQM);
+			}
+		}
 	}
 
 	private final class TextBoxAction extends ABundleAction {
