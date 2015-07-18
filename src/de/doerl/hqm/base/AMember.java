@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-public abstract class AMember extends AIdented implements IElement {
+public abstract class AMember extends AIdent implements IElement {
 	AMember( String base, int id) {
 		super( base, id);
 	}

@@ -1,18 +1,16 @@
 package de.doerl.hqm.base;
 
-import java.util.HashMap;
 import java.util.Vector;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.MaxIdOfGroup;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FGroup extends AIdented implements IElement {
+public final class FGroup extends AIdent implements IElement {
 	private static final String BASE = "grp";
 	public final FGroupTier mParentTier;
 	public Integer mLimit;
 	public Vector<FItemStack> mStacks = new Vector<>();
-	private HashMap<String, String> mInfo = new HashMap<>();
 
 	FGroup( FGroupTier parent) {
 		super( BASE, MaxIdOfGroup.get( parent) + 1);
@@ -25,7 +23,7 @@ public final class FGroup extends AIdented implements IElement {
 	}
 
 	public static int fromIdent( String ident) {
-		return AIdented.fromIdent( BASE, ident);
+		return AIdent.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -40,11 +38,11 @@ public final class FGroup extends AIdented implements IElement {
 
 	@Override
 	public String getName() {
-		return mInfo.get( getHqm().mLang);
+		return getInfo().mInfo1;
 	}
 
 	public String getName( String lang) {
-		return mInfo.get( lang);
+		return getInfo( lang).mInfo1;
 	}
 
 	@Override
@@ -77,10 +75,10 @@ public final class FGroup extends AIdented implements IElement {
 
 	@Override
 	public void setName( String name) {
-		mInfo.put( getHqm().mLang, name);
+		getInfo().mInfo1 = name;
 	}
 
 	public void setName( String lang, String name) {
-		mInfo.put( lang, name);
+		getInfo( lang).mInfo1 = name;
 	}
 }

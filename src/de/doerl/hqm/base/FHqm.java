@@ -1,6 +1,5 @@
 package de.doerl.hqm.base;
 
-import java.util.HashMap;
 import java.util.Vector;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
@@ -19,7 +18,6 @@ public final class FHqm extends ANamed {
 	public String mPassCode;
 	public String mLang = LANG_EN_US;
 	public String mName;
-	private HashMap<String, String> mInfo = new HashMap<>();
 	private boolean mModified;
 
 	public FHqm( String name) {
@@ -34,11 +32,11 @@ public final class FHqm extends ANamed {
 	}
 
 	public String getDescr() {
-		return mInfo.get( mLang);
+		return getInfo().mInfo2;
 	}
 
 	public String getDescr( String lang) {
-		return mInfo.get( lang);
+		return getInfo( lang).mInfo2;
 	}
 
 	@Override
@@ -70,11 +68,11 @@ public final class FHqm extends ANamed {
 	}
 
 	public void setDescr( String descr) {
-		mInfo.put( mLang, descr);
+		getInfo().mInfo2 = descr;
 	}
 
 	public void setDescr( String lang, String descr) {
-		mInfo.put( lang, descr);
+		getInfo( lang).mInfo2 = descr;
 	}
 
 	public void setModified( boolean value) {

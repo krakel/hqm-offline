@@ -1,7 +1,6 @@
 package de.doerl.hqm.base;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +15,6 @@ public final class FReputation extends AMember {
 	private static final String BASE = "rep";
 	public final FReputationCat mParentCategory;
 	public final Vector<FMarker> mMarker = new Vector<>();
-	private HashMap<String, LangInfo> mInfo = new HashMap<>();
 
 	FReputation( FReputationCat parent) {
 		super( BASE, MaxIdOf.getReputation( parent) + 1);
@@ -29,7 +27,7 @@ public final class FReputation extends AMember {
 	}
 
 	public static int fromIdent( String ident) {
-		return AIdented.fromIdent( BASE, ident);
+		return AIdent.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -65,34 +63,21 @@ public final class FReputation extends AMember {
 		return ElementTyp.REPUTATION;
 	}
 
-	private LangInfo getInfo() {
-		return getInfo( getHqm().mLang);
-	}
-
-	private LangInfo getInfo( String lang) {
-		LangInfo info = mInfo.get( lang);
-		if (info == null) {
-			info = new LangInfo();
-			mInfo.put( lang, info);
-		}
-		return info;
-	}
-
 	@Override
 	public String getName() {
-		return getInfo().mName;
+		return getInfo().mInfo1;
 	}
 
 	public String getName( String lang) {
-		return getInfo( lang).mName;
+		return getInfo( lang).mInfo1;
 	}
 
 	public String getNeutral() {
-		return getInfo().mNeutral;
+		return getInfo().mInfo2;
 	}
 
 	public String getNeutral( String lang) {
-		return getInfo( lang).mNeutral;
+		return getInfo( lang).mInfo2;
 	}
 
 	@Override
@@ -125,19 +110,19 @@ public final class FReputation extends AMember {
 
 	@Override
 	public void setName( String name) {
-		getInfo().mName = name;
+		getInfo().mInfo1 = name;
 	}
 
 	public void setName( String lang, String name) {
-		getInfo( lang).mName = name;
+		getInfo( lang).mInfo1 = name;
 	}
 
 	public void setNeutral( String neutral) {
-		getInfo().mNeutral = neutral;
+		getInfo().mInfo2 = neutral;
 	}
 
 	public void setNeutral( String lang, String neutral) {
-		getInfo( lang).mNeutral = neutral;
+		getInfo( lang).mInfo2 = neutral;
 	}
 
 	public void sort() {
@@ -147,11 +132,6 @@ public final class FReputation extends AMember {
 	@Override
 	public String toString() {
 		LangInfo info = getInfo();
-		return String.format( "%s [%s]", info.mName, info.mNeutral);
-	}
-
-	private static class LangInfo {
-		public String mName;
-		public String mNeutral;
+		return String.format( "%s [%s]", info.mInfo1, info.mInfo2);
 	}
 }

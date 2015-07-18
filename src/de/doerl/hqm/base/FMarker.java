@@ -1,16 +1,13 @@
 package de.doerl.hqm.base;
 
-import java.util.HashMap;
-
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FMarker extends AIdented implements Comparable<FMarker>, IElement {
+public final class FMarker extends AIdent implements Comparable<FMarker>, IElement {
 	private static final String BASE = "mark";
 	public final FReputation mParentRep;
 	public int mMark;
-	private HashMap<String, String> mInfo = new HashMap<>();
 
 	FMarker( FReputation parent) {
 		super( BASE, MaxIdOf.getMarker( parent) + 1);
@@ -18,7 +15,7 @@ public final class FMarker extends AIdented implements Comparable<FMarker>, IEle
 	}
 
 	public static int fromIdent( String ident) {
-		return AIdented.fromIdent( BASE, ident);
+		return AIdent.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -37,11 +34,11 @@ public final class FMarker extends AIdented implements Comparable<FMarker>, IEle
 
 	@Override
 	public String getName() {
-		return mInfo.get( getHqm().mLang);
+		return getInfo().mInfo1;
 	}
 
 	public String getName( String lang) {
-		return mInfo.get( lang);
+		return getInfo( lang).mInfo1;
 	}
 
 	@Override
@@ -76,11 +73,11 @@ public final class FMarker extends AIdented implements Comparable<FMarker>, IEle
 
 	@Override
 	public void setName( String name) {
-		mInfo.put( getHqm().mLang, name);
+		getInfo().mInfo1 = name;
 	}
 
 	public void setName( String lang, String name) {
-		mInfo.put( lang, name);
+		getInfo( lang).mInfo1 = name;
 	}
 
 	@Override

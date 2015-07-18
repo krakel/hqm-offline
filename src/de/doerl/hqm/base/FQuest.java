@@ -1,6 +1,5 @@
 package de.doerl.hqm.base;
 
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +13,7 @@ import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
-public final class FQuest extends AIdented implements IElement {
+public final class FQuest extends AIdent implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private static final String BASE = "quest";
 	public int mX, mY;
@@ -33,7 +32,6 @@ public final class FQuest extends AIdented implements IElement {
 	final Vector<AQuestTask> mTasks = new Vector<>();
 	private FQuestSet mParentQuestSet;
 	private LinkType mInformation = LinkType.NORM;
-	private HashMap<String, LangInfo> mInfo = new HashMap<>();
 
 	FQuest( FQuestSet parent) {
 		super( BASE, MaxIdOfQuest.get( parent) + 1);
@@ -46,11 +44,11 @@ public final class FQuest extends AIdented implements IElement {
 	}
 
 	public static int fromIdent( String ident) {
-		return AIdented.fromIdent( BASE, ident);
+		return AIdent.fromIdent( BASE, ident);
 	}
 
 	public static String toIdent( int idx) {
-		return AIdented.toIdent( BASE, idx);
+		return AIdent.toIdent( BASE, idx);
 	}
 
 	@Override
@@ -163,11 +161,11 @@ public final class FQuest extends AIdented implements IElement {
 	}
 
 	public String getDescr() {
-		return getInfo().mDescr;
+		return getInfo().mInfo2;
 	}
 
 	public String getDescr( String lang) {
-		return getInfo( lang).mDescr;
+		return getInfo( lang).mInfo2;
 	}
 
 	@Override
@@ -180,19 +178,6 @@ public final class FQuest extends AIdented implements IElement {
 		return mParentQuestSet.getHqm();
 	}
 
-	private LangInfo getInfo() {
-		return getInfo( getHqm().mLang);
-	}
-
-	private LangInfo getInfo( String lang) {
-		LangInfo info = mInfo.get( lang);
-		if (info == null) {
-			info = new LangInfo();
-			mInfo.put( lang, info);
-		}
-		return info;
-	}
-
 	@Override
 	public LinkType getInformation() {
 		return mInformation;
@@ -200,11 +185,11 @@ public final class FQuest extends AIdented implements IElement {
 
 	@Override
 	public String getName() {
-		return getInfo().mName;
+		return getInfo().mInfo1;
 	}
 
 	public String getName( String lang) {
-		return getInfo( lang).mName;
+		return getInfo( lang).mInfo1;
 	}
 
 	@Override
@@ -263,11 +248,11 @@ public final class FQuest extends AIdented implements IElement {
 	}
 
 	public void setDescr( String descr) {
-		getInfo().mDescr = descr;
+		getInfo().mInfo2 = descr;
 	}
 
 	public void setDescr( String lang, String descr) {
-		getInfo( lang).mDescr = descr;
+		getInfo( lang).mInfo2 = descr;
 	}
 
 	@Override
@@ -277,15 +262,10 @@ public final class FQuest extends AIdented implements IElement {
 
 	@Override
 	public void setName( String name) {
-		getInfo().mName = name;
+		getInfo().mInfo1 = name;
 	}
 
 	public void setName( String lang, String name) {
-		getInfo( lang).mName = name;
-	}
-
-	private static class LangInfo {
-		public String mName;
-		public String mDescr;
+		getInfo( lang).mInfo1 = name;
 	}
 }

@@ -1,6 +1,5 @@
 package de.doerl.hqm.base;
 
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +16,6 @@ public final class FQuestSet extends AMember {
 	private LinkType mInformation = LinkType.NORM;
 	final Vector<FQuest> mQuests = new Vector<>();
 	public final FQuestSetCat mParentCategory;
-	private HashMap<String, LangInfo> mInfo = new HashMap<>();
 
 	FQuestSet( FQuestSetCat parent) {
 		super( BASE, MaxIdOf.getQuestSet( parent) + 1);
@@ -25,7 +23,7 @@ public final class FQuestSet extends AMember {
 	}
 
 	public static int fromIdent( String ident) {
-		return AIdented.fromIdent( BASE, ident);
+		return AIdent.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -72,29 +70,16 @@ public final class FQuestSet extends AMember {
 	}
 
 	public String getDescr() {
-		return getInfo().mDescr;
+		return getInfo().mInfo2;
 	}
 
 	public String getDescr( String lang) {
-		return getInfo( lang).mDescr;
+		return getInfo( lang).mInfo2;
 	}
 
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST_SET;
-	}
-
-	private LangInfo getInfo() {
-		return getInfo( getHqm().mLang);
-	}
-
-	private LangInfo getInfo( String lang) {
-		LangInfo info = mInfo.get( lang);
-		if (info == null) {
-			info = new LangInfo();
-			mInfo.put( lang, info);
-		}
-		return info;
 	}
 
 	@Override
@@ -104,11 +89,11 @@ public final class FQuestSet extends AMember {
 
 	@Override
 	public String getName() {
-		return getInfo().mName;
+		return getInfo().mInfo1;
 	}
 
 	public String getName( String lang) {
-		return getInfo( lang).mName;
+		return getInfo( lang).mInfo1;
 	}
 
 	@Override
@@ -140,11 +125,11 @@ public final class FQuestSet extends AMember {
 	}
 
 	public void setDescr( String descr) {
-		getInfo().mDescr = descr;
+		getInfo().mInfo2 = descr;
 	}
 
 	public void setDescr( String lang, String descr) {
-		getInfo( lang).mDescr = descr;
+		getInfo( lang).mInfo2 = descr;
 	}
 
 	@Override
@@ -154,15 +139,10 @@ public final class FQuestSet extends AMember {
 
 	@Override
 	public void setName( String name) {
-		getInfo().mName = name;
+		getInfo().mInfo1 = name;
 	}
 
 	public void setName( String lang, String name) {
-		getInfo( lang).mName = name;
-	}
-
-	private static class LangInfo {
-		public String mName;
-		public String mDescr;
+		getInfo( lang).mInfo1 = name;
 	}
 }

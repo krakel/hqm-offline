@@ -1,6 +1,5 @@
 package de.doerl.hqm.base;
 
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +16,6 @@ public final class FGroupTier extends AMember {
 	final Vector<FGroup> mGroups = new Vector<>();
 	public int mColorID;
 	public int[] mWeights;
-	private HashMap<String, String> mInfo = new HashMap<>();
 
 	FGroupTier( FGroupTierCat parent) {
 		super( BASE, MaxIdOf.getTier( parent) + 1);
@@ -30,7 +28,7 @@ public final class FGroupTier extends AMember {
 	}
 
 	public static int fromIdent( String ident) {
-		return AIdented.fromIdent( BASE, ident);
+		return AIdent.fromIdent( BASE, ident);
 	}
 
 	@Override
@@ -74,11 +72,11 @@ public final class FGroupTier extends AMember {
 
 	@Override
 	public String getName() {
-		return mInfo.get( getHqm().mLang);
+		return getInfo().mInfo1;
 	}
 
 	public String getName( String lang) {
-		return mInfo.get( lang);
+		return getInfo( lang).mInfo1;
 	}
 
 	@Override
@@ -111,10 +109,10 @@ public final class FGroupTier extends AMember {
 
 	@Override
 	public void setName( String name) {
-		mInfo.put( getHqm().mLang, name);
+		getInfo().mInfo1 = name;
 	}
 
 	public void setName( String lang, String name) {
-		mInfo.put( lang, name);
+		getInfo( lang).mInfo1 = name;
 	}
 }

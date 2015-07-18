@@ -1,15 +1,12 @@
 package de.doerl.hqm.base;
 
-import java.util.HashMap;
-
 import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.TaskTyp;
 
-public abstract class AQuestTask extends AIdented implements IElement {
+public abstract class AQuestTask extends AIdent implements IElement {
 	private static final String BASE = "task";
 	public final FQuest mParentQuest;
-	private HashMap<String, LangInfo> mInfo = new HashMap<>();
 
 	AQuestTask( FQuest parent) {
 		super( BASE, MaxIdOf.getTasks( parent) + 1);
@@ -17,15 +14,15 @@ public abstract class AQuestTask extends AIdented implements IElement {
 	}
 
 	public static int fromIdent( String ident) {
-		return AIdented.fromIdent( BASE, ident);
+		return AIdent.fromIdent( BASE, ident);
 	}
 
 	public String getDescr() {
-		return getInfo().mDescr;
+		return getInfo().mInfo2;
 	}
 
 	public String getDescr( String lang) {
-		return getInfo( lang).mDescr;
+		return getInfo( lang).mInfo2;
 	}
 
 	@Override
@@ -33,26 +30,13 @@ public abstract class AQuestTask extends AIdented implements IElement {
 		return ElementTyp.QUEST_TASK;
 	}
 
-	private LangInfo getInfo() {
-		return getInfo( getHqm().mLang);
-	}
-
-	private LangInfo getInfo( String lang) {
-		LangInfo info = mInfo.get( lang);
-		if (info == null) {
-			info = new LangInfo();
-			mInfo.put( lang, info);
-		}
-		return info;
-	}
-
 	@Override
 	public String getName() {
-		return getInfo().mName;
+		return getInfo().mInfo1;
 	}
 
 	public String getName( String lang) {
-		return getInfo( lang).mName;
+		return getInfo( lang).mInfo1;
 	}
 
 	@Override
@@ -86,24 +70,19 @@ public abstract class AQuestTask extends AIdented implements IElement {
 	}
 
 	public void setDescr( String descr) {
-		getInfo().mDescr = descr;
+		getInfo().mInfo2 = descr;
 	}
 
 	public void setDescr( String lang, String descr) {
-		getInfo( lang).mDescr = descr;
+		getInfo( lang).mInfo2 = descr;
 	}
 
 	@Override
 	public void setName( String name) {
-		getInfo().mName = name;
+		getInfo().mInfo1 = name;
 	}
 
 	public void setName( String lang, String name) {
-		getInfo( lang).mName = name;
-	}
-
-	private static class LangInfo {
-		public String mName;
-		public String mDescr;
+		getInfo( lang).mInfo1 = name;
 	}
 }
