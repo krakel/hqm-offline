@@ -53,7 +53,7 @@ public final class FQuestSet extends AMember {
 	}
 
 	public <T, U> T forEachQuest( IHQMWorker<T, U> worker, U p) {
-		for (FQuest disp : mQuests) {
+		for (ANamed disp : mQuests) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);
@@ -69,14 +69,6 @@ public final class FQuestSet extends AMember {
 		return null;
 	}
 
-	public String getDescr() {
-		return getInfo().mInfo2;
-	}
-
-	public String getDescr( String lang) {
-		return getInfo( lang).mInfo2;
-	}
-
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST_SET;
@@ -85,15 +77,6 @@ public final class FQuestSet extends AMember {
 	@Override
 	public LinkType getInformation() {
 		return mInformation;
-	}
-
-	@Override
-	public String getName() {
-		return getInfo().mInfo1;
-	}
-
-	public String getName( String lang) {
-		return getInfo( lang).mInfo1;
 	}
 
 	@Override
@@ -124,25 +107,8 @@ public final class FQuestSet extends AMember {
 		ABase.remove( mParentCategory.mArr, this);
 	}
 
-	public void setDescr( String descr) {
-		getInfo().mInfo2 = descr;
-	}
-
-	public void setDescr( String lang, String descr) {
-		getInfo( lang).mInfo2 = descr;
-	}
-
 	@Override
 	public void setInformation( LinkType information) {
 		mInformation = information;
-	}
-
-	@Override
-	public void setName( String name) {
-		getInfo().mInfo1 = name;
-	}
-
-	public void setName( String lang, String name) {
-		getInfo( lang).mInfo1 = name;
 	}
 }

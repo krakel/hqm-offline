@@ -350,7 +350,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					}
 					if (mDocu) {
 						rep.setName( mLang, FValue.toString( obj.get( IToken.REPUTATION_NAME)));
-						rep.setNeutral( mLang, FValue.toString( obj.get( IToken.REPUTATION_NEUTRAL)));
+						rep.setDescr( mLang, FValue.toString( obj.get( IToken.REPUTATION_NEUTRAL)));
 					}
 					readMarker( rep, FArray.to( obj.get( IToken.REPUTATION_MARKERS)));
 				}

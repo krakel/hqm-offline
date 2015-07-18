@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.ACategory;
+import de.doerl.hqm.base.AIdent;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.AQuestTask;
@@ -51,8 +52,12 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 		return doBase( cat, p);
 	}
 
+	protected T doIdent( AIdent named, U p) {
+		return doNamed( named, p);
+	}
+
 	protected T doMember( AMember member, U p) {
-		return doNamed( member, p);
+		return doIdent( member, p);
 	}
 
 	protected T doNamed( ANamed named, U p) {
@@ -64,7 +69,7 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	protected T doTask( AQuestTask task, U p) {
-		return doNamed( task, p);
+		return doIdent( task, p);
 	}
 
 	protected T doTaskItems( AQuestTaskItems task, U p) {
@@ -78,7 +83,7 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 
 	@Override
 	public T forGroup( FGroup grp, U p) {
-		return doNamed( grp, p);
+		return doIdent( grp, p);
 	}
 
 	@Override
@@ -93,7 +98,7 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 
 	@Override
 	public T forHQM( FHqm hqm, U p) {
-		return doBase( hqm, p);
+		return doNamed( hqm, p);
 	}
 
 	@Override
@@ -103,22 +108,22 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 
 	@Override
 	public T forLocation( FLocation loc, U p) {
-		return doNamed( loc, p);
+		return doIdent( loc, p);
 	}
 
 	@Override
 	public T forMarker( FMarker mark, U p) {
-		return doNamed( mark, p);
+		return doIdent( mark, p);
 	}
 
 	@Override
 	public T forMob( FMob mob, U p) {
-		return doNamed( mob, p);
+		return doIdent( mob, p);
 	}
 
 	@Override
 	public T forQuest( FQuest quest, U p) {
-		return doNamed( quest, p);
+		return doIdent( quest, p);
 	}
 
 	@Override

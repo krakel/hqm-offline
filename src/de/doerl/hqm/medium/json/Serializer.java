@@ -240,7 +240,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.print( REPUTATION_ID, rep.toIdent());
 		if (mDocu) {
 			mDst.print( REPUTATION_NAME, rep.getName( mLang));
-			mDst.print( REPUTATION_NEUTRAL, rep.getNeutral( mLang));
+			mDst.print( REPUTATION_NEUTRAL, rep.getDescr( mLang));
 		}
 		writeMarkers( rep);
 		mDst.endObject();

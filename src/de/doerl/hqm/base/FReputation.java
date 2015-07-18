@@ -64,23 +64,6 @@ public final class FReputation extends AMember {
 	}
 
 	@Override
-	public String getName() {
-		return getInfo().mInfo1;
-	}
-
-	public String getName( String lang) {
-		return getInfo( lang).mInfo1;
-	}
-
-	public String getNeutral() {
-		return getInfo().mInfo2;
-	}
-
-	public String getNeutral( String lang) {
-		return getInfo( lang).mInfo2;
-	}
-
-	@Override
 	public FReputationCat getParent() {
 		return mParentCategory;
 	}
@@ -108,30 +91,12 @@ public final class FReputation extends AMember {
 		ABase.remove( mParentCategory.mArr, this);
 	}
 
-	@Override
-	public void setName( String name) {
-		getInfo().mInfo1 = name;
-	}
-
-	public void setName( String lang, String name) {
-		getInfo( lang).mInfo1 = name;
-	}
-
-	public void setNeutral( String neutral) {
-		getInfo().mInfo2 = neutral;
-	}
-
-	public void setNeutral( String lang, String neutral) {
-		getInfo( lang).mInfo2 = neutral;
-	}
-
 	public void sort() {
 		Collections.sort( mMarker);
 	}
 
 	@Override
 	public String toString() {
-		LangInfo info = getInfo();
-		return String.format( "%s [%s]", info.mInfo1, info.mInfo2);
+		return String.format( "%s [%s]", getName(), getDescr());
 	}
 }

@@ -37,15 +37,6 @@ public final class FGroup extends AIdent implements IElement {
 	}
 
 	@Override
-	public String getName() {
-		return getInfo().mInfo1;
-	}
-
-	public String getName( String lang) {
-		return getInfo( lang).mInfo1;
-	}
-
-	@Override
 	public FGroupTier getParent() {
 		return mParentTier;
 	}
@@ -71,14 +62,5 @@ public final class FGroup extends AIdent implements IElement {
 
 	public void remove() {
 		ABase.remove( mParentTier.mGroups, this);
-	}
-
-	@Override
-	public void setName( String name) {
-		getInfo().mInfo1 = name;
-	}
-
-	public void setName( String lang, String name) {
-		getInfo( lang).mInfo1 = name;
 	}
 }

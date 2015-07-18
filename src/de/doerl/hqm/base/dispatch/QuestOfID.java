@@ -1,5 +1,6 @@
 package de.doerl.hqm.base.dispatch;
 
+import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
@@ -15,7 +16,7 @@ public class QuestOfID extends AHQMWorker<FQuest, Integer> {
 		return get( hqm.mQuestSetCat, id);
 	}
 
-	public static FQuest get( FQuestSet set, int id) {
+	public static ANamed get( FQuestSet set, int id) {
 		return get( set.mParentCategory, id);
 	}
 

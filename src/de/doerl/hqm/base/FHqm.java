@@ -31,14 +31,6 @@ public final class FHqm extends ANamed {
 		return w.forHQM( this, p);
 	}
 
-	public String getDescr() {
-		return getInfo().mInfo2;
-	}
-
-	public String getDescr( String lang) {
-		return getInfo( lang).mInfo2;
-	}
-
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.HQM;
@@ -65,14 +57,6 @@ public final class FHqm extends ANamed {
 
 	public boolean isModified() {
 		return mModified;
-	}
-
-	public void setDescr( String descr) {
-		getInfo().mInfo2 = descr;
-	}
-
-	public void setDescr( String lang, String descr) {
-		getInfo( lang).mInfo2 = descr;
 	}
 
 	public void setModified( boolean value) {

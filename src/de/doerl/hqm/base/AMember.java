@@ -9,7 +9,4 @@ public abstract class AMember extends AIdent implements IElement {
 	public ACategory<? extends AMember> getParent() {
 		return null;
 	}
-
-	@Override
-	public abstract void setName( String name);
 }

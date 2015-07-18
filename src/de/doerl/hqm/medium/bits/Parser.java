@@ -320,7 +320,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		for (int i = 0; i < count; ++i) {
 			FReputation rep = cat.createMember( mSrc.readData( DataBitHelper.REPUTATION));
 			rep.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
-			rep.setNeutral( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
+			rep.setDescr( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			readMarker( rep);
 		}
 	}

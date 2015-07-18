@@ -71,15 +71,6 @@ public final class FGroupTier extends AMember {
 	}
 
 	@Override
-	public String getName() {
-		return getInfo().mInfo1;
-	}
-
-	public String getName( String lang) {
-		return getInfo( lang).mInfo1;
-	}
-
-	@Override
 	public FGroupTierCat getParent() {
 		return mParentCategory;
 	}
@@ -105,14 +96,5 @@ public final class FGroupTier extends AMember {
 
 	public void remove() {
 		ABase.remove( mParentCategory.mArr, this);
-	}
-
-	@Override
-	public void setName( String name) {
-		getInfo().mInfo1 = name;
-	}
-
-	public void setName( String lang, String name) {
-		getInfo( lang).mInfo1 = name;
 	}
 }

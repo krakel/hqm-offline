@@ -99,7 +99,7 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 		}
 		else {
 			mIcon.setIcon( new ReputationIcon( rep));
-			mNeutral.setText( rep.getNeutral());
+			mNeutral.setText( rep.getDescr());
 			MarkerUpdate.get( rep, mCtrl, mMarker.getModel());
 			mList.setSelectedValue( rep, true);
 			updateActions( true);
@@ -198,9 +198,9 @@ class EntityReputationCat extends AEntityCat<FReputation> {
 
 		@Override
 		public void actionPerformed( ActionEvent e) {
-			String result = DialogTextField.update( mActiv.getNeutral(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
+			String result = DialogTextField.update( mActiv.getDescr(), mCtrl.getFrame(), DataBitHelper.QUEST_NAME_LENGTH);
 			if (result != null) {
-				mActiv.setNeutral( result);
+				mActiv.setDescr( result);
 				mCtrl.fireChanged( mActiv);
 			}
 		}

@@ -33,15 +33,6 @@ public final class FMarker extends AIdent implements Comparable<FMarker>, IEleme
 	}
 
 	@Override
-	public String getName() {
-		return getInfo().mInfo1;
-	}
-
-	public String getName( String lang) {
-		return getInfo( lang).mInfo1;
-	}
-
-	@Override
 	public FReputation getParent() {
 		return mParentRep;
 	}
@@ -69,15 +60,6 @@ public final class FMarker extends AIdent implements Comparable<FMarker>, IEleme
 	@Override
 	public void remove() {
 		ABase.remove( mParentRep.mMarker, this);
-	}
-
-	@Override
-	public void setName( String name) {
-		getInfo().mInfo1 = name;
-	}
-
-	public void setName( String lang, String name) {
-		getInfo( lang).mInfo1 = name;
 	}
 
 	@Override

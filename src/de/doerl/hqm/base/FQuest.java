@@ -160,14 +160,6 @@ public final class FQuest extends AIdent implements IElement {
 		return mY + ResourceManager.getH5( mBig);
 	}
 
-	public String getDescr() {
-		return getInfo().mInfo2;
-	}
-
-	public String getDescr( String lang) {
-		return getInfo( lang).mInfo2;
-	}
-
 	@Override
 	public ElementTyp getElementTyp() {
 		return ElementTyp.QUEST;
@@ -181,15 +173,6 @@ public final class FQuest extends AIdent implements IElement {
 	@Override
 	public LinkType getInformation() {
 		return mInformation;
-	}
-
-	@Override
-	public String getName() {
-		return getInfo().mInfo1;
-	}
-
-	public String getName( String lang) {
-		return getInfo( lang).mInfo1;
 	}
 
 	@Override
@@ -247,25 +230,8 @@ public final class FQuest extends AIdent implements IElement {
 		ABase.remove( mParentQuestSet.mQuests, this);
 	}
 
-	public void setDescr( String descr) {
-		getInfo().mInfo2 = descr;
-	}
-
-	public void setDescr( String lang, String descr) {
-		getInfo( lang).mInfo2 = descr;
-	}
-
 	@Override
 	public void setInformation( LinkType information) {
 		mInformation = information;
-	}
-
-	@Override
-	public void setName( String name) {
-		getInfo().mInfo1 = name;
-	}
-
-	public void setName( String lang, String name) {
-		getInfo( lang).mInfo1 = name;
 	}
 }

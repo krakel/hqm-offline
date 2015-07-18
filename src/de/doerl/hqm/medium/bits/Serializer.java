@@ -146,7 +146,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 	public Object forReputation( FReputation rep, FileVersion version) {
 		mDst.writeData( IndexOf.getMember( rep), DataBitHelper.REPUTATION);
 		mDst.writeString( rep.getName(), DataBitHelper.QUEST_NAME_LENGTH);
-		mDst.writeString( rep.getNeutral(), DataBitHelper.QUEST_NAME_LENGTH);
+		mDst.writeString( rep.getDescr(), DataBitHelper.QUEST_NAME_LENGTH);
 		writeMarker( rep, version);
 		return null;
 	}
