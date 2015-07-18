@@ -14,6 +14,10 @@ public class GroupTierOfID extends AHQMWorker<FGroupTier, Integer> {
 		return set.forEachMember( WORKER, id);
 	}
 
+	public static FGroupTier get( FGroupTierCat set, String ident) {
+		return set.forEachMember( WORKER, FGroupTier.fromIdent( ident));
+	}
+
 	public static FGroupTier get( FHqm hqm, int id) {
 		return get( hqm.mGroupTierCat, id);
 	}

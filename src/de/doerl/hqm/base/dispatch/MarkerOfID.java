@@ -13,6 +13,10 @@ public class MarkerOfID extends AHQMWorker<FMarker, Integer> {
 		return set.forEachMarker( WORKER, id);
 	}
 
+	public static FMarker get( FReputation set, String ident) {
+		return set.forEachMarker( WORKER, FMarker.fromIdent( ident));
+	}
+
 	@Override
 	public FMarker forMarker( FMarker mark, Integer id) {
 		return mark.getID() == id.intValue() ? mark : null;

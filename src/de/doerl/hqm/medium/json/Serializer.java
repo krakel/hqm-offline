@@ -21,10 +21,6 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.FQuestTaskDeath;
-import de.doerl.hqm.base.FQuestTaskItemsConsume;
-import de.doerl.hqm.base.FQuestTaskItemsConsumeQDS;
-import de.doerl.hqm.base.FQuestTaskItemsCrafting;
-import de.doerl.hqm.base.FQuestTaskItemsDetect;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FQuestTaskReputationKill;
@@ -36,29 +32,44 @@ import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
-import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
 
-class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToken {
+class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	private JsonWriter mDst;
+	private String mLang;
+	private boolean mMain;
+	private boolean mDocu;
 
-	public Serializer( OutputStream os) throws IOException {
+	public Serializer( OutputStream os, String lang, boolean withMain, boolean withDocu) throws IOException {
 		mDst = new JsonWriter( os);
+		mLang = lang;
+		mMain = withMain;
+		mDocu = withDocu;
 	}
 
 	private void doTask( AQuestTask task) {
 		mDst.print( TASK_ID, task.toIdent());
-		mDst.print( TASK_TYPE, task.getTaskTyp());
+		if (mMain) {
+			mDst.print( TASK_TYPE, task.getTaskTyp());
+		}
+		if (mDocu) {
+			mDst.print( TASK_NAME, task.getName( mLang));
+			mDst.print( TASK_DESC, task.getDescr( mLang));
+		}
 	}
 
-	private void doTaskItem( AQuestTaskItems task) {
+	@Override
+	protected Object doTaskItems( AQuestTaskItems task, Object p) {
 		mDst.beginObject();
 		doTask( task);
-		mDst.beginArray( TASK_REQUIREMENTS);
-		task.forEachRequirement( this, null);
-		mDst.endArray();
+		if (mMain) {
+			mDst.beginArray( TASK_REQUIREMENTS);
+			task.forEachRequirement( this, null);
+			mDst.endArray();
+		}
 		mDst.endObject();
+		return null;
 	}
 
 	public void flushDst() {
@@ -77,8 +88,13 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forGroup( FGroup grp, Object p) {
 		mDst.beginObject();
 		mDst.print( GROUP_ID, grp.toIdent());
-		mDst.print( GROUP_LIMIT, grp.mLimit);
-		writeStackArr( GROUP_STACKS, grp.mStacks);
+		if (mDocu) {
+			mDst.print( GROUP_NAME, grp.getName( mLang));
+		}
+		if (mMain) {
+			mDst.print( GROUP_LIMIT, grp.mLimit);
+			writeStackArr( GROUP_STACKS, grp.mStacks);
+		}
 		mDst.endObject();
 		return null;
 	}
@@ -87,8 +103,13 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forGroupTier( FGroupTier tier, Object p) {
 		mDst.beginObject();
 		mDst.print( GROUP_TIER_ID, tier.toIdent());
-		mDst.print( GROUP_TIER_COLOR, tier.mColorID);
-		mDst.printArr( GROUP_TIER_WEIGHTS, tier.mWeights);
+		if (mDocu) {
+			mDst.print( GROUP_TIER_NAME, tier.getName( mLang));
+		}
+		if (mMain) {
+			mDst.print( GROUP_TIER_COLOR, tier.mColorID);
+			mDst.printArr( GROUP_TIER_WEIGHTS, tier.mWeights);
+		}
 		writeGroups( tier);
 		mDst.endObject();
 		return null;
@@ -112,13 +133,18 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forLocation( FLocation loc, Object p) {
 		mDst.beginObject();
 		mDst.print( LOCATION_ID, loc.toIdent());
-		writeIcon( LOCATION_ICON, loc.mIcon);
-		mDst.print( LOCATION_X, loc.mX);
-		mDst.print( LOCATION_Y, loc.mY);
-		mDst.print( LOCATION_Z, loc.mZ);
-		mDst.print( LOCATION_RADIUS, loc.mRadius);
-		mDst.print( LOCATION_VISIBLE, loc.mVisibility);
-		mDst.print( LOCATION_DIM, loc.mDim);
+		if (mDocu) {
+			mDst.print( LOCATION_NAME, loc.getName( mLang));
+		}
+		if (mMain) {
+			writeIcon( LOCATION_ICON, loc.mIcon);
+			mDst.print( LOCATION_X, loc.mX);
+			mDst.print( LOCATION_Y, loc.mY);
+			mDst.print( LOCATION_Z, loc.mZ);
+			mDst.print( LOCATION_RADIUS, loc.mRadius);
+			mDst.print( LOCATION_VISIBLE, loc.mVisibility);
+			mDst.print( LOCATION_DIM, loc.mDim);
+		}
 		mDst.endObject();
 		return null;
 	}
@@ -127,7 +153,12 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forMarker( FMarker mark, Object p) {
 		mDst.beginObject();
 		mDst.print( MARKER_ID, mark.toIdent());
-		mDst.print( MARKER_VALUE, mark.mMark);
+		if (mDocu) {
+			mDst.print( MARKER_NAME, mark.getName( mLang));
+		}
+		if (mMain) {
+			mDst.print( MARKER_VALUE, mark.mMark);
+		}
 		mDst.endObject();
 		return null;
 	}
@@ -136,10 +167,15 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forMob( FMob mob, Object p) {
 		mDst.beginObject();
 		mDst.print( MOB_ID, mob.toIdent());
-		writeIcon( MOB_ICON, mob.mIcon);
-		mDst.print( MOB_OBJECT, mob.mMob);
-		mDst.print( MOB_COUNT, mob.mKills);
-		mDst.print( MOB_EXACT, mob.mExact);
+		if (mDocu) {
+			mDst.print( MOB_NAME, mob.getName( mLang));
+		}
+		if (mMain) {
+			writeIcon( MOB_ICON, mob.mIcon);
+			mDst.print( MOB_OBJECT, mob.mMob);
+			mDst.print( MOB_COUNT, mob.mKills);
+			mDst.print( MOB_EXACT, mob.mExact);
+		}
 		mDst.endObject();
 		return null;
 	}
@@ -148,20 +184,28 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forQuest( FQuest quest, Object p) {
 		mDst.beginObject();
 		mDst.print( QUEST_ID, quest.toIdent());
-		mDst.print( QUEST_X, quest.mX);
-		mDst.print( QUEST_Y, quest.mY);
-		mDst.print( QUEST_BIG, quest.mBig);
-		writeIcon( QUEST_ICON, quest.mIcon);
-		writeQuestArr( QUEST_REQUIREMENTS, quest.mRequirements);
-		writeQuestArr( QUEST_OPTION_LINKS, quest.mOptionLinks);
-		quest.mRepeatInfo.accept( this, null);
-		mDst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
-		mDst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
-		mDst.print( QUEST_PARENT_REQUIREMENT_COUNT, quest.mCount);
+		if (mDocu) {
+			mDst.print( QUEST_NAME, quest.getName( mLang));
+			mDst.print( QUEST_DESC, quest.getDescr( mLang));
+		}
+		if (mMain) {
+			mDst.print( QUEST_X, quest.mX);
+			mDst.print( QUEST_Y, quest.mY);
+			mDst.print( QUEST_BIG, quest.mBig);
+			writeIcon( QUEST_ICON, quest.mIcon);
+			writeQuestArr( QUEST_REQUIREMENTS, quest.mRequirements);
+			writeQuestArr( QUEST_OPTION_LINKS, quest.mOptionLinks);
+			quest.mRepeatInfo.accept( this, null);
+			mDst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
+			mDst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
+			mDst.print( QUEST_PARENT_REQUIREMENT_COUNT, quest.mCount);
+		}
 		writeTasks( quest);
-		writeStackArr( QUEST_REWARD, quest.mRewards);
-		writeStackArr( QUEST_CHOICE, quest.mChoices);
-		writeRewards( quest);
+		if (mMain) {
+			writeStackArr( QUEST_REWARD, quest.mRewards);
+			writeStackArr( QUEST_CHOICE, quest.mChoices);
+			writeRewards( quest);
+		}
 		mDst.endObject();
 		return null;
 	}
@@ -170,6 +214,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forQuestSet( FQuestSet set, Object p) {
 		mDst.beginObject();
 		mDst.print( QUEST_SET_ID, set.toIdent());
+		if (mDocu) {
+			mDst.print( QUEST_SET_NAME, set.getName( mLang));
+			mDst.print( QUEST_SET_DECR, set.getDescr( mLang));
+		}
 		writeQuests( set);
 		mDst.endObject();
 		return null;
@@ -190,6 +238,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forReputation( FReputation rep, Object p) {
 		mDst.beginObject();
 		mDst.print( REPUTATION_ID, rep.toIdent());
+		if (mDocu) {
+			mDst.print( REPUTATION_NAME, rep.getName( mLang));
+			mDst.print( REPUTATION_NEUTRAL, rep.getNeutral( mLang));
+		}
 		writeMarkers( rep);
 		mDst.endObject();
 		return null;
@@ -223,32 +275,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forTaskDeath( FQuestTaskDeath task, Object p) {
 		mDst.beginObject();
 		doTask( task);
-		mDst.print( TASK_DEATHS, task.mDeaths);
+		if (mMain) {
+			mDst.print( TASK_DEATHS, task.mDeaths);
+		}
 		mDst.endObject();
-		return null;
-	}
-
-	@Override
-	public Object forTaskItemsConsume( FQuestTaskItemsConsume task, Object p) {
-		doTaskItem( task);
-		return null;
-	}
-
-	@Override
-	public Object forTaskItemsConsumeQDS( FQuestTaskItemsConsumeQDS task, Object p) {
-		doTaskItem( task);
-		return null;
-	}
-
-	@Override
-	public Object forTaskItemsCrafting( FQuestTaskItemsCrafting task, Object p) {
-		doTaskItem( task);
-		return null;
-	}
-
-	@Override
-	public Object forTaskItemsDetect( FQuestTaskItemsDetect task, Object p) {
-		doTaskItem( task);
 		return null;
 	}
 
@@ -278,7 +308,9 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forTaskReputationKill( FQuestTaskReputationKill task, Object p) {
 		mDst.beginObject();
 		doTask( task);
-		mDst.print( TASK_KILLS, task.mKills);
+		if (mMain) {
+			mDst.print( TASK_KILLS, task.mKills);
+		}
 		mDst.endObject();
 		return null;
 	}
@@ -287,20 +319,32 @@ class Serializer extends AHQMWorker<Object, Object> implements IHqmWriter, IToke
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
 		mDst.beginObject();
 		doTask( task);
-		mDst.beginArray( TASK_SETTINGS);
-		task.forEachSetting( this, p);
-		mDst.endArray();
+		if (mMain) {
+			mDst.beginArray( TASK_SETTINGS);
+			task.forEachSetting( this, p);
+			mDst.endArray();
+		}
 		mDst.endObject();
 		return null;
 	}
 
-	@Override
-	public void writeDst( FHqm hqm) {
+	void writeDst( FHqm hqm) {
 		ReindexOfQuests.get( hqm);
 		mDst.beginObject();
-		mDst.print( HQM_VERSION, hqm.getVersion());
-		mDst.print( HQM_LANGUAGE, hqm.mLang);
-		mDst.printIf( HQM_PASSCODE, hqm.mPassCode);
+		if (mMain) {
+			mDst.print( HQM_VERSION, hqm.getVersion());
+			mDst.printIf( HQM_PASSCODE, hqm.mPassCode);
+		}
+		else {
+			mDst.print( HQM_PARENT, hqm.getName());
+		}
+		if (mDocu) {
+			mDst.print( HQM_LANGUAGE, mLang);
+			mDst.print( HQM_DECRIPTION, hqm.getDescr( mLang));
+		}
+		else {
+			mDst.print( HQM_LANGUAGE, hqm.mLang);
+		}
 		writeQuestSetCat( hqm.mQuestSetCat);
 		writeReputations( hqm.mReputationCat);
 		writeGroupTiers( hqm.mGroupTierCat);

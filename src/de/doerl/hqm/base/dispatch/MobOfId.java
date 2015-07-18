@@ -13,6 +13,10 @@ public class MobOfId extends AHQMWorker<FMob, Integer> {
 		return task.forEachMob( WORKER, id);
 	}
 
+	public static FMob get( FQuestTaskMob task, String ident) {
+		return task.forEachMob( WORKER, FMob.fromIdent( ident));
+	}
+
 	@Override
 	public FMob forMob( FMob mob, Integer id) {
 		return mob.getID() == id.intValue() ? mob : null;

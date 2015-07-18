@@ -13,6 +13,10 @@ public class GroupOfID extends AHQMWorker<FGroup, Integer> {
 		return set.forEachGroup( WORKER, id);
 	}
 
+	public static FGroup get( FGroupTier set, String ident) {
+		return set.forEachGroup( WORKER, FGroup.fromIdent( ident));
+	}
+
 	@Override
 	public FGroup forGroup( FGroup grp, Integer id) {
 		return grp.getID() == id.intValue() ? grp : null;

@@ -13,6 +13,10 @@ public class TaskOfId extends AHQMWorker<AQuestTask, Integer> {
 		return quest.forEachTask( WORKER, id);
 	}
 
+	public static AQuestTask get( FQuest quest, String ident) {
+		return quest.forEachTask( WORKER, AQuestTask.fromIdent( ident));
+	}
+
 	@Override
 	protected AQuestTask doTask( AQuestTask task, Integer id) {
 		return task.getID() == id.intValue() ? task : null;

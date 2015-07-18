@@ -13,6 +13,10 @@ public class LocationOfId extends AHQMWorker<FLocation, Integer> {
 		return task.forEachLocation( WORKER, id);
 	}
 
+	public static FLocation get( FQuestTaskLocation task, String ident) {
+		return task.forEachLocation( WORKER, FLocation.fromIdent( ident));
+	}
+
 	@Override
 	public FLocation forLocation( FLocation loc, Integer id) {
 		return loc.getID() == id.intValue() ? loc : null;

@@ -36,12 +36,11 @@ import de.doerl.hqm.base.dispatch.MaxIdOfQuest;
 import de.doerl.hqm.base.dispatch.QuestOfID;
 import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.base.dispatch.SizeOfGroups;
-import de.doerl.hqm.medium.IHqmWriter;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.TriggerType;
 
-class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
+class Serializer extends AHQMWorker<Object, FileVersion> {
 //	private static final Logger LOGGER = Logger.getLogger( Serializer.class.getName());
 	private GroupWorker mGroupWorker = new GroupWorker();
 	private BitOutputStream mDst;
@@ -227,8 +226,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> implements IHqmWriter {
 		return res;
 	}
 
-	@Override
-	public void writeDst( FHqm hqm) {
+	void writeDst( FHqm hqm) {
 		FileVersion version = hqm.getVersion();
 		mDst.writeData( version.ordinal(), DataBitHelper.BYTE);
 		if (version.contains( FileVersion.LOCK)) {

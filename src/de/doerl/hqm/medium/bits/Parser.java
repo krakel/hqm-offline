@@ -44,7 +44,6 @@ import de.doerl.hqm.base.dispatch.QuestOfID;
 import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReputationOfID;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
-import de.doerl.hqm.medium.IHqmReader;
 import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
@@ -55,7 +54,7 @@ import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.quest.Visibility;
 import de.doerl.hqm.utils.Utils;
 
-class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
+class Parser extends AHQMWorker<Object, FileVersion> {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private BitInputStream mSrc;
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
@@ -243,7 +242,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		rep.sort();
 	}
 
-	public void readQuests( FQuestSetCat cat, FileVersion version) {
+	private void readQuests( FQuestSetCat cat, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.QUESTS, version);
 		for (int i = 0; i < count; ++i) {
 			if (mSrc.readBoolean()) {
@@ -335,7 +334,7 @@ class Parser extends AHQMWorker<Object, FileVersion> implements IHqmReader {
 		}
 	}
 
-	public void readSrc( FHqm hqm) {
+	void readSrc( FHqm hqm) {
 		FileVersion version = FileVersion.get( mSrc.readByte());
 		hqm.setVersion( version);
 		hqm.mLang = FHqm.LANG_EN_US;

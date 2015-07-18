@@ -23,6 +23,10 @@ public class ReputationOfID extends AHQMWorker<FReputation, Integer> {
 		return set.forEachMember( WORKER, id);
 	}
 
+	public static FReputation get( FReputationCat set, String ident) {
+		return set.forEachMember( WORKER, FReputation.fromIdent( ident));
+	}
+
 	@Override
 	public FReputation forReputation( FReputation rep, Integer id) {
 		return rep.getID() == id.intValue() ? rep : null;

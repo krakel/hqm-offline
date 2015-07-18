@@ -22,6 +22,10 @@ public class QuestSetOfID extends AHQMWorker<FQuestSet, Integer> {
 		return cat.forEachMember( WORKER, id);
 	}
 
+	public static FQuestSet get( FQuestSetCat cat, String ident) {
+		return cat.forEachMember( WORKER, FQuestSet.fromIdent( ident));
+	}
+
 	@Override
 	public FQuestSet forQuestSet( FQuestSet set, Integer id) {
 		return set.getID() == id.intValue() ? set : null;
