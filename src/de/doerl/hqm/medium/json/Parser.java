@@ -43,7 +43,6 @@ import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.ReputationOfID;
 import de.doerl.hqm.base.dispatch.TaskOfId;
-import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.quest.RepeatType;
@@ -175,15 +174,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					}
 					if (mMain) {
 						tier.mColorID = FValue.toInt( obj.get( IToken.GROUP_TIER_COLOR));
-						int[] weights = BagTier.newArray();
 						FArray ww = FArray.to( obj.get( IToken.GROUP_TIER_WEIGHTS));
 						if (ww != null) {
-							int size = Math.min( ww.size(), weights.length);
+							int size = Math.min( ww.size(), tier.mWeights.length);
 							for (int i = 0; i < size; ++i) {
-								weights[i] = FValue.toInt( ww.get( i));
+								tier.mWeights[i] = FValue.toInt( ww.get( i));
 							}
 						}
-						tier.mWeights = weights;
 					}
 					readGroups( tier, FArray.to( obj.get( IToken.GROUP_TIER_GROUPS)));
 				}

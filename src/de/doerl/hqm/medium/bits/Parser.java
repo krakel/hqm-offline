@@ -44,7 +44,6 @@ import de.doerl.hqm.base.dispatch.QuestOfID;
 import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReputationOfID;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
-import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.ItemPrecision;
@@ -224,11 +223,9 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 			FGroupTier tier = cat.createMember( id);
 			tier.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			tier.mColorID = mSrc.readData( DataBitHelper.COLOR);
-			int[] weights = BagTier.newArray();
-			for (int j = 0; j < weights.length; ++j) {
-				weights[j] = mSrc.readData( DataBitHelper.WEIGHT);
+			for (int i = 0; i < tier.mWeights.length; ++i) {
+				tier.mWeights[i] = mSrc.readData( DataBitHelper.WEIGHT);
 			}
-			tier.mWeights = weights;
 		}
 	}
 

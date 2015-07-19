@@ -116,7 +116,6 @@ class DialogListWeights extends ADialog {
 	}
 
 	private void updateResult( FGroupTier tier) {
-		tier.mWeights = BagTier.newArray();
 		for (int i = 0; i < tier.mWeights.length; ++i) {
 			tier.mWeights[i] = mModel.get( i);
 		}

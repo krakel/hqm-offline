@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.MaxIdOf;
+import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.utils.Utils;
 
@@ -13,9 +14,9 @@ public final class FGroupTier extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FGroupTier.class.getName());
 	private static final String BASE = "tier";
 	public final FGroupTierCat mParentCategory;
+	public final int[] mWeights = BagTier.newArray();
 	final Vector<FGroup> mGroups = new Vector<>();
 	public int mColorID;
-	public int[] mWeights;
 
 	FGroupTier( FGroupTierCat parent) {
 		super( BASE, MaxIdOf.getTier( parent) + 1);

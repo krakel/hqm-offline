@@ -40,7 +40,7 @@ class BitInputStream {
 		return readData( bits.getBitCount( version));
 	}
 
-	private int readData( int count) {
+	public int readData( int count) {
 		int result = 0;
 		int used = 0;
 		do {
