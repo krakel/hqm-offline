@@ -94,11 +94,15 @@ class DialogListLangs extends ADialog {
 		mMain.add( scroll);
 		mMain.add( Box.createHorizontalStrut( GAP));
 		mMain.add( createEdit());
+		ClickHandler dbl = new ClickHandler();
 		mList.addMouseListener( new ButtonUpdateHandler());
+		mList.addMouseListener( dbl);
 		mBtnAdd.addActionListener( new EntryAddHandler());
-		mBtnChange.addActionListener( new EntryChangeHandler());
 		mBtnDefault.addActionListener( new EntryDefaultHandler());
 		mBtnDelete.addActionListener( new EntryDeleteHandler());
+		EntryChangeHandler edit = new EntryChangeHandler();
+		mBtnChange.addActionListener( edit);
+		dbl.addClickListener( edit);
 	}
 
 	protected void updateBtn() {
