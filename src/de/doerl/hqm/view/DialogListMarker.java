@@ -192,7 +192,7 @@ class DialogListMarker extends ADialog {
 
 		public Renderer() {
 			setLayout( new GridLayout( 1, 2, 2, 2));
-			setOpaque( false);
+			setOpaque( true);
 			AEntity.setSizes( this, ADialog.FONT_NORMAL.getSize());
 			add( mName);
 			add( mMark);
