@@ -9,14 +9,22 @@ import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.FReputationCat;
+import de.doerl.hqm.base.data.AQuestDataTask;
 import de.doerl.hqm.base.data.FData;
 import de.doerl.hqm.base.data.FPlayer;
 import de.doerl.hqm.base.data.FPlayerStats;
 import de.doerl.hqm.base.data.FQuestData;
+import de.doerl.hqm.base.data.FQuestDataTaskDeath;
+import de.doerl.hqm.base.data.FQuestDataTaskItems;
+import de.doerl.hqm.base.data.FQuestDataTaskLocation;
+import de.doerl.hqm.base.data.FQuestDataTaskMob;
+import de.doerl.hqm.base.data.FQuestDataTaskReputationKill;
+import de.doerl.hqm.base.data.FQuestDataTaskReputationTarget;
 import de.doerl.hqm.base.data.FTeam;
 import de.doerl.hqm.base.data.FTeamStats;
 import de.doerl.hqm.base.data.GroupData;
 import de.doerl.hqm.base.data.PlayerEntry;
+import de.doerl.hqm.base.dispatch.ADataWorker;
 import de.doerl.hqm.base.dispatch.QuestOfID;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.base.dispatch.SizeOf;
@@ -31,7 +39,7 @@ import de.doerl.hqm.quest.RewardSetting;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.utils.Utils;
 
-class ParserData {
+class ParserData extends ADataWorker<Object, FileVersion> {
 	private static final Logger LOGGER = Logger.getLogger( ParserData.class.getName());
 	private BitInputStream mSrc;
 
@@ -39,68 +47,69 @@ class ParserData {
 		mSrc = new BitInputStream( is);
 	}
 
-	private void loadData( FTeam team, FileVersion version) {
-		if (version.contains( FileVersion.TEAMS) && !team.isSingle()) {
-			loadTeamData( team, version, false);
-		}
-		int playerCount = team.getPlayerCount();
-		FQuestSetCat questSetCat = team.mParentData.mHqm.mQuestSetCat;
-		for (int id = 0; id < SizeOfQuests.get( questSetCat); id++) {
-			FQuest quest = QuestOfID.get( questSetCat, id);
-			FQuestData data = team.mQuestData.get( id);
-			if (quest != null && data != null) {
-				data.preRead( playerCount);
-			}
-		}
-		int count = mSrc.readData( DataBitHelper.QUESTS);
-		for (int i = 0; i < count; ++i) {
-			int id = mSrc.readData( DataBitHelper.QUESTS);
-			FQuest quest = QuestOfID.get( questSetCat, id);
-			int bits = -1;
-			if (version.contains( FileVersion.REMOVED_QUESTS)) {
-				bits = mSrc.readData( DataBitHelper.INT);
-			}
-			if (quest != null && team.mQuestData.get( id) != null) {
-				readQuestData( team.mQuestData.get( id), quest, version);
-			}
-			else if (version.contains( FileVersion.REMOVED_QUESTS)) {
-				mSrc.readData( bits);
-			}
-		}
-		team.createReputation();
-		if (version.contains( FileVersion.REPUTATION)) {
-			int reputationCount = mSrc.readData( DataBitHelper.REPUTATION);
-			for (int i = 0; i < reputationCount; i++) {
-				int id = mSrc.readData( DataBitHelper.REPUTATION);
-				int value = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
-				if (ReputationOfIdx.get( (FReputationCat) null, id) != null) {
-					team.setReputation( id, Integer.valueOf( value));
-				}
-			}
-		}
+	private void doTask( AQuestDataTask task) {
+		task.mCompleted = mSrc.readBoolean();
 	}
 
-	private void loadTeamData( FTeam team, FileVersion version, boolean light) {
-		team.mName = mSrc.readString( DataBitHelper.NAME_LENGTH);
-		team.mID = mSrc.readData( DataBitHelper.TEAMS);
-		if (version.contains( FileVersion.TEAM_SETTINGS)) {
-			team.mLifeSetting = LifeSetting.get( mSrc.readData( DataBitHelper.TEAM_LIVES_SETTING));
-			team.mRewardSetting = RewardSetting.get( mSrc.readData( DataBitHelper.TEAM_REWARD_SETTING));
-			if (team.mRewardSetting == RewardSetting.ALL) {
-				team.mRewardSetting = RewardSetting.getDefault();
+	@Override
+	public Object forDataTaskDeath( FQuestDataTaskDeath task, FileVersion version) {
+		doTask( task);
+		task.mDeaths = mSrc.readData( DataBitHelper.DEATHS);
+		return null;
+	}
+
+	@Override
+	public Object forDataTaskItems( FQuestDataTaskItems task, FileVersion version) {
+		doTask( task);
+		int count = mSrc.readData( DataBitHelper.TASK_ITEM_COUNT);
+		for (int i = 0; i < count; ++i) {
+			int progress = mSrc.readData( DataBitHelper.ITEM_PROGRESS);
+			if (i < task.mProgress.length) {
+//				task.mProgress[i] = Math.min( items[i].required, Math.max( 0, progress));
 			}
 		}
-		team.mPlayers.clear();
-		int count = mSrc.readData( DataBitHelper.PLAYERS);
+		return null;
+	}
+
+	@Override
+	public Object forDataTaskLocation( FQuestDataTaskLocation task, FileVersion version) {
+		doTask( task);
+		int count = mSrc.readData( DataBitHelper.TASK_LOCATION_COUNT);
+		boolean visited[] = task.mVisited;
+		for (int i = 0; i < count; ++i) {
+			boolean val = mSrc.readBoolean();
+			if (i < visited.length) {
+				visited[i] = val;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Object forDataTaskMob( FQuestDataTaskMob task, FileVersion version) {
+		doTask( task);
+		int count = mSrc.readData( DataBitHelper.TASK_MOB_COUNT);
+		int killed[] = task.mKilled;
 		for (int i = 0; i < count; i++) {
-			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
-			if (name == null) {
-				name = "Unknown";
+			int val = mSrc.readData( DataBitHelper.KILL_COUNT);
+			if (i < killed.length) {
+//				killed[i] = Math.min( mobs[i].count, Math.max( 0, val));
 			}
-			boolean inTeam = mSrc.readBoolean();
-			boolean owner = inTeam && mSrc.readBoolean();
-			team.mPlayers.add( new PlayerEntry( name, inTeam, owner));
 		}
+		return null;
+	}
+
+	@Override
+	public Object forDataTaskReputationKill( FQuestDataTaskReputationKill task, FileVersion version) {
+		doTask( task);
+		task.mKills = mSrc.readData( DataBitHelper.DEATHS);
+		return null;
+	}
+
+	@Override
+	public Object forDataTaskReputationTarget( FQuestDataTaskReputationTarget task, FileVersion p) {
+		doTask( task);
+		return null;
 	}
 
 	private void readDeath( FPlayerStats stats) {
@@ -153,7 +162,9 @@ class ParserData {
 				else {
 					player.mTeam = data.createTeam();
 					player.mTeam.mName = player.mName;
-					loadData( player.mTeam, version);
+					player.mTeam.createQuestData();
+					player.mTeam.createReputation();
+					readTeam( player.mTeam, version);
 				}
 				if (complex && version.contains( FileVersion.BAG_LIMITS)) {
 					readGroups( player);
@@ -206,10 +217,11 @@ class ParserData {
 				}
 			}
 		}
+		int size = SizeOf.getTasks( quest);
 		int count = mSrc.readData( DataBitHelper.TASKS);
 		for (int id = 0; id < count; id++) {
 			int idx = mSrc.readData( DataBitHelper.TASK_TYPE);
-			if (id < SizeOf.getTasks( quest)) {
+			if (id < size) {
 				AQuestTask task = TaskOfId.get( quest, id);
 //				questData.mTasks[id] = task.validateData( questData.mTasks[id]);
 //				task.read( mSrc, questData.mTasks[id], version, false);
@@ -247,11 +259,78 @@ class ParserData {
 		readPlayers( data, version);
 	}
 
+	private void readTeam( FTeam team, FileVersion version) {
+		if (version.contains( FileVersion.TEAMS) && !team.isSingle()) {
+			readTeamData( team, version);
+		}
+		int playerCount = team.getPlayerCount();
+		FQuestSetCat questSetCat = team.mParentData.mHqm.mQuestSetCat;
+		for (int id = 0; id < SizeOfQuests.get( questSetCat); ++id) {
+			FQuest quest = QuestOfID.get( questSetCat, id);
+			FQuestData data = team.mQuestData.get( id);
+			if (quest != null && data != null) {
+				data.preRead( playerCount);
+			}
+		}
+		int count = mSrc.readData( DataBitHelper.QUESTS);
+		for (int i = 0; i < count; ++i) {
+			int id = mSrc.readData( DataBitHelper.QUESTS);
+			FQuest quest = QuestOfID.get( questSetCat, id);
+			int bits = -1;
+			if (version.contains( FileVersion.REMOVED_QUESTS)) {
+				bits = mSrc.readData( DataBitHelper.INT);
+			}
+			FQuestData questData = team.mQuestData.get( id);
+			if (quest != null && questData != null) {
+				readQuestData( questData, quest, version);
+			}
+			else if (version.contains( FileVersion.REMOVED_QUESTS)) {
+				mSrc.readData( bits);
+			}
+		}
+		team.createReputation();
+		if (version.contains( FileVersion.REPUTATION)) {
+			int reputationCount = mSrc.readData( DataBitHelper.REPUTATION);
+			for (int i = 0; i < reputationCount; i++) {
+				int id = mSrc.readData( DataBitHelper.REPUTATION);
+				int value = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
+				if (ReputationOfIdx.get( (FReputationCat) null, id) != null) {
+					team.setReputation( id, Integer.valueOf( value));
+				}
+			}
+		}
+	}
+
+	private void readTeamData( FTeam team, FileVersion version) {
+		team.mName = mSrc.readString( DataBitHelper.NAME_LENGTH);
+		team.mID = mSrc.readData( DataBitHelper.TEAMS);
+		if (version.contains( FileVersion.TEAM_SETTINGS)) {
+			team.mLifeSetting = LifeSetting.get( mSrc.readData( DataBitHelper.TEAM_LIVES_SETTING));
+			team.mRewardSetting = RewardSetting.get( mSrc.readData( DataBitHelper.TEAM_REWARD_SETTING));
+			if (team.mRewardSetting == RewardSetting.ALL) {
+				team.mRewardSetting = RewardSetting.getDefault();
+			}
+		}
+		team.mPlayers.clear();
+		int count = mSrc.readData( DataBitHelper.PLAYERS);
+		for (int i = 0; i < count; ++i) {
+			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
+			if (name == null) {
+				name = "Unknown";
+			}
+			boolean inTeam = mSrc.readBoolean();
+			boolean owner = inTeam && mSrc.readBoolean();
+			team.mPlayers.add( new PlayerEntry( name, inTeam, owner));
+		}
+	}
+
 	private void readTeams( FData data, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TEAMS);
 		for (int i = 0; i < count; ++i) {
 			FTeam team = data.createTeam();
-			loadData( team, version);
+			team.createQuestData();
+			team.createReputation();
+			readTeam( team, version);
 		}
 	}
 

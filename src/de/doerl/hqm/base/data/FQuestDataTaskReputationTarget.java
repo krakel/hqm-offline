@@ -9,6 +9,6 @@ public final class FQuestDataTaskReputationTarget extends AQuestDataTask {
 
 	@Override
 	public <T, U> T accept( IDataWorker<T, U> w, U p) {
-		return null;
+		return w.forDataTaskReputationTarget( this, p);
 	}
 }

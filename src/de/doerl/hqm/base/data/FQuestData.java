@@ -46,7 +46,7 @@ public final class FQuestData extends AGame {
 				task = new FQuestDataTaskDeath( this);
 				break;
 			case TASK_REPUTATION_TARGET:
-				task = new FQuestDataTaskReputationTarget( this);
+				task = new FQuestDataTaskReputationKill( this);
 				break;
 			case TASK_REPUTATION_KILL:
 				task = new FQuestDataTaskReputationKill( this);

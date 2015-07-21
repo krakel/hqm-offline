@@ -15,10 +15,10 @@ public final class FTeam extends AGame {
 	public List<FTeam> mInvites = new ArrayList<>();
 	public List<PlayerEntry> mPlayers = new ArrayList<>();
 	public List<FQuestData> mQuestData = new ArrayList<>();
-	public int mClientTeamLives;
-	public int mID;
-	public LifeSetting mLifeSetting;
-	public RewardSetting mRewardSetting;
+	public int mClientTeamLives = -1;
+	public int mID = -1;
+	public LifeSetting mLifeSetting = LifeSetting.SHARE;
+	public RewardSetting mRewardSetting = RewardSetting.getDefault();
 
 	public FTeam( FData parent) {
 		mParentData = parent;
@@ -27,6 +27,12 @@ public final class FTeam extends AGame {
 	@Override
 	public <T, U> T accept( IDataWorker<T, U> w, U p) {
 		return w.forTeam( this, p);
+	}
+
+	public void createPlayer() {
+	}
+
+	public void createQuestData() {
 	}
 
 	public void createReputation() {

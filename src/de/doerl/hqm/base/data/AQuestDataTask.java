@@ -2,6 +2,7 @@ package de.doerl.hqm.base.data;
 
 public abstract class AQuestDataTask extends AGame {
 	public final FQuestData mParentQuest;
+	public boolean mCompleted;
 
 	AQuestDataTask( FQuestData parentQuest) {
 		mParentQuest = parentQuest;
