@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
@@ -84,6 +85,17 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		for (int i = 0; i < count; ++i) {
 			ARequirement req = task.createRequirement( mSrc.readBoolean());
 			req.accept( this, version);
+		}
+	}
+
+	private void doReputationTask( AQuestTaskReputation task) {
+		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
+		for (int i = 0; i < count; i++) {
+			FSetting set = task.createSetting();
+			set.mRep = ReputationOfIdx.get( task, mSrc.readData( DataBitHelper.REPUTATION));
+			set.mLower = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
+			set.mUpper = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
+			set.mInverted = mSrc.readBoolean();
 		}
 	}
 
@@ -174,20 +186,14 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 
 	@Override
 	public Object forTaskReputationKill( FQuestTaskReputationKill task, FileVersion version) {
+		doReputationTask( task);
 		task.mKills = mSrc.readData( DataBitHelper.DEATHS);
 		return null;
 	}
 
 	@Override
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, FileVersion version) {
-		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
-		for (int i = 0; i < count; i++) {
-			FSetting set = task.createSetting();
-			set.mRep = ReputationOfIdx.get( task, mSrc.readData( DataBitHelper.REPUTATION));
-			set.mLower = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
-			set.mUpper = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
-			set.mInverted = mSrc.readBoolean();
-		}
+		doReputationTask( task);
 		return null;
 	}
 
@@ -383,8 +389,8 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	private void readTasks( FQuest quest, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TASKS);
 		for (int i = 0; i < count; ++i) {
-			int id = mSrc.readData( DataBitHelper.TASK_TYPE, version);
-			TaskTyp type = TaskTyp.get( id);
+			int idx = mSrc.readData( DataBitHelper.TASK_TYPE, version);
+			TaskTyp type = TaskTyp.get( idx);
 			AQuestTask task = quest.createQuestTask( type);
 			task.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			task.setDescr( mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH));

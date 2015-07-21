@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
@@ -88,6 +89,14 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	}
 
 	@Override
+	protected Object doTaskReputation( AQuestTaskReputation task, FObject obj) {
+		if (mMain) {
+			readTaskReputations( task, FArray.to( obj.get( IToken.TASK_SETTINGS)));
+		}
+		return null;
+	}
+
+	@Override
 	public Object forTaskDeath( FQuestTaskDeath task, FObject obj) {
 		if (mMain) {
 			task.mDeaths = FValue.toInt( obj.get( IToken.TASK_DEATHS));
@@ -109,6 +118,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 
 	@Override
 	public Object forTaskReputationKill( FQuestTaskReputationKill task, FObject obj) {
+		doTaskReputation( task, obj);
 		if (mMain) {
 			task.mKills = FValue.toInt( obj.get( IToken.TASK_KILLS));
 		}
@@ -117,9 +127,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 
 	@Override
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, FObject obj) {
-		if (mMain) {
-			readTaskReputations( task, FArray.to( obj.get( IToken.TASK_SETTINGS)));
-		}
+		doTaskReputation( task, obj);
 		return null;
 	}
 
@@ -519,7 +527,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		}
 	}
 
-	private void readTaskReputations( FQuestTaskReputationTarget task, FArray arr) {
+	private void readTaskReputations( AQuestTaskReputation task, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);

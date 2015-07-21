@@ -4,6 +4,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.dispatch.IDataWorker;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.Utils;
@@ -18,6 +19,7 @@ public final class FData extends AGame {
 	public boolean mServer;
 	public int mTicks;
 	public int mHours;
+	public FHqm mHqm;
 
 	public FData() {
 	}

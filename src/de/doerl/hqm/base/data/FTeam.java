@@ -14,7 +14,7 @@ public final class FTeam extends AGame {
 	public boolean mReloadedInvites;
 	public List<FTeam> mInvites = new ArrayList<>();
 	public List<PlayerEntry> mPlayers = new ArrayList<>();
-	public List<QuestData> mQuestData = new ArrayList<>();
+	public List<FQuestData> mQuestData = new ArrayList<>();
 	public int mClientTeamLives;
 	public int mID;
 	public LifeSetting mLifeSetting;

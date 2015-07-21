@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
@@ -71,6 +72,15 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		}
 		mDst.endObject();
 		return null;
+	}
+
+	private void doTaskReputation( AQuestTaskReputation task) {
+		doTask( task);
+		if (mMain) {
+			mDst.beginArray( TASK_SETTINGS);
+			task.forEachSetting( this, null);
+			mDst.endArray();
+		}
 	}
 
 	public void flushDst() {
@@ -308,7 +318,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	@Override
 	public Object forTaskReputationKill( FQuestTaskReputationKill task, Object p) {
 		mDst.beginObject();
-		doTask( task);
+		doTaskReputation( task);
 		if (mMain) {
 			mDst.print( TASK_KILLS, task.mKills);
 		}
@@ -319,12 +329,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	@Override
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, Object p) {
 		mDst.beginObject();
-		doTask( task);
-		if (mMain) {
-			mDst.beginArray( TASK_SETTINGS);
-			task.forEachSetting( this, p);
-			mDst.endArray();
-		}
+		doTaskReputation( task);
 		mDst.endObject();
 		return null;
 	}

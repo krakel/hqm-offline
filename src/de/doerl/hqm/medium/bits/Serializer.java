@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
@@ -62,6 +63,14 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		doTask( task, version);
 		mDst.writeData( SizeOf.getRequirements( task), DataBitHelper.TASK_ITEM_COUNT);
 		task.forEachRequirement( this, version);
+		return null;
+	}
+
+	@Override
+	protected Object doTaskReputation( AQuestTaskReputation task, FileVersion version) {
+		doTask( task, version);
+		mDst.writeData( SizeOf.getSettings( task), DataBitHelper.REPUTATION_SETTING);
+		task.forEachSetting( this, version);
 		return null;
 	}
 
@@ -192,16 +201,14 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 
 	@Override
 	public Object forTaskReputationKill( FQuestTaskReputationKill task, FileVersion version) {
-		doTask( task, version);
+		doTaskReputation( task, version);
 		mDst.writeData( task.mKills, DataBitHelper.DEATHS);
 		return null;
 	}
 
 	@Override
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, FileVersion version) {
-		doTask( task, version);
-		mDst.writeData( SizeOf.getSettings( task), DataBitHelper.REPUTATION_SETTING);
-		task.forEachSetting( this, version);
+		doTaskReputation( task, version);
 		return null;
 	}
 

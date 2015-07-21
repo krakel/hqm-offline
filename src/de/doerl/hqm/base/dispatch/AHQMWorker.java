@@ -10,6 +10,7 @@ import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
@@ -73,6 +74,10 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	}
 
 	protected T doTaskItems( AQuestTaskItems task, U p) {
+		return doTask( task, p);
+	}
+
+	protected T doTaskReputation( AQuestTaskReputation task, U p) {
 		return doTask( task, p);
 	}
 
@@ -198,11 +203,11 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 
 	@Override
 	public T forTaskReputationKill( FQuestTaskReputationKill task, U p) {
-		return doTask( task, p);
+		return doTaskReputation( task, p);
 	}
 
 	@Override
 	public T forTaskReputationTarget( FQuestTaskReputationTarget task, U p) {
-		return doTask( task, p);
+		return doTaskReputation( task, p);
 	}
 }

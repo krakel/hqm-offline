@@ -2,87 +2,79 @@ package de.doerl.hqm.medium.bits;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSetCat;
 import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.data.FData;
 import de.doerl.hqm.base.data.FPlayer;
 import de.doerl.hqm.base.data.FPlayerStats;
+import de.doerl.hqm.base.data.FQuestData;
 import de.doerl.hqm.base.data.FTeam;
 import de.doerl.hqm.base.data.FTeamStats;
 import de.doerl.hqm.base.data.GroupData;
 import de.doerl.hqm.base.data.PlayerEntry;
-import de.doerl.hqm.base.data.QuestData;
 import de.doerl.hqm.base.dispatch.QuestOfID;
 import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.base.dispatch.SizeOfQuests;
+import de.doerl.hqm.base.dispatch.TaskOfId;
 import de.doerl.hqm.base.dispatch.TeamOfIdx;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.LifeSetting;
+import de.doerl.hqm.quest.RepeatType;
 import de.doerl.hqm.quest.RewardSetting;
+import de.doerl.hqm.quest.TaskTyp;
+import de.doerl.hqm.utils.Utils;
 
 class ParserData {
-//	private static final Logger LOGGER = Logger.getLogger( ParserData.class.getName());
+	private static final Logger LOGGER = Logger.getLogger( ParserData.class.getName());
 	private BitInputStream mSrc;
 
 	public ParserData( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
 	}
 
-	private void loadData( FTeam team, FileVersion version, boolean light) {
-		readTeamData( team, version, light);
-//		int playerCount = team.getPlayerCount();
-		if (light) {
-			for (int i = 0; i < team.mQuestData.size(); ++i) {
-				QuestData questData = team.mQuestData.get( i);
-				if (questData != null) {
-					FQuest quest = QuestOfID.get( (FQuestSetCat) null, i);
-//					quest.preRead( playerCount, questData);
-					readQuestData( questData, quest, version, true);
-				}
-			}
-			for (int i = 0; i < SizeOf.getMember( (FReputationCat) null); i++) {
-				if (ReputationOfIdx.get( (FReputationCat) null, i) != null) {
-					team.setReputation( i, Integer.valueOf( mSrc.readData( DataBitHelper.REPUTATION_VALUE)));
-				}
+	private void loadData( FTeam team, FileVersion version) {
+		if (version.contains( FileVersion.TEAMS) && !team.isSingle()) {
+			loadTeamData( team, version, false);
+		}
+		int playerCount = team.getPlayerCount();
+		FQuestSetCat questSetCat = team.mParentData.mHqm.mQuestSetCat;
+		for (int id = 0; id < SizeOfQuests.get( questSetCat); id++) {
+			FQuest quest = QuestOfID.get( questSetCat, id);
+			FQuestData data = team.mQuestData.get( id);
+			if (quest != null && data != null) {
+				data.preRead( playerCount);
 			}
 		}
-		else {
-			for (int i = 0; i < SizeOfQuests.get( (FQuestSetCat) null); i++) {
-				FQuest quest = QuestOfID.get( (FQuestSetCat) null, i);
-				QuestData data = team.mQuestData.get( i);
-				if (quest != null && data != null) {
-//					quest.preRead( playerCount, data);
-				}
+		int count = mSrc.readData( DataBitHelper.QUESTS);
+		for (int i = 0; i < count; ++i) {
+			int id = mSrc.readData( DataBitHelper.QUESTS);
+			FQuest quest = QuestOfID.get( questSetCat, id);
+			int bits = -1;
+			if (version.contains( FileVersion.REMOVED_QUESTS)) {
+				bits = mSrc.readData( DataBitHelper.INT);
 			}
-			int count = mSrc.readData( DataBitHelper.QUESTS);
-			for (int i = 0; i < count; i++) {
-				int id = mSrc.readData( DataBitHelper.QUESTS);
-				FQuest quest = QuestOfID.get( (FQuestSetCat) null, id);
-				int bits = -1;
-				if (version.contains( FileVersion.REMOVED_QUESTS)) {
-					bits = mSrc.readData( DataBitHelper.INT);
-				}
-				if (quest != null && team.mQuestData.get( id) != null) {
-					readQuestData( team.mQuestData.get( id), quest, version, false);
-					continue;
-				}
-				if (version.contains( FileVersion.REMOVED_QUESTS)) {
-					mSrc.readData( bits);
-				}
+			if (quest != null && team.mQuestData.get( id) != null) {
+				readQuestData( team.mQuestData.get( id), quest, version);
 			}
-			team.createReputation();
-			if (version.contains( FileVersion.REPUTATION)) {
-				int reputationCount = mSrc.readData( DataBitHelper.REPUTATION);
-				for (int i = 0; i < reputationCount; i++) {
-					int id = mSrc.readData( DataBitHelper.REPUTATION);
-					int value = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
-					if (ReputationOfIdx.get( (FReputationCat) null, id) != null) {
-						team.setReputation( id, Integer.valueOf( value));
-					}
+			else if (version.contains( FileVersion.REMOVED_QUESTS)) {
+				mSrc.readData( bits);
+			}
+		}
+		team.createReputation();
+		if (version.contains( FileVersion.REPUTATION)) {
+			int reputationCount = mSrc.readData( DataBitHelper.REPUTATION);
+			for (int i = 0; i < reputationCount; i++) {
+				int id = mSrc.readData( DataBitHelper.REPUTATION);
+				int value = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
+				if (ReputationOfIdx.get( (FReputationCat) null, id) != null) {
+					team.setReputation( id, Integer.valueOf( value));
 				}
 			}
 		}
@@ -161,7 +153,7 @@ class ParserData {
 				else {
 					player.mTeam = data.createTeam();
 					player.mTeam.mName = player.mName;
-					loadData( player.mTeam, version, !complex);
+					loadData( player.mTeam, version);
 				}
 				if (complex && version.contains( FileVersion.BAG_LIMITS)) {
 					readGroups( player);
@@ -191,19 +183,19 @@ class ParserData {
 		}
 	}
 
-	private void readQuestData( QuestData questData, FQuest quest, FileVersion version, boolean light) {
+	private void readQuestData( FQuestData questData, FQuest quest, FileVersion version) {
 		questData.mCompleted = mSrc.readBoolean();
 		questData.mClaimed = version.contains( FileVersion.REPUTATION) && mSrc.readBoolean();
 		if (version.contains( FileVersion.REPEATABLE_QUESTS)) {
 			questData.mAvailable = mSrc.readBoolean();
 			questData.mTime = mSrc.readData( DataBitHelper.HOURS);
-//			if (questData.mCompleted && repeatInfo.getType() == RepeatType.NONE) {
-//				questData.mAvailable = false;
-//			}
+			if (questData.mCompleted && quest.mRepeatInfo.mType == RepeatType.NONE) {
+				questData.mAvailable = false;
+			}
 		}
-//		else if (repeatInfo.getType() != RepeatType.INSTANT) {
-//			questData.mAvailable = !questData.mCompleted;
-//		}
+		else if (quest.mRepeatInfo.mType != RepeatType.INSTANT) {
+			questData.mAvailable = !questData.mCompleted;
+		}
 		if (questData.mCompleted) {
 			for (int i = 0; i < questData.mReward.length; ++i) {
 				if (version.contains( FileVersion.REPEATABLE_QUESTS)) {
@@ -214,46 +206,32 @@ class ParserData {
 				}
 			}
 		}
-		if (light) {
-//			for (int i = 0; i < tasks.size(); ++i) {
-//				QuestTask task = tasks.get( i);
-//				questData.tasks[i] = task.validateData( questData.tasks[i]);
-//				task.read( mSrc, questData.tasks[i], version, true);
-//			}
-		}
-		else {
-			int count = mSrc.readData( DataBitHelper.TASKS);
-			for (int i = 0; i < count; i++) {
-//				int type = mSrc.readData( DataBitHelper.TASK_TYPE);
-//				if (i >= tasks.size()) {
-//					try {
-//						Class clazz = taskTypes[type].clazz;
-//						Constructor constructor = clazz.getConstructor( new Class[] {
-//							hardcorequesting.quests.Quest.class, java.lang.String.class, java.lang.String.class
-//						});
-//						Object obj = constructor.newInstance( new Object[] {
-//							this, "Fake", "Fake"
-//						});
-//						QuestTask task = (QuestTask) obj;
-//						--nextTaskId;
-//						Constructor constructor2 = task.getDataType().getConstructor( new Class[] {
-//							hardcorequesting.quests.QuestTask.class
-//						});
-//						Object obj2 = constructor2.newInstance( new Object[] {
-//							task
-//						});
-//						task.read( mSrc, (QuestDataTask) obj2, version, false);
-//						task.onDelete();
-//					}
-//					catch (Exception ex) {
-//						ex.printStackTrace();
-//					}
-//				}
-//				else {
-//					QuestTask task = tasks.get( i);
-//					questData.tasks[i] = task.validateData( questData.tasks[i]);
-//					task.read( mSrc, questData.tasks[i], version, false);
-//				}
+		int count = mSrc.readData( DataBitHelper.TASKS);
+		for (int id = 0; id < count; id++) {
+			int idx = mSrc.readData( DataBitHelper.TASK_TYPE);
+			if (id < SizeOf.getTasks( quest)) {
+				AQuestTask task = TaskOfId.get( quest, id);
+//				questData.mTasks[id] = task.validateData( questData.mTasks[id]);
+//				task.read( mSrc, questData.mTasks[id], version, false);
+			}
+			else {
+				try {
+					TaskTyp type = TaskTyp.get( idx);
+					AQuestTask task = quest.createQuestTask( type);
+//					--nextTaskId;
+//					Constructor<AQuestTask> constructor2 = task.getDataType().getConstructor( new Class[] {
+//						hardcorequesting.quests.QuestTask.class
+//					});
+//					AQuestTask obj2 = constructor2.newInstance( new Object[] {
+//						task
+//					});
+//					questData.mTasks[id] = mSrc.readBoolean();
+//					task.read( mSrc, (QuestDataTask) obj2, version, false);
+//					task.onDelete();
+				}
+				catch (Exception ex) {
+					Utils.logThrows( LOGGER, Level.WARNING, ex);
+				}
 			}
 		}
 	}
@@ -261,49 +239,19 @@ class ParserData {
 	void readSrc( FData data) {
 		FileVersion version = FileVersion.get( mSrc.readByte());
 		data.setVersion( version);
-		if (!version.contains( FileVersion.SETS)) {
-			data.mHardcore = mSrc.readBoolean();
-			data.mQuest = mSrc.readBoolean();
+		data.mHardcore = mSrc.readBoolean();
+		data.mQuest = mSrc.readBoolean();
+		if (version.contains( FileVersion.TEAMS)) {
+			readTeams( data, version);
 		}
-		if (version.contains( FileVersion.QUESTS)) {
-			data.mHardcore = mSrc.readBoolean();
-			data.mQuest = mSrc.readBoolean();
-			if (version.contains( FileVersion.TEAMS)) {
-				readTeams( data, version, false);
-			}
-			readPlayers( data, version);
-		}
+		readPlayers( data, version);
 	}
 
-	private void readTeamData( FTeam team, FileVersion version, boolean light) {
-		if (light) {
-			team.setId( mSrc.readBoolean() ? -1 : 0);
-			team.mReloadedInvites = true;
-			if (team.isSingle()) {
-				int count = mSrc.readData( DataBitHelper.TEAMS);
-				if (count != 0) {
-					for (int i = 0; i < count; ++i) {
-						FTeam tt = new FTeam( null);
-						loadTeamData( tt, version, true);
-						team.mInvites.add( tt);
-					}
-				}
-			}
-		}
-		if (version.contains( FileVersion.TEAMS) && !team.isSingle()) {
-			loadTeamData( team, version, light);
-		}
-		if (light && !team.isSingle() && team.isSharingLives()) {
-			team.mClientTeamLives = mSrc.readData( DataBitHelper.TEAM_LIVES);
-		}
-	}
-
-	private void readTeams( FData data, FileVersion version, boolean light) {
+	private void readTeams( FData data, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TEAMS);
 		for (int i = 0; i < count; ++i) {
 			FTeam team = data.createTeam();
-//			team.loadData( version, mSrc, false);
-			loadData( team, version, light);
+			loadData( team, version);
 		}
 	}
 

@@ -4,6 +4,7 @@ import de.doerl.hqm.base.ACategory;
 import de.doerl.hqm.base.AMember;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
+import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
@@ -11,7 +12,6 @@ import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
-import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
@@ -58,7 +58,7 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 		return worker.mResult;
 	}
 
-	public static int getSettings( FQuestTaskReputationTarget task) {
+	public static int getSettings( AQuestTaskReputation task) {
 		SizeOf worker = new SizeOf();
 		task.forEachSetting( worker, null);
 		return worker.mResult;

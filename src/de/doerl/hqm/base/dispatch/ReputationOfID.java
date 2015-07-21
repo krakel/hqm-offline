@@ -1,7 +1,7 @@
 package de.doerl.hqm.base.dispatch;
 
+import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.FHqm;
-import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
 
@@ -11,12 +11,12 @@ public class ReputationOfID extends AHQMWorker<FReputation, Integer> {
 	private ReputationOfID() {
 	}
 
-	public static FReputation get( FHqm hqm, int id) {
-		return get( hqm.mReputationCat, id);
+	public static FReputation get( AQuestTaskReputation task, int id) {
+		return get( task.getHqm().mReputationCat, id);
 	}
 
-	public static FReputation get( FQuestTaskReputationTarget task, int id) {
-		return get( task.getHqm().mReputationCat, id);
+	public static FReputation get( FHqm hqm, int id) {
+		return get( hqm.mReputationCat, id);
 	}
 
 	public static FReputation get( FReputationCat set, int id) {

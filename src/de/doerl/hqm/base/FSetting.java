@@ -4,13 +4,13 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 
 public final class FSetting extends ABase implements IElement {
-	public final FQuestTaskReputationTarget mParentTask;
+	public final AQuestTaskReputation mParentTask;
 	public FReputation mRep;
 	public FMarker mLower;
 	public FMarker mUpper;
 	public boolean mInverted;
 
-	public FSetting( FQuestTaskReputationTarget parent) {
+	public FSetting( AQuestTaskReputation parent) {
 		mParentTask = parent;
 	}
 
@@ -30,7 +30,7 @@ public final class FSetting extends ABase implements IElement {
 	}
 
 	@Override
-	public FQuestTaskReputationTarget getParent() {
+	public AQuestTaskReputation getParent() {
 		return mParentTask;
 	}
 
