@@ -13,7 +13,7 @@ public final class FGroup extends AIdent implements IElement {
 	public Vector<FItemStack> mStacks = new Vector<>();
 
 	FGroup( FGroupTier parent) {
-		super( BASE, MaxIdOfGroup.get( parent) + 1);
+		super( BASE, MaxIdOfGroup.get( parent));
 		mParentTier = parent;
 	}
 

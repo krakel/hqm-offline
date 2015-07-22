@@ -1,7 +1,8 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.view.dispatch;
 
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FMarker;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 
 public class MarkerOfIdx extends AHQMWorker<FMarker, Object> {
 	private int mIndex;

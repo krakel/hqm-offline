@@ -23,10 +23,10 @@ import javax.swing.border.BevelBorder;
 
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FLanguage;
-import de.doerl.hqm.base.dispatch.LangAddWorker;
-import de.doerl.hqm.base.dispatch.LangDeleteWorker;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.dispatch.LangAddWorker;
+import de.doerl.hqm.view.dispatch.LangDeleteWorker;
 
 class DialogListLangs extends ADialog {
 	private static final long serialVersionUID = 7673867993395512621L;

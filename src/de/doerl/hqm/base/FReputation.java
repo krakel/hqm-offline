@@ -17,7 +17,7 @@ public final class FReputation extends AMember {
 	public final Vector<FMarker> mMarker = new Vector<>();
 
 	FReputation( FReputationCat parent) {
-		super( BASE, MaxIdOf.getReputation( parent) + 1);
+		super( BASE, MaxIdOf.getReputation( parent));
 		mParentCategory = parent;
 	}
 
@@ -37,6 +37,12 @@ public final class FReputation extends AMember {
 
 	public FMarker createMarker() {
 		FMarker marker = new FMarker( this);
+		mMarker.add( marker);
+		return marker;
+	}
+
+	public FMarker createMarker( int id) {
+		FMarker marker = new FMarker( this, id);
 		mMarker.add( marker);
 		return marker;
 	}

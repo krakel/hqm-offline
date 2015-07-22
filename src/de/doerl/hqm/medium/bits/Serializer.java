@@ -32,7 +32,6 @@ import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
-import de.doerl.hqm.base.dispatch.IndexOfGroup;
 import de.doerl.hqm.base.dispatch.MaxIdOfQuest;
 import de.doerl.hqm.base.dispatch.QuestOfID;
 import de.doerl.hqm.base.dispatch.SizeOf;
@@ -153,7 +152,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 
 	@Override
 	public Object forReputation( FReputation rep, FileVersion version) {
-		mDst.writeData( IndexOf.getMember( rep), DataBitHelper.REPUTATION);
+		mDst.writeData( rep.getID(), DataBitHelper.REPUTATION);
 		mDst.writeString( rep.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 		mDst.writeString( rep.getDescr(), DataBitHelper.QUEST_NAME_LENGTH);
 		writeMarker( rep, version);
@@ -339,7 +338,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 	}
 
 	private void writeQuests( FQuestSetCat cat, FileVersion version) {
-		int count = MaxIdOfQuest.get( cat) + 1;
+		int count = MaxIdOfQuest.get( cat);
 		mDst.writeData( count, DataBitHelper.QUESTS, version);
 		for (int id = 0; id < count; ++id) {
 			FQuest quest = QuestOfID.get( cat, id);
@@ -401,7 +400,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 				mDst.writeData( IndexOfGroup.get( grp), DataBitHelper.GROUP_COUNT);
 			}
 			mDst.writeString( grp.getName(), DataBitHelper.QUEST_NAME_LENGTH);
-			mDst.writeData( IndexOf.getMember( grp.mParentTier), DataBitHelper.TIER_COUNT);
+			mDst.writeData( grp.getID(), DataBitHelper.TIER_COUNT);
 			writeStacks( grp.mStacks, DataBitHelper.GROUP_ITEMS, version);
 			if (version.contains( FileVersion.BAG_LIMITS)) {
 				if (grp.mLimit == null) {

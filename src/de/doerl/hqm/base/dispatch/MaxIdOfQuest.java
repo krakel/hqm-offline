@@ -22,7 +22,7 @@ public class MaxIdOfQuest extends AHQMWorker<Object, Object> {
 	public static int get( FQuestSetCat cat) {
 		MaxIdOfQuest worker = new MaxIdOfQuest();
 		cat.forEachMember( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	@Override

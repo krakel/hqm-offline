@@ -3,10 +3,10 @@ package de.doerl.hqm.base.dispatch;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuestTaskMob;
 
-public class MobOfId extends AHQMWorker<FMob, Integer> {
-	private static final MobOfId WORKER = new MobOfId();
+public class MobOfID extends AHQMWorker<FMob, Integer> {
+	private static final MobOfID WORKER = new MobOfID();
 
-	private MobOfId() {
+	private MobOfID() {
 	}
 
 	public static FMob get( FQuestTaskMob task, int id) {

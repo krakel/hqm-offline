@@ -23,7 +23,6 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
-import de.doerl.hqm.base.dispatch.QuestSetOfName;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ABundleAction;
@@ -32,6 +31,7 @@ import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.dispatch.QuestSetOfName;
 
 public class EntityQuestSet extends AEntity<FQuestSet> {
 	private static final long serialVersionUID = 4427035968994904913L;

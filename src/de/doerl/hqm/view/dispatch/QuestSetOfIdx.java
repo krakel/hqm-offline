@@ -1,7 +1,8 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.view.dispatch;
 
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 
 public class QuestSetOfIdx extends AHQMWorker<FQuestSet, Object> {
 	private int mIndex;

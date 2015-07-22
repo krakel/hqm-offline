@@ -13,7 +13,7 @@ public final class FMob extends AIdent implements IElement {
 	public boolean mExact;
 
 	FMob( FQuestTaskMob parent) {
-		super( BASE, MaxIdOf.getMob( parent) + 1);
+		super( BASE, MaxIdOf.getMob( parent));
 		mParentTask = parent;
 	}
 

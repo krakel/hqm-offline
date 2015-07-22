@@ -15,7 +15,7 @@ public final class FLocation extends AIdent implements IElement {
 	public Visibility mVisibility;
 
 	FLocation( FQuestTaskLocation parent) {
-		super( BASE, MaxIdOf.getLocation( parent) + 1);
+		super( BASE, MaxIdOf.getLocation( parent));
 		mParentTask = parent;
 	}
 

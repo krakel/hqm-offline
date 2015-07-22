@@ -27,9 +27,9 @@ import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.IndexOf;
-import de.doerl.hqm.base.dispatch.MarkerOfIdx;
-import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.view.dispatch.MarkerOfIdx;
+import de.doerl.hqm.view.dispatch.ReputationOfIdx;
 
 public class DialogListSettings extends ADialogList<FSetting> {
 	private static final long serialVersionUID = -5897552996020524162L;

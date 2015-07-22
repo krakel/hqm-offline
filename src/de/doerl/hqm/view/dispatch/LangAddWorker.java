@@ -1,4 +1,4 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.view.dispatch;
 
 import de.doerl.hqm.base.ANamed;
 import de.doerl.hqm.base.FGroupTier;
@@ -9,6 +9,7 @@ import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 
 public class LangAddWorker extends AHQMWorker<Object, FLanguage> {
 	private static final LangAddWorker WORKER = new LangAddWorker();

@@ -1,11 +1,12 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.medium.bits;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
-public class IndexOfGroup extends AHQMWorker<Boolean, Object> {
+class IndexOfGroup extends AHQMWorker<Boolean, Object> {
 	private int mResult = -1;
 	private ABase mBase;
 

@@ -23,6 +23,12 @@ public final class FQuestSetCat extends ACategory<FQuestSet> {
 		return set;
 	}
 
+	public FQuestSet createQuestSet( int id) {
+		FQuestSet set = new FQuestSet( this, id);
+		addMember( set);
+		return set;
+	}
+
 	@Override
 	public Vector<FQuestSet> getArr() {
 		return mArr;

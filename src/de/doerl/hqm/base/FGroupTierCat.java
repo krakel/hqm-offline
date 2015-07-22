@@ -15,15 +15,15 @@ public final class FGroupTierCat extends ACategory<FGroupTier> {
 		return w.forGroupTierCat( this, p);
 	}
 
-	@Override
-	public FGroupTier createMember() {
-		FGroupTier tier = new FGroupTier( this);
+	public FGroupTier createGroupTier( int id) {
+		FGroupTier tier = new FGroupTier( this, id);
 		addMember( tier);
 		return tier;
 	}
 
-	public FGroupTier createMember( int id) {
-		FGroupTier tier = new FGroupTier( this, id);
+	@Override
+	public FGroupTier createMember() {
+		FGroupTier tier = new FGroupTier( this);
 		addMember( tier);
 		return tier;
 	}

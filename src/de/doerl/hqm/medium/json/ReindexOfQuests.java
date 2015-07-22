@@ -1,11 +1,13 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.medium.json;
 
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.base.dispatch.MaxIdOfQuest;
 
-public class ReindexOfQuests extends AHQMWorker<Object, Object> {
+class ReindexOfQuests extends AHQMWorker<Object, Object> {
 	private int mMax;
 
 	private ReindexOfQuests( int max) {

@@ -18,7 +18,12 @@ public final class FQuestSet extends AMember {
 	public final FQuestSetCat mParentCategory;
 
 	FQuestSet( FQuestSetCat parent) {
-		super( BASE, MaxIdOf.getQuestSet( parent) + 1);
+		super( BASE, MaxIdOf.getQuestSet( parent));
+		mParentCategory = parent;
+	}
+
+	FQuestSet( FQuestSetCat parent, int id) {
+		super( BASE, id);
 		mParentCategory = parent;
 	}
 

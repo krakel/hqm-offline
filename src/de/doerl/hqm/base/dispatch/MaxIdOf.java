@@ -23,43 +23,43 @@ public class MaxIdOf extends AHQMWorker<Object, Object> {
 	public static int getLocation( FQuestTaskLocation task) {
 		MaxIdOf worker = new MaxIdOf();
 		task.forEachLocation( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	public static int getMarker( FReputation rep) {
 		MaxIdOf worker = new MaxIdOf();
 		rep.forEachMarker( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	public static int getMob( FQuestTaskMob task) {
 		MaxIdOf worker = new MaxIdOf();
 		task.forEachMob( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	public static int getQuestSet( FQuestSetCat cat) {
 		MaxIdOf worker = new MaxIdOf();
 		cat.forEachMember( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	public static int getReputation( FReputationCat cat) {
 		MaxIdOf worker = new MaxIdOf();
 		cat.forEachMember( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	public static int getTasks( FQuest quest) {
 		MaxIdOf worker = new MaxIdOf();
 		quest.forEachTask( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	public static int getTier( FGroupTierCat cat) {
 		MaxIdOf worker = new MaxIdOf();
 		cat.forEachMember( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	@Override

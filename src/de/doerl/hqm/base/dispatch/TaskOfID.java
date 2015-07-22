@@ -3,10 +3,10 @@ package de.doerl.hqm.base.dispatch;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FQuest;
 
-public class TaskOfId extends AHQMWorker<AQuestTask, Integer> {
-	private static final TaskOfId WORKER = new TaskOfId();
+public class TaskOfID extends AHQMWorker<AQuestTask, Integer> {
+	private static final TaskOfID WORKER = new TaskOfID();
 
-	private TaskOfId() {
+	private TaskOfID() {
 	}
 
 	public static AQuestTask get( FQuest quest, int id) {

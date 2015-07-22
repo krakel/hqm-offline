@@ -9,7 +9,7 @@ public abstract class AQuestTask extends AIdent implements IElement {
 	public final FQuest mParentQuest;
 
 	AQuestTask( FQuest parent) {
-		super( BASE, MaxIdOf.getTasks( parent) + 1);
+		super( BASE, MaxIdOf.getTasks( parent));
 		mParentQuest = parent;
 	}
 

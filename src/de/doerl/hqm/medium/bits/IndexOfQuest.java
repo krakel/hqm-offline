@@ -1,11 +1,12 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.medium.bits;
 
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
-public class IndexOfQuest extends AHQMWorker<Boolean, Object> {
+class IndexOfQuest extends AHQMWorker<Boolean, Object> {
 	private int mResult = -1;
 	private ABase mBase;
 

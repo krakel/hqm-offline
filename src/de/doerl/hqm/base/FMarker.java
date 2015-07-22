@@ -10,7 +10,12 @@ public final class FMarker extends AIdent implements Comparable<FMarker>, IEleme
 	public int mMark;
 
 	FMarker( FReputation parent) {
-		super( BASE, MaxIdOf.getMarker( parent) + 1);
+		super( BASE, MaxIdOf.getMarker( parent));
+		mParentRep = parent;
+	}
+
+	FMarker( FReputation parent, int id) {
+		super( BASE, id);
 		mParentRep = parent;
 	}
 

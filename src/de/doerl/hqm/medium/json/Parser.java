@@ -36,14 +36,13 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.GroupOfID;
 import de.doerl.hqm.base.dispatch.GroupTierOfID;
-import de.doerl.hqm.base.dispatch.LocationOfId;
+import de.doerl.hqm.base.dispatch.LocationOfID;
 import de.doerl.hqm.base.dispatch.MarkerOfID;
-import de.doerl.hqm.base.dispatch.MobOfId;
+import de.doerl.hqm.base.dispatch.MobOfID;
 import de.doerl.hqm.base.dispatch.QuestOfID;
 import de.doerl.hqm.base.dispatch.QuestSetOfID;
-import de.doerl.hqm.base.dispatch.ReindexOfQuests;
 import de.doerl.hqm.base.dispatch.ReputationOfID;
-import de.doerl.hqm.base.dispatch.TaskOfId;
+import de.doerl.hqm.base.dispatch.TaskOfID;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.quest.RepeatType;
@@ -470,7 +469,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					String ident = FValue.toString( obj.get( IToken.LOCATION_ID));
 					FLocation loc = null;
 					if (!mMain) {
-						loc = LocationOfId.get( task, ident);
+						loc = LocationOfID.get( task, ident);
 						if (loc == null) {
 							Utils.log( LOGGER, Level.WARNING, "missing location for ident {0}", ident);
 						}
@@ -504,7 +503,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					String ident = FValue.toString( obj.get( IToken.MOB_ID));
 					FMob mob = null;
 					if (!mMain) {
-						mob = MobOfId.get( task, ident);
+						mob = MobOfID.get( task, ident);
 						if (mob == null) {
 							Utils.log( LOGGER, Level.WARNING, "missing mob for ident {0}", ident);
 						}
@@ -579,7 +578,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						task.setID( ident);
 					}
 					else {
-						task = TaskOfId.get( quest, ident);
+						task = TaskOfID.get( quest, ident);
 						if (task == null) {
 							Utils.log( LOGGER, Level.WARNING, "missing quest task for ident {0}", ident);
 							if (obj.get( IToken.TASK_LOCATIONS) != null) {
@@ -607,13 +606,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		for (FQuest quest : mOptionLinks.keySet()) {
 			int[] ids = mOptionLinks.get( quest);
 			for (int i = 0; i < ids.length; ++i) {
-				Integer id = ids[i];
-				FQuest req = QuestOfID.get( hqm, id);
-				if (req == null) {
+				int id = ids[i];
+				FQuest other = QuestOfID.get( hqm, id);
+				if (other == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing option link [{0}] {1} for {2}", i, id, quest.getName());
 				}
 				else {
-					quest.mOptionLinks.add( req);
+					quest.mOptionLinks.add( other);
 				}
 			}
 		}
@@ -621,12 +620,12 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 
 	private void updatePosts( FHqm hqm) {
 		for (Integer id : mPosts.keySet()) {
-			FQuest quest = QuestOfID.get( hqm, id);
-			if (quest == null) {
+			FQuest other = QuestOfID.get( hqm, id);
+			if (other == null) {
 				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
 			}
 			else {
-				quest.mPosts.addAll( mPosts.get( id));
+				other.mPosts.addAll( mPosts.get( id));
 			}
 		}
 	}
@@ -635,13 +634,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		for (FQuest quest : mRequirements.keySet()) {
 			int[] ids = mRequirements.get( quest);
 			for (int i = 0; i < ids.length; ++i) {
-				Integer id = ids[i];
-				FQuest req = QuestOfID.get( hqm, id);
-				if (req == null) {
+				int id = ids[i];
+				FQuest other = QuestOfID.get( hqm, id);
+				if (other == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing requirement [{0}] {1} for {2}", i, id, quest.getName());
 				}
 				else {
-					quest.mRequirements.add( req);
+					quest.mRequirements.add( other);
 				}
 			}
 		}

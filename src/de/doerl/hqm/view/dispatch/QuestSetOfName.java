@@ -1,8 +1,9 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.view.dispatch;
 
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestSetCat;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 
 public class QuestSetOfName extends AHQMWorker<FQuestSet, String> {

@@ -22,7 +22,7 @@ public final class FReputationCat extends ACategory<FReputation> {
 		return reward;
 	}
 
-	public FReputation createMember( int id) {
+	public FReputation createReputation( int id) {
 		FReputation reward = new FReputation( this, id);
 		addMember( reward);
 		return reward;

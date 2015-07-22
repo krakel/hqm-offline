@@ -1,8 +1,9 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.view.dispatch;
 
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
 import de.doerl.hqm.base.FHqm;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 
 public class GroupTierOfIdx extends AHQMWorker<FGroupTier, Object> {
 	private int mIndex;

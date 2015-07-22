@@ -39,12 +39,11 @@ import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.base.dispatch.GroupTierOfIdx;
-import de.doerl.hqm.base.dispatch.MarkerOfIdx;
+import de.doerl.hqm.base.dispatch.GroupTierOfID;
+import de.doerl.hqm.base.dispatch.MarkerOfID;
 import de.doerl.hqm.base.dispatch.QuestOfID;
 import de.doerl.hqm.base.dispatch.QuestSetOfID;
 import de.doerl.hqm.base.dispatch.ReputationOfID;
-import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.ItemPrecision;
@@ -90,11 +89,11 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 
 	private void doReputationTask( AQuestTaskReputation task) {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
-		for (int i = 0; i < count; i++) {
+		for (int id = 0; id < count; id++) { // TODO should also be AIdent
 			FSetting set = task.createSetting();
-			set.mRep = ReputationOfIdx.get( task, mSrc.readData( DataBitHelper.REPUTATION));
-			set.mLower = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
-			set.mUpper = mSrc.readBoolean() ? MarkerOfIdx.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
+			set.mRep = ReputationOfID.get( task, mSrc.readData( DataBitHelper.REPUTATION));
+			set.mLower = mSrc.readBoolean() ? MarkerOfID.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
+			set.mUpper = mSrc.readBoolean() ? MarkerOfID.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
 			set.mInverted = mSrc.readBoolean();
 		}
 	}
@@ -208,7 +207,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 				id = i;
 			}
 			String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
-			FGroupTier tier = GroupTierOfIdx.get( cat, mSrc.readData( DataBitHelper.TIER_COUNT));
+			FGroupTier tier = GroupTierOfID.get( cat, mSrc.readData( DataBitHelper.TIER_COUNT));
 			if (tier == null) {
 				Utils.log( LOGGER, Level.WARNING, "missing tier of group {0}", name);
 				tier = cat.createMember();
@@ -226,19 +225,19 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	private void readGroupTiers( FGroupTierCat cat) {
 		int count = mSrc.readData( DataBitHelper.TIER_COUNT);
 		for (int id = 0; id < count; ++id) {
-			FGroupTier tier = cat.createMember( id);
+			FGroupTier tier = cat.createGroupTier( id);
 			tier.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			tier.mColorID = mSrc.readData( DataBitHelper.COLOR);
-			for (int i = 0; i < tier.mWeights.length; ++i) {
-				tier.mWeights[i] = mSrc.readData( DataBitHelper.WEIGHT);
+			for (int j = 0; j < tier.mWeights.length; ++j) {
+				tier.mWeights[j] = mSrc.readData( DataBitHelper.WEIGHT);
 			}
 		}
 	}
 
 	private void readMarker( FReputation rep) {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_MARKER);
-		for (int i = 0; i < count; ++i) {
-			FMarker marker = rep.createMarker();
+		for (int id = 0; id < count; ++id) {
+			FMarker marker = rep.createMarker( id);
 			marker.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			marker.mMark = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
 		}
@@ -247,7 +246,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 
 	private void readQuests( FQuestSetCat cat, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.QUESTS, version);
-		for (int i = 0; i < count; ++i) {
+		for (int id = 0; id < count; ++id) {
 			if (mSrc.readBoolean()) {
 				String name = mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH);
 				String descr = mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH);
@@ -270,7 +269,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 					set = cat.createMember();
 					set.setName( "__Missing__");
 				}
-				FQuest quest = set.createQuest( i);
+				FQuest quest = set.createQuest( id);
 				quest.setName( name);
 				quest.setDescr( descr);
 				quest.mX = x;
@@ -311,8 +310,8 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 
 	private void readQuestSetCat( FQuestSetCat cat) {
 		int count = mSrc.readData( DataBitHelper.QUEST_SETS);
-		for (int i = 0; i < count; i++) {
-			FQuestSet set = cat.createMember();
+		for (int id = 0; id < count; id++) {
+			FQuestSet set = cat.createQuestSet( id);
 			set.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			set.setDescr( mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH));
 		}
@@ -321,7 +320,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	private void readReputations( FReputationCat cat) {
 		int count = mSrc.readData( DataBitHelper.REPUTATION);
 		for (int i = 0; i < count; ++i) {
-			FReputation rep = cat.createMember( mSrc.readData( DataBitHelper.REPUTATION));
+			FReputation rep = cat.createReputation( mSrc.readData( DataBitHelper.REPUTATION));
 			rep.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			rep.setDescr( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			readMarker( rep);
@@ -402,13 +401,13 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		for (FQuest quest : mOptionLinks.keySet()) {
 			int[] ids = mOptionLinks.get( quest);
 			for (int i = 0; i < ids.length; ++i) {
-				Integer id = ids[i];
-				FQuest req = QuestOfID.get( hqm, id);
-				if (req == null) {
+				int id = ids[i];
+				FQuest other = QuestOfID.get( hqm, id);
+				if (other == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing OptionLink [{0}] {1} for {2}", i, id, quest.getName());
 				}
 				else {
-					quest.mOptionLinks.add( req);
+					quest.mOptionLinks.add( other);
 				}
 			}
 		}
@@ -416,12 +415,12 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 
 	private void updatePosts( FHqm hqm) {
 		for (Integer id : mPosts.keySet()) {
-			FQuest quest = QuestOfID.get( hqm, id);
-			if (quest == null) {
+			FQuest other = QuestOfID.get( hqm, id);
+			if (other == null) {
 				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
 			}
 			else {
-				quest.mPosts.addAll( mPosts.get( id));
+				other.mPosts.addAll( mPosts.get( id));
 			}
 		}
 	}
@@ -430,13 +429,13 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		for (FQuest quest : mRequirements.keySet()) {
 			int[] ids = mRequirements.get( quest);
 			for (int i = 0; i < ids.length; ++i) {
-				Integer id = ids[i];
-				FQuest req = QuestOfID.get( hqm, id);
-				if (req == null) {
+				int id = ids[i];
+				FQuest other = QuestOfID.get( hqm, id);
+				if (other == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing Requirement [{0}] {1} for {2}", i, id, quest.getName());
 				}
 				else {
-					quest.mRequirements.add( req);
+					quest.mRequirements.add( other);
 				}
 			}
 		}

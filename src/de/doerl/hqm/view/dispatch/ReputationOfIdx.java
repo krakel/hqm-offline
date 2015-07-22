@@ -1,9 +1,10 @@
-package de.doerl.hqm.base.dispatch;
+package de.doerl.hqm.view.dispatch;
 
 import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationCat;
+import de.doerl.hqm.base.dispatch.AHQMWorker;
 
 public class ReputationOfIdx extends AHQMWorker<FReputation, Object> {
 	private int mIndex;

@@ -26,10 +26,10 @@ import de.doerl.hqm.base.data.GroupData;
 import de.doerl.hqm.base.data.PlayerEntry;
 import de.doerl.hqm.base.dispatch.ADataWorker;
 import de.doerl.hqm.base.dispatch.QuestOfID;
-import de.doerl.hqm.base.dispatch.ReputationOfIdx;
+import de.doerl.hqm.base.dispatch.ReputationOfID;
 import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.base.dispatch.SizeOfQuests;
-import de.doerl.hqm.base.dispatch.TaskOfId;
+import de.doerl.hqm.base.dispatch.TaskOfID;
 import de.doerl.hqm.base.dispatch.TeamOfIdx;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
@@ -222,7 +222,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 		for (int id = 0; id < count; id++) {
 			int idx = mSrc.readData( DataBitHelper.TASK_TYPE);
 			if (id < size) {
-				AQuestTask task = TaskOfId.get( quest, id);
+				AQuestTask task = TaskOfID.get( quest, id);
 //				questData.mTasks[id] = task.validateData( questData.mTasks[id]);
 //				task.read( mSrc, questData.mTasks[id], version, false);
 			}
@@ -294,7 +294,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 			for (int i = 0; i < reputationCount; i++) {
 				int id = mSrc.readData( DataBitHelper.REPUTATION);
 				int value = mSrc.readData( DataBitHelper.REPUTATION_VALUE);
-				if (ReputationOfIdx.get( (FReputationCat) null, id) != null) {
+				if (ReputationOfID.get( (FReputationCat) null, id) != null) {
 					team.setReputation( id, Integer.valueOf( value));
 				}
 			}

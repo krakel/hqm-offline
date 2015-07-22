@@ -18,7 +18,7 @@ public class MaxIdOfGroup extends AHQMWorker<Object, Object> {
 	public static int get( FGroupTierCat cat) {
 		MaxIdOfGroup worker = new MaxIdOfGroup();
 		cat.forEachMember( worker, null);
-		return worker.mResult;
+		return worker.mResult + 1;
 	}
 
 	public static int get( FHqm hqm) {

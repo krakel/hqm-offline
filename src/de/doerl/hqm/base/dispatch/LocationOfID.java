@@ -3,10 +3,10 @@ package de.doerl.hqm.base.dispatch;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FQuestTaskLocation;
 
-public class LocationOfId extends AHQMWorker<FLocation, Integer> {
-	private static final LocationOfId WORKER = new LocationOfId();
+public class LocationOfID extends AHQMWorker<FLocation, Integer> {
+	private static final LocationOfID WORKER = new LocationOfID();
 
-	private LocationOfId() {
+	private LocationOfID() {
 	}
 
 	public static FLocation get( FQuestTaskLocation task, int id) {

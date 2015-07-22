@@ -19,7 +19,7 @@ public final class FGroupTier extends AMember {
 	public int mColorID;
 
 	FGroupTier( FGroupTierCat parent) {
-		super( BASE, MaxIdOf.getTier( parent) + 1);
+		super( BASE, MaxIdOf.getTier( parent));
 		mParentCategory = parent;
 	}
 

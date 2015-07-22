@@ -22,9 +22,9 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.dispatch.IndexOf;
-import de.doerl.hqm.base.dispatch.ReputationOfIdx;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.dispatch.ReputationOfIdx;
 
 class DialogReputation extends ADialogList<FReputationReward> {
 	private static final long serialVersionUID = 6811579336495948455L;
