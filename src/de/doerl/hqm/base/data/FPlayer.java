@@ -21,7 +21,7 @@ public final class FPlayer extends AGame {
 	public int mSelectedTask;
 	public boolean mPlayedLore;
 	public boolean mReceivedBook;
-	public FTeam mTeam;
+	public FTeamData mTeam;
 
 	public FPlayer( FData parent) {
 		mParentData = parent;

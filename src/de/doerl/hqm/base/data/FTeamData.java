@@ -3,25 +3,32 @@ package de.doerl.hqm.base.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.dispatch.IDataWorker;
 import de.doerl.hqm.quest.LifeSetting;
 import de.doerl.hqm.quest.RewardSetting;
 
-public final class FTeam extends AGame {
+public final class FTeamData extends AGame {
 	public final FData mParentData;
-	public String mName;
 	public FTeamStats mStats = new FTeamStats( this);
 	public boolean mReloadedInvites;
-	public List<FTeam> mInvites = new ArrayList<>();
-	public List<PlayerEntry> mPlayers = new ArrayList<>();
+	public List<FTeamData> mInvites = new ArrayList<>();
+	private List<PlayerEntry> mPlayers = new ArrayList<>();
 	public List<FQuestData> mQuestData = new ArrayList<>();
 	public int mClientTeamLives = -1;
-	public int mID = -1;
 	public LifeSetting mLifeSetting = LifeSetting.SHARE;
 	public RewardSetting mRewardSetting = RewardSetting.getDefault();
+	private String mName;
+	private int mID;
+	private boolean mSingle;
 
-	public FTeam( FData parent) {
+	FTeamData( FData parent) {
 		mParentData = parent;
+	}
+
+	FTeamData( FData parent, int id) {
+		mParentData = parent;
+		mID = id;
 	}
 
 	@Override
@@ -29,18 +36,27 @@ public final class FTeam extends AGame {
 		return w.forTeam( this, p);
 	}
 
-	public void createPlayer() {
+	public void createPlayer( String name, boolean inTeam, boolean owner) {
+		mPlayers.add( new PlayerEntry( name, inTeam, owner));
 	}
 
-	public void createQuestData() {
-	}
-
-	public void createReputation() {
+	public FQuestData createQuestData( FQuest quest) {
+		FQuestData questData = new FQuestData( this, quest);
+		mQuestData.add( questData);
+		return questData;
 	}
 
 	@Override
 	public FData getData() {
 		return mParentData;
+	}
+
+	public int getID() {
+		return mID;
+	}
+
+	public String getName() {
+		return mName;
 	}
 
 	@Override
@@ -63,12 +79,20 @@ public final class FTeam extends AGame {
 	}
 
 	public boolean isSingle() {
-		return false;
+		return mSingle;
 	}
 
 	public void setId( int i) {
 	}
 
-	public void setReputation( int i, Integer valueOf) {
+	public void setName( String name) {
+		mName = name;
+	}
+
+	public void setReputation( int i, Integer value) {
+	}
+
+	public void setSingle( boolean value) {
+		mSingle = value;
 	}
 }

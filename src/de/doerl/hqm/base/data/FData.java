@@ -13,7 +13,7 @@ public final class FData extends AGame {
 	private static final Logger LOGGER = Logger.getLogger( FData.class.getName());
 	private FileVersion mVersion;
 	private final Vector<FPlayer> mPlayers = new Vector<>();
-	private final Vector<FTeam> mTeams = new Vector<>();
+	private final Vector<FTeamData> mTeams = new Vector<>();
 	public boolean mHardcore;
 	public boolean mQuest;
 	public boolean mServer;
@@ -35,8 +35,14 @@ public final class FData extends AGame {
 		return player;
 	}
 
-	public FTeam createTeam() {
-		FTeam team = new FTeam( this);
+	public FTeamData createTeam() {
+		FTeamData team = new FTeamData( this);
+		mTeams.add( team);
+		return team;
+	}
+
+	public FTeamData createTeam( int id) {
+		FTeamData team = new FTeamData( this, id);
 		mTeams.add( team);
 		return team;
 	}
@@ -59,7 +65,7 @@ public final class FData extends AGame {
 	}
 
 	public <T, U> T forEachTeam( IDataWorker<T, U> worker, U p) {
-		for (FTeam disp : mTeams) {
+		for (FTeamData disp : mTeams) {
 			try {
 				if (disp != null) {
 					T obj = disp.accept( worker, p);

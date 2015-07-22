@@ -4,14 +4,14 @@ import de.doerl.hqm.base.dispatch.IDataWorker;
 import de.doerl.hqm.quest.DeathType;
 
 public final class FTeamStats extends AGame {
-	public final FTeam mParentTeam;
+	public final FTeamData mParentTeam;
 	public final int mDeaths[] = DeathType.newArray();
 	public String mName;
 	public int mPlayers;
 	public int mLives;
 	public int mProgress;
 
-	public FTeamStats( FTeam parentTeam) {
+	public FTeamStats( FTeamData parentTeam) {
 		mParentTeam = parentTeam;
 	}
 

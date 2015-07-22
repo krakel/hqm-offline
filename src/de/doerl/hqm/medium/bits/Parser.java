@@ -388,8 +388,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	private void readTasks( FQuest quest, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TASKS);
 		for (int i = 0; i < count; ++i) {
-			int idx = mSrc.readData( DataBitHelper.TASK_TYPE, version);
-			TaskTyp type = TaskTyp.get( idx);
+			TaskTyp type = TaskTyp.get( mSrc.readData( DataBitHelper.TASK_TYPE, version));
 			AQuestTask task = quest.createQuestTask( type);
 			task.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			task.setDescr( mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH));

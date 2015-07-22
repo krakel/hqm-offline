@@ -2,18 +2,23 @@ package de.doerl.hqm.base.data;
 
 import java.util.Vector;
 
+import de.doerl.hqm.base.AQuestTask;
+import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.dispatch.IDataWorker;
-import de.doerl.hqm.quest.TaskTyp;
 
-public final class FQuestData extends AGame {
+public final class FQuestData extends AGame implements IElement {
+	public final FTeamData mParentTeamData;
+	public final FQuest mQuest;
+	final Vector<AQuestTaskData> mTaskDatas = new Vector<>();
 	public boolean mCompleted;
 	public boolean mClaimed;
 	public boolean mAvailable;
 	public int mTime;
-	public boolean[] mReward;
-	final Vector<AQuestDataTask> mTasks = new Vector<>();
+	public Vector<Boolean> mReward = new Vector<>();
 
-	FQuestData() {
+	FQuestData( FTeamData parentTeamData, FQuest quest) {
+		mParentTeamData = parentTeamData;
+		mQuest = quest;
 	}
 
 	@Override
@@ -21,52 +26,23 @@ public final class FQuestData extends AGame {
 		return null;
 	}
 
-	public AQuestDataTask createQuestDataTask( TaskTyp type) {
-		AQuestDataTask task = null;
-		switch (type) {
-			case TASK_ITEMS_CONSUME:
-				task = new FQuestDataTaskItems( this);
-				break;
-			case TASK_ITEMS_CRAFTING:
-				task = new FQuestDataTaskItems( this);
-				break;
-			case TASK_LOCATION:
-				task = new FQuestDataTaskLocation( this);
-				break;
-			case TASK_ITEMS_CONSUME_QDS:
-				task = new FQuestDataTaskItems( this);
-				break;
-			case TASK_ITEMS_DETECT:
-				task = new FQuestDataTaskItems( this);
-				break;
-			case TASK_MOB:
-				task = new FQuestDataTaskMob( this);
-				break;
-			case TASK_DEATH:
-				task = new FQuestDataTaskDeath( this);
-				break;
-			case TASK_REPUTATION_TARGET:
-				task = new FQuestDataTaskReputationKill( this);
-				break;
-			case TASK_REPUTATION_KILL:
-				task = new FQuestDataTaskReputationKill( this);
-				break;
-		}
-		mTasks.add( task);
-		return task;
+	public AQuestTaskData createTaskData( AQuestTask task) {
+		AQuestTaskData taskData = TaskDataOfTask.get( this, task);
+		mTaskDatas.add( taskData);
+		return taskData;
 	}
 
 	@Override
 	public FData getData() {
-		return null;
+		return mParentTeamData.getData();
 	}
 
 	@Override
 	public AGame getParent() {
-		return null;
+		return mParentTeamData;
 	}
 
-	public void preRead( int playerCount) {
-		mReward = new boolean[playerCount];
+	@Override
+	public void remove() {
 	}
 }

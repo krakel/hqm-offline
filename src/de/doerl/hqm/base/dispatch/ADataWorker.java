@@ -4,17 +4,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.doerl.hqm.base.data.AGame;
-import de.doerl.hqm.base.data.AQuestDataTask;
+import de.doerl.hqm.base.data.AQuestTaskData;
 import de.doerl.hqm.base.data.FData;
 import de.doerl.hqm.base.data.FPlayer;
 import de.doerl.hqm.base.data.FPlayerStats;
-import de.doerl.hqm.base.data.FQuestDataTaskDeath;
-import de.doerl.hqm.base.data.FQuestDataTaskItems;
-import de.doerl.hqm.base.data.FQuestDataTaskLocation;
-import de.doerl.hqm.base.data.FQuestDataTaskMob;
-import de.doerl.hqm.base.data.FQuestDataTaskReputationKill;
-import de.doerl.hqm.base.data.FQuestDataTaskReputationTarget;
-import de.doerl.hqm.base.data.FTeam;
+import de.doerl.hqm.base.data.FQuestTaskDataDeath;
+import de.doerl.hqm.base.data.FQuestTaskDataItems;
+import de.doerl.hqm.base.data.FQuestTaskDataLocation;
+import de.doerl.hqm.base.data.FQuestTaskDataMob;
+import de.doerl.hqm.base.data.FQuestTaskDataReputationKill;
+import de.doerl.hqm.base.data.FQuestTaskDataReputationTarget;
+import de.doerl.hqm.base.data.FTeamData;
 import de.doerl.hqm.base.data.FTeamStats;
 import de.doerl.hqm.utils.ToString;
 import de.doerl.hqm.utils.Utils;
@@ -22,13 +22,13 @@ import de.doerl.hqm.utils.Utils;
 public abstract class ADataWorker<T, U> implements IDataWorker<T, U> {
 	private static final Logger LOGGER = Logger.getLogger( ADataWorker.class.getName());
 
-	protected T doGame( AGame base, U p) {
-		Utils.log( LOGGER, Level.WARNING, "{0} missing handler for {1}", ToString.clsName( this), base);
+	protected T doGame( AGame baseData, U p) {
+		Utils.log( LOGGER, Level.WARNING, "{0} missing handler for {1}", ToString.clsName( this), baseData);
 		return null;
 	}
 
-	protected T doTask( AQuestDataTask task, U p) {
-		return doGame( task, p);
+	protected T doTask( AQuestTaskData taskData, U p) {
+		return doGame( taskData, p);
 	}
 
 	@Override
@@ -37,38 +37,38 @@ public abstract class ADataWorker<T, U> implements IDataWorker<T, U> {
 	}
 
 	@Override
-	public T forDataTaskDeath( FQuestDataTaskDeath task, U p) {
-		return doTask( task, p);
+	public T forDataTaskDeath( FQuestTaskDataDeath taskData, U p) {
+		return doTask( taskData, p);
 	}
 
 	@Override
-	public T forDataTaskItems( FQuestDataTaskItems task, U p) {
-		return doTask( task, p);
+	public T forDataTaskItems( FQuestTaskDataItems taskData, U p) {
+		return doTask( taskData, p);
 	}
 
 	@Override
-	public T forDataTaskLocation( FQuestDataTaskLocation task, U p) {
-		return doTask( task, p);
+	public T forDataTaskLocation( FQuestTaskDataLocation taskData, U p) {
+		return doTask( taskData, p);
 	}
 
 	@Override
-	public T forDataTaskMob( FQuestDataTaskMob task, U p) {
-		return doTask( task, p);
+	public T forDataTaskMob( FQuestTaskDataMob taskData, U p) {
+		return doTask( taskData, p);
 	}
 
 	@Override
-	public T forDataTaskReputationKill( FQuestDataTaskReputationKill task, U p) {
-		return doTask( task, p);
+	public T forDataTaskReputationKill( FQuestTaskDataReputationKill taskData, U p) {
+		return doTask( taskData, p);
 	}
 
 	@Override
-	public T forDataTaskReputationTarget( FQuestDataTaskReputationTarget task, U p) {
-		return doTask( task, p);
+	public T forDataTaskReputationTarget( FQuestTaskDataReputationTarget taskData, U p) {
+		return doTask( taskData, p);
 	}
 
 	@Override
-	public T forPlayer( FPlayer player, U p) {
-		return doGame( player, p);
+	public T forPlayer( FPlayer playerData, U p) {
+		return doGame( playerData, p);
 	}
 
 	@Override
@@ -77,8 +77,8 @@ public abstract class ADataWorker<T, U> implements IDataWorker<T, U> {
 	}
 
 	@Override
-	public T forTeam( FTeam team, U p) {
-		return doGame( team, p);
+	public T forTeam( FTeamData teamData, U p) {
+		return doGame( teamData, p);
 	}
 
 	@Override

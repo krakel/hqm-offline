@@ -2,7 +2,6 @@ package de.doerl.hqm.base.data;
 
 import java.util.Vector;
 
-import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.dispatch.IDataWorker;
 import de.doerl.hqm.base.dispatch.IDispatcher;
 import de.doerl.hqm.utils.ToString;
@@ -11,7 +10,7 @@ public abstract class AGame implements IDispatcher {
 	AGame() {
 	}
 
-	static <T extends ABase> void remove( Vector<T> arr, T val) {
+	static <T extends AGame> void remove( Vector<T> arr, T val) {
 		int pos = arr.indexOf( val);
 		if (pos >= 0) {
 			arr.setElementAt( null, pos);
