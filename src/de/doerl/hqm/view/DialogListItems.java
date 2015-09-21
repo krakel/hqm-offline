@@ -40,7 +40,7 @@ class DialogListItems extends ADialogStacks {
 		values.clear();
 		for (int i = 0; i < mModel.size(); ++i) {
 			StackEntry e = mModel.get( i);
-			values.add( new FItemStack( e.getName(), e.mDmg, e.mCount));
+			values.add( new FItemStack( e.mNbt, e.getName(), e.mDmg, e.mCount));
 		}
 	}
 }

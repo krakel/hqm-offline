@@ -134,7 +134,7 @@ class DialogListWeights extends ADialog {
 
 	private static class Editor extends ADialogEdit<Integer> {
 		private static final long serialVersionUID = 7720930197206098500L;
-		private JTextField mIconDmg = new TextFieldInteger();
+		private JTextField mWeight = new TextFieldInteger();
 
 		public Editor( Window owner) {
 			super( owner);
@@ -147,7 +147,8 @@ class DialogListWeights extends ADialog {
 
 		@Override
 		public Integer addElement( ICreator<Integer> creator) {
-			mIconDmg.setText( "0");
+			mWeight.setText( "0");
+			mWeight.selectAll();
 			if (showDialog() == DialogResult.APPROVE) {
 				return updateResult();
 			}
@@ -158,7 +159,8 @@ class DialogListWeights extends ADialog {
 
 		@Override
 		public Integer changeElement( Integer entry) {
-			mIconDmg.setText( String.valueOf( entry));
+			mWeight.setText( String.valueOf( entry));
+			mWeight.selectAll();
 			if (showDialog() == DialogResult.APPROVE) {
 				return updateResult();
 			}
@@ -179,7 +181,7 @@ class DialogListWeights extends ADialog {
 			Group vert = layout.createSequentialGroup();
 			Group leftGrp = layout.createParallelGroup();
 			Group rightGrp = layout.createParallelGroup();
-			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Weight", mIconDmg));
+			vert.addGroup( addLine( layout, leftGrp, rightGrp, "Weight", mWeight));
 			hori.addGroup( leftGrp);
 			hori.addGroup( rightGrp);
 			layout.setHorizontalGroup( hori);
@@ -188,7 +190,7 @@ class DialogListWeights extends ADialog {
 		}
 
 		private Integer updateResult() {
-			return Utils.parseInteger( mIconDmg.getText(), 0);
+			return Utils.parseInteger( mWeight.getText(), 0);
 		}
 	}
 
@@ -239,7 +241,7 @@ class DialogListWeights extends ADialog {
 
 		public Renderer() {
 			setLayout( new GridLayout( 1, 2, 2, 2));
-			setOpaque( false);
+			setOpaque( true);
 			AEntity.setSizes( this, ADialog.FONT_NORMAL.getSize());
 			add( mBag);
 			add( mName);

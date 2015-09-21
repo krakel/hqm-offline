@@ -102,7 +102,6 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 			mActiv = null;
 		}
 		else {
-			mColor.setSelectedIndex( tier.mColorID);
 			model.clear();
 			for (int i = 0; i < tier.mWeights.length; ++i) {
 				model.addElement( Integer.valueOf( tier.mWeights[i]));
@@ -111,6 +110,7 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 			updateActions( true);
 			updateControls( true);
 			mActiv = tier;
+			mColor.setSelectedIndex( tier.mColorID);
 		}
 	}
 
@@ -131,9 +131,11 @@ class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 			if (mActiv != null) {
 				GuiColor color = (GuiColor) mColor.getSelectedItem();
 				if (color != null) {
-					mActiv.mColorID = color.ordinal();
 					mColor.setBackground( color.getColor());
-					mCtrl.fireChanged( mActiv);
+					if (mActiv.mColorID != color.ordinal()) {
+						mActiv.mColorID = color.ordinal();
+						mCtrl.fireChanged( mActiv);
+					}
 				}
 			}
 		}
