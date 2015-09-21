@@ -79,6 +79,7 @@ class DialogCount extends ADialog {
 		else {
 			mCount.setText( "0");
 		}
+		mCount.selectAll();
 	}
 
 	private void updateResult( FQuest quest) {

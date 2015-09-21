@@ -60,7 +60,7 @@
 			<!-- compilerarg value="-Xlint:deprecation" /-->
 		</javac>
 		<!-- create jar file -->
-		<exec executable="C:/Program Files (x86)/Git/bin/git" outputproperty="gitRevision" failifexecutionfails="false" errorproperty="gitError">
+		<exec executable="C:/Program Files/Git/bin/git" outputproperty="gitRevision" failifexecutionfails="false" errorproperty="gitError">
 			<arg value="describe" />
 			<arg value="--tags" />
 			<arg value="--always" />
