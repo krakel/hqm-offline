@@ -422,15 +422,15 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		mGroupAdd.setEnabled( true);
 		mGroupMove.setEnabled( enableGroups);
 		mGroupLink.setEnabled( enableGroups);
-//		if (mActiv == null) {
-		mMoveUpAction.setEnabled( false);
-		mMoveDownAction.setEnabled( false);
-//		}
-//		else {
-//			FQuest quest = mActiv.getQuest();
-//			mMoveUpAction.setEnabled( !quest.isFirst());
-//			mMoveDownAction.setEnabled( !quest.isLast());
-//		}
+		if (mActiv == null) {
+			mMoveUpAction.setEnabled( false);
+			mMoveDownAction.setEnabled( false);
+		}
+		else {
+			FQuest quest = mActiv.getQuest();
+			mMoveUpAction.setEnabled( !quest.isFirst());
+			mMoveDownAction.setEnabled( !quest.isLast());
+		}
 		updateActions( enableQuest);
 	}
 

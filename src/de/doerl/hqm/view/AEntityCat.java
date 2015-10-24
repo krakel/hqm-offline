@@ -179,7 +179,7 @@ abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 
 		@Override
 		public void run() {
-			updateActive( mTier, false);
+			updateActive( mTier, true);
 			updateMoveActions();
 		}
 	}
