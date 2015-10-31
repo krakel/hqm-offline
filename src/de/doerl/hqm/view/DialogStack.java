@@ -136,7 +136,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 	private FItemStack getResultStk() {
 		String name = mName.getText();
 		if (Utils.validString( name)) {
-			return new FItemStack( name, Utils.parseInteger( mDmg.getText(), 0), 1);
+			return new FItemStack( mNBT.getText(), name, Utils.parseInteger( mDmg.getText(), 0), 1);
 		}
 		else {
 			return null;
