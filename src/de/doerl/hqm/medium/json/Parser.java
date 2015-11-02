@@ -55,7 +55,7 @@ import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.FValue;
 import de.doerl.hqm.utils.json.IJson;
 
-class Parser extends AHQMWorker<Object, FObject> implements IToken {
+class Parser extends AHQMWorker<Object, FObject>implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();

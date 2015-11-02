@@ -109,6 +109,14 @@ public class JsonWriter {
 		printValue( value);
 	}
 
+	public void print( String key, Integer value) {
+		if (value != null) {
+			checkNL();
+			writeKey( key);
+			printValue( value.intValue());
+		}
+	}
+
 	public void print( String key, long value) {
 		checkNL();
 		writeKey( key);

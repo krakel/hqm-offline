@@ -36,7 +36,7 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
 
-class Serializer extends AHQMWorker<Object, Object> implements IToken {
+class Serializer extends AHQMWorker<Object, Object>implements IToken {
 	private JsonWriter mDst;
 	private FLanguage mLang;
 	private boolean mMain;
