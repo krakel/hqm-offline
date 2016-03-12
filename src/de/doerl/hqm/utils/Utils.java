@@ -10,6 +10,7 @@ import java.awt.Window;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -192,6 +193,18 @@ public class Utils {
 			}
 		}
 		return null;
+	}
+
+	public static String format( String msg, Object... data) {
+		if (data == null || data.length == 0) {
+			return msg;
+		}
+		try {
+			return MessageFormat.format( msg, data);
+		}
+		catch (IllegalArgumentException ex) {
+			return msg;
+		}
 	}
 
 	public static String getDateString() {

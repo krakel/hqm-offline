@@ -40,6 +40,10 @@ public enum GuiColor {
 		return values[idx];
 	}
 
+	public static String get( String name) {
+		return YELLOW.getColor() + name + WHITE.getColor();
+	}
+
 	public static GuiColor parse( String name) {
 		try {
 			return valueOf( name);

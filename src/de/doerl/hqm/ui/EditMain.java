@@ -9,13 +9,9 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.VersionHelper;
 
 public class EditMain {
-//	public static final String SOURCE = "regrowth";
-//	public static final String SOURCE = "pathfinder";
-//	public static final String SOURCE = "landing";
-//	public static final String SOURCE = "phoenix";
-//	public static final String SOURCE = "quests7";
 	public static final String SOURCE = "UltimateQuestpack";
 	public static final String PATH = "/Games/Minecraft/hqm/";
 	public static final String SUFFIX_HQM = ".hqm";
@@ -41,6 +37,7 @@ public class EditMain {
 		System.setProperty( "hqm.console.logLevel", "ALL");
 		Utils.setStackTrace( true);
 		EditFrame.createNew();
+		VersionHelper.execute();
 //		EditManager.logVersion();
 //		createTest();
 	}

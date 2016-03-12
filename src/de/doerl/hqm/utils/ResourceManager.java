@@ -41,6 +41,16 @@ public class ResourceManager {
 		return result;
 	}
 
+	public static String getBundleString( String key, String bundle) {
+		try {
+			ResourceBundle rb = ResourceBundle.getBundle( bundle, Locale.getDefault(), ResourceManager.class.getClassLoader());
+			return rb.getString( key);
+		}
+		catch (RuntimeException ex) {
+			return "<" + key + ">";
+		}
+	}
+
 	public static int getH( boolean big) {
 		return big ? 37 : 30;
 	}
@@ -112,6 +122,14 @@ public class ResourceManager {
 		catch (RuntimeException ex) {
 			return def;
 		}
+	}
+
+	public static String getVersion( String bundle) {
+		StringBuffer sb = new StringBuffer();
+		sb.append( getBundleString( "build.version", bundle));
+		sb.append( '.');
+		sb.append( getBundleString( "build.number", bundle));
+		return sb.toString();
 	}
 
 	public static int getW( boolean big) {
