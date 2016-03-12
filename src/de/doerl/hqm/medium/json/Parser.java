@@ -30,6 +30,7 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.FReputationBar;
 import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
@@ -55,7 +56,7 @@ import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.FValue;
 import de.doerl.hqm.utils.json.IJson;
 
-class Parser extends AHQMWorker<Object, FObject>implements IToken {
+class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
@@ -128,6 +129,15 @@ class Parser extends AHQMWorker<Object, FObject>implements IToken {
 	public Object forTaskReputationTarget( FQuestTaskReputationTarget task, FObject obj) {
 		doTaskReputation( task, obj);
 		return null;
+	}
+
+	private void readBars( FQuestSet set, FArray arr) {
+		if (arr != null) {
+			for (IJson json : arr) {
+				FReputationBar bar = set.createReputationBar();
+				bar.mValue = FValue.toInt( json);
+			}
+		}
 	}
 
 	private void readGroups( FGroupTier tier, FArray arr) {
@@ -344,6 +354,7 @@ class Parser extends AHQMWorker<Object, FObject>implements IToken {
 						set.setName( mLang, FValue.toString( obj.get( IToken.QUEST_SET_NAME)));
 						set.setDescr( mLang, FValue.toString( obj.get( IToken.QUEST_SET_DECR)));
 					}
+					readBars( set, FArray.to( obj.get( IToken.QUEST_SET_BARS)));
 					readQuests( set, FArray.to( obj.get( IToken.QUEST_SET_QUESTS)));
 				}
 			}

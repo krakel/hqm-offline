@@ -38,7 +38,12 @@ public enum DataBitHelper {
 	TASK_ITEM_COUNT( 6, 35),
 	TASK_REQUIREMENT( 32),
 	QUEST_REWARD( 3),
-	ITEM_PRECISION( 2),
+	ITEM_PRECISION( 30) {
+		@Override
+		public int getBitCount( FileVersion version) {
+			return version.contains( FileVersion.CUSTOM_PRECISION_TYPES) ? getCount() : 2;
+		}
+	},
 	GROUP_ITEMS( 6),
 	GROUP_COUNT( 10),
 	TIER_COUNT( 7),

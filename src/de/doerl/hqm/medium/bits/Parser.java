@@ -35,6 +35,7 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.FReputationBar;
 import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
@@ -108,7 +109,12 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	public Object forItemRequirement( FItemRequirement item, FileVersion version) {
 		item.mStack = mSrc.readItemStack( version);
 		item.mRequired = mSrc.readData( DataBitHelper.TASK_REQUIREMENT);
-		item.mPrecision = ItemPrecision.get( mSrc.readData( DataBitHelper.ITEM_PRECISION));
+		if (version.contains( FileVersion.CUSTOM_PRECISION_TYPES)) {
+			item.mPrecision = ItemPrecision.parse( mSrc.readString( DataBitHelper.ITEM_PRECISION));
+		}
+		else {
+			item.mPrecision = ItemPrecision.get( mSrc.readData( DataBitHelper.ITEM_PRECISION));
+		}
 		return null;
 	}
 
@@ -308,12 +314,23 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		}
 	}
 
-	private void readQuestSetCat( FQuestSetCat cat) {
+	private void readQuestSetCat( FQuestSetCat cat, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.QUEST_SETS);
 		for (int id = 0; id < count; id++) {
 			FQuestSet set = cat.createQuestSet( id);
 			set.setName( mSrc.readString( DataBitHelper.QUEST_NAME_LENGTH));
 			set.setDescr( mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH));
+			if (version.contains( FileVersion.REPUTATION_BARS)) {
+				readReputationBars( set, version);
+			}
+		}
+	}
+
+	private void readReputationBars( FQuestSet set, FileVersion version) {
+		int count = mSrc.readData( DataBitHelper.BYTE);
+		for (int i = 0; i < count; ++i) {
+			FReputationBar bar = set.createReputationBar();
+			bar.mValue = mSrc.readData( DataBitHelper.INT);
 		}
 	}
 
@@ -350,7 +367,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 			hqm.setDescr( "No description");
 		}
 		if (version.contains( FileVersion.SETS)) {
-			readQuestSetCat( hqm.mQuestSetCat);
+			readQuestSetCat( hqm.mQuestSetCat, version);
 		}
 		else {
 			FQuestSet set = hqm.mQuestSetCat.createMember();

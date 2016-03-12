@@ -14,6 +14,7 @@ interface IToken {
 	static final String QUEST_SET_ID = "id";
 	static final String QUEST_SET_NAME = "name";
 	static final String QUEST_SET_DECR = "decription";
+	static final String QUEST_SET_BARS = "bars";
 	static final String QUEST_SET_QUESTS = "quests";
 	//
 	static final String REPUTATION_ID = "id";

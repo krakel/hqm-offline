@@ -27,6 +27,7 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.FReputationBar;
 import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
@@ -100,7 +101,12 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		mDst.writeBoolean( true);
 		mDst.writeItemStack( item.mStack, version);
 		mDst.writeData( item.mRequired, DataBitHelper.TASK_REQUIREMENT);
-		mDst.writeData( item.mPrecision.ordinal(), DataBitHelper.ITEM_PRECISION);
+		if (version.contains( FileVersion.CUSTOM_PRECISION_TYPES)) {
+			mDst.writeString( item.mPrecision.name(), DataBitHelper.ITEM_PRECISION);
+		}
+		else {
+			mDst.writeData( item.mPrecision.ordinal(), DataBitHelper.ITEM_PRECISION);
+		}
 		return null;
 	}
 
@@ -138,6 +144,9 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 	public Object forQuestSet( FQuestSet set, FileVersion version) {
 		mDst.writeString( set.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 		mDst.writeString( set.getDescr(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+		if (version.contains( FileVersion.REPUTATION_BARS)) {
+			set.forEachBar( this, version);
+		}
 		return null;
 	}
 
@@ -156,6 +165,12 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		mDst.writeString( rep.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 		mDst.writeString( rep.getDescr(), DataBitHelper.QUEST_NAME_LENGTH);
 		writeMarker( rep, version);
+		return null;
+	}
+
+	@Override
+	public Object forReputationBar( FReputationBar bar, FileVersion p) {
+		mDst.writeData( bar.mValue, DataBitHelper.INT);
 		return null;
 	}
 

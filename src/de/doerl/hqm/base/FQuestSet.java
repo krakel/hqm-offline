@@ -15,6 +15,7 @@ public final class FQuestSet extends AMember {
 	private static final String BASE = "set";
 	private LinkType mInformation = LinkType.NORM;
 	final Vector<FQuest> mQuests = new Vector<>();
+	final Vector<FReputationBar> mBars = new Vector<>();
 	public final FQuestSetCat mParentCategory;
 
 	FQuestSet( FQuestSetCat parent) {
@@ -55,6 +56,29 @@ public final class FQuestSet extends AMember {
 		FQuest quest = new FQuest( this, id);
 		mQuests.add( quest);
 		return quest;
+	}
+
+	public FReputationBar createReputationBar() {
+		FReputationBar bar = new FReputationBar( this);
+		mBars.add( bar);
+		return bar;
+	}
+
+	public <T, U> T forEachBar( IHQMWorker<T, U> worker, U p) {
+		for (ABase disp : mBars) {
+			try {
+				if (disp != null) {
+					T obj = disp.accept( worker, p);
+					if (obj != null) {
+						return obj;
+					}
+				}
+			}
+			catch (RuntimeException ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+			}
+		}
+		return null;
 	}
 
 	public <T, U> T forEachQuest( IHQMWorker<T, U> worker, U p) {

@@ -21,7 +21,9 @@ public enum FileVersion {
 	NO_ITEM_IDS_FIX,
 	PARENT_COUNT,
 	REPUTATION,
-	REPUTATION_KILL;
+	REPUTATION_KILL,
+	REPUTATION_BARS,
+	CUSTOM_PRECISION_TYPES;
 	public static FileVersion get( int idx) {
 		FileVersion[] values = values();
 		if (idx < 0) {

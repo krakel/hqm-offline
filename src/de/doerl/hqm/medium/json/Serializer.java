@@ -29,6 +29,7 @@ import de.doerl.hqm.base.FQuestTaskReputationKill;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FRepeatInfo;
 import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.FReputationBar;
 import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
@@ -36,7 +37,7 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
 
-class Serializer extends AHQMWorker<Object, Object>implements IToken {
+class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	private JsonWriter mDst;
 	private FLanguage mLang;
 	private boolean mMain;
@@ -228,6 +229,7 @@ class Serializer extends AHQMWorker<Object, Object>implements IToken {
 			mDst.print( QUEST_SET_NAME, set.getName( mLang));
 			mDst.print( QUEST_SET_DECR, set.getDescr( mLang));
 		}
+		writeBars( set);
 		writeQuests( set);
 		mDst.endObject();
 		return null;
@@ -254,6 +256,12 @@ class Serializer extends AHQMWorker<Object, Object>implements IToken {
 		}
 		writeMarkers( rep);
 		mDst.endObject();
+		return null;
+	}
+
+	@Override
+	public Object forReputationBar( FReputationBar bar, Object p) {
+		mDst.printValue( bar.mValue);
 		return null;
 	}
 
@@ -331,6 +339,12 @@ class Serializer extends AHQMWorker<Object, Object>implements IToken {
 		doTaskReputation( task);
 		mDst.endObject();
 		return null;
+	}
+
+	private void writeBars( FQuestSet set) {
+		mDst.beginArray( QUEST_SET_BARS);
+		set.forEachBar( this, null);
+		mDst.endArray();
 	}
 
 	void writeDst( FHqm hqm) {

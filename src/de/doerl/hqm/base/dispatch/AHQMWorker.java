@@ -12,6 +12,7 @@ import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.ARequirement;
+import de.doerl.hqm.base.FReputationBar;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
@@ -149,6 +150,11 @@ public abstract class AHQMWorker<T, U> implements IHQMWorker<T, U> {
 	@Override
 	public T forReputation( FReputation rep, U p) {
 		return doMember( rep, p);
+	}
+
+	@Override
+	public T forReputationBar( FReputationBar bar, U p) {
+		return doBase( bar, p);
 	}
 
 	@Override

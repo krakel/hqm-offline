@@ -1,5 +1,6 @@
 package de.doerl.hqm.base.dispatch;
 
+import de.doerl.hqm.base.FReputationBar;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
@@ -55,6 +56,8 @@ public interface IHQMWorker<T, U> extends IWorker {
 	T forRepeatInfo( FRepeatInfo info, U p);
 
 	T forReputation( FReputation rep, U p);
+
+	T forReputationBar( FReputationBar bar, U p);
 
 	T forReputationCat( FReputationCat cat, U p);
 
