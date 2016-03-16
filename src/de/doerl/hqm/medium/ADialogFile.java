@@ -23,7 +23,7 @@ public abstract class ADialogFile extends ABundleAction implements IRefreshListe
 		cb.addRefreshListener( this);
 	}
 
-	protected static JFileChooser createChooser( String pfad) {
+	public static JFileChooser createChooser( String pfad) {
 		JFileChooser chooser = new JFileChooser( pfad);
 		chooser.setLocale( Locale.getDefault());
 		chooser.setControlButtonsAreShown( true);
@@ -36,7 +36,7 @@ public abstract class ADialogFile extends ABundleAction implements IRefreshListe
 		return PreferenceManager.getString( BaseDefaults.FILE_OPEN_DIR);
 	}
 
-	protected static String getLastOpenDir() {
+	public static String getLastOpenDir() {
 		return PreferenceManager.getString( BaseDefaults.LAST_OPEN_DIR);
 	}
 
@@ -47,7 +47,7 @@ public abstract class ADialogFile extends ABundleAction implements IRefreshListe
 		return null;
 	}
 
-	protected static File selectSaveDialog( Window frame, JFileChooser chooser) {
+	public static File selectSaveDialog( Window frame, JFileChooser chooser) {
 		if (chooser.showSaveDialog( frame) == JFileChooser.APPROVE_OPTION) {
 			return chooser.getSelectedFile();
 		}

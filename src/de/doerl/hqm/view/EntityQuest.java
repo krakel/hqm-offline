@@ -185,7 +185,7 @@ public class EntityQuest extends AEntity<FQuest> {
 	public void baseTreeChange( ModelEvent event) {
 	}
 
-	private Box createChoiseBox() {
+	private Box createChoiceBox() {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX( LEFT_ALIGNMENT);
 		box.add( mChoiceList);
@@ -205,7 +205,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		leaf.add( createRewardBox());
 		leaf.add( Box.createVerticalStrut( GAP));
 		leaf.add( new LeafLabel( "Choices", true));
-		leaf.add( createChoiseBox());
+		leaf.add( createChoiceBox());
 	}
 
 	private Box createRewardBox() {

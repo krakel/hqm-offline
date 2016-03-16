@@ -163,23 +163,9 @@ public class EditFrame extends JFrame implements IModelListener {
 		JMenuBar menu = new JMenuBar();
 		menu.setBackground( UIManager.getColor( "panel.background"));
 		menu.add( createMenuFile());
-//		menu.add( createMenuEdit());
+		menu.add( createMenuReport());
 		menu.add( createMenuHelp());
 //		menu.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
-		return menu;
-	}
-
-	@SuppressWarnings( "unused")
-	private JMenu createMenuEdit() {
-		JMenu menu = createMenu( "hqm.edit");
-//		menu.add( new CopyAction( mMaster));
-//		menu.add( new CutAction( mMaster));
-//		menu.add( new PasteAction( mMaster));
-//		menu.addSeparator();
-//		menu.add( new DeleteAction( mMaster));
-//		menu.addSeparator();
-//		menu.add( mModel.getUndoable().getUndoAction());
-//		menu.add( mModel.getUndoable().getRedoAction());
 		return menu;
 	}
 
@@ -225,6 +211,20 @@ public class EditFrame extends JFrame implements IModelListener {
 			JMenuItem mi = menu.add( a);
 			a.setItem( mi); // poor
 		}
+		return menu;
+	}
+
+	private JMenu createMenuReport() {
+		JMenu menu = createMenu( "hqm.report");
+		menu.add( new ReportRewards( mCB));
+		menu.add( new ReportChoices( mCB));
+//		menu.add( new CutAction( mMaster));
+//		menu.add( new PasteAction( mMaster));
+//		menu.addSeparator();
+//		menu.add( new DeleteAction( mMaster));
+//		menu.addSeparator();
+//		menu.add( mModel.getUndoable().getUndoAction());
+//		menu.add( mModel.getUndoable().getRedoAction());
 		return menu;
 	}
 
