@@ -218,9 +218,8 @@ public class EditFrame extends JFrame implements IModelListener {
 		JMenu menu = createMenu( "hqm.report");
 		menu.add( new ReportRewards( mCB));
 		menu.add( new ReportChoices( mCB));
-//		menu.add( new CutAction( mMaster));
-//		menu.add( new PasteAction( mMaster));
-//		menu.addSeparator();
+		menu.addSeparator();
+		menu.add( new ReportStory( mCB));
 //		menu.add( new DeleteAction( mMaster));
 //		menu.addSeparator();
 //		menu.add( mModel.getUndoable().getUndoAction());

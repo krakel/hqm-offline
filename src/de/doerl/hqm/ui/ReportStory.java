@@ -2,6 +2,7 @@ package de.doerl.hqm.ui;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -18,19 +19,30 @@ import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.medium.ICallback;
 import de.doerl.hqm.utils.Utils;
 
-class ReportRewards extends AReport {
-	private static final long serialVersionUID = -2143378505414016857L;
-	private static final Logger LOGGER = Logger.getLogger( ReportRewards.class.getName());
+public class ReportStory extends AReport {
+	private static final long serialVersionUID = 2211030488129884122L;
+	private static final Logger LOGGER = Logger.getLogger( ReportStory.class.getName());
 
-	public ReportRewards( ICallback cb) {
-		super( "hqm.rewards", cb);
+	public ReportStory( ICallback cb) {
+		super( "hqm.story", cb);
+	}
+
+	private static void writeFile( Map<String, Integer> map, OutputStream os) throws IOException {
+		PrintWriter out = new PrintWriter( new OutputStreamWriter( os, "UTF-8"));
+		for (String key : map.keySet()) {
+			out.print( key);
+			out.print( " : ");
+			out.print( map.get( key));
+			out.write( NL);
+		}
+		out.flush();
 	}
 
 	@Override
 	File normalize( File choose) {
 		String norm = truncName( choose.getName(), ".txt");
-		norm = truncName( norm, ".reward");
-		return new File( choose.getParent(), norm + ".reward.txt");
+		norm = truncName( norm, ".story");
+		return new File( choose.getParent(), norm + ".story.txt");
 	}
 
 	@Override
@@ -39,14 +51,7 @@ class ReportRewards extends AReport {
 		try {
 			Map<String, Integer> map = Collector.get( hqm);
 			os = new FileOutputStream( file);
-			PrintWriter out = new PrintWriter( new OutputStreamWriter( os, "UTF-8"));
-			for (String key : map.keySet()) {
-				out.print( key);
-				out.print( " : ");
-				out.print( map.get( key));
-				out.write( NL);
-			}
-			out.flush();
+			writeFile( map, os);
 			return true;
 		}
 		catch (Exception ex) {
@@ -60,7 +65,7 @@ class ReportRewards extends AReport {
 
 	@Override
 	File suggest( String name) {
-		return name != null ? new File( name + ".reward.txt") : null;
+		return name != null ? new File( name + ".story.txt") : null;
 	}
 
 	private static final class Collector extends AHQMWorker<Object, Object> {
