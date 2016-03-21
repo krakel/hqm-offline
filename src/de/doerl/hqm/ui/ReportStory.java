@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FHqm;
-import de.doerl.hqm.base.FItemStack;
+import de.doerl.hqm.base.FLanguage;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
@@ -27,17 +26,6 @@ public class ReportStory extends AReport {
 		super( "hqm.story", cb);
 	}
 
-	private static void writeFile( Map<String, Integer> map, OutputStream os) throws IOException {
-		PrintWriter out = new PrintWriter( new OutputStreamWriter( os, "UTF-8"));
-		for (String key : map.keySet()) {
-			out.print( key);
-			out.print( " : ");
-			out.print( map.get( key));
-			out.write( NL);
-		}
-		out.flush();
-	}
-
 	@Override
 	File normalize( File choose) {
 		String norm = truncName( choose.getName(), ".txt");
@@ -49,9 +37,8 @@ public class ReportStory extends AReport {
 	boolean saveFile( FHqm hqm, File file) {
 		OutputStream os = null;
 		try {
-			Map<String, Integer> map = Collector.get( hqm);
 			os = new FileOutputStream( file);
-			writeFile( map, os);
+			Collector.get( hqm, os, hqm.mMain);
 			return true;
 		}
 		catch (Exception ex) {
@@ -69,35 +56,75 @@ public class ReportStory extends AReport {
 	}
 
 	private static final class Collector extends AHQMWorker<Object, Object> {
-		private Map<String, Integer> mMap = new TreeMap<>();
+		private PrintWriter mOut;
+		private FLanguage mLang;
+		private int mSet, mQuest, mTask;
 
-		private Collector() {
+		private Collector( PrintWriter out, FLanguage lang) {
+			mOut = out;
+			mLang = lang;
 		}
 
-		public static Map<String, Integer> get( FHqm hqm) {
-			Collector worker = new Collector();
-			hqm.mQuestSetCat.forEachMember( worker, null);
-			return worker.mMap;
+		public static void get( FHqm hqm, OutputStream os, FLanguage lang) throws IOException {
+			PrintWriter out = new PrintWriter( new OutputStreamWriter( os, "UTF-8"));
+			Collector worker = new Collector( out, lang);
+			hqm.accept( worker, out);
+			out.flush();
+		}
+
+		@Override
+		protected Object doTask( AQuestTask task, Object p) {
+			++mTask;
+			mOut.print( mSet);
+			mOut.write( '.');
+			mOut.print( mQuest);
+			mOut.write( '.');
+			mOut.print( mTask);
+			mOut.write( ": ");
+			mOut.print( task.getName( mLang));
+			mOut.write( NL);
+			mOut.print( task.getDescr( mLang));
+			mOut.write( NL);
+			return null;
+		}
+
+		@Override
+		public Object forHQM( FHqm hqm, Object p) {
+			mOut.print( hqm.getDescr( mLang));
+			mOut.write( NL);
+			mSet = 0;
+			hqm.mQuestSetCat.forEachMember( this, p);
+			return null;
 		}
 
 		@Override
 		public Object forQuest( FQuest quest, Object p) {
-			for (FItemStack item : quest.mRewards) {
-				String key = item.getKey();
-				int count = item.getCount();
-				Integer old = mMap.get( key);
-				if (old != null) {
-					mMap.put( key, old + count);
-				}
-				else {
-					mMap.put( key, count);
-				}
-			}
+			++mQuest;
+			mOut.write( NL);
+			mOut.print( mSet);
+			mOut.write( '.');
+			mOut.print( mQuest);
+			mOut.write( ": ");
+			mOut.print( quest.getName( mLang));
+			mOut.write( NL);
+			mOut.print( quest.getDescr( mLang));
+			mOut.write( NL);
+			mTask = 0;
+			quest.forEachTask( this, p);
 			return null;
 		}
 
 		@Override
 		public Object forQuestSet( FQuestSet set, Object p) {
+			++mSet;
+			mOut.write( NL);
+			mOut.print( mSet);
+			mOut.write( ": ");
+			mOut.print( set.getName( mLang));
+			mOut.write( NL);
+			mOut.print( set.getDescr( mLang));
+			mOut.write( NL);
+			mQuest = 0;
 			set.forEachQuest( this, p);
 			return null;
 		}
