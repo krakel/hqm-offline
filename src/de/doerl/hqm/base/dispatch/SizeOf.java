@@ -10,9 +10,11 @@ import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
 import de.doerl.hqm.base.FQuest;
+import de.doerl.hqm.base.FQuestSet;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.FQuestTaskMob;
 import de.doerl.hqm.base.FReputation;
+import de.doerl.hqm.base.FReputationBar;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 
@@ -20,6 +22,12 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 	private int mResult = 0;
 
 	private SizeOf() {
+	}
+
+	public static int getBars( FQuestSet set) {
+		SizeOf worker = new SizeOf();
+		set.forEachBar( worker, null);
+		return worker.mResult;
 	}
 
 	public static int getLocations( FQuestTaskLocation task) {
@@ -102,6 +110,12 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 
 	@Override
 	public Object forMob( FMob mob, Object p) {
+		++mResult;
+		return null;
+	}
+
+	@Override
+	public Object forReputationBar( FReputationBar bar, Object p) {
 		++mResult;
 		return null;
 	}

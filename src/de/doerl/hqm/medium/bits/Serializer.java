@@ -145,6 +145,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		mDst.writeString( set.getName(), DataBitHelper.QUEST_NAME_LENGTH);
 		mDst.writeString( set.getDescr(), DataBitHelper.QUEST_DESCRIPTION_LENGTH);
 		if (version.contains( FileVersion.REPUTATION_BARS)) {
+			mDst.writeData( SizeOf.getBars( set), DataBitHelper.REPUTATION);
 			set.forEachBar( this, version);
 		}
 		return null;
