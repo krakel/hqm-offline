@@ -140,6 +140,17 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		}
 	}
 
+	private void readCommands( FQuest quest, FArray arr) {
+		if (arr != null) {
+			for (IJson json : arr) {
+				String cmd = FValue.toString( json);
+				if (cmd != null) {
+					quest.mCommands.add( cmd);
+				}
+			}
+		}
+	}
+
 	private void readGroups( FGroupTier tier, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
@@ -325,6 +336,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						quest.mCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT_COUNT));
 						readStacks( quest.mRewards, FArray.to( obj.get( IToken.QUEST_REWARD)));
 						readStacks( quest.mChoices, FArray.to( obj.get( IToken.QUEST_CHOICE)));
+						readCommands( quest, FArray.to( obj.get( IToken.QUEST_COMMANDS)));
 						readRewards( quest, FArray.to( obj.get( IToken.QUEST_REP_REWRDS)));
 					}
 					readTasks( quest, FArray.to( obj.get( IToken.QUEST_TASKS)));

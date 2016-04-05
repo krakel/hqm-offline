@@ -202,6 +202,15 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		return null;
 	}
 
+	private void readCommands( FQuest quest) {
+		if (mSrc.readBoolean()) {
+			int count = mSrc.readData( DataBitHelper.REWARDS);
+			for (int i = 0; i < count; ++i) {
+				quest.mCommands.add( mSrc.readString( DataBitHelper.QUEST_DESCRIPTION_LENGTH));
+			}
+		}
+	}
+
 	private void readGroup( FGroupTierCat cat, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.GROUP_COUNT);
 		for (int i = 0; i < count; ++i) {
@@ -307,6 +316,9 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 				readTasks( quest, version);
 				readStacksIf( quest.mRewards, DataBitHelper.REWARDS, version);
 				readStacksIf( quest.mChoices, DataBitHelper.REWARDS, version);
+				if (version.contains( FileVersion.COMMAND_REWARDS)) {
+					readCommands( quest);
+				}
 				if (version.contains( FileVersion.REPUTATION)) {
 					readRewards( quest);
 				}

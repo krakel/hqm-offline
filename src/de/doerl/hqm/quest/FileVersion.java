@@ -23,7 +23,8 @@ public enum FileVersion {
 	REPUTATION,
 	REPUTATION_KILL,
 	REPUTATION_BARS,
-	CUSTOM_PRECISION_TYPES;
+	CUSTOM_PRECISION_TYPES,
+	COMMAND_REWARDS;
 	public static FileVersion get( int idx) {
 		FileVersion[] values = values();
 		if (idx < 0) {

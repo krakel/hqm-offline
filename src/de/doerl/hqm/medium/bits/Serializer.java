@@ -248,6 +248,23 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		return res;
 	}
 
+	private void writeCommands( Vector<String> commands, FileVersion version) {
+		if (commands == null || isEmpty( commands)) {
+			mDst.writeBoolean( false);
+		}
+		else {
+			mDst.writeBoolean( true);
+			mDst.writeData( sizeOf( commands), DataBitHelper.REWARDS, version);
+			int size = commands.size();
+			for (int i = 0; i < size; ++i) {
+				String cmd = commands.get( i);
+				if (cmd != null) {
+					mDst.writeString( cmd, DataBitHelper.QUEST_DESCRIPTION_LENGTH);
+				}
+			}
+		}
+	}
+
 	void writeDst( FHqm hqm) {
 		FileVersion version = hqm.getVersion();
 		mDst.writeData( version.ordinal(), DataBitHelper.BYTE);
@@ -348,6 +365,9 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		writeTasks( quest, version);
 		writeStacksIf( quest.mRewards, version);
 		writeStacksIf( quest.mChoices, version);
+		if (version.contains( FileVersion.COMMAND_REWARDS)) {
+			writeCommands( quest.mCommands, version);
+		}
 		if (version.contains( FileVersion.REPUTATION)) {
 			writeRewards( quest, version);
 		}

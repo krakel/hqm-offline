@@ -215,6 +215,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		if (mMain) {
 			writeStackArr( QUEST_REWARD, quest.mRewards);
 			writeStackArr( QUEST_CHOICE, quest.mChoices);
+			writeCommands( quest);
 			writeRewards( quest);
 		}
 		mDst.endObject();
@@ -344,6 +345,16 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	private void writeBars( FQuestSet set) {
 		mDst.beginArray( QUEST_SET_BARS);
 		set.forEachBar( this, null);
+		mDst.endArray();
+	}
+
+	private void writeCommands( FQuest quest) {
+		mDst.beginArray( QUEST_COMMANDS);
+		for (String cmd : quest.mCommands) {
+			if (cmd != null) {
+				mDst.printValue( cmd);
+			}
+		}
 		mDst.endArray();
 	}
 

@@ -28,6 +28,7 @@ public final class FQuest extends AIdent implements IElement {
 	public final Vector<FQuest> mOptionLinks = new Vector<>();
 	public final Vector<FQuest> mPosts = new Vector<>();
 	public final Vector<FReputationReward> mRepRewards = new Vector<>();
+	public final Vector<String> mCommands = new Vector<>();
 	public final FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
 	final Vector<AQuestTask> mTasks = new Vector<>();
 	private FQuestSet mParentQuestSet;
@@ -225,6 +226,7 @@ public final class FQuest extends AIdent implements IElement {
 		ABase.moveUp( mParentQuestSet.mQuests, this);
 	}
 
+	@Override
 	public void remove() {
 		ABase.remove( mParentQuestSet.mQuests, this);
 	}
