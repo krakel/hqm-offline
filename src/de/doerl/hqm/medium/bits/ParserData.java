@@ -128,7 +128,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 	}
 
 	private void readPlayers( FData data, FileVersion version) {
-		int count = mSrc.readData( DataBitHelper.PLAYERS);
+		int count = mSrc.readData( DataBitHelper.PLAYERS, version);
 		for (int i = 0; i < count; ++i) {
 			FPlayer player = data.createPlayer();
 			player.setName( mSrc.readString( version.contains( FileVersion.QUESTS) ? DataBitHelper.NAME_LENGTH : DataBitHelper.BYTE));
@@ -143,7 +143,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 					data.mHours = mSrc.readData( DataBitHelper.HOURS);
 				}
 				if (mSrc.readBoolean()) {
-					player.mSelectedQuest = mSrc.readData( DataBitHelper.QUESTS);
+					player.mSelectedQuest = mSrc.readData( DataBitHelper.QUESTS, version);
 					player.mSelectedTask = mSrc.readData( DataBitHelper.TASKS);
 				}
 				else {
@@ -169,21 +169,21 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 				}
 			}
 			if (version.contains( FileVersion.DEATHS)) {
-				readPlayerStats( player, complex);
+				readPlayerStats( player, complex, version);
 			}
 			if (!complex) {
-				readTeamStats( data);
+				readTeamStats( data, version);
 			}
 		}
 	}
 
-	private void readPlayerStats( FPlayer player, boolean complex) {
+	private void readPlayerStats( FPlayer player, boolean complex, FileVersion version) {
 		if (complex) {
 			FPlayerStats stats = player.createStats();
 			readDeath( stats);
 		}
 		else {
-			int count = mSrc.readData( DataBitHelper.PLAYERS);
+			int count = mSrc.readData( DataBitHelper.PLAYERS, version);
 			for (int i = 0; i < count; ++i) {
 				FPlayerStats stats = player.createStats();
 				stats.mName = mSrc.readString( DataBitHelper.NAME_LENGTH);
@@ -218,7 +218,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 		int size = SizeOf.getTasks( quest);
 		int count = mSrc.readData( DataBitHelper.TASKS);
 		for (int id = 0; id < count; id++) {
-			TaskTyp type = TaskTyp.get( mSrc.readData( DataBitHelper.TASK_TYPE));
+			TaskTyp type = TaskTyp.get( mSrc.readData( DataBitHelper.TASK_TYPE, version));
 			if (id < size) {
 				AQuestTask task = TaskOfID.get( quest, id);
 				if (Utils.different( type, task.getTaskTyp())) {
@@ -250,9 +250,9 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 
 	private void readTeamData( FTeamData teamData, FileVersion version) {
 		FQuestSetCat questSetCat = teamData.mParentData.mHqm.mQuestSetCat;
-		int count = mSrc.readData( DataBitHelper.QUESTS);
+		int count = mSrc.readData( DataBitHelper.QUESTS, version);
 		for (int i = 0; i < count; ++i) {
-			int id = mSrc.readData( DataBitHelper.QUESTS);
+			int id = mSrc.readData( DataBitHelper.QUESTS, version);
 			FQuest quest = QuestOfID.get( questSetCat, id);
 			int bits = version.contains( FileVersion.REMOVED_QUESTS) ? mSrc.readData( DataBitHelper.INT) : 0;
 			if (quest != null) {
@@ -268,8 +268,8 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 		}
 	}
 
-	private void readTeamPlayer( FTeamData teamData) {
-		int count = mSrc.readData( DataBitHelper.PLAYERS);
+	private void readTeamPlayer( FTeamData teamData, FileVersion version) {
+		int count = mSrc.readData( DataBitHelper.PLAYERS, version);
 		for (int i = 0; i < count; ++i) {
 			String name = mSrc.readString( DataBitHelper.NAME_LENGTH);
 			if (name == null) {
@@ -306,19 +306,19 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 					teamData.mRewardSetting = RewardSetting.getDefault();
 				}
 			}
-			readTeamPlayer( teamData);
+			readTeamPlayer( teamData, version);
 			readTeamData( teamData, version);
 		}
 	}
 
-	private void readTeamStats( FData data) {
+	private void readTeamStats( FData data, FileVersion version) {
 		int count = mSrc.readData( DataBitHelper.TEAMS);
 		for (int i = 0; i < count; ++i) {
 			FTeamData team = TeamOfIdx.get( data, i);
 			FTeamStats stata = team.mStats;
 			stata.mName = mSrc.readString( DataBitHelper.NAME_LENGTH);
-			stata.mPlayers = mSrc.readData( DataBitHelper.PLAYERS);
-			stata.mLives = mSrc.readData( DataBitHelper.TEAM_LIVES);
+			stata.mPlayers = mSrc.readData( DataBitHelper.PLAYERS, version);
+			stata.mLives = mSrc.readData( DataBitHelper.TEAM_LIVES, version);
 			stata.mProgress = mSrc.readData( DataBitHelper.TEAM_PROGRESS);
 		}
 	}

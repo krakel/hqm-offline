@@ -102,10 +102,10 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		mDst.writeItemStack( item.mStack, version);
 		mDst.writeData( item.mRequired, DataBitHelper.TASK_REQUIREMENT);
 		if (version.contains( FileVersion.CUSTOM_PRECISION_TYPES)) {
-			mDst.writeString( item.mPrecision.name(), DataBitHelper.ITEM_PRECISION);
+			mDst.writeString( item.mPrecision.name(), DataBitHelper.ITEM_PRECISION, version);
 		}
 		else {
-			mDst.writeData( item.mPrecision.ordinal(), DataBitHelper.ITEM_PRECISION);
+			mDst.writeData( item.mPrecision.ordinal(), DataBitHelper.ITEM_PRECISION, version);
 		}
 		return null;
 	}

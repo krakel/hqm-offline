@@ -16,7 +16,7 @@
 
 	<!-- set this to 'on' if you wish the classes to be compiled with debug information -->
 	<property name="withDebug" value="on" />
-	<property name="javaVersion" value="1.7" />
+	<property name="javaVersion" value="1.8" />
 	<property name="javaCompiler" value="modern" />
 
 	<!-- ######################################################################################### -->

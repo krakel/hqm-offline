@@ -164,4 +164,16 @@ class BitInputStream {
 		}
 		return new String( bytes, UTF_8);
 	}
+
+	public String readString( DataBitHelper bits, FileVersion version) {
+		int length = readData( bits, version);
+		if (length == 0) {
+			return null;
+		}
+		byte bytes[] = new byte[length];
+		for (int i = 0; i < bytes.length; i++) {
+			bytes[i] = (byte) readByte();
+		}
+		return new String( bytes, UTF_8);
+	}
 }
