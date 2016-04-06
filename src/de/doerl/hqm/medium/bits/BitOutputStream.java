@@ -153,4 +153,18 @@ class BitOutputStream {
 			writeData( 0, bits);
 		}
 	}
+
+	public void writeString( String s, DataBitHelper bits, FileVersion version) {
+		if (s != null) {
+			byte bytes[] = s.getBytes();
+			int len = Math.min( bytes.length, bits.getMaximum());
+			writeData( len, bits, version);
+			for (int i = 0; i < len; ++i) {
+				writeByte( bytes[i]);
+			}
+		}
+		else {
+			writeData( 0, bits);
+		}
+	}
 }

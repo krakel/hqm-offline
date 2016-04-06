@@ -110,10 +110,10 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		item.mStack = mSrc.readItemStack( version);
 		item.mRequired = mSrc.readData( DataBitHelper.TASK_REQUIREMENT);
 		if (version.contains( FileVersion.CUSTOM_PRECISION_TYPES)) {
-			item.mPrecision = ItemPrecision.parse( mSrc.readString( DataBitHelper.ITEM_PRECISION));
+			item.mPrecision = ItemPrecision.parse( mSrc.readString( DataBitHelper.ITEM_PRECISION, version));
 		}
 		else {
-			item.mPrecision = ItemPrecision.get( mSrc.readData( DataBitHelper.ITEM_PRECISION));
+			item.mPrecision = ItemPrecision.get( mSrc.readData( DataBitHelper.ITEM_PRECISION, version));
 		}
 		return null;
 	}
