@@ -6,6 +6,8 @@ import java.awt.Window;
 import javax.swing.Box;
 import javax.swing.JLabel;
 
+import de.doerl.hqm.utils.VersionHelper;
+
 class AboutDialog extends ADialog {
 	private static final long serialVersionUID = 7261363764353127252L;
 
@@ -24,7 +26,7 @@ class AboutDialog extends ADialog {
 
 	@Override
 	protected void createMain() {
-		JLabel lbl = new JLabel( "Krakel");
+		JLabel lbl = new JLabel( "Krakel HQM offline editor version " + VersionHelper.VERSION);
 		lbl.setPreferredSize( new Dimension( 400, 200));
 		lbl.setAlignmentX( TOP_ALIGNMENT);
 		mMain.add( lbl);

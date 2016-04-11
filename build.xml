@@ -10,7 +10,7 @@
 
 	<property name="dstName" value="hqm_convert" />
 	<property name="jarName" value="${dist.dir}/${dstName}.jar" />
-	<property name="zipName" value="${dist.dir}/${dstName}-${build.version}.${build.number}.zip" />
+	<property name="zipName" value="${dist.dir}/${dstName}.zip" />
 	<property name="srcName" value="${dist.dir}/${dstName}-src.zip" />
 	<property name="mainClass" value="de.doerl.hqm.ui.EditMain" />
 

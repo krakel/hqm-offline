@@ -12,7 +12,7 @@ public class VersionHelper implements Runnable {
 	private static final String RESOURCE = "de.doerl.hqm.hqm";
 	private static final String MC_VERSION = "Minecraft 1.7.10";
 	private static final Logger LOGGER = Logger.getLogger( VersionHelper.class.getName());
-	private static final String VERSION = ResourceManager.getVersion( RESOURCE);
+	public static final String VERSION = ResourceManager.getVersion( RESOURCE);
 	private static final String MOD_NAME = ResourceManager.getBundleString( "build.title", RESOURCE);
 	private static final String REMOTE_VERSION = "http://doerl.de/zip/version.xml";
 	private static final String VERSION_INIT = "Initializing version check against remote authority file, located at {0}";
