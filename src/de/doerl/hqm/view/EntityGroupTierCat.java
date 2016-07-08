@@ -26,6 +26,8 @@ import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.leafs.LeafLabel;
+import de.doerl.hqm.view.leafs.LeafList;
 
 class EntityGroupTierCat extends AEntityCat<FGroupTier> {
 //	private static final Logger LOGGER = Logger.getLogger( EntityGroupTierCat.class.getName());

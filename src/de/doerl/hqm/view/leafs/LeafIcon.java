@@ -1,8 +1,10 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
+
+import de.doerl.hqm.view.StackIcon;
 
 public class LeafIcon extends JLabel {
 	private static final long serialVersionUID = -6010940963328765201L;

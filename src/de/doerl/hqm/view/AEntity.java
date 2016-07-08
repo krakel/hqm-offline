@@ -23,13 +23,14 @@ import de.doerl.hqm.controller.EditController;
 import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.ui.EditFrame;
 import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.view.leafs.LeafPanel;
 
-abstract class AEntity<T extends ABase> extends JPanel implements IModelListener {
+public abstract class AEntity<T extends ABase> extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -3039298434411863516L;
-	static final int ZOOM = 2;
-	static final int GAP = 8;
-	static final int ICON_SIZE = 36;
-	static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * 170, ZOOM * 234);
+	public static final int ZOOM = 2;
+	public static final int GAP = 8;
+	public static final int ICON_SIZE = 36;
+	public static final Dimension VIEW_SIZE = new Dimension( 2 * ZOOM * 170, ZOOM * 234);
 	static final Color SELECTED = new Color( 0xAAAAAA);
 	static final Color UNSELECTED = new Color( 0x404040);
 	private static int sColValue;
@@ -45,7 +46,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 //		setMaximumSize( new Dimension( min));
 	}
 
-	static void drawBackground( Graphics2D g2, Component c, boolean left) {
+	public static void drawBackground( Graphics2D g2, Component c, boolean left) {
 		drawBackground( g2, c, ResourceManager.getImageUI( "hqm.book.back"), left);
 	}
 
@@ -64,7 +65,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	static void drawBackgroundHalf( Graphics2D g2, Component c, boolean left) {
+	public static void drawBackgroundHalf( Graphics2D g2, Component c, boolean left) {
 		drawBackgroundHalf( g2, c, ResourceManager.getImageUI( "hqm.book.back"), left);
 	}
 
@@ -83,21 +84,21 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	static void drawBottomCenterString( Graphics2D g2, Component c, String text) {
+	public static void drawBottomCenterString( Graphics2D g2, Component c, String text) {
 		FontMetrics fm = g2.getFontMetrics();
 		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
 		int y = c.getHeight() - 2 * fm.getDescent();
 		g2.drawString( text, x, y);
 	}
 
-	static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
+	public static void drawBottomLeftString( Graphics2D g2, Component c, String text) {
 		FontMetrics fm = g2.getFontMetrics();
 		int x = c.getWidth() - fm.stringWidth( text);
 		int y = c.getHeight() - fm.getDescent();
 		g2.drawString( text, x, y);
 	}
 
-	static void drawBottomRightString( Graphics2D g2, Component c, String text) {
+	public static void drawBottomRightString( Graphics2D g2, Component c, String text) {
 		FontMetrics fm = g2.getFontMetrics();
 		int x = 0;
 		int y = c.getHeight() - fm.getDescent();
@@ -117,7 +118,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	static void drawCenteredImage( Graphics2D g2, Component c, Image img, double zoom) {
+	public static void drawCenteredImage( Graphics2D g2, Component c, Image img, double zoom) {
 		if (img != null) {
 			AffineTransform form = new AffineTransform();
 			double sx = zoom * c.getWidth() / img.getWidth( null);
@@ -130,14 +131,14 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	static void drawCenteredString( Graphics2D g2, Component c, String text) {
+	public static void drawCenteredString( Graphics2D g2, Component c, String text) {
 		FontMetrics fm = g2.getFontMetrics();
 		int x = (c.getWidth() - fm.stringWidth( text)) / 2;
 		int y = (c.getHeight() + fm.getAscent() - fm.getDescent()) / 2;
 		g2.drawString( text, x, y);
 	}
 
-	static void drawImage( Graphics2D g2, Component c, Image img) {
+	public static void drawImage( Graphics2D g2, Component c, Image img) {
 		if (img != null) {
 			AffineTransform form = new AffineTransform();
 			double sx = (double) c.getWidth() / img.getWidth( null);
@@ -147,7 +148,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	static void drawImage( Graphics2D g2, Image img, double sx, double sy, double tx, double ty) {
+	public static void drawImage( Graphics2D g2, Image img, double sx, double sy, double tx, double ty) {
 		if (img != null) {
 			AffineTransform form = new AffineTransform();
 			form.scale( sx, sy);
@@ -156,7 +157,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		}
 	}
 
-	protected static JComponent leafBox( int axis) {
+	public static JComponent leafBox( int axis) {
 		JPanel result = new JPanel();
 		result.setLayout( new BoxLayout( result, axis));
 		if (axis == BoxLayout.Y_AXIS) {
@@ -185,7 +186,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		return result;
 	}
 
-	protected static JComponent leafButtons( JComponent... btns) {
+	public static JComponent leafButtons( JComponent... btns) {
 		JComponent result = leafBoxHorizontal( ICON_SIZE);
 		for (int i = 0; i < btns.length; ++i) {
 			result.add( btns[i]);
@@ -195,7 +196,7 @@ abstract class AEntity<T extends ABase> extends JPanel implements IModelListener
 		return result;
 	}
 
-	protected static JScrollPane leafScoll( JComponent view, int height) {
+	public static JScrollPane leafScoll( JComponent view, int height) {
 		JScrollPane result = new JScrollPane( view, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		result.setAlignmentX( LEFT_ALIGNMENT);
 		result.setOpaque( false);

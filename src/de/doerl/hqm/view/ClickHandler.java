@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.utils.Utils;
 
-class ClickHandler extends MouseAdapter {
+public class ClickHandler extends MouseAdapter {
 	private static final Logger LOGGER = Logger.getLogger( ClickHandler.class.getName());
 	private static final Timer TIMER = new Timer( "DoubleClickTimer", true);
 	private List<ActionListener> mListener = new ArrayList<>();

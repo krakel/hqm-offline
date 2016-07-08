@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,8 +7,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.view.BorderAdapter;
+import de.doerl.hqm.view.ClickHandler;
 
-class LeafTextField extends JLabel {
+public class LeafTextField extends JLabel {
 	private static final long serialVersionUID = 5262142469277711143L;
 	private ClickHandler mHandler = new ClickHandler();
 

@@ -15,6 +15,8 @@ import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.view.leafs.LeafImage;
+import de.doerl.hqm.view.leafs.LeafTextBox;
 
 class EntityHQM extends AEntity<FHqm> {
 	private static final long serialVersionUID = 4033642877403597083L;

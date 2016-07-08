@@ -1,11 +1,15 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
-class LeafIconBox extends JLabel {
+import de.doerl.hqm.view.BorderAdapter;
+import de.doerl.hqm.view.ClickHandler;
+import de.doerl.hqm.view.StackIcon;
+
+public class LeafIconBox extends JLabel {
 	private static final long serialVersionUID = 3718314366309841477L;
 	private ClickHandler mHandler = new ClickHandler();
 

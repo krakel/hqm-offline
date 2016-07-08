@@ -12,7 +12,7 @@ import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.utils.ResourceManager;
 
-class ReputationIcon implements Icon {
+public class ReputationIcon implements Icon {
 	private Image mImage = ResourceManager.getImageUI( "hqm.reputation");
 	private Image mMarker = ResourceManager.getImageUI( "hqm.marker");
 	private Image mNeutral = ResourceManager.getImageUI( "hqm.neutral");
@@ -27,14 +27,17 @@ class ReputationIcon implements Icon {
 		AEntity.drawImage( g2, img, AEntity.ZOOM, AEntity.ZOOM, x + 2, y);
 	}
 
+	@Override
 	public int getIconHeight() {
 		return 250;
 	}
 
+	@Override
 	public int getIconWidth() {
 		return 22;
 	}
 
+	@Override
 	public void paintIcon( Component c, Graphics g, int x, int y) {
 		Graphics2D g2 = (Graphics2D) g;
 		drawImage( g2, mImage, -2, 5);

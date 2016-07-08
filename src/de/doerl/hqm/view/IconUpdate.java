@@ -8,7 +8,7 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.Matcher;
 
-class IconUpdate implements Runnable {
+public class IconUpdate implements Runnable {
 	private JLabel mLbl;
 	private Image mBack;
 	private double mZoom;

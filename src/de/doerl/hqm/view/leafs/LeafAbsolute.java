@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,8 +10,10 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.view.AEntity;
+import de.doerl.hqm.view.ClickHandler;
 
-class LeafAbsolute extends JPanel {
+public class LeafAbsolute extends JPanel {
 	private static final long serialVersionUID = -7421492884184131122L;
 	private static final Color LINE_COLOR = new Color( 192, 192, 192, 64);
 	private static final int DX = ResourceManager.getW( false) / 3;

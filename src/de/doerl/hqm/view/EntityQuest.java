@@ -41,8 +41,16 @@ import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.leafs.LeafButton;
+import de.doerl.hqm.view.leafs.LeafIcon;
+import de.doerl.hqm.view.leafs.LeafIconBox;
+import de.doerl.hqm.view.leafs.LeafLabel;
+import de.doerl.hqm.view.leafs.LeafList;
+import de.doerl.hqm.view.leafs.LeafStacks;
+import de.doerl.hqm.view.leafs.LeafTextBox;
+import de.doerl.hqm.view.leafs.LeafTextField;
 
-public class EntityQuest extends AEntity<FQuest> {
+class EntityQuest extends AEntity<FQuest> {
 	private static final long serialVersionUID = -5707664232506407627L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuest.class.getName());
 	private static final double ICON_ZOOM = 0.8;
@@ -565,6 +573,7 @@ public class EntityQuest extends AEntity<FQuest> {
 			add( mTitle);
 		}
 
+		@Override
 		public Component getListCellRendererComponent( JList<? extends ATaskBox> list, ATaskBox box, int index, boolean isSelected, boolean cellHasFocus) {
 			mTitle.setIcon( ResourceManager.getIcon( box.getTask().getTaskTyp().getIcon()));
 			mTitle.setText( box.getTask().getName());

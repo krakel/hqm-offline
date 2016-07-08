@@ -25,6 +25,10 @@ import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.leafs.LeafIcon;
+import de.doerl.hqm.view.leafs.LeafLabel;
+import de.doerl.hqm.view.leafs.LeafList;
+import de.doerl.hqm.view.leafs.LeafTextField;
 
 class EntityReputationCat extends AEntityCat<FReputation> {
 //	private static final Logger LOGGER = Logger.getLogger( EntityReputationCat.class.getName());

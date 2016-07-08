@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -6,8 +6,9 @@ import java.awt.Image;
 import javax.swing.JLabel;
 
 import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.view.AEntity;
 
-class LeafButton extends JLabel {
+public class LeafButton extends JLabel {
 	private static final long serialVersionUID = -1227707973285499866L;
 
 	public LeafButton( String text) {

@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
-class BorderAdapter extends MouseAdapter {
+public class BorderAdapter extends MouseAdapter {
 	private static final Border BORDER = BorderFactory.createBevelBorder( BevelBorder.RAISED);
 	private Border mOldBorder;
 	private JComponent mComp;

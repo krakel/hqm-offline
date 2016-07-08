@@ -32,8 +32,11 @@ import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.dispatch.QuestSetOfName;
+import de.doerl.hqm.view.leafs.LeafAbsolute;
+import de.doerl.hqm.view.leafs.LeafLine;
+import de.doerl.hqm.view.leafs.LeafQuest;
 
-public class EntityQuestSet extends AEntity<FQuestSet> {
+class EntityQuestSet extends AEntity<FQuestSet> {
 	private static final long serialVersionUID = 4427035968994904913L;
 	private static final Logger LOGGER = Logger.getLogger( EntityQuestSet.class.getName());
 	private QuestFactory mQuestWorker = new QuestFactory();

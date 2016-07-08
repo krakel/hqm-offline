@@ -26,6 +26,8 @@ import de.doerl.hqm.quest.GuiColor;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.leafs.LeafLabel;
+import de.doerl.hqm.view.leafs.LeafTextBox;
 
 class EntityQuestSetCat extends AEntityCat<FQuestSet> {
 	private static final long serialVersionUID = -5930552368392528379L;

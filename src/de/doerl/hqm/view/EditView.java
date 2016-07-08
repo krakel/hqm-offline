@@ -28,6 +28,7 @@ import de.doerl.hqm.model.IModelListener;
 import de.doerl.hqm.model.ModelEvent;
 import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.leafs.LeafQuest;
 
 public class EditView extends JPanel implements IModelListener {
 	private static final long serialVersionUID = -15489231166915296L;

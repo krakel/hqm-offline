@@ -1,11 +1,11 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Dimension;
 import java.awt.Image;
 
 import javax.swing.JLabel;
 
-class LeafImage extends JLabel {
+public class LeafImage extends JLabel {
 	private static final long serialVersionUID = -7639003929835462965L;
 
 	public LeafImage( Image img) {

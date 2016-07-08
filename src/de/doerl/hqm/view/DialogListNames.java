@@ -35,7 +35,7 @@ class DialogListNames<E> extends ADialog {
 		addEscapeAction();
 	}
 
-	public static <E> E update( E[] vals, E ignore, Window owner) {
+	public static <E> E update( ArrayList<E> vals, E ignore, Window owner) {
 		if (vals != null) {
 			DialogListNames<E> dlg = new DialogListNames<>( owner, ignore);
 			dlg.createMain();
@@ -47,7 +47,7 @@ class DialogListNames<E> extends ADialog {
 		return null;
 	}
 
-	public static <E> E update( ArrayList<E> vals, E ignore, Window owner) {
+	public static <E> E update( E[] vals, E ignore, Window owner) {
 		if (vals != null) {
 			DialogListNames<E> dlg = new DialogListNames<>( owner, ignore);
 			dlg.createMain();
@@ -61,7 +61,7 @@ class DialogListNames<E> extends ADialog {
 
 	@Override
 	protected void createMain() {
-		mList = new JList<E>( mModel);
+		mList = new JList<>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
 		mList.setCellRenderer( new Renderer());
 		mList.addMouseListener( new MouseAdapter() {
@@ -82,20 +82,20 @@ class DialogListNames<E> extends ADialog {
 		return mList.getSelectedValue();
 	}
 
-	private void updateMain( E[] vals) {
+	private void updateMain( ArrayList<E> vals) {
 		mModel.clear();
-		for (int i = 0; i < vals.length; ++i) {
-			mModel.addElement( vals[i]);
+		for (int i = 0; i < vals.size(); ++i) {
+			mModel.addElement( vals.get( i));
 		}
 		if (mIgnore != null) {
 			mList.setSelectedValue( mIgnore, true);
 		}
 	}
 
-	private void updateMain( ArrayList<E> vals) {
+	private void updateMain( E[] vals) {
 		mModel.clear();
-		for (int i = 0; i < vals.size(); ++i) {
-			mModel.addElement( vals.get( i));
+		for (int i = 0; i < vals.length; ++i) {
+			mModel.addElement( vals[i]);
 		}
 		if (mIgnore != null) {
 			mList.setSelectedValue( mIgnore, true);

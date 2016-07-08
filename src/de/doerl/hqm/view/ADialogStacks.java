@@ -12,6 +12,8 @@ import javax.swing.JList;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.mods.ImageLoader;
+import de.doerl.hqm.view.leafs.LeafIcon;
+import de.doerl.hqm.view.leafs.LeafLabel;
 
 abstract class ADialogStacks extends ADialogList<StackEntry> {
 	private static final long serialVersionUID = -47899015784969950L;
@@ -20,12 +22,13 @@ abstract class ADialogStacks extends ADialogList<StackEntry> {
 		super( owner, new Renderer( require), new DialogStack( owner, require), 99);
 	}
 
-	protected static class Creator implements ICreator<StackEntry> {
+	public static class Creator implements ICreator<StackEntry> {
 		@Override
 		public StackEntry addElement() {
 			return new StackEntry();
 		}
 
+		@Override
 		public ABase getBase() {
 			return null;
 		}

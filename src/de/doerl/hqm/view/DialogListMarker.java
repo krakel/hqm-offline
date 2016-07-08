@@ -23,6 +23,7 @@ import javax.swing.border.BevelBorder;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FReputation;
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.view.leafs.LeafLabel;
 
 class DialogListMarker extends ADialog {
 	private static final long serialVersionUID = 8707497347819126949L;
@@ -78,7 +79,7 @@ class DialogListMarker extends ADialog {
 
 	protected void createMain( FReputation rep) {
 		mMain.setPreferredSize( new Dimension( 450, 200));
-		mList = new JList<FMarker>( mModel);
+		mList = new JList<>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
 		mList.setCellRenderer( mRenderer);
 		mList.setVisibleRowCount( 5);

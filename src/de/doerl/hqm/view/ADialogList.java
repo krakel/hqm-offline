@@ -70,7 +70,7 @@ abstract class ADialogList<E> extends ADialog {
 
 	protected void createMain( ICreator<E> creator) {
 		mMain.setPreferredSize( new Dimension( 450, 200));
-		mList = new JList<E>( mModel);
+		mList = new JList<>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
 		mList.setCellRenderer( mRenderer);
 		mList.setVisibleRowCount( 5);
@@ -181,7 +181,7 @@ abstract class ADialogList<E> extends ADialog {
 		}
 	}
 
-	protected static interface ICreator<E> {
+	public static interface ICreator<E> {
 		E addElement();
 
 		ABase getBase();

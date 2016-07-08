@@ -25,6 +25,7 @@ import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.dispatch.ReputationOfIdx;
+import de.doerl.hqm.view.leafs.LeafLabel;
 
 class DialogReputation extends ADialogList<FReputationReward> {
 	private static final long serialVersionUID = 6811579336495948455L;

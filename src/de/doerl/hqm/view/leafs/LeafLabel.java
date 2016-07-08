@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 
 import de.doerl.hqm.ui.ADialog;
 
-class LeafLabel extends JLabel {
+public class LeafLabel extends JLabel {
 	private static final long serialVersionUID = 6627294162311351931L;
 
 	public LeafLabel( Color color, String text) {

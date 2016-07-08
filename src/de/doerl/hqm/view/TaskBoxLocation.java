@@ -16,6 +16,9 @@ import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FQuestTaskLocation;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.mods.ImageLoader;
+import de.doerl.hqm.view.leafs.LeafIcon;
+import de.doerl.hqm.view.leafs.LeafLabel;
+import de.doerl.hqm.view.leafs.LeafList;
 
 class TaskBoxLocation extends ATaskBox {
 	private static final long serialVersionUID = -5352886896563883981L;

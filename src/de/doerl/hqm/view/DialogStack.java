@@ -18,8 +18,9 @@ import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.Matcher;
 import de.doerl.hqm.view.ADialogList.ICreator;
-import de.doerl.hqm.view.LeafSearch.ISearchListener;
-import de.doerl.hqm.view.LeafSearch.SearchEvent;
+import de.doerl.hqm.view.leafs.LeafSearch;
+import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
+import de.doerl.hqm.view.leafs.LeafSearch.SearchEvent;
 
 class DialogStack extends ADialogEdit<StackEntry> {
 	private static final long serialVersionUID = 651515231606809783L;

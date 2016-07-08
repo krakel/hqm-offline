@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -8,7 +8,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-class LeafPanel extends JPanel {
+import de.doerl.hqm.view.AEntity;
+
+public class LeafPanel extends JPanel {
 	private static final long serialVersionUID = -3474402067796441059L;
 	private static final Border LEFT_BORDER = BorderFactory.createEmptyBorder( 40, 40, 40, 10);
 	private static final Border RIGHT_BORDER = BorderFactory.createEmptyBorder( 40, 10, 40, 40);

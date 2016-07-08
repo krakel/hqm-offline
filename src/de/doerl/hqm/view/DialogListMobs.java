@@ -25,8 +25,11 @@ import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.Matcher;
-import de.doerl.hqm.view.LeafSearch.ISearchListener;
-import de.doerl.hqm.view.LeafSearch.SearchEvent;
+import de.doerl.hqm.view.leafs.LeafIcon;
+import de.doerl.hqm.view.leafs.LeafLabel;
+import de.doerl.hqm.view.leafs.LeafSearch;
+import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
+import de.doerl.hqm.view.leafs.LeafSearch.SearchEvent;
 
 class DialogListMobs extends ADialogList<FMob> {
 	private static final long serialVersionUID = 7903951948404166751L;
@@ -79,6 +82,7 @@ class DialogListMobs extends ADialogList<FMob> {
 			return mob;
 		}
 
+		@Override
 		public ABase getBase() {
 			return mTask;
 		}

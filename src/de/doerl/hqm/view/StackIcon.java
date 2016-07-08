@@ -12,7 +12,7 @@ import javax.swing.Icon;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.ResourceManager;
 
-class StackIcon implements Icon {
+public class StackIcon implements Icon {
 	public static final Image ICON_BACK = ResourceManager.getImageUI( "hqm.icon.back");
 	public static final Image ICON_UNKNOWN = ResourceManager.getImageUI( "hqm.unknown");
 	public static final Dimension ICON_SIZE = AEntity.sizeOf( ICON_BACK);
@@ -50,14 +50,17 @@ class StackIcon implements Icon {
 		return mBack;
 	}
 
+	@Override
 	public int getIconHeight() {
 		return mBack.getHeight( null);
 	}
 
+	@Override
 	public int getIconWidth() {
 		return mBack.getWidth( null);
 	}
 
+	@Override
 	public void paintIcon( Component c, Graphics g, int x, int y) {
 		Graphics2D g2 = (Graphics2D) g;
 		AEntity.drawImage( g2, c, mBack);

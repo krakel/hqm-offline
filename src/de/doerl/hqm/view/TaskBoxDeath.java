@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 
 import de.doerl.hqm.base.FQuestTaskDeath;
+import de.doerl.hqm.view.leafs.LeafLabel;
 
 class TaskBoxDeath extends ATaskBox {
 	private static final long serialVersionUID = -6803523729510354404L;

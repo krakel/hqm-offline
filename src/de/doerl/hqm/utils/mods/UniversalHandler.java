@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,7 @@ import de.doerl.hqm.utils.Utils;
 
 class UniversalHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
-	private static HashMap<String, Matcher> sStackNames = new HashMap<>();
+	private HashMap<String, Matcher> mStackNames = new HashMap<>();
 	private File mBase;
 	private File mImage;
 
@@ -31,7 +32,7 @@ class UniversalHandler {
 
 	public List<Matcher> find( String value, int max) {
 		ArrayList<Matcher> arr = new ArrayList<>();
-		for (Matcher mm : sStackNames.values()) {
+		for (Matcher mm : mStackNames.values()) {
 			mm.findMatch( arr, value);
 			if (arr.size() > max) {
 				break;
@@ -48,33 +49,28 @@ class UniversalHandler {
 				return path;
 			}
 		}
-		return null;
+		return new File( "."); // only one try
 	}
 
 	public void init() {
-		sStackNames.clear();
+		mStackNames.clear();
 		mBase = getBaseDir();
-		if (mBase == null) {
-			mBase = new File( "."); // only one try
+		File[] arr = mBase.listFiles();
+		for (File curr : arr) {
+			if ("itempanel.csv".equals( curr.getName())) {
+				parseCSVFile( curr);
+				break;
+			}
 		}
-		else {
-			File[] arr = mBase.listFiles();
-			for (File curr : arr) {
-				if ("itempanel.csv".equals( curr.getName())) {
-					parseCSVFile( curr);
-					break;
-				}
-			}
-			File imgBase = new File( mBase, "itempanel_icons");
-			if (imgBase.exists() && imgBase.isDirectory()) {
-				mImage = imgBase;
-			}
+		File imgBase = new File( mBase, "itempanel_icons");
+		if (imgBase.exists() && imgBase.isDirectory()) {
+			mImage = imgBase;
 		}
 	}
 
 	public Image load( String key) {
 		if (mImage != null) {
-			Matcher match = sStackNames.get( key);
+			Matcher match = mStackNames.get( key);
 			if (match != null) {
 				File file = new File( mImage, match.mFile + ".png");
 				if (file.exists() && !file.isDirectory()) {
@@ -88,7 +84,7 @@ class UniversalHandler {
 	private void parseCSVFile( File csvFile) {
 		BufferedReader src = null;
 		try {
-			HashMap<String, String> names = new HashMap<>();
+			NameCache cache = new NameCache();
 			src = new BufferedReader( new FileReader( csvFile));
 			src.readLine();
 			String line = src.readLine();
@@ -110,16 +106,11 @@ class UniversalHandler {
 						base = base.substring( 1, base.length() - 1);
 					}
 					String stk = name + '%' + meta;
-					int i = 1;
-					String file = base;
-					while (names.containsKey( file)) {
-						file = base + '_' + ++i;
-					}
-					names.put( file, stk);
-					Matcher match = sStackNames.get( stk);
+					Matcher match = mStackNames.get( stk);
 					if (match == null) {
+						String file = cache.next( base);
 						match = new Matcher( stk, file);
-						sStackNames.put( stk, match);
+						mStackNames.put( stk, match);
 					}
 				}
 				line = src.readLine();
@@ -147,5 +138,19 @@ class UniversalHandler {
 			Utils.closeIgnore( is);
 		}
 		return img;
+	}
+
+	private static class NameCache {
+		private HashSet<String> mNames = new HashSet<>();
+
+		public String next( String base) {
+			String file = base;
+			int i = 1;
+			while (mNames.contains( file)) {
+				file = base + '_' + ++i;
+			}
+			mNames.add( file);
+			return file;
+		}
 	}
 }

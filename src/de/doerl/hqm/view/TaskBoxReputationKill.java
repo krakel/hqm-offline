@@ -3,6 +3,7 @@ package de.doerl.hqm.view;
 import java.awt.Window;
 
 import de.doerl.hqm.base.FQuestTaskReputationKill;
+import de.doerl.hqm.view.leafs.LeafLabel;
 
 class TaskBoxReputationKill extends ATaskBox {
 	private static final long serialVersionUID = 8798185855270975248L;

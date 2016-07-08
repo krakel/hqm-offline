@@ -30,8 +30,9 @@ import de.doerl.hqm.base.dispatch.IndexOf;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.view.dispatch.MarkerOfIdx;
 import de.doerl.hqm.view.dispatch.ReputationOfIdx;
+import de.doerl.hqm.view.leafs.LeafLabel;
 
-public class DialogListSettings extends ADialogList<FSetting> {
+class DialogListSettings extends ADialogList<FSetting> {
 	private static final long serialVersionUID = -5897552996020524162L;
 
 	public DialogListSettings( Window owner) {

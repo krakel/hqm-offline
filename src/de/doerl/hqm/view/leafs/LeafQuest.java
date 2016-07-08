@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Image;
 import java.awt.event.ActionListener;
@@ -12,8 +12,11 @@ import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.ResourceManager;
+import de.doerl.hqm.view.AEntity;
+import de.doerl.hqm.view.ClickHandler;
+import de.doerl.hqm.view.IconUpdate;
 
-class LeafQuest extends JLabel {
+public class LeafQuest extends JLabel {
 	private static final long serialVersionUID = -2797500791761791369L;
 	private ClickHandler mHandler = new ClickHandler();
 	private FQuest mQuest;

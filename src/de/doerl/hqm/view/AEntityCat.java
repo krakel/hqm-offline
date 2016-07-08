@@ -19,6 +19,7 @@ import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ABundleAction;
 import de.doerl.hqm.ui.WarnDialogs;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.leafs.LeafList;
 
 abstract class AEntityCat<T extends AMember> extends AEntity<ACategory<T>> {
 	private static final long serialVersionUID = 577651171001039679L;

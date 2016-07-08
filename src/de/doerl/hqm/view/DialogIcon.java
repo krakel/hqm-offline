@@ -5,8 +5,9 @@ import java.awt.Window;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.mods.Matcher;
-import de.doerl.hqm.view.LeafSearch.ISearchListener;
-import de.doerl.hqm.view.LeafSearch.SearchEvent;
+import de.doerl.hqm.view.leafs.LeafSearch;
+import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
+import de.doerl.hqm.view.leafs.LeafSearch.SearchEvent;
 
 class DialogIcon extends ADialog {
 	private static final long serialVersionUID = -520943310358443074L;

@@ -1,11 +1,15 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-class LeafStacks extends JPanel {
+import de.doerl.hqm.view.AEntity;
+import de.doerl.hqm.view.BorderAdapter;
+import de.doerl.hqm.view.ClickHandler;
+
+public class LeafStacks extends JPanel {
 	private static final long serialVersionUID = -2203511730691517504L;
 	private ClickHandler mHandler = new ClickHandler();
 

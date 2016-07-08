@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -23,8 +23,10 @@ import de.doerl.hqm.ui.ADialog.TextFieldAscii;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.view.IconUpdate;
+import de.doerl.hqm.view.StackIcon;
 
-class LeafSearch extends JPanel {
+public class LeafSearch extends JPanel {
 	private static final long serialVersionUID = -1967387880066210929L;
 	private static final double ICON_ZOOM = 0.6;
 	private static final Logger LOGGER = Logger.getLogger( LeafSearch.class.getName());
@@ -95,7 +97,7 @@ class LeafSearch extends JPanel {
 		return matrix;
 	}
 
-	void doSearch() {
+	public void doSearch() {
 		List<Matcher> lst = ImageLoader.find( mSearch.getText(), MAX_ICONS);
 		int size = lst.size();
 		for (int i = 0; i < MAX_ICONS; ++i) {

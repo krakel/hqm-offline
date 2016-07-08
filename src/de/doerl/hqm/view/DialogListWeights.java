@@ -29,6 +29,7 @@ import de.doerl.hqm.quest.BagTier;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.ADialogList.ICreator;
+import de.doerl.hqm.view.leafs.LeafLabel;
 
 class DialogListWeights extends ADialog {
 	private static final long serialVersionUID = 7903951948404166751L;
@@ -80,7 +81,7 @@ class DialogListWeights extends ADialog {
 	@Override
 	protected final void createMain() {
 		mMain.setPreferredSize( new Dimension( 450, 200));
-		mList = new JList<Integer>( mModel);
+		mList = new JList<>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
 		mList.setCellRenderer( mRenderer);
 		mList.setVisibleRowCount( 5);

@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -9,6 +9,7 @@ import java.awt.Image;
 import javax.swing.Icon;
 
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.view.AEntity;
 
 class ButtonIcon implements Icon {
 	private Image mImage;

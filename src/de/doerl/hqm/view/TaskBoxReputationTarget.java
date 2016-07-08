@@ -15,6 +15,9 @@ import javax.swing.JList;
 import de.doerl.hqm.base.FQuestTaskReputationTarget;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.view.leafs.LeafIcon;
+import de.doerl.hqm.view.leafs.LeafLabel;
+import de.doerl.hqm.view.leafs.LeafList;
 
 class TaskBoxReputationTarget extends ATaskBox {
 	private static final long serialVersionUID = -7259046301859360457L;

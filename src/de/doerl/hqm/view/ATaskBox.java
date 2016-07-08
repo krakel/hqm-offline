@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 import de.doerl.hqm.base.AQuestTask;
 
-public abstract class ATaskBox extends JPanel {
+abstract class ATaskBox extends JPanel {
 	private static final long serialVersionUID = 3021007353052213384L;
 	protected static final int WIDTH = 7 * AEntity.ICON_SIZE;
 	protected static final int HEIGHT = 6 * AEntity.ICON_SIZE;

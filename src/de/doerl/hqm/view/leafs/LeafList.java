@@ -1,10 +1,12 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+
+import de.doerl.hqm.view.ClickHandler;
 
 public class LeafList<E> extends JList<E> {
 	private static final long serialVersionUID = -8417821463588699381L;

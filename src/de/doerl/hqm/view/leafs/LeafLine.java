@@ -1,4 +1,4 @@
-package de.doerl.hqm.view;
+package de.doerl.hqm.view.leafs;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -11,8 +11,9 @@ import javax.swing.SwingUtilities;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.view.AEntity;
 
-class LeafLine extends JPanel {
+public class LeafLine extends JPanel {
 	private static final long serialVersionUID = -5876257198033732175L;
 	private static final Color LINE_COLOR = new Color( 0xff404040);
 	private static final int LINE_SIZE = 6;

@@ -27,6 +27,7 @@ import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.dispatch.LangAddWorker;
 import de.doerl.hqm.view.dispatch.LangDeleteWorker;
+import de.doerl.hqm.view.leafs.LeafLabel;
 
 class DialogListLangs extends ADialog {
 	private static final long serialVersionUID = 7673867993395512621L;
