@@ -1,7 +1,7 @@
 package de.doerl.hqm.medium.json;
 
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,7 +60,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
-	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
+	private HashMap<Integer, ArrayList<FQuest>> mPosts = new HashMap<>();
 	private FLanguage mLang;
 	private boolean mMain;
 	private boolean mDocu;
@@ -72,9 +72,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	}
 
 	private void addPost( FQuest quest, Integer id) {
-		Vector<FQuest> p = mPosts.get( id);
+		ArrayList<FQuest> p = mPosts.get( id);
 		if (p == null) {
-			p = new Vector<FQuest>();
+			p = new ArrayList<FQuest>();
 			mPosts.put( id, p);
 		}
 		p.add( quest);
@@ -441,7 +441,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		}
 	}
 
-	private void readStacks( Vector<FItemStack> param, FArray arr) {
+	private void readStacks( ArrayList<FItemStack> param, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);

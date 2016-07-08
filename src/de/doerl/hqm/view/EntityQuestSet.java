@@ -6,7 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -808,20 +808,20 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 		}
 	}
 
-	private static class QuestSetNames extends AHQMWorker<Object, Vector<String>> {
+	private static class QuestSetNames extends AHQMWorker<Object, ArrayList<String>> {
 		private static final QuestSetNames WORKER = new QuestSetNames();
 
 		private QuestSetNames() {
 		}
 
-		public static Vector<String> get( FHqm hqm) {
-			Vector<String> arr = new Vector<>();
+		public static ArrayList<String> get( FHqm hqm) {
+			ArrayList<String> arr = new ArrayList<>();
 			hqm.mQuestSetCat.forEachMember( WORKER, arr);
 			return arr;
 		}
 
 		@Override
-		public Object forQuestSet( FQuestSet set, Vector<String> arr) {
+		public Object forQuestSet( FQuestSet set, ArrayList<String> arr) {
 			arr.add( set.getName());
 			return null;
 		}
@@ -859,7 +859,7 @@ public class EntityQuestSet extends AEntity<FQuestSet> {
 			if (mActiv != null) {
 				FQuest quest = mActiv.getQuest();
 				FHqm hqm = quest.getHqm();
-				Vector<String> names = QuestSetNames.get( hqm);
+				ArrayList<String> names = QuestSetNames.get( hqm);
 				String result = DialogListNames.update( names, mSet.getName(), mCtrl.getFrame());
 				if (result != null) {
 					FQuestSet set = QuestSetOfName.get( hqm, result);

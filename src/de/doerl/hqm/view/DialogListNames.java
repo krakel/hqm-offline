@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -47,7 +47,7 @@ class DialogListNames<E> extends ADialog {
 		return null;
 	}
 
-	public static <E> E update( Vector<E> vals, E ignore, Window owner) {
+	public static <E> E update( ArrayList<E> vals, E ignore, Window owner) {
 		if (vals != null) {
 			DialogListNames<E> dlg = new DialogListNames<>( owner, ignore);
 			dlg.createMain();
@@ -92,7 +92,7 @@ class DialogListNames<E> extends ADialog {
 		}
 	}
 
-	private void updateMain( Vector<E> vals) {
+	private void updateMain( ArrayList<E> vals) {
 		mModel.clear();
 		for (int i = 0; i < vals.size(); ++i) {
 			mModel.addElement( vals.get( i));

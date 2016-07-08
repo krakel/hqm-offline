@@ -1,7 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Window;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
@@ -33,7 +33,7 @@ class DialogListRequirements extends ADialogStacks {
 		}
 	}
 
-	private void updateMain( Vector<ARequirement> value) {
+	private void updateMain( ArrayList<ARequirement> value) {
 		mModel.clear();
 		for (ARequirement req : value) {
 			AStack stk = req.getStack();
@@ -43,10 +43,10 @@ class DialogListRequirements extends ADialogStacks {
 		updateBtn();
 	}
 
-	private Vector<ARequirement> updateResult( AQuestTaskItems task) {
-		Vector<ARequirement> require = task.mRequirements;
+	private ArrayList<ARequirement> updateResult( AQuestTaskItems task) {
+		ArrayList<ARequirement> require = task.mRequirements;
 		require.clear();
-		Vector<ARequirement> result = new Vector<>();
+		ArrayList<ARequirement> result = new ArrayList<>();
 		for (int i = 0; i < mModel.size(); ++i) {
 			StackEntry e = mModel.get( i);
 			if (e.mItem) {

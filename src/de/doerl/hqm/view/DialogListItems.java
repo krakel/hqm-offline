@@ -1,7 +1,7 @@
 package de.doerl.hqm.view;
 
 import java.awt.Window;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FItemStack;
@@ -15,7 +15,7 @@ class DialogListItems extends ADialogStacks {
 		setTheme( "edit.item.theme");
 	}
 
-	public static boolean update( Vector<FItemStack> values, Window owner) {
+	public static boolean update( ArrayList<FItemStack> values, Window owner) {
 		DialogListItems dlg = new DialogListItems( owner);
 		dlg.createMain( new Creator());
 		dlg.updateMain( values);
@@ -28,7 +28,7 @@ class DialogListItems extends ADialogStacks {
 		}
 	}
 
-	private void updateMain( Vector<FItemStack> value) {
+	private void updateMain( ArrayList<FItemStack> value) {
 		mModel.clear();
 		for (AStack stk : value) {
 			mModel.addElement( new StackEntry( true, stk, stk.getCount(), ItemPrecision.PRECISE));
@@ -36,7 +36,7 @@ class DialogListItems extends ADialogStacks {
 		updateBtn();
 	}
 
-	private void updateResult( Vector<FItemStack> values) {
+	private void updateResult( ArrayList<FItemStack> values) {
 		values.clear();
 		for (int i = 0; i < mModel.size(); ++i) {
 			StackEntry e = mModel.get( i);

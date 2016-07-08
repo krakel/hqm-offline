@@ -1,5 +1,6 @@
 package de.doerl.hqm.base;
 
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,7 +11,7 @@ import de.doerl.hqm.utils.Utils;
 public abstract class ACategory<E extends AMember> extends ABase {
 	private static final Logger LOGGER = Logger.getLogger( ACategory.class.getName());
 	public final FHqm mParentHQM;
-	final Vector<E> mArr = new Vector<>();
+	final ArrayList<E> mArr = new ArrayList<>();
 
 	ACategory( FHqm parent) {
 		mParentHQM = parent;
@@ -19,6 +20,8 @@ public abstract class ACategory<E extends AMember> extends ABase {
 	void addMember( E member) {
 		mArr.add( member);
 	}
+
+	public abstract Vector<E> asVector();
 
 	public abstract E createMember();
 
@@ -38,8 +41,6 @@ public abstract class ACategory<E extends AMember> extends ABase {
 		}
 		return null;
 	}
-
-	public abstract Vector<E> getArr();
 
 	@Override
 	public FHqm getHqm() {

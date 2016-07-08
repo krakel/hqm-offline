@@ -2,7 +2,6 @@ package de.doerl.hqm.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +14,7 @@ public class EditModel {
 	private static final Logger LOGGER = Logger.getLogger( EditModel.class.getName());
 	private static final IModelListener[] EMPTY = new IModelListener[0];
 	private List<IModelListener> mListener = new ArrayList<>();
-	private Vector<FHqm> mHQMs = new Vector<>();
+	private ArrayList<FHqm> mHQMs = new ArrayList<>();
 
 	public void addListener( IModelListener l) {
 		if (!mListener.contains( l)) {

@@ -6,7 +6,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -123,7 +123,7 @@ public class EntityQuest extends AEntity<FQuest> {
 		updateMoveActions();
 	}
 
-	private static void updateStacks( JPanel panel, Vector<FItemStack> list) {
+	private static void updateStacks( JPanel panel, ArrayList<FItemStack> list) {
 		panel.removeAll();
 		if (list.isEmpty()) {
 			panel.add( LeafIcon.createEmpty( ICON_ZOOM));

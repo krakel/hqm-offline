@@ -1,6 +1,6 @@
 package de.doerl.hqm.base.data;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,8 +13,8 @@ import de.doerl.hqm.utils.Utils;
 public final class FPlayer extends AGame {
 	private static final Logger LOGGER = Logger.getLogger( FPlayer.class.getName());
 	public final FData mParentData;
-	public Vector<GroupData> mGroupData = new Vector<>();
-	private final Vector<FPlayerStats> mStats = new Vector<>();
+	public ArrayList<GroupData> mGroupData = new ArrayList<>();
+	private final ArrayList<FPlayerStats> mStats = new ArrayList<>();
 	public String mName;
 	public int mLives;
 	public int mSelectedQuest;

@@ -16,6 +16,11 @@ public final class FReputationCat extends ACategory<FReputation> {
 	}
 
 	@Override
+	public Vector<FReputation> asVector() {
+		return new Vector<>( mArr);
+	}
+
+	@Override
 	public FReputation createMember() {
 		FReputation reward = new FReputation( this);
 		addMember( reward);
@@ -26,11 +31,6 @@ public final class FReputationCat extends ACategory<FReputation> {
 		FReputation reward = new FReputation( this, id);
 		addMember( reward);
 		return reward;
-	}
-
-	@Override
-	public Vector<FReputation> getArr() {
-		return mArr;
 	}
 
 	@Override

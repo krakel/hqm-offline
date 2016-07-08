@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,15 +22,15 @@ public final class FQuest extends AIdent implements IElement {
 	public FItemStack mIcon;
 	public TriggerType mTriggerType = TriggerType.NONE;
 	public int mTriggerTasks;
-	public final Vector<FItemStack> mRewards = new Vector<>();
-	public final Vector<FItemStack> mChoices = new Vector<>();
-	public final Vector<FQuest> mRequirements = new Vector<>();
-	public final Vector<FQuest> mOptionLinks = new Vector<>();
-	public final Vector<FQuest> mPosts = new Vector<>();
-	public final Vector<FReputationReward> mRepRewards = new Vector<>();
-	public final Vector<String> mCommands = new Vector<>();
+	public final ArrayList<FItemStack> mRewards = new ArrayList<>();
+	public final ArrayList<FItemStack> mChoices = new ArrayList<>();
+	public final ArrayList<FQuest> mRequirements = new ArrayList<>();
+	public final ArrayList<FQuest> mOptionLinks = new ArrayList<>();
+	public final ArrayList<FQuest> mPosts = new ArrayList<>();
+	public final ArrayList<FReputationReward> mRepRewards = new ArrayList<>();
+	public final ArrayList<String> mCommands = new ArrayList<>();
 	public final FRepeatInfo mRepeatInfo = new FRepeatInfo( this);
-	final Vector<AQuestTask> mTasks = new Vector<>();
+	final ArrayList<AQuestTask> mTasks = new ArrayList<>();
 	private FQuestSet mParentQuestSet;
 	private LinkType mInformation = LinkType.NORM;
 

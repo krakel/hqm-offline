@@ -1,7 +1,7 @@
 package de.doerl.hqm.base;
 
 import java.util.Collections;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +14,7 @@ public final class FReputation extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FReputation.class.getName());
 	private static final String BASE = "rep";
 	public final FReputationCat mParentCategory;
-	public final Vector<FMarker> mMarker = new Vector<>();
+	public final ArrayList<FMarker> mMarker = new ArrayList<>();
 
 	FReputation( FReputationCat parent) {
 		super( BASE, MaxIdOf.getReputation( parent));

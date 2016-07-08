@@ -1,6 +1,6 @@
 package de.doerl.hqm.medium;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,9 +12,9 @@ public class MediaManager {
 	public static final String DEFAULT_MEDIUM = System.getProperty( "hqm.medium.default", "hqm");
 	public static final String ACTIV_MEDIUM = "activ_medium";
 	public static final String ACTIV_PATH = "activ_path";
-	private static Vector<IMedium> sMedia;
+	private static ArrayList<IMedium> sMedia;
 	static {
-		sMedia = new Vector<IMedium>();
+		sMedia = new ArrayList<IMedium>();
 		registerMedium( new de.doerl.hqm.medium.bits.Medium());
 		registerMedium( new de.doerl.hqm.medium.json.Medium());
 	}

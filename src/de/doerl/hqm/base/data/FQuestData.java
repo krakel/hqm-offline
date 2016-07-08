@@ -1,6 +1,6 @@
 package de.doerl.hqm.base.data;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.FQuest;
@@ -9,12 +9,12 @@ import de.doerl.hqm.base.dispatch.IDataWorker;
 public final class FQuestData extends AGame implements IElement {
 	public final FTeamData mParentTeamData;
 	public final FQuest mQuest;
-	final Vector<AQuestTaskData> mTaskDatas = new Vector<>();
+	final ArrayList<AQuestTaskData> mTaskDatas = new ArrayList<>();
 	public boolean mCompleted;
 	public boolean mClaimed;
 	public boolean mAvailable;
 	public int mTime;
-	public Vector<Boolean> mReward = new Vector<>();
+	public ArrayList<Boolean> mReward = new ArrayList<>();
 
 	FQuestData( FTeamData parentTeamData, FQuest quest) {
 		mParentTeamData = parentTeamData;

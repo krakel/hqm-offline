@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import de.doerl.hqm.base.dispatch.IDispatcher;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
@@ -12,7 +12,7 @@ public abstract class ABase implements IDispatcher {
 	ABase() {
 	}
 
-	static <T extends ABase> boolean isFirst( Vector<T> arr, T val) {
+	static <T extends ABase> boolean isFirst( ArrayList<T> arr, T val) {
 		int pos = arr.indexOf( val);
 		if (pos < 0) {
 			return false;
@@ -25,7 +25,7 @@ public abstract class ABase implements IDispatcher {
 		return true;
 	}
 
-	static <T extends ABase> boolean isLast( Vector<T> arr, T val) {
+	static <T extends ABase> boolean isLast( ArrayList<T> arr, T val) {
 		int pos = arr.indexOf( val);
 		if (pos < 0) {
 			return false;
@@ -39,7 +39,7 @@ public abstract class ABase implements IDispatcher {
 		return true;
 	}
 
-	static <T extends ABase> void moveDown( Vector<T> arr, T val) {
+	static <T extends ABase> void moveDown( ArrayList<T> arr, T val) {
 		int pos = arr.indexOf( val);
 		if (pos >= 0) {
 			int size = arr.size();
@@ -47,33 +47,33 @@ public abstract class ABase implements IDispatcher {
 			while (++next < size) {
 				T old = arr.get( next);
 				if (old != null) {
-					arr.setElementAt( old, pos);
-					arr.setElementAt( val, next);
+					arr.set( pos, old);
+					arr.set( next, val);
 					break;
 				}
 			}
 		}
 	}
 
-	static <T extends ABase> void moveUp( Vector<T> arr, T val) {
+	static <T extends ABase> void moveUp( ArrayList<T> arr, T val) {
 		int pos = arr.indexOf( val);
 		if (pos >= 0) {
 			int prev = pos;
 			while (--prev >= 0) {
 				T old = arr.get( prev);
 				if (old != null) {
-					arr.setElementAt( old, pos);
-					arr.setElementAt( val, prev);
+					arr.set( pos, old);
+					arr.set( prev, val);
 					break;
 				}
 			}
 		}
 	}
 
-	static <T extends ABase> void remove( Vector<T> arr, T val) {
+	static <T extends ABase> void remove( ArrayList<T> arr, T val) {
 		int pos = arr.indexOf( val);
 		if (pos >= 0) {
-			arr.setElementAt( null, pos);
+			arr.set( pos, null);
 		}
 	}
 

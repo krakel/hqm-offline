@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.MaxIdOfGroup;
@@ -10,7 +10,7 @@ public final class FGroup extends AIdent implements IElement {
 	private static final String BASE = "grp";
 	public final FGroupTier mParentTier;
 	public Integer mLimit;
-	public Vector<FItemStack> mStacks = new Vector<>();
+	public ArrayList<FItemStack> mStacks = new ArrayList<>();
 
 	FGroup( FGroupTier parent) {
 		super( BASE, MaxIdOfGroup.get( parent));
@@ -41,6 +41,7 @@ public final class FGroup extends AIdent implements IElement {
 		return mParentTier;
 	}
 
+	@Override
 	public boolean isFirst() {
 		return ABase.isFirst( mParentTier.mGroups, this);
 	}
@@ -65,6 +66,7 @@ public final class FGroup extends AIdent implements IElement {
 		ABase.moveUp( mParentTier.mGroups, this);
 	}
 
+	@Override
 	public void remove() {
 		ABase.remove( mParentTier.mGroups, this);
 	}

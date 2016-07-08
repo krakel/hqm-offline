@@ -162,7 +162,7 @@ class DialogReputation extends ADialogList<FReputationReward> {
 			private static final long serialVersionUID = 3363962404627333681L;
 
 			private RepModel( FHqm hqm) {
-				super( hqm.mReputationCat.getArr());
+				super( hqm.mReputationCat.asVector());
 			}
 		}
 	}

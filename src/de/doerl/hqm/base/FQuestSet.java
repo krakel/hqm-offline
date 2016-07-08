@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,8 +14,8 @@ public final class FQuestSet extends AMember {
 	private static final Logger LOGGER = Logger.getLogger( FQuestSet.class.getName());
 	private static final String BASE = "set";
 	private LinkType mInformation = LinkType.NORM;
-	final Vector<FQuest> mQuests = new Vector<>();
-	final Vector<FReputationBar> mBars = new Vector<>();
+	final ArrayList<FQuest> mQuests = new ArrayList<>();
+	final ArrayList<FReputationBar> mBars = new ArrayList<>();
 	public final FQuestSetCat mParentCategory;
 
 	FQuestSet( FQuestSetCat parent) {

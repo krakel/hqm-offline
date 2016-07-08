@@ -3,7 +3,7 @@ package de.doerl.hqm.medium.bits;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +59,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	private BitInputStream mSrc;
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
-	private HashMap<Integer, Vector<FQuest>> mPosts = new HashMap<>();
+	private HashMap<Integer, ArrayList<FQuest>> mPosts = new HashMap<>();
 
 	public Parser( InputStream is) throws IOException {
 		mSrc = new BitInputStream( is);
@@ -72,9 +72,9 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	}
 
 	private void addPost( FQuest quest, Integer req) {
-		Vector<FQuest> p = mPosts.get( req);
+		ArrayList<FQuest> p = mPosts.get( req);
 		if (p == null) {
-			p = new Vector<FQuest>();
+			p = new ArrayList<FQuest>();
 			mPosts.put( req, p);
 		}
 		p.add( quest);
@@ -398,7 +398,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		updatePosts( hqm);
 	}
 
-	private void readStacks( Vector<FItemStack> param, DataBitHelper bits, FileVersion version) {
+	private void readStacks( ArrayList<FItemStack> param, DataBitHelper bits, FileVersion version) {
 		int count = mSrc.readData( bits);
 		for (int i = 0; i < count; ++i) {
 			FItemStack stk = mSrc.readItemStackFix( version);
@@ -408,7 +408,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		}
 	}
 
-	private void readStacksIf( Vector<FItemStack> param, DataBitHelper bits, FileVersion version) {
+	private void readStacksIf( ArrayList<FItemStack> param, DataBitHelper bits, FileVersion version) {
 		if (mSrc.readBoolean()) {
 			readStacks( param, bits, version);
 		}

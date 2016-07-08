@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.Icon;
 
@@ -39,7 +39,7 @@ class ReputationIcon implements Icon {
 		Graphics2D g2 = (Graphics2D) g;
 		drawImage( g2, mImage, -2, 5);
 		if (mRep != null) {
-			Vector<FMarker> marker = mRep.mMarker;
+			ArrayList<FMarker> marker = mRep.mMarker;
 			int size = marker.size();
 			if (size > 0) {
 				FMarker first = marker.get( 0);

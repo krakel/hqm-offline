@@ -2,7 +2,7 @@ package de.doerl.hqm.medium.json;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
@@ -411,7 +411,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		}
 	}
 
-	private void writeLanguages( Vector<FLanguage> languages) {
+	private void writeLanguages( ArrayList<FLanguage> languages) {
 		mDst.beginArray( HQM_LANGUAGES);
 		for (FLanguage lang : languages) {
 			if (lang != null) {
@@ -427,7 +427,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.endArray();
 	}
 
-	private void writeQuestArr( String key, Vector<FQuest> arr) {
+	private void writeQuestArr( String key, ArrayList<FQuest> arr) {
 		if (arr != null && !arr.isEmpty()) {
 			mDst.beginArray( key);
 			for (FQuest quest : arr) {
@@ -463,7 +463,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.endArray();
 	}
 
-	private void writeStackArr( String key, Vector<FItemStack> arr) {
+	private void writeStackArr( String key, ArrayList<FItemStack> arr) {
 		if (arr != null && !arr.isEmpty()) {
 			mDst.beginArray( key);
 			for (AStack stk : arr) {

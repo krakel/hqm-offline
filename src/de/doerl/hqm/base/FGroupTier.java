@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +15,7 @@ public final class FGroupTier extends AMember {
 	private static final String BASE = "tier";
 	public final FGroupTierCat mParentCategory;
 	public final int[] mWeights = BagTier.newArray();
-	final Vector<FGroup> mGroups = new Vector<>();
+	final ArrayList<FGroup> mGroups = new ArrayList<>();
 	public int mColorID;
 
 	FGroupTier( FGroupTierCat parent) {
@@ -76,6 +76,7 @@ public final class FGroupTier extends AMember {
 		return mParentCategory;
 	}
 
+	@Override
 	public boolean isFirst() {
 		return ABase.isFirst( mParentCategory.mArr, this);
 	}
@@ -100,6 +101,7 @@ public final class FGroupTier extends AMember {
 		ABase.moveUp( mParentCategory.mArr, this);
 	}
 
+	@Override
 	public void remove() {
 		ABase.remove( mParentCategory.mArr, this);
 	}

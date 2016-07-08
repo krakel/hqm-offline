@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,7 +10,7 @@ import de.doerl.hqm.utils.Utils;
 
 public final class FQuestTaskMob extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( FQuestTaskMob.class.getName());
-	public final Vector<FMob> mMobs = new Vector<>();
+	public final ArrayList<FMob> mMobs = new ArrayList<>();
 
 	FQuestTaskMob( FQuest parent) {
 		super( parent);

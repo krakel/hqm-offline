@@ -2,7 +2,7 @@ package de.doerl.hqm.medium.bits;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +58,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 	@Override
 	public Object forDataTaskItems( FQuestTaskDataItems taskData, FileVersion version) {
 		taskData.mCompleted = mSrc.readBoolean();
-		Vector<ARequirement> requirements = taskData.mTask.mRequirements;
+		ArrayList<ARequirement> requirements = taskData.mTask.mRequirements;
 		int count = mSrc.readData( DataBitHelper.TASK_ITEM_COUNT);
 		for (int i = 0; i < count; ++i) {
 			int progress = mSrc.readData( DataBitHelper.ITEM_PROGRESS);
@@ -73,7 +73,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 	public Object forDataTaskLocation( FQuestTaskDataLocation taskData, FileVersion version) {
 		taskData.mCompleted = mSrc.readBoolean();
 		int count = mSrc.readData( DataBitHelper.TASK_LOCATION_COUNT);
-		Vector<Boolean> visited = taskData.mVisited;
+		ArrayList<Boolean> visited = taskData.mVisited;
 		for (int i = 0; i < count; ++i) {
 			boolean val = mSrc.readBoolean();
 			if (i < visited.size()) {
@@ -86,7 +86,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 	@Override
 	public Object forDataTaskMob( FQuestTaskDataMob taskData, FileVersion version) {
 		taskData.mCompleted = mSrc.readBoolean();
-		Vector<FMob> mobs = taskData.mTask.mMobs;
+		ArrayList<FMob> mobs = taskData.mTask.mMobs;
 		int count = mSrc.readData( DataBitHelper.TASK_MOB_COUNT);
 		for (int i = 0; i < count; i++) {
 			int val = mSrc.readData( DataBitHelper.KILL_COUNT);

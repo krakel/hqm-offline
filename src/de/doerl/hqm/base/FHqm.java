@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
@@ -15,7 +15,7 @@ public final class FHqm extends ANamed {
 	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
 	public final FReputationCat mReputationCat = new FReputationCat( this);
 	public final FGroupTierCat mGroupTierCat = new FGroupTierCat( this);
-	public final Vector<FLanguage> mLanguages = new Vector<>();
+	public final ArrayList<FLanguage> mLanguages = new ArrayList<>();
 	public String mPassCode;
 	public FLanguage mMain;
 	public String mName;
@@ -96,7 +96,7 @@ public final class FHqm extends ANamed {
 			createLanguage( LANG_EN_US);
 		}
 		if (Utils.equals( mMain, old.mLocale)) {
-			mMain = mLanguages.firstElement();
+			mMain = mLanguages.get( 0);
 		}
 	}
 

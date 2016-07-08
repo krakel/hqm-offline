@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -85,7 +85,7 @@ class DialogListLangs extends ADialog {
 	@Override
 	protected void createMain() {
 		mMain.setPreferredSize( new Dimension( 450, 200));
-		mList = new JList<FLanguage>( mModel);
+		mList = new JList<>( mModel);
 		mList.setAlignmentY( TOP_ALIGNMENT);
 		mList.setCellRenderer( mRenderer);
 		mList.setVisibleRowCount( 5);
@@ -121,7 +121,7 @@ class DialogListLangs extends ADialog {
 	}
 
 	private void updateResult() {
-		Vector<FLanguage> found = new Vector<>();
+		ArrayList<FLanguage> found = new ArrayList<>();
 		for (int i = 0; i < mModel.size(); ++i) {
 			FLanguage e = mModel.get( i);
 			found.add( e);
@@ -140,7 +140,7 @@ class DialogListLangs extends ADialog {
 			mHqm.mMain = mDefault;
 		}
 		else if (!mHqm.mLanguages.contains( mHqm.mMain)) {
-			mHqm.mMain = mHqm.mLanguages.firstElement();
+			mHqm.mMain = mHqm.mLanguages.get( 0);
 		}
 	}
 

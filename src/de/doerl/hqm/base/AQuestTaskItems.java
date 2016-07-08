@@ -1,6 +1,6 @@
 package de.doerl.hqm.base;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,7 +9,7 @@ import de.doerl.hqm.utils.Utils;
 
 public abstract class AQuestTaskItems extends AQuestTask {
 	private static final Logger LOGGER = Logger.getLogger( AQuestTaskItems.class.getName());
-	public final Vector<ARequirement> mRequirements = new Vector<>();
+	public final ArrayList<ARequirement> mRequirements = new ArrayList<>();
 
 	AQuestTaskItems( FQuest parent) {
 		super( parent);

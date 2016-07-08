@@ -15,6 +15,11 @@ public final class FGroupTierCat extends ACategory<FGroupTier> {
 		return w.forGroupTierCat( this, p);
 	}
 
+	@Override
+	public Vector<FGroupTier> asVector() {
+		return new Vector<>( mArr);
+	}
+
 	public FGroupTier createGroupTier( int id) {
 		FGroupTier tier = new FGroupTier( this, id);
 		addMember( tier);
@@ -26,11 +31,6 @@ public final class FGroupTierCat extends ACategory<FGroupTier> {
 		FGroupTier tier = new FGroupTier( this);
 		addMember( tier);
 		return tier;
-	}
-
-	@Override
-	public Vector<FGroupTier> getArr() {
-		return mArr;
 	}
 
 	@Override

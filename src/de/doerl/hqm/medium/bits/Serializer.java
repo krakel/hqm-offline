@@ -2,7 +2,7 @@ package de.doerl.hqm.medium.bits;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
@@ -227,7 +227,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		return null;
 	}
 
-	private boolean isEmpty( Vector<?> lst) {
+	private boolean isEmpty( ArrayList<?> lst) {
 		int size = lst.size();
 		for (int i = 0; i < size; ++i) {
 			if (lst.get( i) != null) {
@@ -237,7 +237,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		return true;
 	}
 
-	private int sizeOf( Vector<?> lst) {
+	private int sizeOf( ArrayList<?> lst) {
 		int res = 0;
 		int size = lst.size();
 		for (int i = 0; i < size; ++i) {
@@ -248,7 +248,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		return res;
 	}
 
-	private void writeCommands( Vector<String> commands, FileVersion version) {
+	private void writeCommands( ArrayList<String> commands, FileVersion version) {
 		if (commands == null || isEmpty( commands)) {
 			mDst.writeBoolean( false);
 		}
@@ -297,7 +297,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		cat.forEachMember( this, version);
 	}
 
-	private void writeIds( Vector<FQuest> lst, DataBitHelper bits, FileVersion version) {
+	private void writeIds( ArrayList<FQuest> lst, DataBitHelper bits, FileVersion version) {
 		if (lst == null || isEmpty( lst)) {
 			mDst.writeBoolean( false);
 		}
@@ -403,7 +403,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		quest.forEachReward( this, version);
 	}
 
-	private void writeStacks( Vector<FItemStack> lst, DataBitHelper bits, FileVersion version) {
+	private void writeStacks( ArrayList<FItemStack> lst, DataBitHelper bits, FileVersion version) {
 		mDst.writeData( sizeOf( lst), bits);
 		int size = lst.size();
 		for (int i = 0; i < size; ++i) {
@@ -414,7 +414,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 		}
 	}
 
-	private void writeStacksIf( Vector<FItemStack> lst, FileVersion version) {
+	private void writeStacksIf( ArrayList<FItemStack> lst, FileVersion version) {
 		if (lst == null || isEmpty( lst)) {
 			mDst.writeBoolean( false);
 		}

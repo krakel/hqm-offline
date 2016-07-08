@@ -88,6 +88,7 @@ public class DialogListSettings extends ADialogList<FSetting> {
 
 	private static class Editor extends ADialogEdit<FSetting> {
 		private static final long serialVersionUID = 7720930197206098500L;
+		private static final FMarker[] DUMMY = new FMarker[0];
 		private JComboBox<FReputation> mRep = new JComboBox<>();
 		private JComboBox<FMarker> mLower = new JComboBox<>();
 		private JComboBox<FMarker> mUpper = new JComboBox<>();
@@ -185,8 +186,8 @@ public class DialogListSettings extends ADialogList<FSetting> {
 					try {
 						RepModel model = (RepModel) mRep.getModel();
 						FReputation rep = ReputationOfIdx.get( model.mHqm, idx);
-						mLower.setModel( new DefaultComboBoxModel<FMarker>( rep.mMarker));
-						mUpper.setModel( new DefaultComboBoxModel<FMarker>( rep.mMarker));
+						mLower.setModel( new DefaultComboBoxModel<>( rep.mMarker.toArray( DUMMY)));
+						mUpper.setModel( new DefaultComboBoxModel<>( rep.mMarker.toArray( DUMMY)));
 						int size = rep.mMarker.size();
 						if (size > 0) {
 							mLower.setSelectedIndex( 0);
@@ -204,7 +205,7 @@ public class DialogListSettings extends ADialogList<FSetting> {
 			FHqm mHqm;
 
 			private RepModel( FHqm hqm) {
-				super( hqm.mReputationCat.getArr());
+				super( hqm.mReputationCat.asVector());
 				mHqm = hqm;
 			}
 		}

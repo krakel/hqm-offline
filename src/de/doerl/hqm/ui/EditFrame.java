@@ -74,6 +74,7 @@ public class EditFrame extends JFrame implements IModelListener {
 		result.setAction( new ABundleAction( name) {
 			private static final long serialVersionUID = -2822453428777922839L;
 
+			@Override
 			public void actionPerformed( ActionEvent ev) {
 			}
 		});
@@ -97,6 +98,7 @@ public class EditFrame extends JFrame implements IModelListener {
 		result.add( new JMenuItem( new ABundleAction( "hqm.popup") {
 			private static final long serialVersionUID = 2766110645403746850L;
 
+			@Override
 			public void actionPerformed( ActionEvent ev) {
 			}
 		}));
@@ -163,6 +165,7 @@ public class EditFrame extends JFrame implements IModelListener {
 		JMenuBar menu = new JMenuBar();
 		menu.setBackground( UIManager.getColor( "panel.background"));
 		menu.add( createMenuFile());
+		menu.add( createMenuJSON());
 		menu.add( createMenuReport());
 		menu.add( createMenuHelp());
 //		menu.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
@@ -173,17 +176,12 @@ public class EditFrame extends JFrame implements IModelListener {
 		JMenu menu = createMenu( "hqm.file");
 		menu.add( mNewAction);
 		IMedium bit = MediaManager.get( "bit");
-		IMedium json = MediaManager.get( "json");
 		menu.add( bit.getOpen( mCB));
-		menu.add( json.getOpen( mCB));
 		menu.add( createMenuLastOpen());
 		menu.add( mCloseAction);
 		menu.addSeparator();
 		menu.add( bit.getSave( mCB));
 		menu.add( bit.getSaveAs( mCB));
-		menu.addSeparator();
-		menu.add( json.getSave( mCB));
-		menu.add( json.getSaveAs( mCB));
 		menu.addSeparator();
 //		menu.add( new RestoreBackupAction( mBackup));
 //		menu.add( new RestorePrevAction( mBackup));
@@ -200,6 +198,16 @@ public class EditFrame extends JFrame implements IModelListener {
 		menu.add( new ConfigAction( this));
 //		menu.addSeparator();
 		menu.add( new AboutAction( this));
+		return menu;
+	}
+
+	private JMenu createMenuJSON() {
+		JMenu menu = createMenu( "hqm.json");
+		IMedium json = MediaManager.get( "json");
+		menu.add( json.getOpen( mCB));
+		menu.addSeparator();
+		menu.add( json.getSave( mCB));
+		menu.add( json.getSaveAs( mCB));
 		return menu;
 	}
 
