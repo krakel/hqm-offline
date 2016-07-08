@@ -260,11 +260,11 @@ class EntityQuestSet extends AEntity<FQuestSet> {
 	}
 
 	boolean handleClickFor( LeafQuest current, MouseEvent evt) {
-		if (mActiv != null && mGroupLink.isSelected()) {
-			if (Utils.different( mActiv, current) && notLoop( mActiv.getQuest(), current.getQuest())) {
-				FQuest quest = mActiv.getQuest();
-				FQuest other = current.getQuest();
-				if (evt.isControlDown()) {
+		if (mActiv != null && mGroupLink.isSelected() && Utils.different( mActiv, current)) {
+			if (evt.isShiftDown()) {
+				if (notLoopRequire( mActiv.getQuest(), current.getQuest())) {
+					FQuest quest = mActiv.getQuest();
+					FQuest other = current.getQuest();
 					if (quest.mPosts.contains( other)) {
 						if (mSet.equals( other.getParent())) {
 							removeLeafLine( quest, other);
@@ -283,8 +283,14 @@ class EntityQuestSet extends AEntity<FQuestSet> {
 						}
 						current.update( LinkType.POST);
 					}
+					mCtrl.fireChanged( quest);
+					mCtrl.fireChanged( other);
 				}
-				else {
+			}
+			else {
+				if (notLoopPost( mActiv.getQuest(), current.getQuest())) {
+					FQuest quest = mActiv.getQuest();
+					FQuest other = current.getQuest();
 					if (quest.mRequirements.contains( other)) {
 						if (mSet.equals( other.getParent())) {
 							removeLeafLine( other, quest);
@@ -303,9 +309,9 @@ class EntityQuestSet extends AEntity<FQuestSet> {
 						}
 						current.update( LinkType.PREF);
 					}
+					mCtrl.fireChanged( quest);
+					mCtrl.fireChanged( other);
 				}
-				mCtrl.fireChanged( quest);
-				mCtrl.fireChanged( other);
 			}
 			return false;
 		}
@@ -333,13 +339,26 @@ class EntityQuestSet extends AEntity<FQuestSet> {
 		selectGroupNothing();
 	}
 
-	private boolean notLoop( FQuest src, FQuest quest) {
+	private boolean notLoopPost( FQuest src, FQuest quest) {
 		for (FQuest post : src.mPosts) {
 			if (Utils.equals( post, quest)) {
 				WarnDialogs.warnLoop( mCtrl.getFrame());
 				return false;
 			}
-			if (!notLoop( post, quest)) {
+			if (!notLoopPost( post, quest)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean notLoopRequire( FQuest dst, FQuest quest) {
+		for (FQuest req : dst.mRequirements) {
+			if (Utils.equals( req, quest)) {
+				WarnDialogs.warnLoop( mCtrl.getFrame());
+				return false;
+			}
+			if (!notLoopRequire( req, quest)) {
 				return false;
 			}
 		}
