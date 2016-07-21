@@ -1,93 +1,39 @@
 package de.doerl.hqm.utils.mods;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-
-import de.doerl.hqm.utils.BaseDefaults;
-import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 
 class UniversalHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
-	private HashMap<String, Matcher> mStackNames = new HashMap<>();
-	private File mBase;
-	private File mImage;
+	private static final String ITEMPANEL_CSV = "itempanel.csv";
 
-	public UniversalHandler() {
+	private UniversalHandler() {
 	}
 
-	public List<Matcher> find( String value, int max) {
-		ArrayList<Matcher> arr = new ArrayList<>();
-		for (Matcher mm : mStackNames.values()) {
-			mm.findMatch( arr, value);
-			if (arr.size() > max) {
-				break;
-			}
-		}
-		return arr;
-	}
-
-	private File getBaseDir() {
-		String name = PreferenceManager.getString( BaseDefaults.DUMP_DIR);
-		if (name != null) {
-			File path = new File( name);
-			if (path.isDirectory()) {
-				return path;
-			}
-		}
-		return new File( "."); // only one try
-	}
-
-	public void init() {
-		mStackNames.clear();
-		mBase = getBaseDir();
-		File[] arr = mBase.listFiles();
+	public static void init( File baseDir) {
+		File[] arr = baseDir.listFiles();
 		for (File curr : arr) {
-			if ("itempanel.csv".equals( curr.getName())) {
+			if (ITEMPANEL_CSV.equals( curr.getName())) {
 				parseCSVFile( curr);
 				break;
 			}
 		}
-		File imgBase = new File( mBase, "itempanel_icons");
-		if (imgBase.exists() && imgBase.isDirectory()) {
-			mImage = imgBase;
-		}
 	}
 
-	public Image load( String key) {
-		if (mImage != null) {
-			Matcher match = mStackNames.get( key);
-			if (match != null) {
-				File file = new File( mImage, match.mFile + ".png");
-				if (file.exists() && !file.isDirectory()) {
-					return readImage( file);
-				}
-			}
-		}
-		return null;
-	}
-
-	private void parseCSVFile( File csvFile) {
+	private static void parseCSVFile( File csvFile) {
 		BufferedReader src = null;
 		try {
 			NameCache cache = new NameCache();
 			src = new BufferedReader( new FileReader( csvFile));
-			src.readLine();
-			String line = src.readLine();
+			src.readLine(); //               Item Name,        Item ID, Item meta, Has NBT, Display Name
+			String line = src.readLine(); // minecraft:planks, 5,       5,         false,   Dark Oak Wood Planks
 			while (line != null) {
 				int p1 = line.indexOf( ',');
 				int p2 = line.indexOf( ',', p1 + 1);
@@ -106,11 +52,10 @@ class UniversalHandler {
 						base = base.substring( 1, base.length() - 1);
 					}
 					String stk = name + '%' + meta;
-					Matcher match = mStackNames.get( stk);
+					Matcher match = ImageLoader.get( stk);
 					if (match == null) {
-						String file = cache.next( base);
-						match = new Matcher( stk, file);
-						mStackNames.put( stk, match);
+						String image = cache.next( base);
+						match = ImageLoader.put( stk, image);
 					}
 				}
 				line = src.readLine();
@@ -122,22 +67,6 @@ class UniversalHandler {
 		finally {
 			Utils.closeIgnore( src);
 		}
-	}
-
-	private Image readImage( File file) {
-		BufferedImage img = null;
-		InputStream is = null;
-		try {
-			is = new FileInputStream( file);
-			img = ImageIO.read( is);
-		}
-		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		finally {
-			Utils.closeIgnore( is);
-		}
-		return img;
 	}
 
 	private static class NameCache {
