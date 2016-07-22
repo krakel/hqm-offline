@@ -22,14 +22,16 @@ public class BaseDefaults {
 	public static final int LAST_OPEN_MAX = 16;
 	public static final String LAST_OPEN_DIR = "last.open.dir";
 	public static final String FILE_OPEN_DIR = "file.open.directory";
+	public static final String PKG_DIR = "mod.dir";
 	public static final String DUMP_DIR = "dump.dir";
 	public static final String FILE_VERSION = "version";
-	private static final String[] KEYS = {
-		LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, DUMP_DIR, FILE_VERSION
+	public static final String ITEMPANEL = "itempanel.csv";
+	private static final String[] KEYS = { LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, PKG_DIR, DUMP_DIR, FILE_VERSION
 	};
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
 		{ STACKTRC, Boolean.TRUE },
+		{ PKG_DIR,  "C:\\tools\\Minecraft\\mods" },
 		{ FILE_VERSION, FileVersion.last().toString() },
 		{ FILE_OPEN_DIR, System.getProperty( "user.home") },
 		{ LAST_OPEN, new String[0] },
@@ -42,6 +44,7 @@ public class BaseDefaults {
 	private static void check( PreferenceHash pref) {
 		synchronized (pref) {
 			checkBool( pref, STACKTRC);
+			checkString( pref, PKG_DIR);
 			checkString( pref, DUMP_DIR);
 			checkString( pref, FILE_VERSION);
 			checkString( pref, FILE_OPEN_DIR);

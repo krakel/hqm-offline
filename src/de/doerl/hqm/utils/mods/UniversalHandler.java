@@ -8,11 +8,11 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.Utils;
 
 class UniversalHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
-	private static final String ITEMPANEL_CSV = "itempanel.csv";
 
 	private UniversalHandler() {
 	}
@@ -20,7 +20,7 @@ class UniversalHandler {
 	public static void init( File baseDir) {
 		File[] arr = baseDir.listFiles();
 		for (File curr : arr) {
-			if (ITEMPANEL_CSV.equals( curr.getName())) {
+			if (BaseDefaults.ITEMPANEL.equals( curr.getName())) {
 				parseCSVFile( curr);
 				break;
 			}
