@@ -99,7 +99,7 @@ public class ImageLoader {
 		else {
 			sBaseDir = new File( "."); // only one try
 		}
-		File imageDir = new File( sBaseDir, "itempanel_icons");
+		File imageDir = new File( sBaseDir, BaseDefaults.ITEMPANEL_ICONS);
 		if (imageDir.exists() && imageDir.isDirectory()) {
 			sImageDir = imageDir;
 		}

@@ -24,8 +24,18 @@ public class Utils {
 	private static final boolean INNER = false;
 	private static final String SELF = Utils.class.getName();
 	private static final Logger SELF_LOGGER = Logger.getLogger( SELF);
+	private static final char[] NO_WINDOW_CHAR = "<>:\"/\\|?*".toCharArray();
+	private static final char[] WINDOW_CHAR = new char[256];
 	public static String sSessionId;
 	private static boolean sTraceStack;
+	static {
+		for (int i = 0; i < 256; ++i) {
+			WINDOW_CHAR[i] = (char) i;
+		}
+		for (int i = 0; i < NO_WINDOW_CHAR.length; ++i) {
+			WINDOW_CHAR[NO_WINDOW_CHAR[i]] = '_';
+		}
+	}
 
 	private static void appentThree( StringBuffer sb, int x) {
 		if (x < 100) {
@@ -358,8 +368,7 @@ public class Utils {
 
 	public static void logArr( Logger l, Level lvl, String msg, Object[] arr) {
 		if (l.isLoggable( lvl)) {
-			doLog( l, lvl, msg, new Object[] {
-				toString( arr)
+			doLog( l, lvl, msg, new Object[] { toString( arr)
 			});
 		}
 	}
@@ -370,8 +379,7 @@ public class Utils {
 
 	public static void logProperty( Logger l, Level lvl, String property) {
 		if (l.isLoggable( lvl)) {
-			doLog( l, lvl, "{0} = {1}", new Object[] {
-				property, System.getProperty( property, null)
+			doLog( l, lvl, "{0} = {1}", new Object[] { property, System.getProperty( property, null)
 			});
 		}
 	}
@@ -383,8 +391,7 @@ public class Utils {
 //				ex.printStackTrace();
 			}
 			else {
-				doLog( l, lvl, "", new Object[] {
-					ex
+				doLog( l, lvl, "", new Object[] { ex
 				});
 			}
 		}
@@ -607,6 +614,16 @@ public class Utils {
 		else {
 			sb.append( "null");
 		}
+		return sb.toString();
+	}
+
+	public static String toWindowsName( String value) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0, max = value.length(); i < max; ++i) {
+			char ch = value.charAt( i);
+			sb.append( WINDOW_CHAR[ch]);
+		}
+//		value.replace( '<', '_').replace( '>', '_').replace( ':', '_').replace( '|', '_').replace( '/', '_').replace( '\\', '_').replace( '?', '_').replace( '*', '_').replace( '"', '_');
 		return sb.toString();
 	}
 

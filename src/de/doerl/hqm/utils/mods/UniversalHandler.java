@@ -2,8 +2,9 @@ package de.doerl.hqm.utils.mods;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,11 +28,12 @@ class UniversalHandler {
 		}
 	}
 
+	@SuppressWarnings( "unused")
 	private static void parseCSVFile( File csvFile) {
 		BufferedReader src = null;
 		try {
 			NameCache cache = new NameCache();
-			src = new BufferedReader( new FileReader( csvFile));
+			src = new BufferedReader( new InputStreamReader( new FileInputStream( csvFile), "ISO-8859-1"));
 			src.readLine(); //               Item Name,        Item ID, Item meta, Has NBT, Display Name
 			String line = src.readLine(); // minecraft:planks, 5,       5,         false,   Dark Oak Wood Planks
 			while (line != null) {
@@ -44,10 +46,10 @@ class UniversalHandler {
 				}
 				else {
 					String name = line.substring( 0, p1);
-//					String id = line.substring( p1 + 1, p2);
+					String id = line.substring( p1 + 1, p2);
 					String meta = line.substring( p2 + 1, p3);
-//					Utils.parseBoolean( line.substring( p3 + 1, p4), false);
-					String base = line.substring( p4 + 1).replace( ':', '_');
+					Utils.parseBoolean( line.substring( p3 + 1, p4), false);
+					String base = Utils.toWindowsName( line.substring( p4 + 1));
 					if (base.length() > 0 && base.charAt( 0) == '"') {
 						base = base.substring( 1, base.length() - 1);
 					}
