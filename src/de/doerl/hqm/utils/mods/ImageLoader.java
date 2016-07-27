@@ -47,6 +47,10 @@ public class ImageLoader {
 		return arr;
 	}
 
+	public static Matcher get( ItemNEI item) {
+		return sStackes.get( item.mKey);
+	}
+
 	public static Matcher get( String key) {
 		return sStackes.get( key);
 	}
@@ -109,7 +113,7 @@ public class ImageLoader {
 		if (sImageDir != null) {
 			Matcher match = get( key);
 			if (match != null) {
-				File file = new File( sImageDir, match.mImage + ".png");
+				File file = new File( sImageDir, match.mItem.mImage + ".png");
 				if (file.exists() && !file.isDirectory()) {
 					return readImage( file);
 				}
@@ -118,9 +122,9 @@ public class ImageLoader {
 		return null;
 	}
 
-	public static Matcher put( String key, String image) {
-		Matcher match = new Matcher( key, image);
-		sStackes.put( key, match);
+	public static Matcher put( ItemNEI item) {
+		Matcher match = new Matcher( item);
+		sStackes.put( item.mKey, match);
 		return match;
 	}
 

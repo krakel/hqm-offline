@@ -28,8 +28,8 @@ class DialogIcon extends ADialog {
 			public void doAction( SearchEvent event) {
 				Matcher match = event.getMatch();
 				if (match != null) {
-					mName = match.getName();
-					mDmg = match.getDamage();
+					mName = match.getItemNEI().mName;
+					mDmg = match.getItemNEI().mDamage;
 					mOk.setEnabled( mName != null);
 				}
 			}

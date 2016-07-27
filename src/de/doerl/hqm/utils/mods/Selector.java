@@ -15,10 +15,8 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,9 +56,9 @@ public class Selector {
 		}
 	}
 
-	private static void copyImages( ArrayList<Item> arr, File dir) {
+	private static void copyImages( ArrayList<ItemNEI> arr, File dir) {
 		File srcDir = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_ICONS);
-		for (Item item : arr) {
+		for (ItemNEI item : arr) {
 			String img = item.mImage + ".png";
 			File src = new File( srcDir, img);
 			if (src.exists()) {
@@ -89,7 +87,7 @@ public class Selector {
 	}
 
 	private static void isolatePackages() {
-		Map<String, ArrayList<Item>> cache = new HashMap<>();
+		Map<String, ArrayList<ItemNEI>> cache = new HashMap<>();
 		parseDumpFile( cache);
 		writeFiles( cache);
 	}
@@ -99,23 +97,23 @@ public class Selector {
 //		checkPackages();
 	}
 
-	private static void parseDumpFile( Map<String, ArrayList<Item>> map) {
+	private static void parseDumpFile( Map<String, ArrayList<ItemNEI>> map) {
+		NameCache cache = new NameCache();
 		BufferedReader src = null;
 		try {
 			int index = 2;
-			Set<String> cache = new HashSet<>();
 			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL);
 			src = new BufferedReader( new InputStreamReader( new FileInputStream( csvFile), "ISO-8859-1"));
 			src.readLine(); //               Item Name,        Item ID, Item meta, Has NBT, Display Name
 			String line = src.readLine(); // minecraft:planks, 5,       5,         false,   Dark Oak Wood Planks
 			while (line != null) {
-				Item item = new Item( line);
-				item.cacheImage( cache);
+				ItemNEI item = new ItemNEI( line);
+				item.findImage( cache);
 				if (item.mPkg == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing package: {0}", line);
 				}
 				else {
-					ArrayList<Item> arr = map.get( item.mPkg);
+					ArrayList<ItemNEI> arr = map.get( item.mPkg);
 					if (arr == null) {
 						arr = new ArrayList<>();
 						map.put( item.mPkg, arr);
@@ -135,26 +133,20 @@ public class Selector {
 	}
 
 	private static void parsePackFile( File csvFile) {
+		NameCache cache = new NameCache();
 		BufferedReader src = null;
 		try {
-			Set<String> cache = new HashSet<>();
 			int index = 2;
 			src = new BufferedReader( new InputStreamReader( new FileInputStream( csvFile), "UTF-8"));
 			src.readLine(); //               Item Name,        Item ID, Item meta, Has NBT, Display Name
 			String line = src.readLine(); // minecraft:planks, 5,       5,         false,   Dark Oak Wood Planks
 			while (line != null) {
-				Item item = new Item( line);
-				if (item.mBase.length() > 0) {
-					if (item.mBase.length() == 0) {
-						Utils.log( LOGGER, Level.WARNING, "missing base {0}: {1}", index, line);
-					}
-					if (item.mBase.indexOf( ':') >= 0) {
-						Utils.log( LOGGER, Level.WARNING, "wrong base {0}: {1}", index, line);
-					}
-					if (cache.contains( item.mBase)) {
-						Utils.log( LOGGER, Level.WARNING, "double entry {0}: {1}", index, line);
-					}
-					cache.add( item.mBase);
+				ItemNEI item = new ItemNEI( line);
+				if (item.mBase.length() == 0) {
+					Utils.log( LOGGER, Level.WARNING, "missing base {0}: {1}", index, line);
+				}
+				if (cache.checkImage( item.mBase)) {
+					Utils.log( LOGGER, Level.WARNING, "double entry {0}: {1}", index, line);
 				}
 				line = src.readLine();
 				++index;
@@ -168,11 +160,11 @@ public class Selector {
 		}
 	}
 
-	private static void writeFiles( Map<String, ArrayList<Item>> cache) {
+	private static void writeFiles( Map<String, ArrayList<ItemNEI>> cache) {
 		File pkgDir = new File( PreferenceManager.getString( BaseDefaults.PKG_DIR));
-		for (Map.Entry<String, ArrayList<Item>> entry : cache.entrySet()) {
+		for (Map.Entry<String, ArrayList<ItemNEI>> entry : cache.entrySet()) {
 			String pkg = entry.getKey();
-			ArrayList<Item> arr = entry.getValue();
+			ArrayList<ItemNEI> arr = entry.getValue();
 			System.out.println( pkg);
 			File dir = new File( pkgDir, pkg);
 			if (dir.exists() && dir.isFile()) {
@@ -188,7 +180,7 @@ public class Selector {
 		}
 	}
 
-	private static void writeItemsFile( ArrayList<Item> arr, File dir) {
+	private static void writeItemsFile( ArrayList<ItemNEI> arr, File dir) {
 		File file = new File( dir, BaseDefaults.ITEMS);
 		if (file.exists()) {
 			file.delete();
@@ -197,12 +189,12 @@ public class Selector {
 		try {
 			dst = new PrintWriter( new BufferedWriter( new FileWriter( file)));
 			dst.println( "Item Name,Item ID,Item meta,Has NBT,Display Name");
-			for (Item item : arr) {
+			for (ItemNEI item : arr) {
 				dst.print( item.mName);
 				dst.print( ',');
 				dst.print( item.mID);
 				dst.print( ',');
-				dst.print( item.mMeta);
+				dst.print( item.mDamage);
 				dst.print( ',');
 				dst.print( item.mHasNBT);
 				dst.print( ',');
@@ -218,7 +210,7 @@ public class Selector {
 		}
 	}
 
-	private static void writePanelFile( ArrayList<Item> arr, File dir) {
+	private static void writePanelFile( ArrayList<ItemNEI> arr, File dir) {
 		File file = new File( dir, BaseDefaults.ITEMPANEL);
 		if (file.exists()) {
 			file.delete();
@@ -227,12 +219,12 @@ public class Selector {
 		try {
 			dst = new PrintWriter( new BufferedWriter( new FileWriter( file)));
 			dst.println( "Item Name,Item ID,Item meta,Has NBT,Display Name");
-			for (Item item : arr) {
+			for (ItemNEI item : arr) {
 				dst.print( item.mName);
 				dst.print( ',');
 				dst.print( item.mID);
 				dst.print( ',');
-				dst.print( item.mMeta);
+				dst.print( item.mDamage);
 				dst.print( ',');
 				dst.print( item.mHasNBT);
 				dst.print( ',');
@@ -245,51 +237,6 @@ public class Selector {
 		}
 		finally {
 			Utils.closeIgnore( dst);
-		}
-	}
-
-	private static class Item {
-		public String mPkg;
-		public String mName;
-		public String mID;
-		public String mMeta;
-		public boolean mHasNBT;
-		public String mBase;
-		public String mImage;
-
-		public Item( String line) {
-			int p1 = line.indexOf( ',');
-			int p2 = line.indexOf( ',', p1 + 1);
-			int p3 = line.indexOf( ',', p2 + 1);
-			int p4 = line.indexOf( ',', p3 + 1);
-			mName = line.substring( 0, p1);
-			mID = line.substring( p1 + 1, p2);
-			mMeta = line.substring( p2 + 1, p3);
-			mHasNBT = Utils.parseBoolean( line.substring( p3 + 1, p4), false);
-			mBase = Utils.toWindowsName( line.substring( p4 + 1));
-			if (mBase.length() > 0 && mBase.charAt( 0) == '"') {
-				mBase = mBase.substring( 1, mBase.length() - 1);
-			}
-			mImage = mBase;
-			int p5 = mName.indexOf( ':');
-			if (p5 > 0) {
-				int p6 = mName.indexOf( '|');
-				mPkg = mName.substring( 0, p6 < 0 ? p5 : p6);
-			}
-		}
-
-		private static String findImage( Set<String> cache, String base) {
-			String image = base;
-			int i = 1;
-			while (cache.contains( image)) {
-				image = base + '_' + ++i;
-			}
-			return image;
-		}
-
-		public void cacheImage( Set<String> cache) {
-			mImage = findImage( cache, mBase);
-			cache.add( mImage);
 		}
 	}
 }

@@ -50,7 +50,7 @@ public class IconUpdate implements Runnable {
 
 	public static void create( JLabel lbl, Matcher match) {
 		if (match != null) {
-			create( lbl, null, 0.6, match.mKey, null, true);
+			create( lbl, null, 0.6, match.mItem.mKey, null, true);
 		}
 		else {
 			create( lbl, null, 0.6, null, null, true);

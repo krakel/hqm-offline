@@ -113,8 +113,8 @@ class DialogListMobs extends ADialogList<FMob> {
 				public void doAction( SearchEvent event) {
 					Matcher match = event.getMatch();
 					if (match != null) {
-						mIcon.setText( match.getName());
-						mIconDmg.setText( String.valueOf( match.getDamage()));
+						mIcon.setText( match.getItemNEI().mName);
+						mIconDmg.setText( String.valueOf( match.getItemNEI().mDamage));
 					}
 				}
 			});

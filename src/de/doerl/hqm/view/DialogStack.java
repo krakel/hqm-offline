@@ -47,8 +47,8 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			public void doAction( SearchEvent event) {
 				Matcher match = event.getMatch();
 				if (match != null) {
-					mName.setText( match.getName());
-					mDmg.setText( String.valueOf( match.getDamage()));
+					mName.setText( match.getItemNEI().mName);
+					mDmg.setText( String.valueOf( match.getItemNEI().mDamage));
 					mCount.setText( String.valueOf( 1));
 					mItem.setSelected( true);
 					mPrec.setSelectedItem( ItemPrecision.PRECISE);
