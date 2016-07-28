@@ -78,6 +78,11 @@ public final class FFluidStack extends AStack {
 	}
 
 	@Override
+	public String getDisplay() {
+		return mName;
+	}
+
+	@Override
 	public String getKey() {
 		return mKey;
 	}

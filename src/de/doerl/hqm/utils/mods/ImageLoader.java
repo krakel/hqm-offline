@@ -52,7 +52,7 @@ public class ImageLoader {
 		return arr;
 	}
 
-	static ItemNEI get( String key) {
+	public static ItemNEI get( String key) {
 		ItemNEI item = sStackes.get( key);
 		if (item == null) {
 			item = new ItemNEI( key, null);
@@ -61,30 +61,20 @@ public class ImageLoader {
 		return item;
 	}
 
-	public static Image getImage( AStack stk, Runnable cb) {
-		if (stk != null) {
-			return getImage0( stk.getKey(), cb);
+	public static Image getImage( Runnable cb, AStack stk) {
+		return getImage( cb, stk != null ? stk.getKey() : null);
+	}
+
+	public static Image getImage( Runnable cb, String key) {
+		if (key != null) {
+			ItemNEI item = get( key);
+			registerCB( cb, key);
+			return item.getImage();
 		}
 		else {
-			return getImage0( null, cb);
-		}
-	}
-
-	public static Image getImage( String key, Runnable cb) {
-		return getImage0( key, cb);
-	}
-
-	private static Image getImage0( String key, Runnable cb) {
-		if (cb != null) {
-			THREAD.add( key, cb);
-		}
-		if (key == null) {
+			registerCB( cb, null);
 			return null;
 		}
-		if (key.indexOf( ':') < 0) {
-			Utils.log( LOGGER, Level.WARNING, "wrong stack name: {0}", key);
-		}
-		return get( key).getImage();
 	}
 
 	public static void init() {
@@ -114,33 +104,10 @@ public class ImageLoader {
 		}
 	}
 
-	private static Image load( String key) {
-		if (sImageDir != null) {
-			ItemNEI item = sStackes.get( key);
-			if (item != null) {
-				File file = new File( sImageDir, item.getImageName());
-				if (file.exists() && !file.isDirectory()) {
-					return readImage( file);
-				}
-			}
+	private static void registerCB( Runnable cb, String key) {
+		if (cb != null) {
+			THREAD.add( cb, key);
 		}
-		return null;
-	}
-
-	private static Image readImage( File file) {
-		BufferedImage img = null;
-		InputStream is = null;
-		try {
-			is = new FileInputStream( file);
-			img = ImageIO.read( is);
-		}
-		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		finally {
-			Utils.closeIgnore( is);
-		}
-		return img;
 	}
 
 	private static class ReadImage extends Thread {
@@ -153,8 +120,24 @@ public class ImageLoader {
 			setDaemon( true);
 		}
 
-		public synchronized void add( String key, Runnable cb) {
-			mQueue.addLast( new Request( key, cb));
+		private static Image readImage( File file) {
+			BufferedImage img = null;
+			InputStream is = null;
+			try {
+				is = new FileInputStream( file);
+				img = ImageIO.read( is);
+			}
+			catch (Exception ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+			}
+			finally {
+				Utils.closeIgnore( is);
+			}
+			return img;
+		}
+
+		public synchronized void add( Runnable cb, String key) {
+			mQueue.addLast( new Request( cb, key));
 			notifyAll();
 		}
 
@@ -169,8 +152,11 @@ public class ImageLoader {
 			String key = req.mKey;
 			if (key != null) {
 				ItemNEI item = get( key);
-				if (item.getImage() == null) {
-					item.setImage( ImageLoader.load( key));
+				if (sImageDir != null && item.getImage() == null) {
+					File file = new File( sImageDir, item.getImageName());
+					if (file.exists() && !file.isDirectory()) {
+						item.setImage( readImage( file));
+					}
 				}
 				if (item.getImage() == null) {
 					item.setImage( mDummy.load( key));
@@ -206,12 +192,12 @@ public class ImageLoader {
 	}
 
 	private static class Request {
-		private String mKey;
 		private Runnable mCallback;
+		private String mKey;
 
-		public Request( String key, Runnable cb) {
-			mKey = key;
+		public Request( Runnable cb, String key) {
 			mCallback = cb;
+			mKey = key;
 		}
 	}
 }

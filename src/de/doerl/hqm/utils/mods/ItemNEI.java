@@ -45,7 +45,7 @@ public class ItemNEI {
 		mDamage = Utils.parseInteger( key.substring( p1 + 1), 0);
 		mHasNBT = false;
 		mBase = mName;
-		mDisplay = "unknown";
+		mDisplay = "";
 		mLower = mName.toLowerCase();
 		mKey = key;
 		setPkg();
@@ -60,6 +60,10 @@ public class ItemNEI {
 		if (mLower.contains( value)) {
 			arr.add( this);
 		}
+	}
+
+	public String getDisplay() {
+		return mDisplay;
 	}
 
 	public Image getImage() {

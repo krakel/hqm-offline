@@ -25,6 +25,7 @@ import de.doerl.hqm.view.leafs.LeafSearch.SearchEvent;
 class DialogStack extends ADialogEdit<StackEntry> {
 	private static final long serialVersionUID = 651515231606809783L;
 	private JCheckBox mItem = new JCheckBox();
+	private JTextField mDisplay = new TextFieldAscii();
 	private JTextField mName = new TextFieldAscii();
 	private JTextField mCount = new TextFieldInteger();
 	private JTextField mDmg = new TextFieldInteger();
@@ -47,6 +48,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			public void doAction( SearchEvent event) {
 				ItemNEI item = event.getItem();
 				if (item != null) {
+					mDisplay.setText( item.getDisplay());
 					mName.setText( item.mName);
 					mDmg.setText( String.valueOf( item.mDamage));
 					mCount.setText( String.valueOf( 1));
@@ -56,6 +58,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 				}
 			}
 		});
+		mDisplay.setPreferredSize( new Dimension( 200, mDisplay.getPreferredSize().height));
 		mName.setPreferredSize( new Dimension( 200, mName.getPreferredSize().height));
 		mItem.setEnabled( require);
 		mPrec.setEnabled( require);
@@ -74,6 +77,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 
 	@Override
 	public StackEntry addElement( ICreator<StackEntry> creator) {
+		mDisplay.setText( "display");
 		mName.setText( "name");
 		mDmg.setText( "0");
 		mCount.setText( "1");
@@ -85,6 +89,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 
 	@Override
 	public StackEntry changeElement( StackEntry entry) {
+		mDisplay.setText( entry.getDisplay());
 		mName.setText( entry.getName());
 		mDmg.setText( String.valueOf( entry.mDmg));
 		mCount.setText( String.valueOf( entry.mCount));
@@ -99,6 +104,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		Group leftGrp = layout.createParallelGroup();
 		Group rightGrp = layout.createParallelGroup();
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Item", mItem));
+		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Display", mDisplay));
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Name", mName));
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Damage", mDmg));
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Size", mCount));
@@ -155,6 +161,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 
 	private void updateMainStk( FItemStack stk) {
 		if (stk != null) {
+			mDisplay.setText( stk.getDisplay());
 			mName.setText( stk.getName());
 			mDmg.setText( String.valueOf( stk.getDamage()));
 			mCount.setText( "1");
@@ -164,6 +171,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			mNBT.setText( stk.getNBT());
 		}
 		else {
+			mDisplay.setText( "");
 			mName.setText( "unknown");
 			mDmg.setText( "0");
 			mCount.setText( "1");

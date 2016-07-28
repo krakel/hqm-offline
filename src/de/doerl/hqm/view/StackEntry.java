@@ -8,6 +8,7 @@ class StackEntry {
 	public boolean mItem;
 	private String mKey;
 	private String mName;
+	private String mDisplay;
 	public int mDmg;
 	public String mNbt;
 	public int mCount;
@@ -16,6 +17,7 @@ class StackEntry {
 	public StackEntry() {
 		mItem = true;
 		setName( "name");
+		mDisplay = "display";
 		mCount = 1;
 		mDmg = 0;
 		setPrecision( ItemPrecision.PRECISE);
@@ -25,6 +27,7 @@ class StackEntry {
 	public StackEntry( boolean item, AStack stk, int count, ItemPrecision precition) {
 		mItem = item;
 		mKey = stk.getKey();
+		mDisplay = stk.getDisplay();
 		setName( stk.getName());
 		mDmg = stk.getDamage();
 		mNbt = stk.getNBT();
@@ -35,11 +38,25 @@ class StackEntry {
 	public StackEntry( boolean item, String name, int dmg, String nbt, int count, ItemPrecision precition) {
 		mItem = item;
 		setName( name);
+		mDisplay = name;
 		mDmg = dmg;
 		mNbt = Utils.validString( nbt) ? nbt : null;
 		mCount = count;
 		setPrecision( precition);
 		updateKey();
+	}
+
+	public String getDisplay() {
+		return mDisplay;
+	}
+
+	public String getDisplayLong() {
+		if (Utils.validString( mDisplay)) {
+			return mDisplay + " (" + mName + ")";
+		}
+		else {
+			return mName;
+		}
 	}
 
 	public String getKey() {

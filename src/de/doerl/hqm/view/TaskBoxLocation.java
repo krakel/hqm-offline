@@ -104,7 +104,7 @@ class TaskBoxLocation extends ATaskBox {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FLocation> list, FLocation loc, int index, boolean isSelected, boolean cellHasFocus) {
-			Image img = ImageLoader.getImage( loc.mIcon, createUpdater( list));
+			Image img = ImageLoader.getImage( createUpdater( list), loc.mIcon);
 			mIcon.setIcon( new StackIcon( img, ICON_ZOOM));
 			mName.setText( loc.getName());
 			mDimension.setText( String.format( "%s (dim %d) [radius %d]", loc.mVisibility, loc.mDim, loc.mRadius));

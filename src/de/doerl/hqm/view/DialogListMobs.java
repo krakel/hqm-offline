@@ -242,7 +242,7 @@ class DialogListMobs extends ADialogList<FMob> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FMob> list, FMob value, int index, boolean isSelected, boolean cellHasFocus) {
-			Image img = ImageLoader.getImage( value.mIcon, createUpdater( list));
+			Image img = ImageLoader.getImage( createUpdater( list), value.mIcon);
 			mIcon.setIcon( new StackIcon( img, ICON_ZOOM, String.valueOf( value.mKills)));
 			mName.setText( value.getName());
 			mInfo.setText( String.format( "(%s %s) x%d", value.mExact ? '!' : '~', value.mMob, value.mKills));

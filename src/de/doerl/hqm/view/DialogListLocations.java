@@ -2,6 +2,7 @@ package de.doerl.hqm.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Window;
 
 import javax.swing.BorderFactory;
@@ -253,7 +254,8 @@ class DialogListLocations extends ADialogList<FLocation> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends FLocation> list, FLocation value, int index, boolean isSelected, boolean cellHasFocus) {
-			mIcon.setIcon( new StackIcon( ImageLoader.getImage( value.mIcon, createUpdater( list)), ICON_ZOOM));
+			Image img = ImageLoader.getImage( createUpdater( list), value.mIcon);
+			mIcon.setIcon( new StackIcon( img, ICON_ZOOM));
 			mName.setText( value.getName());
 			mInfo.setText( String.format( "%s (dim %d) (%d, %d, %d)[radius %d]", value.mVisibility, value.mDim, value.mX, value.mY, value.mZ, value.mRadius));
 			if (isSelected) {

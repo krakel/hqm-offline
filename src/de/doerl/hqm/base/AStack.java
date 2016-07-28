@@ -18,6 +18,8 @@ public abstract class AStack {
 
 	public abstract int getDamage();
 
+	public abstract String getDisplay();
+
 	public abstract String getKey();
 
 	public abstract String getName();
