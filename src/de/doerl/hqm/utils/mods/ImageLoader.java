@@ -25,7 +25,6 @@ public class ImageLoader {
 	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
 	private static final ReadImage THREAD = new ReadImage();
 	private static HashMap<String, ItemNEI> sStackes = new HashMap<>();
-	private static HashMap<String, Image> sCache = new HashMap<>();
 	private static File sBaseDir;
 	private static File sImageDir;
 
@@ -53,6 +52,15 @@ public class ImageLoader {
 		return arr;
 	}
 
+	static ItemNEI get( String key) {
+		ItemNEI item = sStackes.get( key);
+		if (item == null) {
+			item = new ItemNEI( key, null);
+			sStackes.put( key, item);
+		}
+		return item;
+	}
+
 	public static Image getImage( AStack stk, Runnable cb) {
 		if (stk != null) {
 			return getImage0( stk.getKey(), cb);
@@ -76,11 +84,10 @@ public class ImageLoader {
 		if (key.indexOf( ':') < 0) {
 			Utils.log( LOGGER, Level.WARNING, "wrong stack name: {0}", key);
 		}
-		return sCache.get( key);
+		return get( key).getImage();
 	}
 
 	public static void init() {
-		sCache.clear();
 		sStackes.clear();
 		initDirectories();
 		UniversalHandler.init( sBaseDir);
@@ -160,13 +167,13 @@ public class ImageLoader {
 
 		private void readImage( Request req) throws IOException {
 			String key = req.mKey;
-			if (key != null && !sCache.containsKey( key)) {
-				Image img = ImageLoader.load( key);
-				if (img == null) {
-					img = mDummy.load( key);
+			if (key != null) {
+				ItemNEI item = get( key);
+				if (item.getImage() == null) {
+					item.setImage( ImageLoader.load( key));
 				}
-				if (img != null) {
-					sCache.put( key, img);
+				if (item.getImage() == null) {
+					item.setImage( mDummy.load( key));
 				}
 			}
 			if (req.mCallback != null) {

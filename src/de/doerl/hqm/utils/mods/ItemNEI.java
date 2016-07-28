@@ -4,6 +4,7 @@
  *******************************************************************************/
 package de.doerl.hqm.utils.mods;
 
+import java.awt.Image;
 import java.util.ArrayList;
 
 import de.doerl.hqm.utils.Utils;
@@ -19,6 +20,7 @@ public class ItemNEI {
 	private String mDisplay;
 	private String mLower;
 	private String mNBT;
+	private Image mImage;
 
 	ItemNEI( String line) {
 		int p1 = line.indexOf( ',');
@@ -33,11 +35,20 @@ public class ItemNEI {
 		mDisplay = mBase;
 		mLower = mDisplay.toLowerCase();
 		mKey = mName + '%' + mDamage;
-		int p5 = mName.indexOf( ':');
-		if (p5 > 0) {
-			int p6 = mName.indexOf( '|');
-			mPkg = mName.substring( 0, p6 < 0 ? p5 : p6);
-		}
+		setPkg();
+	}
+
+	ItemNEI( String key, Object obj) {
+		int p1 = key.indexOf( '%');
+		mName = key.substring( 0, p1);
+		mID = null;
+		mDamage = Utils.parseInteger( key.substring( p1 + 1), 0);
+		mHasNBT = false;
+		mBase = mName;
+		mDisplay = "unknown";
+		mLower = mName.toLowerCase();
+		mKey = key;
+		setPkg();
 	}
 
 	void findImage( NameCache cache) {
@@ -49,6 +60,10 @@ public class ItemNEI {
 		if (mLower.contains( value)) {
 			arr.add( this);
 		}
+	}
+
+	public Image getImage() {
+		return mImage;
 	}
 
 	String getImageName() {
@@ -65,5 +80,17 @@ public class ItemNEI {
 
 	public String getPkg() {
 		return mPkg;
+	}
+
+	public void setImage( Image image) {
+		mImage = image;
+	}
+
+	private void setPkg() {
+		int p5 = mName.indexOf( ':');
+		if (p5 > 0) {
+			int p6 = mName.indexOf( '|');
+			mPkg = mName.substring( 0, p6 < 0 ? p5 : p6);
+		}
 	}
 }
