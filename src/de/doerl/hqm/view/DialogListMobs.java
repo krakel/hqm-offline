@@ -24,7 +24,7 @@ import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.ui.ADialog;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
-import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.utils.mods.ItemNEI;
 import de.doerl.hqm.view.leafs.LeafIcon;
 import de.doerl.hqm.view.leafs.LeafLabel;
 import de.doerl.hqm.view.leafs.LeafSearch;
@@ -111,10 +111,10 @@ class DialogListMobs extends ADialogList<FMob> {
 			mSearch.addSearchListener( new ISearchListener() {
 				@Override
 				public void doAction( SearchEvent event) {
-					Matcher match = event.getMatch();
-					if (match != null) {
-						mIcon.setText( match.getItemNEI().mName);
-						mIconDmg.setText( String.valueOf( match.getItemNEI().mDamage));
+					ItemNEI item = event.getItem();
+					if (item != null) {
+						mIcon.setText( item.mName);
+						mIconDmg.setText( String.valueOf( item.mDamage));
 					}
 				}
 			});

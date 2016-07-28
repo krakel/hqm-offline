@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.utils.mods.ItemNEI;
 import de.doerl.hqm.view.ADialogList.ICreator;
 import de.doerl.hqm.view.leafs.LeafSearch;
 import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
@@ -45,10 +45,10 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		mSearch.addSearchListener( new ISearchListener() {
 			@Override
 			public void doAction( SearchEvent event) {
-				Matcher match = event.getMatch();
-				if (match != null) {
-					mName.setText( match.getItemNEI().mName);
-					mDmg.setText( String.valueOf( match.getItemNEI().mDamage));
+				ItemNEI item = event.getItem();
+				if (item != null) {
+					mName.setText( item.mName);
+					mDmg.setText( String.valueOf( item.mDamage));
 					mCount.setText( String.valueOf( 1));
 					mItem.setSelected( true);
 					mPrec.setSelectedItem( ItemPrecision.PRECISE);

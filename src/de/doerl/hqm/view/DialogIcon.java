@@ -4,7 +4,7 @@ import java.awt.Window;
 
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.ui.ADialog;
-import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.utils.mods.ItemNEI;
 import de.doerl.hqm.view.leafs.LeafSearch;
 import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
 import de.doerl.hqm.view.leafs.LeafSearch.SearchEvent;
@@ -13,8 +13,7 @@ class DialogIcon extends ADialog {
 	private static final long serialVersionUID = -520943310358443074L;
 	private DefaultAction mOk = new DefaultAction( BTN_OK, DialogResult.APPROVE);
 	private LeafSearch mSearch = new LeafSearch();
-	private String mName;
-	private int mDmg;
+	private ItemNEI mItem;
 
 	private DialogIcon( Window owner) {
 		super( owner);
@@ -26,12 +25,8 @@ class DialogIcon extends ADialog {
 		mSearch.addSearchListener( new ISearchListener() {
 			@Override
 			public void doAction( SearchEvent event) {
-				Matcher match = event.getMatch();
-				if (match != null) {
-					mName = match.getItemNEI().mName;
-					mDmg = match.getItemNEI().mDamage;
-					mOk.setEnabled( mName != null);
-				}
+				mItem = event.getItem();
+				mOk.setEnabled( mItem != null);
 			}
 		});
 	}
@@ -54,8 +49,8 @@ class DialogIcon extends ADialog {
 	}
 
 	private FItemStack getResult() {
-		if (mName != null) {
-			return new FItemStack( mName, mDmg, 1);
+		if (mItem != null) {
+			return new FItemStack( mItem.mName, mItem.mDamage, 1);
 		}
 		else {
 			return null;

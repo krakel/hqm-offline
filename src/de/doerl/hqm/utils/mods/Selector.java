@@ -59,20 +59,20 @@ public class Selector {
 	private static void copyImages( ArrayList<ItemNEI> arr, File dir) {
 		File srcDir = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_ICONS);
 		for (ItemNEI item : arr) {
-			String img = item.mImage + ".png";
+			String img = item.getImageName();
 			File src = new File( srcDir, img);
 			if (src.exists()) {
-				File dstDir = new File( PreferenceManager.getString( BaseDefaults.PKG_DIR), item.mPkg);
+				File dstDir = new File( PreferenceManager.getString( BaseDefaults.PKG_DIR), item.getPkg());
 				File dst = new File( dstDir, img);
 				try {
 					Files.copy( src.toPath(), dst.toPath());
 				}
 				catch (IOException ex) {
-					Utils.log( LOGGER, Level.WARNING, "can not copy file: {0}, {1}, {2}", item.mPkg, src, ex.getMessage());
+					Utils.log( LOGGER, Level.WARNING, "can not copy file: {0}, {1}, {2}", item.getPkg(), src, ex.getMessage());
 				}
 			}
 			else {
-				Utils.log( LOGGER, Level.WARNING, "missing image: {0}, {1}", item.mPkg, src);
+				Utils.log( LOGGER, Level.WARNING, "missing image: {0}, {1}", item.getPkg(), src);
 			}
 		}
 	}
@@ -109,14 +109,14 @@ public class Selector {
 			while (line != null) {
 				ItemNEI item = new ItemNEI( line);
 				item.findImage( cache);
-				if (item.mPkg == null) {
+				if (item.getPkg() == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing package: {0}", line);
 				}
 				else {
-					ArrayList<ItemNEI> arr = map.get( item.mPkg);
+					ArrayList<ItemNEI> arr = map.get( item.getPkg());
 					if (arr == null) {
 						arr = new ArrayList<>();
-						map.put( item.mPkg, arr);
+						map.put( item.getPkg(), arr);
 					}
 					arr.add( item);
 				}
@@ -198,7 +198,7 @@ public class Selector {
 				dst.print( ',');
 				dst.print( item.mHasNBT);
 				dst.print( ',');
-				dst.println( item.mImage);
+				dst.println( item.getImageName());
 			}
 			dst.flush();
 		}

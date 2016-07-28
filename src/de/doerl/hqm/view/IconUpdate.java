@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.utils.mods.ImageLoader;
-import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.utils.mods.ItemNEI;
 
 public class IconUpdate implements Runnable {
 	private JLabel mLbl;
@@ -48,9 +48,9 @@ public class IconUpdate implements Runnable {
 		cb.update( cb);
 	}
 
-	public static void create( JLabel lbl, Matcher match) {
-		if (match != null) {
-			create( lbl, null, 0.6, match.mItem.mKey, null, true);
+	public static void create( JLabel lbl, ItemNEI item) {
+		if (item != null) {
+			create( lbl, null, 0.6, item.mKey, null, true);
 		}
 		else {
 			create( lbl, null, 0.6, null, null, true);

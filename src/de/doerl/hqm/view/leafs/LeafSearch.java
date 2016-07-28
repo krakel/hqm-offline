@@ -22,7 +22,7 @@ import javax.swing.event.DocumentListener;
 import de.doerl.hqm.ui.ADialog.TextFieldAscii;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
-import de.doerl.hqm.utils.mods.Matcher;
+import de.doerl.hqm.utils.mods.ItemNEI;
 import de.doerl.hqm.view.IconUpdate;
 import de.doerl.hqm.view.StackIcon;
 
@@ -43,7 +43,7 @@ public class LeafSearch extends JPanel {
 			for (IconRefresh ref : mRefs) {
 				if (Utils.equals( src, ref.mLeaf)) {
 					ref.mLeaf.setBorder( BORDER);
-					SwingUtilities.invokeLater( new MatchRunner( ref.mMatch));
+					SwingUtilities.invokeLater( new MatchRunner( ref.mItem));
 				}
 				else {
 					ref.mLeaf.setBorder( null);
@@ -98,22 +98,22 @@ public class LeafSearch extends JPanel {
 	}
 
 	public void doSearch() {
-		List<Matcher> lst = ImageLoader.find( mSearch.getText(), MAX_ICONS);
+		List<ItemNEI> lst = ImageLoader.find( mSearch.getText(), MAX_ICONS);
 		int size = lst.size();
 		for (int i = 0; i < MAX_ICONS; ++i) {
 			IconRefresh ref = mRefs.get( i);
 			if (i < size) {
-				ref.mMatch = lst.get( i);
+				ref.mItem = lst.get( i);
 			}
 			else {
-				ref.mMatch = null;
+				ref.mItem = null;
 			}
-			IconUpdate.create( ref.mLeaf, ref.mMatch);
+			IconUpdate.create( ref.mLeaf, ref.mItem);
 		}
 	}
 
-	void fireEvent( Matcher match) {
-		SearchEvent evt = new SearchEvent( match);
+	void fireEvent( ItemNEI item) {
+		SearchEvent evt = new SearchEvent( item);
 		for (ISearchListener l : mListener) {
 			try {
 				l.doAction( evt);
@@ -130,7 +130,7 @@ public class LeafSearch extends JPanel {
 
 	private static class IconRefresh {
 		private LeafIcon mLeaf;
-		public volatile Matcher mMatch;
+		public volatile ItemNEI mItem;
 
 		public IconRefresh( LeafIcon leaf) {
 			mLeaf = leaf;
@@ -142,27 +142,27 @@ public class LeafSearch extends JPanel {
 	}
 
 	private final class MatchRunner implements Runnable {
-		private Matcher mMatcher;
+		private ItemNEI mItem;
 
-		public MatchRunner( Matcher matcher) {
-			mMatcher = matcher;
+		public MatchRunner( ItemNEI item) {
+			mItem = item;
 		}
 
 		@Override
 		public void run() {
-			fireEvent( mMatcher);
+			fireEvent( mItem);
 		}
 	}
 
 	public static class SearchEvent {
-		private Matcher mMatch;
+		private ItemNEI mItem;
 
-		private SearchEvent( Matcher match) {
-			mMatch = match;
+		private SearchEvent( ItemNEI item) {
+			mItem = item;
 		}
 
-		public Matcher getMatch() {
-			return mMatch;
+		public ItemNEI getItem() {
+			return mItem;
 		}
 	}
 }

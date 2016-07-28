@@ -9,16 +9,16 @@ import java.util.ArrayList;
 import de.doerl.hqm.utils.Utils;
 
 public class ItemNEI {
-	public String mPkg;
-	public String mName;
-	public String mID;
-	public int mDamage;
-	public boolean mHasNBT;
-	public String mBase;
-	public String mImage;
-	public String mLower;
-	public String mKey;
-	public String mNBT;
+	public final String mName;
+	public final String mKey;
+	public final int mDamage;
+	final String mID;
+	final String mBase;
+	final boolean mHasNBT;
+	private String mPkg;
+	private String mDisplay;
+	private String mLower;
+	private String mNBT;
 
 	ItemNEI( String line) {
 		int p1 = line.indexOf( ',');
@@ -30,11 +30,8 @@ public class ItemNEI {
 		mDamage = Utils.parseInteger( line.substring( p2 + 1, p3), 0);
 		mHasNBT = Utils.parseBoolean( line.substring( p3 + 1, p4), false);
 		mBase = Utils.toWindowsName( line.substring( p4 + 1));
-		if (mBase.length() > 0 && mBase.charAt( 0) == '"') {
-			mBase = mBase.substring( 1, mBase.length() - 1);
-		}
-		mImage = mBase;
-		mLower = mBase.toLowerCase();
+		mDisplay = mBase;
+		mLower = mDisplay.toLowerCase();
 		mKey = mName + '%' + mDamage;
 		int p5 = mName.indexOf( ':');
 		if (p5 > 0) {
@@ -43,18 +40,30 @@ public class ItemNEI {
 		}
 	}
 
-	public void findImage( NameCache cache) {
-		mImage = cache.find( mBase);
-		mLower = mImage.toLowerCase();
+	void findImage( NameCache cache) {
+		mDisplay = cache.find( mBase);
+		mLower = mDisplay.toLowerCase();
 	}
 
-	public void findItem( ArrayList<ItemNEI> arr, String value) {
+	void findItem( ArrayList<ItemNEI> arr, String value) {
 		if (mLower.contains( value)) {
 			arr.add( this);
 		}
 	}
 
+	String getImageName() {
+		return mDisplay + ".png";
+	}
+
 	public String getMod() {
 		return mPkg != null ? mPkg : "unknown";
+	}
+
+	public String getNBT() {
+		return mNBT;
+	}
+
+	public String getPkg() {
+		return mPkg;
 	}
 }

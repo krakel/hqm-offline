@@ -24,7 +24,7 @@ import de.doerl.hqm.utils.Utils;
 public class ImageLoader {
 	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
 	private static final ReadImage THREAD = new ReadImage();
-	private static HashMap<String, Matcher> sStackes = new HashMap<>();
+	private static HashMap<String, ItemNEI> sStackes = new HashMap<>();
 	private static HashMap<String, Image> sCache = new HashMap<>();
 	private static File sBaseDir;
 	private static File sImageDir;
@@ -32,27 +32,25 @@ public class ImageLoader {
 	private ImageLoader() {
 	}
 
-	public static List<Matcher> find( String value, int max) {
+	static void add( ItemNEI item) {
+		if (!sStackes.containsKey( item.mKey)) {
+			sStackes.put( item.mKey, item);
+		}
+	}
+
+	public static List<ItemNEI> find( String value, int max) {
 		return find1( value.toLowerCase(), max);
 	}
 
-	private static List<Matcher> find1( String value, int max) {
-		ArrayList<Matcher> arr = new ArrayList<>();
-		for (Matcher mm : sStackes.values()) {
-			mm.findMatch( arr, value);
+	private static List<ItemNEI> find1( String value, int max) {
+		ArrayList<ItemNEI> arr = new ArrayList<>();
+		for (ItemNEI item : sStackes.values()) {
+			item.findItem( arr, value);
 			if (arr.size() > max) {
 				break;
 			}
 		}
 		return arr;
-	}
-
-	public static Matcher get( ItemNEI item) {
-		return sStackes.get( item.mKey);
-	}
-
-	public static Matcher get( String key) {
-		return sStackes.get( key);
 	}
 
 	public static Image getImage( AStack stk, Runnable cb) {
@@ -111,21 +109,15 @@ public class ImageLoader {
 
 	private static Image load( String key) {
 		if (sImageDir != null) {
-			Matcher match = get( key);
-			if (match != null) {
-				File file = new File( sImageDir, match.mItem.mImage + ".png");
+			ItemNEI item = sStackes.get( key);
+			if (item != null) {
+				File file = new File( sImageDir, item.getImageName());
 				if (file.exists() && !file.isDirectory()) {
 					return readImage( file);
 				}
 			}
 		}
 		return null;
-	}
-
-	public static Matcher put( ItemNEI item) {
-		Matcher match = new Matcher( item);
-		sStackes.put( item.mKey, match);
-		return match;
 	}
 
 	private static Image readImage( File file) {

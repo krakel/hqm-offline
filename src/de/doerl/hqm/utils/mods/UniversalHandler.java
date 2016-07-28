@@ -40,8 +40,8 @@ class UniversalHandler {
 				if (item.mBase.length() == 0) {
 					Utils.log( LOGGER, Level.WARNING, "missing package: {0}", line);
 				}
-				else if (ImageLoader.get( item) == null) {
-					ImageLoader.put( item);
+				else {
+					ImageLoader.add( item);
 				}
 				line = src.readLine();
 			}
