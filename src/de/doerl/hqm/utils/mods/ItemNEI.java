@@ -10,6 +10,16 @@ import java.util.ArrayList;
 import de.doerl.hqm.utils.Utils;
 
 public class ItemNEI {
+	private static final char[] NO_WINDOW_CHAR = "<>:\"/\\|?*".toCharArray();
+	private static final char[] WINDOW_CHAR = new char[256];
+	static {
+		for (int i = 0; i < 256; ++i) {
+			WINDOW_CHAR[i] = (char) i;
+		}
+		for (int i = 0; i < NO_WINDOW_CHAR.length; ++i) {
+			WINDOW_CHAR[NO_WINDOW_CHAR[i]] = '_';
+		}
+	}
 	public final String mName;
 	public final String mKey;
 	public final int mDamage;
@@ -17,6 +27,7 @@ public class ItemNEI {
 	final String mBase;
 	final boolean mHasNBT;
 	private String mPkg;
+	private String mMod;
 	private String mDisplay;
 	private String mLower;
 	private String mNBT;
@@ -28,19 +39,20 @@ public class ItemNEI {
 		int p3 = line.indexOf( ',', p2 + 1);
 		int p4 = line.indexOf( ',', p3 + 1);
 		mName = line.substring( 0, p1);
+		setPkg();
 		mID = line.substring( p1 + 1, p2);
 		mDamage = Utils.parseInteger( line.substring( p2 + 1, p3), 0);
 		mHasNBT = Utils.parseBoolean( line.substring( p3 + 1, p4), false);
-		mBase = Utils.toWindowsName( line.substring( p4 + 1));
+		mBase = toWindowsName( line.substring( p4 + 1));
 		mDisplay = mBase;
 		mLower = mDisplay.toLowerCase();
 		mKey = mName + '%' + mDamage;
-		setPkg();
 	}
 
 	ItemNEI( String key, Object obj) {
 		int p1 = key.indexOf( '%');
 		mName = key.substring( 0, p1);
+		setPkg();
 		mID = null;
 		mDamage = Utils.parseInteger( key.substring( p1 + 1), 0);
 		mHasNBT = false;
@@ -48,11 +60,29 @@ public class ItemNEI {
 		mDisplay = "";
 		mLower = mName.toLowerCase();
 		mKey = key;
-		setPkg();
+	}
+
+	private static String toWindowsName( String value) {
+		if (value.length() > 0 && value.charAt( 0) == '"') {
+			value = value.substring( 1, value.length() - 1);
+		}
+		value = value.replace( "\"\"", "_");
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0, max = value.length(); i < max; ++i) {
+			char ch = value.charAt( i);
+			sb.append( WINDOW_CHAR[ch]);
+		}
+		// value.replace( '<', '_').replace( '>', '_').replace( ':', '_').replace( '|', '_').replace( '/', '_').replace( '\\', '_').replace( '?', '_').replace( '*', '_').replace( '"', '_');
+		return sb.toString();
 	}
 
 	void findImage( NameCache cache) {
-		mDisplay = cache.find( mBase);
+		if ("Ztones".equals( mMod)) {
+			mDisplay = cache.findZtones( mBase);
+		}
+		else {
+			mDisplay = cache.find( mBase);
+		}
 		mLower = mDisplay.toLowerCase();
 	}
 
@@ -75,7 +105,7 @@ public class ItemNEI {
 	}
 
 	public String getMod() {
-		return mPkg != null ? mPkg : "unknown";
+		return mMod;
 	}
 
 	public String getNBT() {
@@ -91,10 +121,14 @@ public class ItemNEI {
 	}
 
 	private void setPkg() {
-		int p5 = mName.indexOf( ':');
-		if (p5 > 0) {
-			int p6 = mName.indexOf( '|');
-			mPkg = mName.substring( 0, p6 < 0 ? p5 : p6);
+		int p1 = mName.indexOf( ':');
+		if (p1 > 0) {
+			int p2 = mName.indexOf( '|');
+			mPkg = mName.substring( 0, p2 < 0 ? p1 : p2);
+			mMod = mName.substring( 0, p1);
+		}
+		else {
+			mMod = "unknown";
 		}
 	}
 }

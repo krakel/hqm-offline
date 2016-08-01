@@ -26,4 +26,24 @@ class NameCache {
 		mNames.add( name);
 		return name;
 	}
+
+	public String findZtones( String base) {
+		if (base.endsWith( "_")) {
+			base = base.substring( 0, base.length() - 1);
+			int i = 9450; // ⓪
+			String name = base + (char) i;
+			if (mNames.contains( name)) {
+				i = 9312; // ① ... ⑳
+				do {
+					name = base + (char) i++;
+				}
+				while (mNames.contains( name));
+			}
+			mNames.add( name);
+			return name;
+		}
+		else {
+			return find( base);
+		}
+	}
 }
