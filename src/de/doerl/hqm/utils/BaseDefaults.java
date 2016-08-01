@@ -26,7 +26,8 @@ public class BaseDefaults {
 	public static final String DUMP_DIR = "dump.dir";
 	public static final String FILE_VERSION = "version";
 	public static final String ITEMPANEL_ICONS = "itempanel_icons";
-	public static final String ITEMPANEL = "itempanel.csv";
+	public static final String ITEMPANEL_CSV = "itempanel.csv";
+	public static final String ITEMPANEL_NBT = "itempanel.nbt";
 	public static final String ITEMS = "items.csv";
 	private static final String[] KEYS = { LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, PKG_DIR, DUMP_DIR, FILE_VERSION
 	};

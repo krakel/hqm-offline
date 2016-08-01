@@ -20,7 +20,7 @@ class UniversalHandler {
 	public static void init( File baseDir) {
 		File[] arr = baseDir.listFiles();
 		for (File curr : arr) {
-			if (BaseDefaults.ITEMPANEL.equals( curr.getName())) {
+			if (BaseDefaults.ITEMPANEL_CSV.equals( curr.getName())) {
 				parseCSVFile( curr);
 				break;
 			}

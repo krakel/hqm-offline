@@ -25,6 +25,9 @@ import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.json.FObject;
+import de.doerl.hqm.utils.json.IJson;
+import de.doerl.hqm.utils.json.JsonReader;
 
 @SuppressWarnings( "unused")
 public class Selector {
@@ -40,7 +43,7 @@ public class Selector {
 	private static void checkPack( File modDir) {
 		File[] arr = modDir.listFiles();
 		for (File curr : arr) {
-			if (BaseDefaults.ITEMPANEL.equals( curr.getName())) {
+			if (BaseDefaults.ITEMPANEL_CSV.equals( curr.getName())) {
 				parsePackFile( curr);
 				break;
 			}
@@ -89,6 +92,7 @@ public class Selector {
 	private static void isolatePackages() {
 		Map<String, ArrayList<ItemNEI>> cache = new HashMap<>();
 		parseDumpFile( cache);
+//		parseNbtFile( cache);
 		writeFiles( cache);
 	}
 
@@ -102,7 +106,7 @@ public class Selector {
 		BufferedReader src = null;
 		try {
 			int index = 2;
-			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL);
+			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_CSV);
 			src = new BufferedReader( new InputStreamReader( new FileInputStream( csvFile), "ISO-8859-1"));
 			src.readLine(); //               Item Name,        Item ID, Item meta, Has NBT, Display Name
 			String line = src.readLine(); // minecraft:planks, 5,       5,         false,   Dark Oak Wood Planks
@@ -123,6 +127,23 @@ public class Selector {
 				line = src.readLine();
 				++index;
 			}
+		}
+		catch (IOException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+		finally {
+			Utils.closeIgnore( src);
+		}
+	}
+
+	private static void parseNbtFile( Map<String, ArrayList<ItemNEI>> cache) {
+		FileInputStream src = null;
+		try {
+			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_NBT);
+			src = new FileInputStream( csvFile);
+			JsonReader rdr = new JsonReader( src);
+			IJson all = rdr.doAll();
+			FObject obj = FObject.to( all);
 		}
 		catch (IOException ex) {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
@@ -211,7 +232,7 @@ public class Selector {
 	}
 
 	private static void writePanelFile( ArrayList<ItemNEI> arr, File dir) {
-		File file = new File( dir, BaseDefaults.ITEMPANEL);
+		File file = new File( dir, BaseDefaults.ITEMPANEL_CSV);
 		if (file.exists()) {
 			file.delete();
 		}
