@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class ReaderTest {
 	private static void doTest( byte[] test, String exp) {
-		String act = NbtReader.read0( test);
+		String act = NbtReader.parseAsString( test);
 		assertEquals( exp, act);
 	}
 

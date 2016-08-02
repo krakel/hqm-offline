@@ -3,6 +3,9 @@ package de.doerl.hqm.utils.nbt;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -19,15 +22,14 @@ public class NbtReader {
 		mSrc = src;
 	}
 
-	static byte[] decompress( byte[] bytes) {
-		ByteArrayOutputStream dst = new ByteArrayOutputStream();
+	private static void decompress( InputStream in, OutputStream out) {
 		GZIPInputStream is = null;
 		try {
-			is = new GZIPInputStream( new ByteArrayInputStream( bytes));
+			is = new GZIPInputStream( in);
 			byte[] buffer = new byte[1024];
 			int len;
 			while ((len = is.read( buffer)) != -1) {
-				dst.write( buffer, 0, len);
+				out.write( buffer, 0, len);
 			}
 		}
 		catch (IOException ex) {
@@ -36,36 +38,73 @@ public class NbtReader {
 		finally {
 			Utils.closeIgnore( is);
 		}
-		return dst.toByteArray();
 	}
 
-	public static String read( byte[] bytes) {
-		byte[] src = decompress( bytes);
-		return read0( src);
+	static ArrayList<String> parseAsList( byte[] arr) {
+		ArrayList<String> res = new ArrayList<>();
+		NbtReader rdr = new NbtReader( arr);
+		rdr.doAllList( res);
+		return res;
 	}
 
-	static String read0( byte[] src) {
-		NbtReader rdr = new NbtReader( src);
+	static String parseAsString( byte[] arr) {
+		NbtReader rdr = new NbtReader( arr);
 		rdr.doAll( 0);
 		return rdr.toString();
+	}
+
+	private static byte[] read( InputStream in) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		decompress( in, out);
+		return out.toByteArray();
+	}
+
+	public static ArrayList<String> readAsList( InputStream in) {
+		byte[] src = read( in);
+		return parseAsList( src);
+	}
+
+	public static String readAsString( byte[] arr) {
+		byte[] src = read( new ByteArrayInputStream( arr));
+		return parseAsString( src);
 	}
 
 	private int doAll( int pos) {
 		boolean comma = false;
 		while (pos >= 0 && pos < mSrc.length) {
 			int tag = Helper.getByte( mSrc, pos);
-			pos += 1;
 			if (tag == 0) {
 				break;
 			}
 			if (comma) {
 				mSB.append( ", ");
 			}
-			pos = doKey( tag, pos);
+			pos = doKey( tag, pos + 1);
 			pos = doValue( tag, pos);
 			comma = true;
 		}
 		return pos;
+	}
+
+	private void doAllList( ArrayList<String> res) {
+		int pos = 0;
+		if (Helper.getByte( mSrc, pos) == 10) {
+			pos = doStringIgnore( pos + 1);
+			if (Helper.getByte( mSrc, pos) == 9) {
+				pos = doStringIgnore( pos + 1);
+				if (Helper.getByte( mSrc, pos) == 10) {
+					pos += 1;
+					int count = Helper.getInt( mSrc, pos);
+					pos += 4;
+					res.ensureCapacity( count);
+					for (int i = 0; i < count; ++i) {
+						pos = doValue( 10, pos);
+						res.add( mSB.toString());
+						mSB.setLength( 0);
+					}
+				}
+			}
+		}
 	}
 
 	private int doArrByte( int pos) {
@@ -128,11 +167,9 @@ public class NbtReader {
 	}
 
 	private int doList( int pos) {
-		int tag = Helper.getByte( mSrc, pos);
-		pos += 1;
-//		mSB.append( String.format( "LIST-%d( ", tag));
 		mSB.append( "LIST( ");
-		pos = doArrList( pos, tag);
+		int tag = Helper.getByte( mSrc, pos);
+		pos = doArrList( pos + 1, tag);
 		mSB.append( " )");
 		return pos;
 	}
@@ -143,6 +180,11 @@ public class NbtReader {
 		String str = Helper.getString( mSrc, pos, len);
 		mSB.append( str.replace( "'", "\\'"));
 		return pos + len;
+	}
+
+	private int doStringIgnore( int pos) {
+		int len = Helper.getShort( mSrc, pos);
+		return pos + len + 2;
 	}
 
 	private int doValue( int tag, int pos) {

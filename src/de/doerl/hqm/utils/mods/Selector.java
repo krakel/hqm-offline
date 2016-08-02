@@ -25,9 +25,7 @@ import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.json.FObject;
-import de.doerl.hqm.utils.json.IJson;
-import de.doerl.hqm.utils.json.JsonReader;
+import de.doerl.hqm.utils.nbt.NbtReader;
 
 @SuppressWarnings( "unused")
 public class Selector {
@@ -92,8 +90,8 @@ public class Selector {
 	private static void isolatePackages() {
 		Map<String, ArrayList<ItemNEI>> cache = new HashMap<>();
 		parseDumpFile( cache);
-//		parseNbtFile( cache);
-		writeFiles( cache);
+		parseNbtFile( cache);
+//		writeFiles( cache);
 	}
 
 	public static void main( String[] args) {
@@ -141,9 +139,8 @@ public class Selector {
 		try {
 			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_NBT);
 			src = new FileInputStream( csvFile);
-			JsonReader rdr = new JsonReader( src);
-			IJson all = rdr.doAll();
-			FObject obj = FObject.to( all);
+			ArrayList<String> res = NbtReader.readAsList( src);
+			res = null;
 		}
 		catch (IOException ex) {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);

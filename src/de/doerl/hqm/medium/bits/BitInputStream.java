@@ -150,7 +150,7 @@ class BitInputStream {
 		for (int i = 0; i < bytes.length; i++) {
 			bytes[i] = (byte) readByte();
 		}
-		return NbtReader.read( bytes);
+		return NbtReader.readAsString( bytes);
 	}
 
 	public String readString( DataBitHelper bits) {

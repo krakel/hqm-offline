@@ -3,6 +3,8 @@ package de.doerl.hqm.utils.nbt;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
@@ -17,15 +19,13 @@ public class NbtWriter {
 		mParser = new Tokenizer( src);
 	}
 
-	private static byte[] compress( byte[] bytes) {
-		ByteArrayInputStream src = new ByteArrayInputStream( bytes);
-		ByteArrayOutputStream dst = new ByteArrayOutputStream();
+	static void compress( InputStream in, OutputStream out) {
 		GZIPOutputStream os = null;
 		try {
-			os = new GZIPOutputStream( dst);
+			os = new GZIPOutputStream( out);
 			byte[] buffer = new byte[1024];
 			int len;
-			while ((len = src.read( buffer)) != -1) {
+			while ((len = in.read( buffer)) != -1) {
 				os.write( buffer, 0, len);
 			}
 		}
@@ -35,14 +35,16 @@ public class NbtWriter {
 		finally {
 			Utils.closeIgnore( os);
 		}
-		return dst.toByteArray();
 	}
 
 	public static byte[] write( String src) {
 		if (src != null) {
 			try {
 				byte[] res = write0( src);
-				return compress( res);
+				ByteArrayInputStream in = new ByteArrayInputStream( res);
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				compress( in, out);
+				return out.toByteArray();
 			}
 			catch (IOException ex) {
 				Utils.logThrows( LOGGER, Level.WARNING, ex);
