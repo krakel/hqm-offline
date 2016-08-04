@@ -8,12 +8,32 @@ final class FLong extends ANbt {
 		mValue = value;
 	}
 
-	public long toByte() {
-		return mValue;
+	static FLong createByte( String name, int value) {
+		return new FLong( name, value, 1);
+	}
+
+	static FLong createInt( String name, int value) {
+		return new FLong( name, value, 3);
+	}
+
+	static FLong createLong( String name, long value) {
+		return new FLong( name, value, 4);
+	}
+
+	static FLong createShort( String name, int value) {
+		return new FLong( name, value, 2);
+	}
+
+	public byte toByte() {
+		return (byte) mValue;
 	}
 
 	public int toInt() {
 		return (int) mValue;
+	}
+
+	public long toLong() {
+		return mValue;
 	}
 
 	public short toShort() {
@@ -46,9 +66,5 @@ final class FLong extends ANbt {
 			default:
 				break;
 		}
-	}
-
-	public byte toValue() {
-		return (byte) mValue;
 	}
 }

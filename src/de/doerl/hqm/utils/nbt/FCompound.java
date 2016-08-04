@@ -20,6 +20,7 @@ final class FCompound extends AList {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append( getName());
+		sb.append( "=");
 		toString( sb);
 		return sb.toString();
 	}
@@ -27,7 +28,7 @@ final class FCompound extends AList {
 	@Override
 	public void toString( StringBuffer sb) {
 		boolean comma = false;
-		sb.append( "=COMPOUND( ");
+		sb.append( "COMPOUND( ");
 		for (ANbt nbt : mList) {
 			if (comma) {
 				sb.append( ", ");

@@ -8,6 +8,14 @@ final class FDouble extends ANbt {
 		mValue = value;
 	}
 
+	static FDouble createDouble( String name, double value) {
+		return new FDouble( name, value, 6);
+	}
+
+	static FDouble createFloat( String name, float value) {
+		return new FDouble( name, value, 5);
+	}
+
 	public double toDouble() {
 		return mValue;
 	}
@@ -19,12 +27,12 @@ final class FDouble extends ANbt {
 	@Override
 	public void toString( StringBuffer sb) {
 		switch (getTag()) {
-			case 3:
+			case 5:
 				sb.append( "FLOAT(");
 				sb.append( (float) mValue);
 				sb.append( ")");
 				break;
-			case 4:
+			case 6:
 				sb.append( "DOUBLE(");
 				sb.append( mValue);
 				sb.append( ")");

@@ -17,6 +17,7 @@ import de.doerl.hqm.utils.Utils;
 
 public class NbtWriter1 {
 	private static final Logger LOGGER = Logger.getLogger( NbtWriter.class.getName());
+	private ByteArrayOutputStream mOut = new ByteArrayOutputStream();
 
 	public NbtWriter1() {
 	}
@@ -60,8 +61,119 @@ public class NbtWriter1 {
 		return wrt.doAll( main);
 	}
 
-	private byte[] doAll( FCompound main) {
-		// TODO Auto-generated method stub
-		return null;
+	private byte[] doAll( FCompound main) throws IOException {
+		writeByte( main.getTag());
+		writeKey( main.getName());
+		writeCompund( main);
+		writeByte( 0);
+		return mOut.toByteArray();
+	}
+
+	private void doArrByte( FByteArray arr) {
+		writeInt( arr.size());
+		for (Byte b : arr) {
+			writeByte( b);
+		}
+	}
+
+	private void doArrInt( FIntArray arr) {
+		writeInt( arr.size());
+		for (Integer i : arr) {
+			writeInt( i);
+		}
+	}
+
+	private void doList( FList lst) throws IOException {
+		writeByte( lst.getElement());
+		writeInt( lst.size());
+		for (ANbt nbt : lst) {
+			doValue( nbt);
+		}
+	}
+
+	private void doValue( ANbt nbt) throws IOException {
+		switch (nbt.getTag()) {
+			case 1: // Byte
+				writeByte( ((FLong) nbt).toByte());
+				break;
+			case 2: // Short
+				writeShort( ((FLong) nbt).toShort());
+				break;
+			case 3: // Int
+				writeInt( ((FLong) nbt).toInt());
+				break;
+			case 4: // Long
+				writeLong( ((FLong) nbt).toLong());
+				break;
+			case 5: // Float
+				writeInt( Float.floatToIntBits( ((FDouble) nbt).toFloat()));
+				break;
+			case 6: // Double
+				writeLong( Double.doubleToLongBits( ((FDouble) nbt).toDouble()));
+				break;
+			case 7: // Byte-Array
+				doArrByte( (FByteArray) nbt);
+				break;
+			case 8: // String
+				writeString( ((FString) nbt).getValue());
+				break;
+			case 9: // List
+				doList( (FList) nbt);
+				break;
+			case 10: // Compound
+				writeCompund( (FCompound) nbt);
+				writeByte( 0);
+				break;
+			case 11: // Int-Array
+				doArrInt( (FIntArray) nbt);
+				break;
+			default:
+				throw new IOException( "wrong value tag");
+		}
+	}
+
+	private void writeByte( int val) {
+		mOut.write( val & 0xFF);
+	}
+
+	private void writeCompund( FCompound main) throws IOException {
+		for (ANbt nbt : main) {
+			writeByte( nbt.getTag());
+			writeKey( nbt.getName());
+			doValue( nbt);
+		}
+	}
+
+	private void writeInt( int val) {
+		writeShort( val >> 16);
+		writeShort( val);
+	}
+
+	private void writeKey( String val) throws IOException {
+		byte[] bb = val.getBytes();
+		writeShort( bb.length);
+		mOut.write( bb);
+	}
+
+	private void writeLong( long val) {
+		writeInt( (int) (val >> 32));
+		writeInt( (int) val);
+	}
+
+	private void writeShort( int val) {
+		writeByte( val >> 8);
+		writeByte( val);
+	}
+
+	private void writeString( String val) throws IOException {
+		byte[] bb = val.getBytes();
+		int len = bb.length - 2;
+		if (len >= 0) {
+			writeShort( len);
+			mOut.write( bb, 1, len);
+		}
+		else {
+			throw new IOException( "wrong string");
+		}
 	}
 }

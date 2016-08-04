@@ -1,16 +1,15 @@
 package de.doerl.hqm.utils.nbt;
 
 final class FList extends AList {
-	private int mTag;
+	private int mElement;
 
 	FList( String name, int tag) {
 		super( name, 9);
-		mTag = tag;
+		mElement = tag;
 	}
 
-	@Override
-	public int getTag() {
-		return mTag;
+	public int getElement() {
+		return mElement;
 	}
 
 	@Override

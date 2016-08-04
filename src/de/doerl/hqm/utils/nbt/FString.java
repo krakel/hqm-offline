@@ -8,6 +8,10 @@ final class FString extends ANbt {
 		mValue = value;
 	}
 
+	static FString create( String name, String value) {
+		return new FString( name, value);
+	}
+
 	public String getValue() {
 		return mValue;
 	}

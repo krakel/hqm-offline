@@ -44,7 +44,7 @@ public class NbtReader1 {
 
 	static FCompound parseAsCompound( byte[] arr) {
 		NbtReader1 rdr = new NbtReader1( arr);
-		return rdr.doCompound( "");
+		return rdr.doMain();
 	}
 
 	private static byte[] read( InputStream in) {
@@ -82,16 +82,14 @@ public class NbtReader1 {
 		return value;
 	}
 
-	private FCompound doCompound( String name) {
-		FCompound main = new FCompound( name);
+	private void doCompound( FCompound main) {
 		while (mPos < mSrc.length) {
 			int tag = doByte();
 			if (tag == 0) {
 				break;
 			}
-			doValue( tag, doString(), main);
+			main.add( doValue( tag, doString()));
 		}
-		return main;
 	}
 
 	private double doDouble() {
@@ -117,7 +115,7 @@ public class NbtReader1 {
 		int count = doInt();
 		FList list = new FList( name, tag);
 		for (int i = 0; i < count; ++i) {
-			doValue( tag, "", list);
+			list.add( doValue( tag, ""));
 		}
 		return list;
 	}
@@ -126,6 +124,16 @@ public class NbtReader1 {
 		long value = ANbt.getLong( mSrc, mPos);
 		mPos += 8;
 		return value;
+	}
+
+	private FCompound doMain() {
+		FCompound main = new FCompound( "");
+		int tag = doByte();
+		if (tag == 10) {
+			doString();
+			doCompound( main);
+		}
+		return main;
 	}
 
 	private int doShort() {
@@ -141,43 +149,34 @@ public class NbtReader1 {
 		return str.replace( "'", "\\'");
 	}
 
-	private void doValue( int tag, String name, AList list) {
+	private ANbt doValue( int tag, String name) {
 		switch (tag) {
-			case 0: // End
-				break;
 			case 1: // Byte
-				list.add( new FLong( name, doByte(), tag));
-				break;
+				return FLong.createByte( name, doByte());
 			case 2: // Short
-				list.add( new FLong( name, doShort(), tag));
-				break;
+				return FLong.createShort( name, doShort());
 			case 3: // Int
-				list.add( new FLong( name, doInt(), tag));
-				break;
+				return FLong.createInt( name, doInt());
 			case 4: // Long
-				list.add( new FLong( name, doLong(), tag));
-				break;
+				return FLong.createLong( name, doLong());
 			case 5: // Float
-				list.add( new FDouble( name, doFloat(), tag));
-				break;
+				return FDouble.createFloat( name, doFloat());
 			case 6: // Double
-				list.add( new FDouble( name, doDouble(), tag));
-				break;
+				return FDouble.createDouble( name, doDouble());
 			case 7: // Byte-Array
-				list.add( doArrByte( name));
-				break;
+				return doArrByte( name);
 			case 8: // String
-				list.add( new FString( name, doString()));
-				break;
+				return FString.create( name, doString());
 			case 9: // List
-				list.add( doList( name));
-				break;
+				return doList( name);
 			case 10: // Compound
-				list.add( doCompound( name));
-				break;
+				FCompound main = new FCompound( name);
+				doCompound( main);
+				return main;
 			case 11: // Int-Array
-				list.add( doArrInt( name));
-				break;
+				return doArrInt( name);
+			default:
+				return null;
 		}
 	}
 }

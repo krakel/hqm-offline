@@ -10,8 +10,8 @@ final class FByteArray extends ANbt implements Iterable<Byte> {
 		super( name, 7);
 	}
 
-	void add( byte value) {
-		mList.add( value);
+	void add( int value) {
+		mList.add( (byte) value);
 	}
 
 	public byte get( int idx) {
