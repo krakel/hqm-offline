@@ -19,7 +19,7 @@ public class NbtWriter {
 		mParser = new Tokenizer( src);
 	}
 
-	static void compress( InputStream in, OutputStream out) {
+	private static void compress( InputStream in, OutputStream out) {
 		GZIPOutputStream os = null;
 		try {
 			os = new GZIPOutputStream( out);

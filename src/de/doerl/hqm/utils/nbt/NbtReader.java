@@ -10,13 +10,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
-import de.doerl.hqm.utils.Helper;
 import de.doerl.hqm.utils.Utils;
 
 public class NbtReader {
 	private static final Logger LOGGER = Logger.getLogger( NbtReader.class.getName());
-	StringBuilder mSB = new StringBuilder();
-	byte[] mSrc;
+	private StringBuilder mSB = new StringBuilder();
+	private byte[] mSrc;
 
 	private NbtReader( byte[] src) {
 		mSrc = src;
@@ -72,7 +71,7 @@ public class NbtReader {
 	private int doAll( int pos) {
 		boolean comma = false;
 		while (pos >= 0 && pos < mSrc.length) {
-			int tag = Helper.getByte( mSrc, pos);
+			int tag = ANbt.getByte( mSrc, pos);
 			if (tag == 0) {
 				break;
 			}
@@ -88,13 +87,13 @@ public class NbtReader {
 
 	private void doAllList( ArrayList<String> res) {
 		int pos = 0;
-		if (Helper.getByte( mSrc, pos) == 10) {
+		if (ANbt.getByte( mSrc, pos) == 10) {
 			pos = doStringIgnore( pos + 1);
-			if (Helper.getByte( mSrc, pos) == 9) {
+			if (ANbt.getByte( mSrc, pos) == 9) {
 				pos = doStringIgnore( pos + 1);
-				if (Helper.getByte( mSrc, pos) == 10) {
+				if (ANbt.getByte( mSrc, pos) == 10) {
 					pos += 1;
-					int count = Helper.getInt( mSrc, pos);
+					int count = ANbt.getInt( mSrc, pos);
 					pos += 4;
 					res.ensureCapacity( count);
 					for (int i = 0; i < count; ++i) {
@@ -108,33 +107,33 @@ public class NbtReader {
 	}
 
 	private int doArrByte( int pos) {
-		int count = Helper.getInt( mSrc, pos);
+		int count = ANbt.getInt( mSrc, pos);
 		pos += 4;
 		for (int i = 0; i < count; ++i) {
 			if (i > 0) {
 				mSB.append( ", ");
 			}
-			mSB.append( Helper.getByte( mSrc, pos));
+			mSB.append( ANbt.getByte( mSrc, pos));
 			pos += 1;
 		}
 		return pos;
 	}
 
 	private int doArrInt( int pos) {
-		int count = Helper.getInt( mSrc, pos);
+		int count = ANbt.getInt( mSrc, pos);
 		pos += 4;
 		for (int i = 0; i < count; ++i) {
 			if (i > 0) {
 				mSB.append( ", ");
 			}
-			mSB.append( Helper.getInt( mSrc, pos));
+			mSB.append( ANbt.getInt( mSrc, pos));
 			pos += 4;
 		}
 		return pos;
 	}
 
 	private int doArrList( int pos, int tag) {
-		int count = Helper.getInt( mSrc, pos);
+		int count = ANbt.getInt( mSrc, pos);
 		pos += 4;
 		for (int i = 0; i < count; ++i) {
 			if (i > 0) {
@@ -168,22 +167,22 @@ public class NbtReader {
 
 	private int doList( int pos) {
 		mSB.append( "LIST( ");
-		int tag = Helper.getByte( mSrc, pos);
+		int tag = ANbt.getByte( mSrc, pos);
 		pos = doArrList( pos + 1, tag);
 		mSB.append( " )");
 		return pos;
 	}
 
 	private int doString( int pos) {
-		int len = Helper.getShort( mSrc, pos);
+		int len = ANbt.getShort( mSrc, pos);
 		pos += 2;
-		String str = Helper.getString( mSrc, pos, len);
+		String str = ANbt.getString( mSrc, pos, len);
 		mSB.append( str.replace( "'", "\\'"));
 		return pos + len;
 	}
 
 	private int doStringIgnore( int pos) {
-		int len = Helper.getShort( mSrc, pos);
+		int len = ANbt.getShort( mSrc, pos);
 		return pos + len + 2;
 	}
 
@@ -193,37 +192,37 @@ public class NbtReader {
 				break;
 			case 1: // Byte
 				mSB.append( "BYTE(");
-				mSB.append( Helper.getByte( mSrc, pos));
+				mSB.append( ANbt.getByte( mSrc, pos));
 				mSB.append( ")");
 				pos += 1;
 				break;
 			case 2: // Short
 				mSB.append( "SHORT(");
-				mSB.append( Helper.getShort( mSrc, pos));
+				mSB.append( ANbt.getShort( mSrc, pos));
 				mSB.append( ")");
 				pos += 2;
 				break;
 			case 3: // Int
 				mSB.append( "INT(");
-				mSB.append( Helper.getInt( mSrc, pos));
+				mSB.append( ANbt.getInt( mSrc, pos));
 				mSB.append( ")");
 				pos += 4;
 				break;
 			case 4: // Long
 				mSB.append( "LONG(");
-				mSB.append( Helper.getLong( mSrc, pos));
+				mSB.append( ANbt.getLong( mSrc, pos));
 				mSB.append( ")");
 				pos += 8;
 				break;
 			case 5: // Float
 				mSB.append( "FLOAT(");
-				mSB.append( Helper.getFloat( mSrc, pos));
+				mSB.append( ANbt.getFloat( mSrc, pos));
 				mSB.append( ")");
 				pos += 4;
 				break;
 			case 6: // Double
 				mSB.append( "DOUBLE(");
-				mSB.append( Helper.getDouble( mSrc, pos));
+				mSB.append( ANbt.getDouble( mSrc, pos));
 				mSB.append( ")");
 				pos += 8;
 				break;
