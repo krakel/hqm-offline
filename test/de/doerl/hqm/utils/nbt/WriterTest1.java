@@ -28,8 +28,9 @@ public class WriterTest1 {
 
 	@Test
 	public void testParse2() {
-		FCompound test = new FCompound( "");
-		test.add( FLong.createInt( "Energy", 400000));
+		FCompound test = FCompound.create( "", new ANbt[] { //
+			FLong.createInt( "Energy", 400000)
+		});
 		byte[] exp = { 10, 0, 0, 3, 0, 6, 69, 110, 101, 114, 103, 121, 0, 6, 26, -128, 0
 		};
 		doTest( test, exp);
@@ -37,8 +38,9 @@ public class WriterTest1 {
 
 	@Test
 	public void testParse3() {
-		FCompound test = new FCompound( "");
-		test.add( FString.create( "title", "'TG.personaltitle.seeker'"));
+		FCompound test = FCompound.create( "", new ANbt[] { //
+			FString.create( "title", "'TG.personaltitle.seeker'")
+		});
 		byte[] exp = { 10, 0, 0, 8, 0, 5, 116, 105, 116, 108, 101, 0, 23, 84, 71, 46, 112, 101, 114, 115, 111, 110, 97, 108, 116, 105, 116, 108, 101, 46, 115, 101, 101, 107, 101, 114, 0
 		};
 		doTest( test, exp);
@@ -84,20 +86,14 @@ public class WriterTest1 {
 
 	@Test
 	public void testParse5() {
-		FCompound test = new FCompound( "");
-		test.add( FLong.createInt( "Recv", 80));
-		test.add( FLong.createByte( "RSControl", 1));
-		test.add( FLong.createByte( "Facing", 3));
-		test.add( FLong.createInt( "Energy", 400000));
-		FByteArray arr = new FByteArray( "SideCache");
-		arr.add( 1);
-		arr.add( 2);
-		arr.add( 2);
-		arr.add( 2);
-		arr.add( 2);
-		arr.add( 2);
-		test.add( arr);
-		test.add( FLong.createInt( "Send", 80));
+		FCompound test = FCompound.create( "", new ANbt[] { //
+			FLong.createInt( "Recv", 80), //
+			FLong.createByte( "RSControl", 1), //
+			FLong.createByte( "Facing", 3), //
+			FLong.createInt( "Energy", 400000), //
+			FByteArray.create( "SideCache", 1, 2, 2, 2, 2, 2), //
+			FLong.createInt( "Send", 80)
+		});
 		byte[] exp = { 10, 0, 0, 3, 0, 4, 82, 101, 99, 118, 0, 0, 0, 80, 1, 0, 9, 82, 83, 67, 111, 110, 116, 114, 111, 108, 1, 1, 0, 6, 70, 97, 99, 105, 110, 103, 3, 3, 0, 6, 69, 110, 101, 114, 103, 121, 0, 6, 26, -128, 7, 0, 9, 83, 105, 100, 101, 67, 97, 99, 104, 101, 0, 0, 0, 6, 1, 2, 2, 2, 2, 2, 3, 0, 4, 83, 101, 110, 100, 0, 0, 0, 80, 0
 		};
 		doTest( test, exp);
@@ -106,35 +102,24 @@ public class WriterTest1 {
 	@Test
 	public void testParse6() {
 		FCompound test = new FCompound( "");
-		FCompound fd = new FCompound( "ForgeData");
-		test.add( fd);
-		FCompound ai = new FCompound( "sAI");
-		ai.add( FLong.createByte( "AvoidExplosions", 1));
-		ai.add( FLong.createByte( "DefendVillage", 0));
-		ai.add( FLong.createByte( "Griefing", 0));
-		ai.add( new FCompound( "uAI"));
-		ai.add( FLong.createByte( "Rider", 0));
-		ai.add( FLong.createInt( "HungerOverhaulCheck", 6));
-		fd.add( ai);
-		FList lst = new FList( "Attributes", 10);
-		FCompound l1 = new FCompound( "");
-		l1.add( FDouble.createDouble( "Base", 10.0));
-		l1.add( FString.create( "Name", "'generic.maxHealth'"));
-		lst.add( l1);
-		FCompound l2 = new FCompound( "");
-		l2.add( FDouble.createDouble( "Base", 0.0));
-		l2.add( FString.create( "Name", "'generic.knockbackResistance'"));
-		lst.add( l2);
-		FCompound l3 = new FCompound( "");
-		l3.add( FDouble.createDouble( "Base", 0.20000000298023224));
-		l3.add( FString.create( "Name", "'generic.movementSpeed'"));
-		lst.add( l3);
-		FCompound l4 = new FCompound( "");
-		l4.add( FDouble.createDouble( "Base", 16.0));
-		FList lst1 = new FList( "Modifiers", 10);
-		lst.add( lst1);
-		fd.add( lst);
-//		String test = " COMPOUND( Base=DOUBLE(16.0), Modifiers=LIST( COMPOUND( UUIDMost=LONG(1593451547207684033), UUIDLeast=LONG(-7078328387847374506), Amount=DOUBLE(-0.04186616479037544), Operation=INT(1), Name=STRING('Random spawn bonus'))), Name=STRING('generic.followRange'))), Invulnerable=BYTE(0), PortalCooldown=INT(0), AbsorptionAmount=FLOAT(0.0), FallDistance=FLOAT(0.0), InLove=INT(0), DeathTime=SHORT(0), isSoul=BYTE(0), jarredCritterName=STRING('Cow'), DropChances=LIST( FLOAT(0.085), FLOAT(0.085), FLOAT(0.085), FLOAT(0.085), FLOAT(0.085)), PersistenceRequired=BYTE(0), id=STRING('Cow'), HealF=FLOAT(9.0), Age=INT(0), Motion=LIST( DOUBLE(0.0), DOUBLE(-0.0784000015258789), DOUBLE(0.0)), Leashed=BYTE(0), UUIDLeast=LONG(-6817217859154290623), Health=SHORT(9), Air=SHORT(300), OnGround=BYTE(1), Dimension=INT(0), Rotation=LIST( FLOAT(-3551.1572), FLOAT(0.0)), CreatureInfusion=COMPOUND( PlayerInfusions=INT-ARRAY( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), InfusionCosts=COMPOUND( Aspects=LIST( )), tumorWarpTemp=INT(0), Infusions=INT-ARRAY( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), tumorWarp=INT(0), sitting=BYTE(0)), UUIDMost=LONG(1482314938347242401), Equipment=LIST( COMPOUND( ), COMPOUND( ), COMPOUND( ), COMPOUND( ), COMPOUND( )), CustomName=STRING(''), Pos=LIST( DOUBLE(-866.0243300245936), DOUBLE(63.0), DOUBLE(1001.028515625055)), Fire=SHORT(-1), CanPickUpLoot=BYTE(0), HurtTime=SHORT(0), AttackTime=SHORT(0), CustomNameVisible=BYTE(0))";
+		test.add( FCompound.create( "ForgeData", new ANbt[] { //
+			FCompound.create( "sAI", new ANbt[] { //
+				FLong.createByte( "AvoidExplosions", 1), //
+				FLong.createByte( "DefendVillage", 0), //
+				FLong.createByte( "Griefing", 0), //
+				new FCompound( "uAI"), //
+				FLong.createByte( "Rider", 0), //
+				FLong.createInt( "HungerOverhaulCheck", 6)
+			})
+		}));
+//	FList lst = FList.create( "Attributes", new ANbt[] { FCompound.create( "", FDouble.createDouble( "Base", 10.0), FString.create( "Name", "'generic.maxHealth'")), //
+//		FCompound.create( "", FDouble.createDouble( "Base", 0.0), FString.create( "Name", "'generic.knockbackResistance'")), //
+//		FCompound.create( "", FDouble.createDouble( "Base", 0.20000000298023224), FString.create( "Name", "'generic.movementSpeed'")), //
+//		FCompound.create( "", FDouble.createDouble( "Base", 16.0), FList.create( "Modifiers", new ANbt[] { //
+//			FCompound.create( "", FLong.createLong( "UUIDMost", 1593451547207684033L), FLong.createLong( "UUIDLeast", -7078328387847374506L), FDouble.createDouble( "Amount", -0.04186616479037544), FLong.createInt( "Operation", 1), FString.create( "Name", "'Random spawn bonus'")) //
+//		}))
+//	});fd.add(lst);
+//		String test = "       Name=STRING('generic.followRange'))), Invulnerable=BYTE(0), PortalCooldown=INT(0), AbsorptionAmount=FLOAT(0.0), FallDistance=FLOAT(0.0), InLove=INT(0), DeathTime=SHORT(0), isSoul=BYTE(0), jarredCritterName=STRING('Cow'), DropChances=LIST( FLOAT(0.085), FLOAT(0.085), FLOAT(0.085), FLOAT(0.085), FLOAT(0.085)), PersistenceRequired=BYTE(0), id=STRING('Cow'), HealF=FLOAT(9.0), Age=INT(0), Motion=LIST( DOUBLE(0.0), DOUBLE(-0.0784000015258789), DOUBLE(0.0)), Leashed=BYTE(0), UUIDLeast=LONG(-6817217859154290623), Health=SHORT(9), Air=SHORT(300), OnGround=BYTE(1), Dimension=INT(0), Rotation=LIST( FLOAT(-3551.1572), FLOAT(0.0)), CreatureInfusion=COMPOUND( PlayerInfusions=INT-ARRAY( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), InfusionCosts=COMPOUND( Aspects=LIST( )), tumorWarpTemp=INT(0), Infusions=INT-ARRAY( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), tumorWarp=INT(0), sitting=BYTE(0)), UUIDMost=LONG(1482314938347242401), Equipment=LIST( COMPOUND( ), COMPOUND( ), COMPOUND( ), COMPOUND( ), COMPOUND( )), CustomName=STRING(''), Pos=LIST( DOUBLE(-866.0243300245936), DOUBLE(63.0), DOUBLE(1001.028515625055)), Fire=SHORT(-1), CanPickUpLoot=BYTE(0), HurtTime=SHORT(0), AttackTime=SHORT(0), CustomNameVisible=BYTE(0))";
 		byte[] exp = {
 			10, 0, 0, 10, 0, 9, 70, 111, 114, 103, 101, 68, 97, 116, 97, 10, 0, 3, 115, 65, 73, 1, 0, 15, 65, 118, 111, 105, 100, 69, 120, 112, 108, 111, 115, 105, 111, 110, 115, 1, 1, 0, 13, 68, 101, 102, 101, 110, 100, 86, 105, 108, 108, 97, 103, 101, 0, 1, 0, 8, 71, 114, 105, 101, 102, 105, 110, 103, 0, 10, 0, 3, 117, 65, 73, 0, 1, 0, 5, 82, 105, 100, 101, 114, 0, 0, 3, 0, 19, 72, 117, 110, 103, 101, 114, 79, 118, 101, 114, 104, 97, 117, 108, 67, 104, 101, 99, 107, 0, 0, 0, 6, 0, 9, 0, 10, 65, 116, 116, 114, 105, 98, 117, 116, 101, 115, 10, 0, 0, 0, 4, 6, 0, 4, 66, 97, 115, 101, 64, 36, 0, 0, 0, 0, 0, 0, 8, 0, 4, 78, 97, 109, 101, 0, 17, 103, 101, 110, 101, 114, 105, 99, 46, 109, 97, 120, 72, 101, 97, 108, 116, 104, 0, 6, 0, 4, 66, 97, 115, 101, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 4, 78, 97, 109, 101, 0, 27, 103, 101, 110, 101, 114, 105, 99, 46, 107, 110, 111, 99, 107, 98, 97, 99, 107, 82, 101, 115, 105, 115, 116, 97, 110, 99, 101, 0, 6, 0, 4, 66, 97, 115, 101, 63, -55, -103, -103, -96,
 			0, 0, 0, 8, 0, 4, 78, 97, 109, 101, 0, 21, 103, 101, 110, 101, 114, 105, 99, 46, 109, 111, 118, 101, 109, 101, 110, 116, 83, 112, 101, 101, 100, 0, 6, 0, 4, 66, 97, 115, 101, 64, 48, 0, 0, 0, 0, 0, 0, 9, 0, 9, 77, 111, 100, 105, 102, 105, 101, 114, 115, 10, 0, 0, 0, 1, 4, 0, 8, 85, 85, 73, 68, 77, 111, 115, 116, 22, 29, 19, -67, 94, 28, 79, -63, 4, 0, 9, 85, 85, 73, 68, 76, 101, 97, 115, 116, -99, -60, -71, -43, 118, -53, 57, 86, 6, 0, 6, 65, 109, 111, 117, 110, 116, -65, -91, 111, 123, 97, 42, -50, -44, 3, 0, 9, 79, 112, 101, 114, 97, 116, 105, 111, 110, 0, 0, 0, 1, 8, 0, 4, 78, 97, 109, 101, 0, 18, 82, 97, 110, 100, 111, 109, 32, 115, 112, 97, 119, 110, 32, 98, 111, 110, 117, 115, 0, 8, 0, 4, 78, 97, 109, 101, 0, 19, 103, 101, 110, 101, 114, 105, 99, 46, 102, 111, 108, 108, 111, 119, 82, 97, 110, 103, 101, 0, 1, 0, 12, 73, 110, 118, 117, 108, 110, 101, 114, 97, 98, 108, 101, 0, 3, 0, 14, 80, 111, 114, 116, 97, 108, 67, 111, 111, 108, 100, 111, 119, 110, 0, 0, 0, 0, 5, 0,
@@ -148,16 +133,14 @@ public class WriterTest1 {
 	@Test
 	public void testParse7() {
 		FCompound test = new FCompound( "");
-		FList lst = new FList( "ench", 10);
-		FCompound l1 = new FCompound( "");
-		l1.add( FLong.createShort( "lvl", 6));
-		l1.add( FLong.createShort( "id", 34));
-		lst.add( l1);
-		FCompound l2 = new FCompound( "");
-		l2.add( FLong.createShort( "lvl", 6));
-		l2.add( FLong.createShort( "id", 35));
-		lst.add( l2);
-		test.add( lst);
+		test.add( FList.create( "ench", new ANbt[] { //
+			FCompound.create( "", new ANbt[] { //
+				FLong.createShort( "lvl", 6), FLong.createShort( "id", 34)
+			}), //
+			FCompound.create( "", new ANbt[] { //
+				FLong.createShort( "lvl", 6), FLong.createShort( "id", 35)
+			})
+		}));
 		byte[] exp = { 10, 0, 0, 9, 0, 4, 101, 110, 99, 104, 10, 0, 0, 0, 2, 2, 0, 3, 108, 118, 108, 0, 6, 2, 0, 2, 105, 100, 0, 34, 0, 2, 0, 3, 108, 118, 108, 0, 6, 2, 0, 2, 105, 100, 0, 35, 0, 0
 		};
 		doTest( test, exp);
@@ -170,14 +153,7 @@ public class WriterTest1 {
 		test.add( FLong.createByte( "Facing", 3));
 		test.add( FLong.createInt( "Energy", 2000000));
 		test.add( FLong.createInt( "Recv", 800));
-		FByteArray arr = new FByteArray( "SideCache");
-		arr.add( 1);
-		arr.add( 2);
-		arr.add( 2);
-		arr.add( 2);
-		arr.add( 2);
-		arr.add( 2);
-		test.add( arr);
+		test.add( FByteArray.create( "SideCache", 1, 2, 2, 2, 2, 2));
 		test.add( FLong.createByte( "RSControl", 1));
 		byte[] exp = { 10, 0, 0, 3, 0, 4, 83, 101, 110, 100, 0, 0, 3, 32, 1, 0, 6, 70, 97, 99, 105, 110, 103, 3, 3, 0, 6, 69, 110, 101, 114, 103, 121, 0, 30, -124, -128, 3, 0, 4, 82, 101, 99, 118, 0, 0, 3, 32, 7, 0, 9, 83, 105, 100, 101, 67, 97, 99, 104, 101, 0, 0, 0, 6, 1, 2, 2, 2, 2, 2, 1, 0, 9, 82, 83, 67, 111, 110, 116, 114, 111, 108, 1, 0
 		};

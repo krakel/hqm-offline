@@ -8,6 +8,15 @@ final class FList extends AList {
 		mElement = tag;
 	}
 
+	static FList create( String name, ANbt[] values) {
+		int tag = values.length > 0 ? values[0].getTag() : 10;
+		FList res = new FList( name, tag);
+		for (ANbt nbt : values) {
+			res.add( nbt);
+		}
+		return res;
+	}
+
 	public int getElement() {
 		return mElement;
 	}

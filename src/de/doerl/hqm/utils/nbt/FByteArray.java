@@ -10,6 +10,14 @@ final class FByteArray extends ANbt implements Iterable<Byte> {
 		super( name, 7);
 	}
 
+	static FByteArray create( String name, int... values) {
+		FByteArray res = new FByteArray( name);
+		for (int b : values) {
+			res.add( b & 0xFF);
+		}
+		return res;
+	}
+
 	void add( int value) {
 		mList.add( (byte) value);
 	}

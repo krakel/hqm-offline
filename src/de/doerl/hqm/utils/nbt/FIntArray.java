@@ -10,6 +10,14 @@ final class FIntArray extends ANbt implements Iterable<Integer> {
 		super( name, 11);
 	}
 
+	static FIntArray create( String name, int... values) {
+		FIntArray res = new FIntArray( name);
+		for (int i : values) {
+			res.add( i);
+		}
+		return res;
+	}
+
 	void add( int value) {
 		mList.add( value);
 	}
