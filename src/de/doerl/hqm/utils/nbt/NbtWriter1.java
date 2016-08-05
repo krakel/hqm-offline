@@ -167,10 +167,10 @@ public class NbtWriter1 {
 
 	private void writeString( String val) throws IOException {
 		byte[] bb = val.getBytes();
-		int len = bb.length - 2;
+		int len = bb.length;
 		if (len >= 0) {
 			writeShort( len);
-			mOut.write( bb, 1, len);
+			mOut.write( bb, 0, len);
 		}
 		else {
 			throw new IOException( "wrong string");

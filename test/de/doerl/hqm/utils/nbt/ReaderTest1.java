@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class Reader1Test {
+public class ReaderTest1 {
 	private static void doTest( byte[] test, String exp) {
 		FCompound act = NbtReader1.parseAsCompound( test);
 		assertEquals( exp, act.toString());

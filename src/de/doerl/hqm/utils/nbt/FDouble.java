@@ -8,8 +8,16 @@ final class FDouble extends ANbt {
 		mValue = value;
 	}
 
+	static FDouble createDouble( double value) {
+		return new FDouble( "", value, 6);
+	}
+
 	static FDouble createDouble( String name, double value) {
 		return new FDouble( name, value, 6);
+	}
+
+	static FDouble createFloat( float value) {
+		return new FDouble( "", value, 5);
 	}
 
 	static FDouble createFloat( String name, float value) {

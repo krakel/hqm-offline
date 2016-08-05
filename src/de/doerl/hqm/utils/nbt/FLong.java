@@ -8,16 +8,32 @@ final class FLong extends ANbt {
 		mValue = value;
 	}
 
+	static FLong createByte( int value) {
+		return new FLong( "", value, 1);
+	}
+
 	static FLong createByte( String name, int value) {
 		return new FLong( name, value, 1);
+	}
+
+	static FLong createInt( int value) {
+		return new FLong( "", value, 3);
 	}
 
 	static FLong createInt( String name, int value) {
 		return new FLong( name, value, 3);
 	}
 
+	static FLong createLong( long value) {
+		return new FLong( "", value, 4);
+	}
+
 	static FLong createLong( String name, long value) {
 		return new FLong( name, value, 4);
+	}
+
+	static FLong createShort( int value) {
+		return new FLong( "", value, 2);
 	}
 
 	static FLong createShort( String name, int value) {
