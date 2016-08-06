@@ -21,7 +21,8 @@ import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.nbt.NbtReader1;
+import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.NbtReader;
 
 @SuppressWarnings( "unused")
 public class Selector {
@@ -135,7 +136,7 @@ public class Selector {
 		try {
 			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_NBT);
 			src = new FileInputStream( csvFile);
-			ArrayList<String> res = NbtReader1.readAsList( src);
+			FCompound res = NbtReader.readAsCompound( src);
 			res = null;
 		}
 		catch (IOException ex) {

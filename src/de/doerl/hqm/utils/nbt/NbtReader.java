@@ -1,6 +1,5 @@
 package de.doerl.hqm.utils.nbt;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,8 +48,8 @@ public class NbtReader {
 		return out.toByteArray();
 	}
 
-	public static FCompound readAsCompound( byte[] arr) {
-		byte[] src = read( new ByteArrayInputStream( arr));
+	public static FCompound readAsCompound( InputStream in) {
+		byte[] src = read( in);
 		return parseAsCompound( src);
 	}
 

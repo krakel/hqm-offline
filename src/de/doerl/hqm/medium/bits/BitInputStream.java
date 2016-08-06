@@ -1,5 +1,6 @@
 package de.doerl.hqm.medium.bits;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -151,7 +152,8 @@ class BitInputStream {
 		for (int i = 0; i < bytes.length; i++) {
 			bytes[i] = (byte) readByte();
 		}
-		return NbtReader.readAsCompound( bytes);
+		ByteArrayInputStream in = new ByteArrayInputStream( bytes);
+		return NbtReader.readAsCompound( in);
 	}
 
 	public String readString( DataBitHelper bits) {
