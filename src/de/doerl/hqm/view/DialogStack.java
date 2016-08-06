@@ -1,6 +1,5 @@
 package de.doerl.hqm.view;
 
-import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Window;
 
@@ -17,6 +16,7 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ItemNEI;
+import de.doerl.hqm.utils.nbt.NbtParser;
 import de.doerl.hqm.view.ADialogList.ICreator;
 import de.doerl.hqm.view.leafs.LeafSearch;
 import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
@@ -29,7 +29,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 	private JTextField mName = new TextFieldAscii();
 	private JTextField mCount = new TextFieldInteger();
 	private JTextField mDmg = new TextFieldInteger();
-	private JTextArea mNBT = new TextAreaAscii();
+	private JTextArea mArea = new TextAreaAscii();
 	private JComboBox<ItemPrecision> mPrec = new JComboBox<>( ItemPrecision.values());
 	private LeafSearch mSearch = new LeafSearch();
 
@@ -42,6 +42,8 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		mItem.setOpaque( false);
 		Insets in = mItem.getInsets();
 		mItem.setBorder( BorderFactory.createEmptyBorder( in.top, 0, in.bottom, in.right));
+		mArea.setLineWrap( true);
+		mArea.setWrapStyleWord( true);
 		createMain();
 		mSearch.addSearchListener( new ISearchListener() {
 			@Override
@@ -54,12 +56,13 @@ class DialogStack extends ADialogEdit<StackEntry> {
 					mCount.setText( String.valueOf( 1));
 					mItem.setSelected( true);
 					mPrec.setSelectedItem( ItemPrecision.PRECISE);
-					mNBT.setText( "");
+					mArea.setText( "");
 				}
 			}
 		});
-		mDisplay.setPreferredSize( new Dimension( 200, mDisplay.getPreferredSize().height));
-		mName.setPreferredSize( new Dimension( 200, mName.getPreferredSize().height));
+//		mSearch.setMinimumSize( mSearch.getPreferredSize());
+//		mDisplay.setPreferredSize( new Dimension( 200, mDisplay.getPreferredSize().height));
+//		mName.setPreferredSize( new Dimension( 200, mName.getPreferredSize().height));
 		mItem.setEnabled( require);
 		mPrec.setEnabled( require);
 	}
@@ -83,7 +86,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		mCount.setText( "1");
 		mItem.setSelected( true);
 		mPrec.setSelectedItem( ItemPrecision.PRECISE);
-		mNBT.setText( "");
+		mArea.setText( "");
 		return showEditor();
 	}
 
@@ -95,7 +98,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		mCount.setText( String.valueOf( entry.mCount));
 		mItem.setSelected( entry.mItem);
 		mPrec.setSelectedItem( entry.getPrecision());
-		mNBT.setText( entry.mNbt);
+		mArea.setText( entry.mNbt != null ? entry.mNbt.toString() : null);
 		return showEditor();
 	}
 
@@ -109,7 +112,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Damage", mDmg));
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Size", mCount));
 		vert.addGroup( addLine( layout, leftGrp, rightGrp, "Precition", mPrec));
-		vert.addGroup( addLine( layout, leftGrp, rightGrp, "NBT", mNBT));
+		vert.addGroup( addLine( layout, leftGrp, rightGrp, "NBT", mArea));
 		hori.addGroup( leftGrp);
 		hori.addGroup( rightGrp);
 		return vert;
@@ -126,8 +129,8 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		Group hori = layout.createSequentialGroup();
 		Group vert = layout.createParallelGroup();
 		vert.addGroup( createLeft( layout, hori));
-		vert.addComponent( mSearch);
-		hori.addComponent( mSearch);
+		vert.addComponent( mSearch, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
+		hori.addComponent( mSearch, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
 		layout.setHorizontalGroup( hori);
 		layout.setVerticalGroup( vert);
 		mMain.add( box);
@@ -137,13 +140,13 @@ class DialogStack extends ADialogEdit<StackEntry> {
 	private StackEntry getResult() {
 		int size = Utils.parseInteger( mCount.getText(), 1);
 		ItemPrecision prec = ItemPrecision.get( mPrec.getSelectedIndex());
-		return new StackEntry( mItem.isSelected(), mName.getText(), Utils.parseInteger( mDmg.getText(), 0), mNBT.getText(), size, prec);
+		return new StackEntry( mItem.isSelected(), mName.getText(), Utils.parseInteger( mDmg.getText(), 0), mArea.getText(), size, prec);
 	}
 
 	private FItemStack getResultStk() {
 		String name = mName.getText();
 		if (Utils.validString( name)) {
-			return new FItemStack( mNBT.getText(), name, Utils.parseInteger( mDmg.getText(), 0), 1);
+			return new FItemStack( NbtParser.parse( mArea.getText()), name, Utils.parseInteger( mDmg.getText(), 0), 1);
 		}
 		else {
 			return null;
@@ -168,7 +171,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			mCount.setEnabled( false);
 			mItem.setSelected( true);
 			mPrec.setSelectedItem( ItemPrecision.PRECISE);
-			mNBT.setText( stk.getNBT());
+			mArea.setText( stk.getNbtStr());
 		}
 		else {
 			mDisplay.setText( "");

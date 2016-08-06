@@ -19,6 +19,7 @@ import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.RefreshEvent;
 import de.doerl.hqm.utils.Security;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.FCompound;
 
 abstract class AReport extends ABundleAction implements IRefreshListener, Runnable {
 	private static final long serialVersionUID = -3001796596162739183L;
@@ -84,10 +85,10 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 
 	protected static final class Item {
 		public String mName;
-		public String mNBT;
+		public FCompound mNBT;
 		public int mDmg;
 
-		public Item( String name, int dmg, String nbt) {
+		public Item( String name, int dmg, FCompound nbt) {
 			mName = name;
 			mDmg = dmg;
 			mNBT = nbt;
@@ -152,7 +153,7 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 				if (o1.mNBT == null || o1.mNBT.equals( o2.mNBT)) {
 					return 0;
 				}
-				return o1.mNBT.compareTo( o2.mNBT);
+				return o1.mNBT.toString().compareTo( o2.mNBT.toString());
 			}
 			return o1.mName.compareTo( o2.mName);
 		}

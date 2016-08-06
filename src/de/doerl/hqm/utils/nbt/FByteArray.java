@@ -3,14 +3,16 @@ package de.doerl.hqm.utils.nbt;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-final class FByteArray extends ANbt implements Iterable<Byte> {
+import de.doerl.hqm.utils.Utils;
+
+public final class FByteArray extends ANbt implements Iterable<Byte> {
 	private ArrayList<Byte> mList = new ArrayList<>();
 
 	FByteArray( String name) {
 		super( name, 7);
 	}
 
-	static FByteArray create( String name, int... values) {
+	public static FByteArray create( String name, int... values) {
 		FByteArray res = new FByteArray( name);
 		for (int b : values) {
 			res.add( b & 0xFF);
@@ -20,6 +22,29 @@ final class FByteArray extends ANbt implements Iterable<Byte> {
 
 	void add( int value) {
 		mList.add( (byte) value);
+	}
+
+	@Override
+	public boolean equals( Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (this == obj) {
+			return true;
+		}
+		try {
+			FByteArray other = (FByteArray) obj;
+			if (Utils.different( getName(), other.getName())) {
+				return false;
+			}
+			if (Utils.different( mList, other.mList)) {
+				return false;
+			}
+		}
+		catch (ClassCastException ex) {
+			return false;
+		}
+		return true;
 	}
 
 	public byte get( int idx) {

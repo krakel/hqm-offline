@@ -1,7 +1,3 @@
-/*******************************************************************************
- * (c) Copyright IBM Corporation 2016. All Rights Reserved.
- *
- *******************************************************************************/
 package de.doerl.hqm.utils.mods;
 
 import java.io.BufferedReader;
@@ -25,7 +21,7 @@ import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.nbt.NbtReader;
+import de.doerl.hqm.utils.nbt.NbtReader1;
 
 @SuppressWarnings( "unused")
 public class Selector {
@@ -139,7 +135,7 @@ public class Selector {
 		try {
 			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_NBT);
 			src = new FileInputStream( csvFile);
-			ArrayList<String> res = NbtReader.readAsList( src);
+			ArrayList<String> res = NbtReader1.readAsList( src);
 			res = null;
 		}
 		catch (IOException ex) {

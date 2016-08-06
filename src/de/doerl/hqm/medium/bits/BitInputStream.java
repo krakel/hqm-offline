@@ -8,6 +8,7 @@ import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
+import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.NbtReader;
 
 class BitInputStream {
@@ -145,12 +146,12 @@ class BitInputStream {
 		}
 	}
 
-	private String readNBT() {
+	private FCompound readNBT() {
 		byte bytes[] = new byte[readData( DataBitHelper.NBT_LENGTH)];
 		for (int i = 0; i < bytes.length; i++) {
 			bytes[i] = (byte) readByte();
 		}
-		return NbtReader.readAsString( bytes);
+		return NbtReader.readAsCompound( bytes);
 	}
 
 	public String readString( DataBitHelper bits) {

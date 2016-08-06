@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.ItemNEI;
+import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.FLong;
+import de.doerl.hqm.utils.nbt.NbtParser;
 
 public final class FItemStack extends AStack {
 	private static final Logger LOGGER = Logger.getLogger( FItemStack.class.getName());
@@ -18,16 +21,7 @@ public final class FItemStack extends AStack {
 	private int mSize;
 	private int mDmg;
 
-	public FItemStack( int id, int dmg, int size) {
-		super( null);
-		mSize = size;
-		mDmg = dmg;
-		String old = OLD_ITEM + String.valueOf( id);
-		mKey = old + "%" + mDmg;
-		mItem = ImageLoader.get( mKey);
-	}
-
-	public FItemStack( String nbt) {
+	public FItemStack( FCompound nbt) {
 		super( nbt);
 		mSize = getValueInt( "Count", 1);
 		mDmg = getValueInt( "Damage", 0);
@@ -36,15 +30,7 @@ public final class FItemStack extends AStack {
 		mItem = ImageLoader.get( mKey);
 	}
 
-	public FItemStack( String name, int dmg, int size) {
-		super( null);
-		mSize = size;
-		mDmg = dmg;
-		mKey = name + "%" + mDmg;
-		mItem = ImageLoader.get( mKey);
-	}
-
-	public FItemStack( String nbt, int id, int dmg, int size) {
+	public FItemStack( FCompound nbt, int id, int dmg, int size) {
 		super( nbt);
 		mSize = size;
 		mDmg = dmg;
@@ -53,7 +39,7 @@ public final class FItemStack extends AStack {
 		mItem = ImageLoader.get( mKey);
 	}
 
-	private FItemStack( String nbt, Matcher mm) {
+	private FItemStack( FCompound nbt, Matcher mm) {
 		super( nbt);
 		mm.find();
 		String name = mm.group( 1);
@@ -63,7 +49,7 @@ public final class FItemStack extends AStack {
 		mItem = ImageLoader.get( mKey);
 	}
 
-	public FItemStack( String nbt, String name, int dmg, int size) {
+	public FItemStack( FCompound nbt, String name, int dmg, int size) {
 		super( nbt);
 		if (name != null) {
 			mSize = size;
@@ -76,6 +62,23 @@ public final class FItemStack extends AStack {
 			String old = OLD_ITEM + getValueID( "id", "0");
 			mKey = old + "%" + mDmg;
 		}
+		mItem = ImageLoader.get( mKey);
+	}
+
+	public FItemStack( int id, int dmg, int size) {
+		super( null);
+		mSize = size;
+		mDmg = dmg;
+		String old = OLD_ITEM + String.valueOf( id);
+		mKey = old + "%" + mDmg;
+		mItem = ImageLoader.get( mKey);
+	}
+
+	public FItemStack( String name, int dmg, int size) {
+		super( null);
+		mSize = size;
+		mDmg = dmg;
+		mKey = name + "%" + mDmg;
 		mItem = ImageLoader.get( mKey);
 	}
 
@@ -97,7 +100,7 @@ public final class FItemStack extends AStack {
 	public static FItemStack parse( String sequence, String nbt) {
 		if (sequence != null) {
 			try {
-				return new FItemStack( nbt, PATTERN.matcher( sequence));
+				return new FItemStack( NbtParser.parse( nbt), PATTERN.matcher( sequence));
 			}
 			catch (RuntimeException ex) {
 				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", nbt);
@@ -105,7 +108,7 @@ public final class FItemStack extends AStack {
 			}
 		}
 		else if (nbt != null) {
-			return new FItemStack( nbt);
+			return new FItemStack( NbtParser.parse( nbt));
 		}
 		else {
 			return null;
@@ -142,23 +145,23 @@ public final class FItemStack extends AStack {
 	}
 
 	@Override
-	public String getNBT() {
+	public FCompound getNBT() {
 		if (mNBT != null) {
 			return mNBT;
 		}
 		else if (mKey.startsWith( OLD_ITEM)) {
 			int id = Utils.parseInteger( mItem.mName, 0);
-			return String.format( "=COMPOUND( id=SHORT(%d), Damage=SHORT(%d), Count=BYTE(%d) )", id, mDmg, mSize);
+			return FCompound.create( FLong.createShort( "id", id), FLong.createShort( "Damage", mDmg), FLong.createByte( "Count", mSize));
 		}
 		else if (mItem.mName != null) {
 			return null;
 		}
 		else {
-			return "=COMPOUND(  )";
+			return FCompound.create();
 		}
 	}
 
-	public void setNBT( String value) {
+	public void setNBT( FCompound value) {
 		mNBT = value;
 	}
 

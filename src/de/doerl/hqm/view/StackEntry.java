@@ -3,6 +3,8 @@ package de.doerl.hqm.view;
 import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.NbtParser;
 
 class StackEntry {
 	public boolean mItem;
@@ -10,7 +12,7 @@ class StackEntry {
 	private String mName;
 	private String mDisplay;
 	public int mDmg;
-	public String mNbt;
+	public FCompound mNbt;
 	public int mCount;
 	private ItemPrecision mPrecision;
 
@@ -35,12 +37,12 @@ class StackEntry {
 		setPrecision( precition);
 	}
 
-	public StackEntry( boolean item, String name, int dmg, String nbt, int count, ItemPrecision precition) {
+	public StackEntry( boolean item, String name, int dmg, String area, int count, ItemPrecision precition) {
 		mItem = item;
 		setName( name);
 		mDisplay = name;
 		mDmg = dmg;
-		mNbt = Utils.validString( nbt) ? nbt : null;
+		mNbt = Utils.validString( area) ? NbtParser.parse( area) : null;
 		mCount = count;
 		setPrecision( precition);
 		updateKey();

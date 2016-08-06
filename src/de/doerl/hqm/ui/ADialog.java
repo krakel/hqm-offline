@@ -104,7 +104,7 @@ public abstract class ADialog extends JDialog {
 	protected Group addLine( GroupLayout layout, Group left, Group right, String descr, JComponent comp) {
 		JLabel lbl = new JLabel( descr);
 		left.addComponent( lbl);
-		right.addComponent( comp);
+		right.addComponent( comp, 400, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE);
 		return layout.createParallelGroup( Alignment.BASELINE).addComponent( lbl).addComponent( comp);
 	}
 

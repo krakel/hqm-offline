@@ -6,6 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.FLong;
+import de.doerl.hqm.utils.nbt.FString;
+import de.doerl.hqm.utils.nbt.NbtParser;
 
 public final class FFluidStack extends AStack {
 	private static final Logger LOGGER = Logger.getLogger( FFluidStack.class.getName());
@@ -16,15 +20,7 @@ public final class FFluidStack extends AStack {
 	private String mName;
 	private int mSize;
 
-	private FFluidStack( Matcher mm) {
-		super( null);
-		mm.find();
-		mName = mm.group( 1);
-		mSize = Utils.parseInteger( mm.group( 2));
-		mKey = mName + "%0";
-	}
-
-	public FFluidStack( String nbt) {
+	public FFluidStack( FCompound nbt) {
 		super( nbt);
 		mName = getValueStr( "FluidName", null);
 		mSize = getValueInt( "Amount", 1);
@@ -37,6 +33,14 @@ public final class FFluidStack extends AStack {
 		mKey = mName + "%0";
 	}
 
+	private FFluidStack( Matcher mm) {
+		super( null);
+		mm.find();
+		mName = mm.group( 1);
+		mSize = Utils.parseInteger( mm.group( 2));
+		mKey = mName + "%0";
+	}
+
 	public FFluidStack( String name, int size) {
 		super( createFluidNBT( name, size));
 		mName = FLUID_MOD + name;
@@ -44,24 +48,24 @@ public final class FFluidStack extends AStack {
 		mKey = mName + "%0";
 	}
 
-	private static String createFluidNBT( String name, int size) {
+	private static FCompound createFluidNBT( String name, int size) {
 		int pos = name.indexOf( ':') + 1;
-		return String.format( "=COMPOUND( Amount=INT(%d), FluidName=STRING('%s') )", size, name.substring( pos));
+		return FCompound.create( FLong.createInt( "Amount", size), FString.create( "FluidName", name.substring( pos)));
 	}
 
-	public static FFluidStack parse( String nbt) {
-		if (nbt == null) {
+	public static FFluidStack parse( String src) {
+		if (src == null) {
 			return null;
 		}
-		else if (nbt.startsWith( "=COMPOUND(")) {
-			return new FFluidStack( nbt);
+		else if (src.startsWith( "=COMPOUND(")) {
+			return new FFluidStack( NbtParser.parse( src));
 		}
 		else {
 			try {
-				return new FFluidStack( PATTERN.matcher( nbt));
+				return new FFluidStack( PATTERN.matcher( src));
 			}
 			catch (RuntimeException ex) {
-				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", nbt);
+				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", src);
 				return new FFluidStack( "item:unknown", 0);
 			}
 		}
@@ -93,17 +97,17 @@ public final class FFluidStack extends AStack {
 	}
 
 	@Override
-	public String getNBT() {
+	public FCompound getNBT() {
 		if (mNBT != null) {
 			return mNBT;
 		}
 		else if (mKey.startsWith( OLD_FLUID)) {
 			int id = Utils.parseInteger( mName, 0);
-			return String.format( "=COMPOUND( id=SHORT(%d), Amount=INT(%d) )", id, mSize);
+			return FCompound.create( FLong.createShort( "id", id), FLong.createInt( "Amount", mSize));
 		}
 		else {
 			int pos = mName.indexOf( ':') + 1;
-			return String.format( "=COMPOUND( Amount=INT(%d), FluidName=STRING('&s') )", mSize, mName.substring( pos));
+			return FCompound.create( FLong.createInt( "Amount", mSize), FString.create( "FluidName", mName.substring( pos)));
 		}
 	}
 

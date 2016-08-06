@@ -130,7 +130,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	public Object forItemRequirement( FItemRequirement item, Object p) {
 		mDst.beginObject();
 		mDst.print( ITEM_OBJECT, item.getStack());
-		String nbt = item.getStack().getNBT();
+		String nbt = item.getStack().getNbtStr();
 		if (Utils.validString( nbt)) {
 			mDst.print( ITEM_NBT, nbt);
 		}
@@ -398,7 +398,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( key, null);
 		}
 		else {
-			String nbt = icon.getNBT();
+			String nbt = icon.getNbtStr();
 			if (Utils.validString( nbt)) {
 				mDst.beginObject( key);
 				mDst.print( ITEM_OBJECT, icon);
@@ -467,11 +467,11 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		if (arr != null && !arr.isEmpty()) {
 			mDst.beginArray( key);
 			for (AStack stk : arr) {
-				String nbt = stk.getNBT();
+				String nbt = stk.getNbtStr();
 				if (Utils.validString( nbt)) {
 					mDst.beginObject();
 					mDst.print( ITEM_OBJECT, stk);
-					mDst.printIf( ITEM_NBT, nbt);
+					mDst.printIf( ITEM_NBT, nbt.toString());
 					mDst.endObject();
 				}
 				else {

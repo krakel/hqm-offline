@@ -1,7 +1,7 @@
 package de.doerl.hqm.medium.json;
 
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -456,7 +456,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						param.add( FItemStack.parse( str));
 					}
 					else {
-						param.add( new FItemStack( "unknown"));
+						param.add( new FItemStack( null));
 					}
 				}
 			}

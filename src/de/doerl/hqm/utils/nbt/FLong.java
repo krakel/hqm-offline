@@ -1,6 +1,8 @@
 package de.doerl.hqm.utils.nbt;
 
-final class FLong extends ANbt {
+import de.doerl.hqm.utils.Utils;
+
+public final class FLong extends ANbt {
 	private long mValue;
 
 	FLong( String name, long value, int tag) {
@@ -8,52 +10,115 @@ final class FLong extends ANbt {
 		mValue = value;
 	}
 
-	static FLong createByte( int value) {
+	public static FLong createByte( int value) {
 		return new FLong( "", value, 1);
 	}
 
-	static FLong createByte( String name, int value) {
+	public static FLong createByte( String name, int value) {
 		return new FLong( name, value, 1);
 	}
 
-	static FLong createInt( int value) {
+	public static FLong createInt( int value) {
 		return new FLong( "", value, 3);
 	}
 
-	static FLong createInt( String name, int value) {
+	public static FLong createInt( String name, int value) {
 		return new FLong( name, value, 3);
 	}
 
-	static FLong createLong( long value) {
+	public static FLong createLong( long value) {
 		return new FLong( "", value, 4);
 	}
 
-	static FLong createLong( String name, long value) {
+	public static FLong createLong( String name, long value) {
 		return new FLong( name, value, 4);
 	}
 
-	static FLong createShort( int value) {
+	public static FLong createShort( int value) {
 		return new FLong( "", value, 2);
 	}
 
-	static FLong createShort( String name, int value) {
+	public static FLong createShort( String name, int value) {
 		return new FLong( name, value, 2);
 	}
 
-	public byte toByte() {
+	public static byte toByte( ANbt nbt, byte def) {
+		try {
+			FLong obj = (FLong) nbt;
+			return obj.asByte();
+		}
+		catch (Exception ex) {
+			return def;
+		}
+	}
+
+	public static int toInt( ANbt nbt, int def) {
+		try {
+			FLong obj = (FLong) nbt;
+			return obj.asInt();
+		}
+		catch (Exception ex) {
+			return def;
+		}
+	}
+
+	public static long toLong( ANbt nbt, long def) {
+		try {
+			FLong obj = (FLong) nbt;
+			return obj.asLong();
+		}
+		catch (Exception ex) {
+			return def;
+		}
+	}
+
+	public static short toShort( ANbt nbt, short def) {
+		try {
+			FLong obj = (FLong) nbt;
+			return obj.asShort();
+		}
+		catch (Exception ex) {
+			return def;
+		}
+	}
+
+	public byte asByte() {
 		return (byte) mValue;
 	}
 
-	public int toInt() {
+	public int asInt() {
 		return (int) mValue;
 	}
 
-	public long toLong() {
+	public long asLong() {
 		return mValue;
 	}
 
-	public short toShort() {
+	public short asShort() {
 		return (short) mValue;
+	}
+
+	@Override
+	public boolean equals( Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (this == obj) {
+			return true;
+		}
+		try {
+			FLong other = (FLong) obj;
+			if (Utils.different( getName(), other.getName())) {
+				return false;
+			}
+			if (mValue != other.mValue) {
+				return false;
+			}
+		}
+		catch (ClassCastException ex) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

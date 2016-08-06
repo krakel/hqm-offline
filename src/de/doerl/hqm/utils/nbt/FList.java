@@ -1,24 +1,45 @@
 package de.doerl.hqm.utils.nbt;
 
-final class FList extends AList {
-	private int mElement;
+import de.doerl.hqm.utils.Utils;
 
-	FList( String name, int tag) {
+public final class FList extends AList {
+	FList( String name) {
 		super( name, 9);
-		mElement = tag;
 	}
 
-	static FList create( String name, ANbt... values) {
-		int tag = values.length > 0 ? values[0].getTag() : 0;
-		FList res = new FList( name, tag);
+	public static FList create( String name, ANbt... values) {
+		FList res = new FList( name);
 		for (ANbt nbt : values) {
 			res.add( nbt);
 		}
 		return res;
 	}
 
+	@Override
+	public boolean equals( Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (this == obj) {
+			return true;
+		}
+		try {
+			FList other = (FList) obj;
+			if (Utils.different( getName(), other.getName())) {
+				return false;
+			}
+			if (Utils.different( mList, other.mList)) {
+				return false;
+			}
+		}
+		catch (ClassCastException ex) {
+			return false;
+		}
+		return true;
+	}
+
 	public int getElement() {
-		return mElement;
+		return mList.size() > 0 ? mList.get( 0).getTag() : 0;
 	}
 
 	@Override

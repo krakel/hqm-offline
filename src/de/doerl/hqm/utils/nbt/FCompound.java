@@ -2,16 +2,16 @@ package de.doerl.hqm.utils.nbt;
 
 import de.doerl.hqm.utils.Utils;
 
-final class FCompound extends AList {
+public final class FCompound extends AList {
 	FCompound( String name) {
 		super( name, 10);
 	}
 
-	static FCompound create() {
+	public static FCompound create() {
 		return new FCompound( "");
 	}
 
-	static FCompound create( ANbt... values) {
+	public static FCompound create( ANbt... values) {
 		FCompound res = new FCompound( "");
 		for (ANbt nbt : values) {
 			res.add( nbt);
@@ -19,7 +19,7 @@ final class FCompound extends AList {
 		return res;
 	}
 
-	static FCompound create( String name, ANbt... values) {
+	public static FCompound create( String name, ANbt... values) {
 		FCompound res = new FCompound( name);
 		for (ANbt nbt : values) {
 			res.add( nbt);
@@ -27,7 +27,30 @@ final class FCompound extends AList {
 		return res;
 	}
 
-	ANbt get( String name) {
+	@Override
+	public boolean equals( Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (this == obj) {
+			return true;
+		}
+		try {
+			FCompound other = (FCompound) obj;
+			if (Utils.different( getName(), other.getName())) {
+				return false;
+			}
+			if (Utils.different( mList, other.mList)) {
+				return false;
+			}
+		}
+		catch (ClassCastException ex) {
+			return false;
+		}
+		return true;
+	}
+
+	public ANbt get( String name) {
 		for (ANbt nbt : mList) {
 			if (Utils.equals( name, nbt.getName())) {
 				return nbt;
