@@ -10,6 +10,7 @@ import de.doerl.hqm.utils.mods.ImageLoader;
 class ConfigDialog extends ADialog {
 	private static final long serialVersionUID = 724962696459638751L;
 	private ConfigPath mDumpDir = new ConfigPath( BaseDefaults.DUMP_DIR, "config.dump.dir");
+	private ConfigPath mPkgDir = new ConfigPath( BaseDefaults.PKG_DIR, "config.pkg.dir");
 	private ConfigVersion mVersion = new ConfigVersion();
 
 	private ConfigDialog( Window owner) {
@@ -31,10 +32,12 @@ class ConfigDialog extends ADialog {
 	@Override
 	protected void createMain() {
 		mDumpDir.initControl();
+		mPkgDir.initControl();
 		mVersion.initControl();
 		Box result = Box.createVerticalBox();
 		result.setAlignmentY( TOP_ALIGNMENT);
 		result.add( mDumpDir);
+		result.add( mPkgDir);
 		result.add( Box.createVerticalStrut( 10));
 		result.add( mVersion);
 		mMain.add( result);
@@ -42,6 +45,7 @@ class ConfigDialog extends ADialog {
 
 	private void saveResult() {
 		mDumpDir.applyChange();
+		mPkgDir.applyChange();
 		mVersion.applyChange();
 		ImageLoader.init();
 	}

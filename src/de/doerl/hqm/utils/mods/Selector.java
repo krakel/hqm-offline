@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import de.doerl.hqm.EditManager;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
@@ -34,7 +33,7 @@ public class Selector {
 		PreferenceManager.init();
 		LoggingManager.init();
 		LoggingManager.setOut( "console", System.out, "hqm.console.logLevel");
-		LOGGER = Logger.getLogger( EditManager.class.getName());
+		LOGGER = Logger.getLogger( Selector.class.getName());
 	}
 
 	private static void checkPack( File modDir) {

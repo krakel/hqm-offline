@@ -2,11 +2,15 @@ package de.doerl.hqm.utils.mods;
 
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.NbtParser;
 
 public class ItemNEI {
+	private static Logger LOGGER = Logger.getLogger( ItemNEI.class.getName());
 	private static final char[] NO_WINDOW_CHAR = "<>:\"/\\|?*".toCharArray();
 	private static final char[] WINDOW_CHAR = new char[256];
 	static {
@@ -35,12 +39,27 @@ public class ItemNEI {
 		int p2 = line.indexOf( ',', p1 + 1);
 		int p3 = line.indexOf( ',', p2 + 1);
 		int p4 = line.indexOf( ',', p3 + 1);
+		int p5 = line.indexOf( ',', p4 + 1);
 		mName = line.substring( 0, p1);
 		setPkg();
 		mID = line.substring( p1 + 1, p2);
 		mDamage = Utils.parseInteger( line.substring( p2 + 1, p3), 0);
 		mHasNBT = Utils.parseBoolean( line.substring( p3 + 1, p4), false);
-		mBase = toWindowsName( line.substring( p4 + 1));
+		if (p5 < 0) {
+			mBase = toWindowsName( line.substring( p4 + 1));
+		}
+		else {
+			mBase = toWindowsName( line.substring( p4 + 1, p5));
+			String nbt = line.substring( p5);
+			if (Utils.validString( nbt)) {
+				if (nbt.startsWith( "=COMPOUND(")) {
+					mNBT = NbtParser.parse( nbt);
+				}
+				else {
+					Utils.log( LOGGER, Level.WARNING, "wrong nbt part: {0}", line);
+				}
+			}
+		}
 		mDisplay = mBase;
 		mLower = mDisplay.toLowerCase();
 		mKey = mName + '%' + mDamage;
