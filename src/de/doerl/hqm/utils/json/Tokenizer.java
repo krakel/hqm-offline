@@ -10,7 +10,7 @@ class Tokenizer {
 	private static final char[] ARR_NULL = "null".toCharArray();
 	private static final char[] ARR_TRUE = "true".toCharArray();
 	private static final char[] ARR_FALSE = "false".toCharArray();
-	private StringBuffer mBuffer = new StringBuffer();
+	private StringBuilder mBuffer = new StringBuilder();
 	private int mBack = -1;
 	private Reader mIn;
 	private FValue mValue;

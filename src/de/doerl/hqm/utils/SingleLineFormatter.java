@@ -16,11 +16,10 @@ public class SingleLineFormatter extends Formatter {
 
 	@Override
 	public String format( LogRecord record) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		mDate.setTime( record.getMillis());
 		StringBuffer text = new StringBuffer();
-		FORMATTER.format( new Object[] {
-			mDate
+		FORMATTER.format( new Object[] { mDate
 		}, text, null);
 		sb.append( text.toString());
 		sb.append( ": ");

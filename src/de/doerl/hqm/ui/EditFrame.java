@@ -322,7 +322,7 @@ public class EditFrame extends JFrame implements IModelListener {
 
 	@Override
 	public void setTitle( String title) {
-		StringBuffer sb = new StringBuffer( BASE_TITLE);
+		StringBuilder sb = new StringBuilder( BASE_TITLE);
 		if (title != null) {
 			sb.append( " : ");
 			sb.append( title.substring( title.lastIndexOf( '/') + 1));

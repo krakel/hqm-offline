@@ -74,7 +74,7 @@ public final class Helper {
 	}
 
 	public static String join( Object[] arr, int start) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = start; i < arr.length; ++i) {
 			if (i > start) {
 				sb.append( ", ");
@@ -85,7 +85,7 @@ public final class Helper {
 	}
 
 	public static String repeat( int tabs, String text) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		while (tabs > 0) {
 			sb.append( text);
 			//                      sb.append("      ");
@@ -95,7 +95,7 @@ public final class Helper {
 	}
 
 	public static String toHex( byte value) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 4; i >= 0; i -= 4) {
 			sb.append( HEX[value >>> i & 0xF]);
 		}
@@ -107,7 +107,7 @@ public final class Helper {
 	}
 
 	public static String toHex( byte[] src, int off, int len) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		boolean cutOutput = CUT_OUTPUT && len > CUT_LENGTH;
 		if (cutOutput) {
 			len = CUT_LENGTH;
@@ -123,7 +123,7 @@ public final class Helper {
 	}
 
 	public static String toHex( int value) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 28; i >= 0; i -= 4) {
 			sb.append( HEX[value >>> i & 0xF]);
 		}
@@ -131,7 +131,7 @@ public final class Helper {
 	}
 
 	public static String toHex( long value) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 60; i >= 0; i -= 4) {
 			sb.append( HEX[(int) (value >>> i & 0xFL)]);
 		}
@@ -139,7 +139,7 @@ public final class Helper {
 	}
 
 	public static String toHex( short value) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 12; i >= 0; i -= 4) {
 			sb.append( HEX[value >>> i & 0xF]);
 		}
@@ -151,7 +151,7 @@ public final class Helper {
 	}
 
 	private static String toString( int[] src, int off, int len) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		boolean cutOutput = CUT_OUTPUT && len > CUT_LENGTH;
 		if (cutOutput) {
 			len = CUT_LENGTH;

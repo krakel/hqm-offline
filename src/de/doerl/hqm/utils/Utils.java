@@ -27,7 +27,7 @@ public class Utils {
 	public static String sSessionId;
 	private static boolean sTraceStack;
 
-	private static void appentThree( StringBuffer sb, int x) {
+	private static void appentThree( StringBuilder sb, int x) {
 		if (x < 100) {
 			sb.append( '0');
 		}
@@ -37,7 +37,7 @@ public class Utils {
 		sb.append( x);
 	}
 
-	private static void appentTwo( StringBuffer sb, int x) {
+	private static void appentTwo( StringBuilder sb, int x) {
 		if (x < 10) {
 			sb.append( '0');
 		}
@@ -225,7 +225,7 @@ public class Utils {
 	 * returns a more human readable date format with milliseconds
 	 */
 	public static String getMillisDateString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( new Date( System.currentTimeMillis()));
 		sb.append( cal.get( Calendar.YEAR));
@@ -272,7 +272,7 @@ public class Utils {
 	}
 
 	public static String hqmDateString( long date) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( new Date( date));
 		sb.append( cal.get( Calendar.YEAR));
@@ -488,7 +488,7 @@ public class Utils {
 
 	public static void printCaller( String self) {
 		StackTraceElement frame = inferCaller( self);
-		StringBuffer sb = new StringBuffer( "Call from ");
+		StringBuilder sb = new StringBuilder( "Call from ");
 		sb.append( frame.getClassName());
 		sb.append( '.');
 		sb.append( frame.getMethodName());
@@ -588,7 +588,7 @@ public class Utils {
 	}
 
 	private static String toString( Object[] arr) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (arr != null) {
 			sb.append( '[');
 			for (int i = 0; i < arr.length; ++i) {

@@ -1,15 +1,13 @@
 package de.doerl.hqm.utils;
 
 public final class ToString {
-	private static final char[] CLOSE_GROUPS = {
-		']', '}', '>', ')'
+	private static final char[] CLOSE_GROUPS = { ']', '}', '>', ')'
 	};
-	private static final char[] OPEN_GROUPS = {
-		'[', '{', '<', '('
+	private static final char[] OPEN_GROUPS = { '[', '{', '<', '('
 	};
 	private int mFirst;
 	private int mGroup;
-	private StringBuffer mSB = new StringBuffer();
+	private StringBuilder mSB = new StringBuilder();
 
 	public ToString( Object obj) {
 		addOpenGroup();
@@ -149,7 +147,7 @@ public final class ToString {
 		return this;
 	}
 
-	public synchronized ToString append( StringBuffer sb) {
+	public synchronized ToString append( StringBuilder sb) {
 		addFirst();
 		mSB.append( sb);
 		return this;
@@ -245,7 +243,7 @@ public final class ToString {
 		return this;
 	}
 
-	public synchronized ToString appendMsg( String msg, StringBuffer sb) {
+	public synchronized ToString appendMsg( String msg, StringBuilder sb) {
 		addFirst();
 		mSB.append( msg);
 		mSB.append( '=');

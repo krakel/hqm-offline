@@ -34,8 +34,7 @@ public class ResourceManager {
 			result = parseString( BUNDLE.getString( key));
 		}
 		catch (RuntimeException ex) {
-			result = new String[] {
-				"<" + key + ">"
+			result = new String[] { "<" + key + ">"
 			};
 		}
 		return result;
@@ -125,7 +124,7 @@ public class ResourceManager {
 	}
 
 	public static String getVersion( String bundle) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append( getBundleString( "build.version", bundle));
 		sb.append( '.');
 		sb.append( getBundleString( "build.number", bundle));

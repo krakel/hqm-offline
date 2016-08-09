@@ -34,7 +34,7 @@ public class BaseDefaults {
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
 		{ STACKTRC, Boolean.TRUE },
-		{ PKG_DIR,  "C:\\tools\\Minecraft\\mods" },
+		{ PKG_DIR,  "D:\\Games\\Minecraft\\hqm\\pkg" },
 		{ FILE_VERSION, FileVersion.last().toString() },
 		{ FILE_OPEN_DIR, System.getProperty( "user.home") },
 		{ LAST_OPEN, new String[0] },

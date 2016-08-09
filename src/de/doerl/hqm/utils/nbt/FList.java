@@ -45,12 +45,12 @@ public final class FList extends AList {
 	}
 
 	@Override
-	public void toString( StringBuffer sb) {
+	public void toString( StringBuilder sb) {
 		boolean comma = false;
-		sb.append( "LIST( ");
+		sb.append( "LIST(");
 		for (ANbt nbt : mList) {
 			if (comma) {
-				sb.append( ", ");
+				sb.append( ",");
 			}
 			nbt.toString( sb);
 			comma = true;

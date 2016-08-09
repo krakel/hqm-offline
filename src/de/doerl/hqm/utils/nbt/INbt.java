@@ -5,5 +5,5 @@ interface INbt {
 
 	int getTag();
 
-	void toString( StringBuffer sb);
+	void toString( StringBuilder sb);
 }

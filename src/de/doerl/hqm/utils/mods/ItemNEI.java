@@ -64,7 +64,7 @@ public class ItemNEI {
 			value = value.substring( 1, value.length() - 1);
 		}
 		value = value.replace( "\"\"", "_");
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0, max = value.length(); i < max; ++i) {
 			char ch = value.charAt( i);
 			sb.append( WINDOW_CHAR[ch]);
@@ -131,5 +131,18 @@ public class ItemNEI {
 		else {
 			mMod = "unknown";
 		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append( mName);
+		sb.append( ",");
+		sb.append( mID);
+		sb.append( ",");
+		sb.append( mDamage);
+		sb.append( ",");
+		sb.append( mBase);
+		return sb.toString();
 	}
 }

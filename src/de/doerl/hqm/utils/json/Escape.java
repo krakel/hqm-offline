@@ -5,7 +5,7 @@ class Escape {
 	}
 
 	static String escape( String s) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int len = s.length();
 		for (int i = 0; i < len; ++i) {
 			char c = s.charAt( i);
@@ -54,7 +54,7 @@ class Escape {
 	static String unescape( String s) {
 		boolean inEscape = false;
 		int inUnicode = 0;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int len = s.length();
 		for (int i = 0; i < len; ++i) {
 			char c = s.charAt( i);

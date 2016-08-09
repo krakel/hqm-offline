@@ -1,7 +1,7 @@
 package de.doerl.hqm.utils;
 
 public class Tabber {
-	private StringBuffer mBuffer = new StringBuffer();
+	private StringBuilder mBuffer = new StringBuilder();
 	private int mTabs;
 	private boolean mNL;
 	private boolean mComma;

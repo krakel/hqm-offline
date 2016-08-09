@@ -90,7 +90,7 @@ public class Selector {
 		ArrayList<ItemNEI> items = new ArrayList<>();
 		parseDumpFile( items);
 		parseNbtFile( items);
-//		writeFiles( lst);
+		writeFiles( items);
 	}
 
 	public static void main( String[] args) {
@@ -194,22 +194,27 @@ public class Selector {
 	private static void writeFiles( ArrayList<ItemNEI> items) {
 		Map<String, ArrayList<ItemNEI>> cache = new HashMap<>();
 		for (ItemNEI item : items) {
-			ArrayList<ItemNEI> arr = cache.get( item.getPkg());
-			if (arr == null) {
-				arr = new ArrayList<>();
-				cache.put( item.getPkg(), arr);
-			}
-			if (item.getPkg() == null) {
-				Utils.log( LOGGER, Level.WARNING, "missing package: {0}", item);
+			String pkg = item.getPkg();
+			if (pkg == null) {
+				Utils.log( LOGGER, Level.WARNING, "missing item: {0}", item);
 			}
 			else {
-				arr.add( item);
+				ArrayList<ItemNEI> arr = cache.get( pkg);
+				if (arr == null) {
+					arr = new ArrayList<>();
+					cache.put( pkg, arr);
+				}
+				if (pkg == null) {
+					Utils.log( LOGGER, Level.WARNING, "missing item: {0}", item);
+				}
+				else {
+					arr.add( item);
+				}
 			}
 		}
 		File pkgDir = new File( PreferenceManager.getString( BaseDefaults.PKG_DIR));
 		for (Map.Entry<String, ArrayList<ItemNEI>> entry : cache.entrySet()) {
 			String pkg = entry.getKey();
-			ArrayList<ItemNEI> arr = entry.getValue();
 			System.out.println( pkg);
 			File dir = new File( pkgDir, pkg);
 			if (dir.exists() && dir.isFile()) {
@@ -218,7 +223,8 @@ public class Selector {
 			if (!dir.exists()) {
 				dir.mkdir();
 			}
-			writePanelFile( arr, dir);
+			ArrayList<ItemNEI> arr = entry.getValue();
+//			writePanelFile( arr, dir);
 			writeItemsFile( arr, dir);
 			deleteImages( dir);
 			copyImages( arr, dir);
@@ -233,7 +239,7 @@ public class Selector {
 		PrintWriter dst = null;
 		try {
 			dst = new PrintWriter( new BufferedWriter( new FileWriter( file)));
-			dst.println( "Item Name,Item ID,Item meta,Has NBT,Display Name");
+			dst.println( "Item Name,Item ID,Item meta,Has NBT,Display Name,NBT");
 			for (ItemNEI item : arr) {
 				dst.print( item.mName);
 				dst.print( ',');
@@ -243,7 +249,9 @@ public class Selector {
 				dst.print( ',');
 				dst.print( item.mHasNBT);
 				dst.print( ',');
-				dst.println( item.getImageName());
+				dst.print( item.getImageName());
+				dst.print( ',');
+				dst.println( item.getNBT() != null ? item.getNBT().toString() : "");
 			}
 			dst.flush();
 		}

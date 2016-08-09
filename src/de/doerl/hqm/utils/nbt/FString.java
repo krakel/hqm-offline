@@ -62,7 +62,7 @@ public final class FString extends ANbt {
 	}
 
 	@Override
-	public void toString( StringBuffer sb) {
+	public void toString( StringBuilder sb) {
 		sb.append( "STRING('");
 		sb.append( mValue);
 		sb.append( "')");

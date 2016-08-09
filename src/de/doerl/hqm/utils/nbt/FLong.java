@@ -131,7 +131,7 @@ public final class FLong extends ANbt {
 	}
 
 	@Override
-	public void toString( StringBuffer sb) {
+	public void toString( StringBuilder sb) {
 		switch (getTag()) {
 			case ID_BYTE:
 				sb.append( "BYTE(");

@@ -85,7 +85,7 @@ public final class FDouble extends ANbt {
 	}
 
 	@Override
-	public void toString( StringBuffer sb) {
+	public void toString( StringBuilder sb) {
 		switch (getTag()) {
 			case ID_FLOAT:
 				sb.append( "FLOAT(");

@@ -67,7 +67,7 @@ public final class FCompound extends AList {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append( getName());
 		sb.append( "=");
 		toString( sb);
@@ -75,12 +75,12 @@ public final class FCompound extends AList {
 	}
 
 	@Override
-	public void toString( StringBuffer sb) {
+	public void toString( StringBuilder sb) {
 		boolean comma = false;
-		sb.append( "COMPOUND( ");
+		sb.append( "COMPOUND(");
 		for (ANbt nbt : mList) {
 			if (comma) {
-				sb.append( ", ");
+				sb.append( ",");
 			}
 			sb.append( nbt.getName());
 			sb.append( "=");

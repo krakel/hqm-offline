@@ -62,12 +62,12 @@ public final class FByteArray extends ANbt implements Iterable<Byte> {
 	}
 
 	@Override
-	public void toString( StringBuffer sb) {
+	public void toString( StringBuilder sb) {
 		boolean comma = false;
-		sb.append( "BYTE-ARRAY( ");
+		sb.append( "BYTE-ARRAY(");
 		for (Byte i : mList) {
 			if (comma) {
-				sb.append( ", ");
+				sb.append( ",");
 			}
 			sb.append( i);
 			comma = true;
