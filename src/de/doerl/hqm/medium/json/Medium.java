@@ -20,6 +20,8 @@ import de.doerl.hqm.medium.IMediumWorker;
 import de.doerl.hqm.medium.IRefreshListener;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
+import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.FValue;
@@ -135,10 +137,17 @@ public class Medium implements IMedium {
 		try {
 			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
-			writeHQM( hqm, os, hqm.mMain, true, false);
-			MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
-			for (FLanguage lang : hqm.mLanguages) {
-				saveLang( hqm, lang, toLangFile( file, lang.mLocale));
+			boolean withLang = PreferenceManager.getBool( BaseDefaults.LANGUAGE);
+			if (withLang) {
+				writeHQM( hqm, os, hqm.mMain, true, false);
+				MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
+				for (FLanguage lang : hqm.mLanguages) {
+					saveLang( hqm, lang, toLangFile( file, lang.mLocale));
+				}
+			}
+			else {
+				writeHQM( hqm, os, hqm.mMain, true, true);
+				MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
 			}
 			return true;
 		}

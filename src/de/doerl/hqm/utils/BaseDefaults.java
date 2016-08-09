@@ -29,11 +29,13 @@ public class BaseDefaults {
 	public static final String ITEMPANEL_CSV = "itempanel.csv";
 	public static final String ITEMPANEL_NBT = "itempanel.nbt";
 	public static final String ITEMS = "items.csv";
-	private static final String[] KEYS = { LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, PKG_DIR, DUMP_DIR, FILE_VERSION
+	public static final String LANGUAGE = "language.enable";
+	private static final String[] KEYS = { LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, PKG_DIR, DUMP_DIR, FILE_VERSION, LANGUAGE
 	};
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
 		{ STACKTRC, Boolean.TRUE },
+		{ LANGUAGE, Boolean.TRUE },
 		{ PKG_DIR,  System.getProperty( "user.home") },
 		{ FILE_VERSION, FileVersion.last().toString() },
 		{ FILE_OPEN_DIR, System.getProperty( "user.home") },
@@ -47,6 +49,7 @@ public class BaseDefaults {
 	private static void check( PreferenceHash pref) {
 		synchronized (pref) {
 			checkBool( pref, STACKTRC);
+			checkBool( pref, LANGUAGE);
 			checkString( pref, PKG_DIR);
 			checkString( pref, DUMP_DIR);
 			checkString( pref, FILE_VERSION);

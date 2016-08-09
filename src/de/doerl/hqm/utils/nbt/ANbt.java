@@ -1,6 +1,6 @@
 package de.doerl.hqm.utils.nbt;
 
-public abstract class ANbt implements INbt {
+public abstract class ANbt {
 	private String mName;
 	private int mTag;
 
@@ -60,12 +60,10 @@ public abstract class ANbt implements INbt {
 		return new String( src, off, len);
 	}
 
-	@Override
 	public String getName() {
 		return mName;
 	}
 
-	@Override
 	public int getTag() {
 		return mTag;
 	}
@@ -75,4 +73,6 @@ public abstract class ANbt implements INbt {
 	void setName( String name) {
 		mName = name;
 	}
+
+	abstract void toString( StringBuilder sb);
 }
