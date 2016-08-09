@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.util.ArrayList;
 
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.FCompound;
 
 public class ItemNEI {
 	private static final char[] NO_WINDOW_CHAR = "<>:\"/\\|?*".toCharArray();
@@ -26,7 +27,7 @@ public class ItemNEI {
 	private String mMod;
 	private String mDisplay;
 	private String mLower;
-	private String mNBT;
+	private FCompound mNBT;
 	private Image mImage;
 
 	ItemNEI( String line) {
@@ -104,7 +105,7 @@ public class ItemNEI {
 		return mMod;
 	}
 
-	public String getNBT() {
+	public FCompound getNBT() {
 		return mNBT;
 	}
 
@@ -114,6 +115,10 @@ public class ItemNEI {
 
 	public void setImage( Image image) {
 		mImage = image;
+	}
+
+	public void setNBT( FCompound nBT) {
+		mNBT = nBT;
 	}
 
 	private void setPkg() {

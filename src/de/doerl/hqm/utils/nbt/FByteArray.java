@@ -6,10 +6,11 @@ import java.util.Iterator;
 import de.doerl.hqm.utils.Utils;
 
 public final class FByteArray extends ANbt implements Iterable<Byte> {
+	public static final int ID = 7;
 	private ArrayList<Byte> mList = new ArrayList<>();
 
 	FByteArray( String name) {
-		super( name, 7);
+		super( name, ID);
 	}
 
 	public static FByteArray create( String name, int... values) {

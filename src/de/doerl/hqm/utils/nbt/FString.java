@@ -3,10 +3,11 @@ package de.doerl.hqm.utils.nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FString extends ANbt {
+	public static final int ID = 8;
 	private String mValue;
 
 	FString( String name, String value) {
-		super( name, 8);
+		super( name, ID);
 		mValue = value;
 	}
 
@@ -53,6 +54,11 @@ public final class FString extends ANbt {
 
 	void setValue( String value) {
 		mValue = value;
+	}
+
+	@Override
+	public String toString() {
+		return mValue;
 	}
 
 	@Override

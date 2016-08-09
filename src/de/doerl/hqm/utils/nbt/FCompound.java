@@ -3,8 +3,10 @@ package de.doerl.hqm.utils.nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FCompound extends AList {
+	public static final int ID = 10;
+
 	FCompound( String name) {
-		super( name, 10);
+		super( name, ID);
 	}
 
 	public static FCompound create() {
@@ -25,6 +27,10 @@ public final class FCompound extends AList {
 			res.add( nbt);
 		}
 		return res;
+	}
+
+	public void clearName() {
+		setName( "");
 	}
 
 	@Override

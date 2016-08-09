@@ -6,10 +6,11 @@ import java.util.Iterator;
 import de.doerl.hqm.utils.Utils;
 
 public final class FIntArray extends ANbt implements Iterable<Integer> {
+	public static final int ID = 11;
 	private ArrayList<Integer> mList = new ArrayList<>();
 
 	FIntArray( String name) {
-		super( name, 11);
+		super( name, ID);
 	}
 
 	public static FIntArray create( String name, int... values) {

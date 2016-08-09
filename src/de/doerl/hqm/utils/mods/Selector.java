@@ -21,7 +21,9 @@ import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.ANbt;
 import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.FList;
 import de.doerl.hqm.utils.nbt.NbtReader;
 
 @SuppressWarnings( "unused")
@@ -85,10 +87,10 @@ public class Selector {
 	}
 
 	private static void isolatePackages() {
-		Map<String, ArrayList<ItemNEI>> cache = new HashMap<>();
-		parseDumpFile( cache);
-		parseNbtFile( cache);
-//		writeFiles( cache);
+		ArrayList<ItemNEI> items = new ArrayList<>();
+		parseDumpFile( items);
+		parseNbtFile( items);
+//		writeFiles( lst);
 	}
 
 	public static void main( String[] args) {
@@ -96,7 +98,7 @@ public class Selector {
 //		checkPackages();
 	}
 
-	private static void parseDumpFile( Map<String, ArrayList<ItemNEI>> map) {
+	private static void parseDumpFile( ArrayList<ItemNEI> items) {
 		NameCache cache = new NameCache();
 		BufferedReader src = null;
 		try {
@@ -108,17 +110,7 @@ public class Selector {
 			while (line != null) {
 				ItemNEI item = new ItemNEI( line);
 				item.findImage( cache);
-				if (item.getPkg() == null) {
-					Utils.log( LOGGER, Level.WARNING, "missing package: {0}", line);
-				}
-				else {
-					ArrayList<ItemNEI> arr = map.get( item.getPkg());
-					if (arr == null) {
-						arr = new ArrayList<>();
-						map.put( item.getPkg(), arr);
-					}
-					arr.add( item);
-				}
+				items.add( item);
 				line = src.readLine();
 				++index;
 			}
@@ -131,13 +123,37 @@ public class Selector {
 		}
 	}
 
-	private static void parseNbtFile( Map<String, ArrayList<ItemNEI>> cache) {
+	private static void parseNbtFile( ArrayList<ItemNEI> items) {
 		FileInputStream src = null;
 		try {
 			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_NBT);
 			src = new FileInputStream( csvFile);
 			FCompound res = NbtReader.readAsCompound( src);
-			res = null;
+			FList lst = (FList) res.get( "list");
+			if (lst.getElement() != FCompound.ID) {
+				Utils.log( LOGGER, Level.WARNING, "wrong nbt list type  {0}", lst.getElement());
+			}
+			else if (lst.size() != items.size()) {
+				Utils.log( LOGGER, Level.WARNING, "wrong size between item and nbt panel  {0} != {1}", items.size(), lst.size());
+			}
+			else {
+				for (int i = 0, m = items.size(); i < m; ++i) {
+					ItemNEI item = items.get( i);
+					FCompound cmp = (FCompound) lst.get( i);
+					ANbt idNbt = cmp.get( "id");
+					if (idNbt == null) {
+						Utils.log( LOGGER, Level.WARNING, "missing id nbt for {0}", item.mID);
+					}
+					else if (Utils.different( item.mID, idNbt.toString())) {
+						Utils.log( LOGGER, Level.WARNING, "wrong ids item and nbt panel  {0} != {1}", item.mID, idNbt);
+					}
+					FCompound tag = (FCompound) cmp.get( "tag");
+					if (tag != null) {
+						tag.clearName();
+						item.setNBT( tag);
+					}
+				}
+			}
 		}
 		catch (IOException ex) {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
@@ -175,7 +191,21 @@ public class Selector {
 		}
 	}
 
-	private static void writeFiles( Map<String, ArrayList<ItemNEI>> cache) {
+	private static void writeFiles( ArrayList<ItemNEI> items) {
+		Map<String, ArrayList<ItemNEI>> cache = new HashMap<>();
+		for (ItemNEI item : items) {
+			ArrayList<ItemNEI> arr = cache.get( item.getPkg());
+			if (arr == null) {
+				arr = new ArrayList<>();
+				cache.put( item.getPkg(), arr);
+			}
+			if (item.getPkg() == null) {
+				Utils.log( LOGGER, Level.WARNING, "missing package: {0}", item);
+			}
+			else {
+				arr.add( item);
+			}
+		}
 		File pkgDir = new File( PreferenceManager.getString( BaseDefaults.PKG_DIR));
 		for (Map.Entry<String, ArrayList<ItemNEI>> entry : cache.entrySet()) {
 			String pkg = entry.getKey();

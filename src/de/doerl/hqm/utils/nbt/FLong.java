@@ -3,6 +3,10 @@ package de.doerl.hqm.utils.nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FLong extends ANbt {
+	public static final int ID_BYTE = 1;
+	public static final int ID_SHORT = 2;
+	public static final int ID_INT = 3;
+	public static final int ID_LONG = 4;
 	private long mValue;
 
 	FLong( String name, long value, int tag) {
@@ -11,35 +15,35 @@ public final class FLong extends ANbt {
 	}
 
 	public static FLong createByte( int value) {
-		return new FLong( "", value, 1);
+		return new FLong( "", value, ID_BYTE);
 	}
 
 	public static FLong createByte( String name, int value) {
-		return new FLong( name, value, 1);
+		return new FLong( name, value, ID_BYTE);
 	}
 
 	public static FLong createInt( int value) {
-		return new FLong( "", value, 3);
+		return new FLong( "", value, ID_INT);
 	}
 
 	public static FLong createInt( String name, int value) {
-		return new FLong( name, value, 3);
+		return new FLong( name, value, ID_INT);
 	}
 
 	public static FLong createLong( long value) {
-		return new FLong( "", value, 4);
+		return new FLong( "", value, ID_LONG);
 	}
 
 	public static FLong createLong( String name, long value) {
-		return new FLong( name, value, 4);
+		return new FLong( name, value, ID_LONG);
 	}
 
 	public static FLong createShort( int value) {
-		return new FLong( "", value, 2);
+		return new FLong( "", value, ID_SHORT);
 	}
 
 	public static FLong createShort( String name, int value) {
-		return new FLong( name, value, 2);
+		return new FLong( name, value, ID_SHORT);
 	}
 
 	public static byte toByte( ANbt nbt, byte def) {
@@ -122,24 +126,29 @@ public final class FLong extends ANbt {
 	}
 
 	@Override
+	public String toString() {
+		return Long.toString( mValue);
+	}
+
+	@Override
 	public void toString( StringBuffer sb) {
 		switch (getTag()) {
-			case 1:
+			case ID_BYTE:
 				sb.append( "BYTE(");
 				sb.append( (byte) mValue);
 				sb.append( ")");
 				break;
-			case 2:
+			case ID_SHORT:
 				sb.append( "SHORT(");
 				sb.append( (short) mValue);
 				sb.append( ")");
 				break;
-			case 3:
+			case ID_INT:
 				sb.append( "INT(");
 				sb.append( (int) mValue);
 				sb.append( ")");
 				break;
-			case 4:
+			case ID_LONG:
 				sb.append( "LONG(");
 				sb.append( mValue);
 				sb.append( ")");
