@@ -57,6 +57,17 @@ public final class FByteArray extends ANbt implements Iterable<Byte> {
 		return mList.iterator();
 	}
 
+	@Override
+	int matcher( ANbt other) {
+		if (other != null && getTag() == other.getTag() && Utils.equals( getName(), other.getName())) {
+			FByteArray o = (FByteArray) other;
+			if (Utils.equals( mList, o.mList)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
 	public int size() {
 		return mList.size();
 	}

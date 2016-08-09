@@ -45,6 +45,19 @@ public final class FList extends AList {
 	}
 
 	@Override
+	int matcher( ANbt other) {
+		int res = 0;
+		if (other != null && getTag() == other.getTag() && Utils.equals( getName(), other.getName())) {
+			FList ol = (FList) other;
+			for (int i = 0, m = mList.size(); i < m; ++i) {
+				ANbt o = ol.get( i);
+				res += mList.get( i).matcher( o);
+			}
+		}
+		return res;
+	}
+
+	@Override
 	public void toString( StringBuilder sb) {
 		boolean comma = false;
 		sb.append( "LIST(");

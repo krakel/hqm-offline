@@ -80,6 +80,17 @@ public final class FDouble extends ANbt {
 	}
 
 	@Override
+	int matcher( ANbt other) {
+		if (other != null && getTag() == other.getTag() && Utils.equals( getName(), other.getName())) {
+			FDouble o = (FDouble) other;
+			if (mValue == o.mValue) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	@Override
 	public String toString() {
 		return Double.toString( mValue);
 	}

@@ -68,11 +68,16 @@ abstract class ADialogStacks extends ADialogList<StackEntry> {
 
 		@Override
 		public Component getListCellRendererComponent( JList<? extends StackEntry> list, StackEntry value, int index, boolean isSelected, boolean cellHasFocus) {
-			Image img = ImageLoader.getImage( createUpdater( list), value.getKey());
+			Image img = ImageLoader.getImage( createUpdater( list), value.getKey(), value.mNbt);
 			mIcon.setIcon( new StackIcon( img, ICON_ZOOM, String.valueOf( value.mCount)));
 			mName.setText( value.getDisplayLong());
 			if (mRequire) {
-				mInfo.setText( String.format( "%s, dmg %2d, count %d", value.getPrecision(), value.mDmg, value.mCount));
+				if (value.mNbt != null) {
+					mInfo.setText( String.format( "%s, dmg %2d, count %d, nbt %s", value.getPrecision(), value.mDmg, value.mCount, value.mNbt));
+				}
+				else {
+					mInfo.setText( String.format( "%s, dmg %2d, count %d", value.getPrecision(), value.mDmg, value.mCount));
+				}
 			}
 			else {
 				mInfo.setText( String.format( "dmg %2d, count %d", value.mDmg, value.mCount));

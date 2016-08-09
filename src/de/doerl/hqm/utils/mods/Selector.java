@@ -20,14 +20,10 @@ import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.nbt.ANbt;
-import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.FList;
-import de.doerl.hqm.utils.nbt.NbtReader;
 
 @SuppressWarnings( "unused")
 public class Selector {
-	private static final Logger LOGGER;
+	static final Logger LOGGER;
 	static {
 		Locale.setDefault( Locale.ENGLISH);
 		PreferenceManager.init();
@@ -86,80 +82,16 @@ public class Selector {
 	}
 
 	private static void isolatePackages() {
+		File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_CSV);
 		ArrayList<ItemNEI> items = new ArrayList<>();
-		parseDumpFile( items);
-		parseNbtFile( items);
+		UniversalHandler.parseDumpFile( items, csvFile);
+		UniversalHandler.parseNbtFile( items);
 		writeFiles( items);
 	}
 
 	public static void main( String[] args) {
 		isolatePackages();
 //		checkPackages();
-	}
-
-	private static void parseDumpFile( ArrayList<ItemNEI> items) {
-		NameCache cache = new NameCache();
-		BufferedReader src = null;
-		try {
-			int index = 2;
-			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_CSV);
-			src = new BufferedReader( new InputStreamReader( new FileInputStream( csvFile), "ISO-8859-1"));
-			src.readLine(); //               Item Name,        Item ID, Item meta, Has NBT, Display Name
-			String line = src.readLine(); // minecraft:planks, 5,       5,         false,   Dark Oak Wood Planks
-			while (line != null) {
-				ItemNEI item = new ItemNEI( line);
-				item.findImage( cache);
-				items.add( item);
-				line = src.readLine();
-				++index;
-			}
-		}
-		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		finally {
-			Utils.closeIgnore( src);
-		}
-	}
-
-	private static void parseNbtFile( ArrayList<ItemNEI> items) {
-		FileInputStream src = null;
-		try {
-			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_NBT);
-			src = new FileInputStream( csvFile);
-			FCompound res = NbtReader.readAsCompound( src);
-			FList lst = (FList) res.get( "list");
-			if (lst.getElement() != FCompound.ID) {
-				Utils.log( LOGGER, Level.WARNING, "wrong nbt list type  {0}", lst.getElement());
-			}
-			else if (lst.size() != items.size()) {
-				Utils.log( LOGGER, Level.WARNING, "wrong size between item and nbt panel  {0} != {1}", items.size(), lst.size());
-			}
-			else {
-				for (int i = 0, m = items.size(); i < m; ++i) {
-					ItemNEI item = items.get( i);
-					FCompound cmp = (FCompound) lst.get( i);
-					ANbt idNbt = cmp.get( "id");
-					if (idNbt == null) {
-						Utils.log( LOGGER, Level.WARNING, "missing id nbt for {0}", item.mID);
-					}
-					else if (Utils.different( item.mID, idNbt.toString())) {
-						Utils.log( LOGGER, Level.WARNING, "wrong ids item and nbt panel  {0} != {1}", item.mID, idNbt);
-					}
-					FCompound tag = (FCompound) cmp.get( "tag");
-					if (tag != null) {
-						tag.clearName();
-						item.setNBT( tag);
-					}
-				}
-			}
-		}
-		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		finally {
-			Utils.closeIgnore( src);
-		}
 	}
 
 	private static void parsePackFile( File csvFile) {

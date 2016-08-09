@@ -52,6 +52,17 @@ public final class FString extends ANbt {
 		return mValue;
 	}
 
+	@Override
+	int matcher( ANbt other) {
+		if (other != null && getTag() == other.getTag() && Utils.equals( getName(), other.getName())) {
+			FString o = (FString) other;
+			if (Utils.equals( mValue, o.mValue)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
 	void setValue( String value) {
 		mValue = value;
 	}

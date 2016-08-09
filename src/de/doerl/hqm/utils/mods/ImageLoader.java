@@ -20,11 +20,12 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.FCompound;
 
 public class ImageLoader {
 	private static Logger LOGGER = Logger.getLogger( ImageLoader.class.getName());
 	private static final ReadImage THREAD = new ReadImage();
-	private static HashMap<String, ItemNEI> sStackes = new HashMap<>();
+	private static HashMap<String, ArrayList<ItemNEI>> sStackes = new HashMap<>();
 	private static File sBaseDir;
 	private static File sImageDir;
 
@@ -32,9 +33,12 @@ public class ImageLoader {
 	}
 
 	static void add( ItemNEI item) {
-		if (!sStackes.containsKey( item.mKey)) {
-			sStackes.put( item.mKey, item);
+		ArrayList<ItemNEI> items = sStackes.get( item.mKey);
+		if (items == null) {
+			items = new ArrayList<ItemNEI>();
+			sStackes.put( item.mKey, items);
 		}
+		items.add( item);
 	}
 
 	public static List<ItemNEI> find( String value, int max) {
@@ -42,37 +46,63 @@ public class ImageLoader {
 	}
 
 	private static List<ItemNEI> find1( String value, int max) {
-		ArrayList<ItemNEI> arr = new ArrayList<>();
-		for (ItemNEI item : sStackes.values()) {
-			item.findItem( arr, value);
-			if (arr.size() > max) {
-				break;
+		ArrayList<ItemNEI> res = new ArrayList<>();
+		for (ArrayList<ItemNEI> arr : sStackes.values()) {
+			for (ItemNEI item : arr) {
+				item.findItem( res, value);
+				if (res.size() > max) {
+					break;
+				}
 			}
 		}
-		return arr;
+		return res;
 	}
 
-	public static ItemNEI get( String key) {
-		ItemNEI item = sStackes.get( key);
-		if (item == null) {
-			item = new ItemNEI( key, null);
-			sStackes.put( key, item);
+	public static ItemNEI get( String key, FCompound nbt) {
+		ArrayList<ItemNEI> items = sStackes.get( key);
+		if (items == null) {
+			items = new ArrayList<ItemNEI>();
+			sStackes.put( key, items);
 		}
-		return item;
+		if (items.size() == 0) {
+			ItemNEI item = new ItemNEI( key, nbt);
+			items.add( item);
+			return item;
+		}
+		if (items.size() == 1 || nbt == null) {
+			return items.get( 0);
+		}
+		else {
+			int max = Integer.MIN_VALUE;
+			ItemNEI best = null;
+			for (ItemNEI it : items) {
+				int m = nbt.match( it.getNBT());
+				if (m > max) {
+					best = it;
+					max = m;
+				}
+			}
+			return best;
+		}
 	}
 
 	public static Image getImage( Runnable cb, AStack stk) {
-		return getImage( cb, stk != null ? stk.getKey() : null);
+		if (stk != null) {
+			return getImage( cb, stk.getKey(), stk.getNBT());
+		}
+		else {
+			return getImage( cb, null, null);
+		}
 	}
 
-	public static Image getImage( Runnable cb, String key) {
+	public static Image getImage( Runnable cb, String key, FCompound nbt) {
 		if (key != null) {
-			ItemNEI item = get( key);
-			registerCB( cb, key);
+			ItemNEI item = get( key, nbt);
+			registerCB( cb, key, nbt);
 			return item.getImage();
 		}
 		else {
-			registerCB( cb, null);
+			registerCB( cb, null, nbt);
 			return null;
 		}
 	}
@@ -104,9 +134,9 @@ public class ImageLoader {
 		}
 	}
 
-	private static void registerCB( Runnable cb, String key) {
+	private static void registerCB( Runnable cb, String key, FCompound nbt) {
 		if (cb != null) {
-			THREAD.add( cb, key);
+			THREAD.add( cb, key, nbt);
 		}
 	}
 
@@ -136,8 +166,8 @@ public class ImageLoader {
 			return img;
 		}
 
-		public synchronized void add( Runnable cb, String key) {
-			mQueue.addLast( new Request( cb, key));
+		public synchronized void add( Runnable cb, String key, FCompound nbt) {
+			mQueue.addLast( new Request( cb, key, nbt));
 			notifyAll();
 		}
 
@@ -151,7 +181,7 @@ public class ImageLoader {
 		private void readImage( Request req) throws IOException {
 			String key = req.mKey;
 			if (key != null) {
-				ItemNEI item = get( key);
+				ItemNEI item = get( key, req.mNbt);
 				if (sImageDir != null && item.getImage() == null) {
 					File file = new File( sImageDir, item.getImageName());
 					if (file.exists() && !file.isDirectory()) {
@@ -194,10 +224,12 @@ public class ImageLoader {
 	private static class Request {
 		private Runnable mCallback;
 		private String mKey;
+		private FCompound mNbt;
 
-		public Request( Runnable cb, String key) {
+		public Request( Runnable cb, String key, FCompound nbt) {
 			mCallback = cb;
 			mKey = key;
+			mNbt = nbt;
 		}
 	}
 }

@@ -56,7 +56,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 					mCount.setText( String.valueOf( 1));
 					mItem.setSelected( true);
 					mPrec.setSelectedItem( ItemPrecision.PRECISE);
-					mArea.setText( "");
+					mArea.setText( item.getNbtStr());
 				}
 			}
 		});
@@ -98,7 +98,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		mCount.setText( String.valueOf( entry.mCount));
 		mItem.setSelected( entry.mItem);
 		mPrec.setSelectedItem( entry.getPrecision());
-		mArea.setText( entry.mNbt != null ? entry.mNbt.toString() : null);
+		mArea.setText( entry.getNbtStr());
 		return showEditor();
 	}
 
@@ -181,6 +181,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			mCount.setEnabled( false);
 			mItem.setSelected( true);
 			mPrec.setSelectedItem( ItemPrecision.PRECISE);
+			mArea.setText( "");
 		}
 	}
 }

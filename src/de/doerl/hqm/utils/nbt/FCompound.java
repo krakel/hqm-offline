@@ -65,6 +65,23 @@ public final class FCompound extends AList {
 		return null;
 	}
 
+	public int match( FCompound other) {
+		return matcher( other);
+	}
+
+	@Override
+	int matcher( ANbt other) {
+		int res = 0;
+		if (other != null && getTag() == other.getTag() && Utils.equals( getName(), other.getName())) {
+			FCompound ol = (FCompound) other;
+			for (ANbt nbt : mList) {
+				ANbt o = ol.get( nbt.getName());
+				res += nbt.matcher( o);
+			}
+		}
+		return res;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

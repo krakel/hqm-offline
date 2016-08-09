@@ -126,6 +126,17 @@ public final class FLong extends ANbt {
 	}
 
 	@Override
+	int matcher( ANbt other) {
+		if (other != null && getTag() == other.getTag() && Utils.equals( getName(), other.getName())) {
+			FLong o = (FLong) other;
+			if (mValue == o.mValue) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	@Override
 	public String toString() {
 		return Long.toString( mValue);
 	}

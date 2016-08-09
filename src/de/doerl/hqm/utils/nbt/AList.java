@@ -14,7 +14,7 @@ abstract class AList extends ANbt implements Iterable<ANbt> {
 		mList.add( nbt);
 	}
 
-	public INbt get( int idx) {
+	public ANbt get( int idx) {
 		return mList.get( idx);
 	}
 

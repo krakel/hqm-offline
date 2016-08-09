@@ -5,11 +5,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.ANbt;
+import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.FList;
+import de.doerl.hqm.utils.nbt.NbtReader;
 
 class UniversalHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
@@ -21,13 +27,27 @@ class UniversalHandler {
 		File[] arr = baseDir.listFiles();
 		for (File curr : arr) {
 			if (BaseDefaults.ITEMPANEL_CSV.equals( curr.getName())) {
-				parseCSVFile( curr);
+				ArrayList<ItemNEI> items = new ArrayList<>();
+				parseDumpFile( items, curr);
+				parseNbtFile( items);
+				loadAllImages( items);
 				break;
 			}
 		}
 	}
 
-	private static void parseCSVFile( File csvFile) {
+	private static void loadAllImages( ArrayList<ItemNEI> items) {
+		for (ItemNEI item : items) {
+			if (item.mBase.length() == 0) {
+				Utils.log( LOGGER, Level.WARNING, "missing package: {0}", item);
+			}
+			else {
+				ImageLoader.add( item);
+			}
+		}
+	}
+
+	static void parseDumpFile( ArrayList<ItemNEI> items, File csvFile) {
 		NameCache cache = new NameCache();
 		BufferedReader src = null;
 		try {
@@ -37,17 +57,52 @@ class UniversalHandler {
 			while (line != null) {
 				ItemNEI item = new ItemNEI( line);
 				item.findImage( cache);
-				if (item.mBase.length() == 0) {
-					Utils.log( LOGGER, Level.WARNING, "missing package: {0}", line);
-				}
-				else {
-					ImageLoader.add( item);
-				}
+				items.add( item);
 				line = src.readLine();
 			}
 		}
 		catch (IOException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
+			Utils.logThrows( Selector.LOGGER, Level.WARNING, ex);
+		}
+		finally {
+			Utils.closeIgnore( src);
+		}
+	}
+
+	static void parseNbtFile( ArrayList<ItemNEI> items) {
+		FileInputStream src = null;
+		try {
+			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_NBT);
+			src = new FileInputStream( csvFile);
+			FCompound res = NbtReader.readAsCompound( src);
+			FList lst = (FList) res.get( "list");
+			if (lst.getElement() != FCompound.ID) {
+				Utils.log( Selector.LOGGER, Level.WARNING, "wrong nbt list type  {0}", lst.getElement());
+			}
+			else if (lst.size() != items.size()) {
+				Utils.log( Selector.LOGGER, Level.WARNING, "wrong size between item and nbt panel  {0} != {1}", items.size(), lst.size());
+			}
+			else {
+				for (int i = 0, m = items.size(); i < m; ++i) {
+					ItemNEI item = items.get( i);
+					FCompound cmp = (FCompound) lst.get( i);
+					ANbt idNbt = cmp.get( "id");
+					if (idNbt == null) {
+						Utils.log( Selector.LOGGER, Level.WARNING, "missing id nbt for {0}", item.mID);
+					}
+					else if (Utils.different( item.mID, idNbt.toString())) {
+						Utils.log( Selector.LOGGER, Level.WARNING, "wrong ids item and nbt panel  {0} != {1}", item.mID, idNbt);
+					}
+					FCompound tag = (FCompound) cmp.get( "tag");
+					if (tag != null) {
+						tag.clearName();
+						item.setNBT( tag);
+					}
+				}
+			}
+		}
+		catch (IOException ex) {
+			Utils.logThrows( Selector.LOGGER, Level.WARNING, ex);
 		}
 		finally {
 			Utils.closeIgnore( src);

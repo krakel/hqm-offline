@@ -70,6 +70,8 @@ public abstract class ANbt implements INbt {
 		return mTag;
 	}
 
+	abstract int matcher( ANbt other);
+
 	void setName( String name) {
 		mName = name;
 	}

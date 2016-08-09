@@ -69,6 +69,15 @@ class StackEntry {
 		return mName;
 	}
 
+	public String getNbtStr() {
+		if (mNbt != null) {
+			return mNbt.toString();
+		}
+		else {
+			return "";
+		}
+	}
+
 	public ItemPrecision getPrecision() {
 		return mPrecision;
 	}

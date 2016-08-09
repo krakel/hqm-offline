@@ -31,7 +31,7 @@ public class ItemNEI {
 	private String mMod;
 	private String mDisplay;
 	private String mLower;
-	private FCompound mNBT;
+	private FCompound mNbt;
 	private Image mImage;
 
 	ItemNEI( String line) {
@@ -53,7 +53,7 @@ public class ItemNEI {
 			String nbt = line.substring( p5);
 			if (Utils.validString( nbt)) {
 				if (nbt.startsWith( "=COMPOUND(")) {
-					mNBT = NbtParser.parse( nbt);
+					mNbt = NbtParser.parse( nbt);
 				}
 				else {
 					Utils.log( LOGGER, Level.WARNING, "wrong nbt part: {0}", line);
@@ -125,7 +125,16 @@ public class ItemNEI {
 	}
 
 	public FCompound getNBT() {
-		return mNBT;
+		return mNbt;
+	}
+
+	public String getNbtStr() {
+		if (mNbt != null) {
+			return mNbt.toString();
+		}
+		else {
+			return "";
+		}
 	}
 
 	public String getPkg() {
@@ -137,7 +146,7 @@ public class ItemNEI {
 	}
 
 	public void setNBT( FCompound nBT) {
-		mNBT = nBT;
+		mNbt = nBT;
 	}
 
 	private void setPkg() {

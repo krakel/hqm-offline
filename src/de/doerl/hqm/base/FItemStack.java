@@ -27,7 +27,7 @@ public final class FItemStack extends AStack {
 		mDmg = getValueInt( "Damage", 0);
 		String old = OLD_ITEM + getValueID( "id", "0");
 		mKey = old + "%" + mDmg;
-		mItem = ImageLoader.get( mKey);
+		mItem = ImageLoader.get( mKey, mNBT);
 	}
 
 	public FItemStack( FCompound nbt, int id, int dmg, int size) {
@@ -36,7 +36,7 @@ public final class FItemStack extends AStack {
 		mDmg = dmg;
 		String name = "id:" + String.valueOf( id);
 		mKey = name + "%" + mDmg;
-		mItem = ImageLoader.get( mKey);
+		mItem = ImageLoader.get( mKey, mNBT);
 	}
 
 	private FItemStack( FCompound nbt, Matcher mm) {
@@ -46,7 +46,7 @@ public final class FItemStack extends AStack {
 		mSize = Utils.parseInteger( mm.group( 2));
 		mDmg = Utils.parseInteger( mm.group( 3));
 		mKey = name + "%" + mDmg;
-		mItem = ImageLoader.get( mKey);
+		mItem = ImageLoader.get( mKey, mNBT);
 	}
 
 	public FItemStack( FCompound nbt, String name, int dmg, int size) {
@@ -62,7 +62,7 @@ public final class FItemStack extends AStack {
 			String old = OLD_ITEM + getValueID( "id", "0");
 			mKey = old + "%" + mDmg;
 		}
-		mItem = ImageLoader.get( mKey);
+		mItem = ImageLoader.get( mKey, mNBT);
 	}
 
 	public FItemStack( int id, int dmg, int size) {
@@ -71,7 +71,7 @@ public final class FItemStack extends AStack {
 		mDmg = dmg;
 		String old = OLD_ITEM + String.valueOf( id);
 		mKey = old + "%" + mDmg;
-		mItem = ImageLoader.get( mKey);
+		mItem = ImageLoader.get( mKey, mNBT);
 	}
 
 	public FItemStack( String name, int dmg, int size) {
@@ -79,7 +79,7 @@ public final class FItemStack extends AStack {
 		mSize = size;
 		mDmg = dmg;
 		mKey = name + "%" + mDmg;
-		mItem = ImageLoader.get( mKey);
+		mItem = ImageLoader.get( mKey, mNBT);
 	}
 
 	public static FItemStack parse( String sequence) {
@@ -103,7 +103,8 @@ public final class FItemStack extends AStack {
 				return new FItemStack( NbtParser.parse( nbt), PATTERN.matcher( sequence));
 			}
 			catch (RuntimeException ex) {
-				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", nbt);
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+//				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", nbt);
 				return new FItemStack( "item:unknown", 0, 0);
 			}
 		}
