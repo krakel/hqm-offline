@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -jar hqm_convert.jar
+java -jar hqm_offline.jar
