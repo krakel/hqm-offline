@@ -8,7 +8,7 @@
 	<property name="dist.dir" value="${basedir}/build" />
 	<property name="source.dir" value="${basedir}/src" />
 
-	<property name="dstName" value="hqm_convert" />
+	<property name="dstName" value="hqm_offline" />
 	<property name="jarName" value="${dist.dir}/${dstName}.jar" />
 	<property name="zipName" value="${dist.dir}/${dstName}.zip" />
 	<property name="srcName" value="${dist.dir}/${dstName}-src.zip" />
@@ -118,7 +118,7 @@
 	<target name="zipSrc" depends="jarMain, jarDefault">
 		<zip destfile="${srcName}" duplicate="preserve">
 			<zipfileset dir="src" />
-			<zipfileset dir="." includes="build.xml, convert.bat, convert.sh" />
+			<zipfileset dir="." includes="build.xml, hqm-offline.bat, hqm-offline.sh" />
 		</zip>
 	</target>
 
