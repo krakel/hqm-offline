@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,11 +29,61 @@ public class Medium implements IMedium {
 	public static final FileFilter FILTER = new FileNameExtensionFilter( "JSON file", "json");
 	public static final String MEDIUM = "gson";
 	public static final String GSON_PATH = "gson_path";
-	private static final String MAIN_PATH = "";
+	static final String MAIN_PATH = "";
+	static final String DESCRIPTION_FILE = "description.txt";
+	static final String REPUTATION_FILE = "reputations";
+	static final String BAGS_FILE = "bags";
+	static final String TEAMS_FILE = "teams";
 	static final String STATE_FILE = "state";
+	static final String DATA_FILE = "data";
+	static final String SETS_FILE = "sets";
+	static final String DEATHS_FILE = "deaths";
 
-	public static File getLocalFile( String name) {
-		return new File( MAIN_PATH, name + ".json");
+	static File getFile( String name) {
+		if (name.endsWith( ".txt")) {
+			return new File( MAIN_PATH, name);
+		}
+		else {
+			return new File( MAIN_PATH, name + ".json");
+		}
+	}
+
+	static File[] getFiles( String name) {
+		File dir = new File( name);
+		return dir.listFiles();
+	}
+
+	static boolean isQuestSet( File file) {
+		if (!file.isFile()) {
+			return false;
+		}
+		String name = file.getName();
+		if (!name.endsWith( ".json")) {
+			return false;
+		}
+		String base = name.substring( 0, name.indexOf( '.'));
+		if (REPUTATION_FILE.equalsIgnoreCase( base)) {
+			return false;
+		}
+		if (BAGS_FILE.equalsIgnoreCase( base)) {
+			return false;
+		}
+		if (TEAMS_FILE.equalsIgnoreCase( base)) {
+			return false;
+		}
+		if (STATE_FILE.equalsIgnoreCase( base)) {
+			return false;
+		}
+		if (DATA_FILE.equalsIgnoreCase( base)) {
+			return false;
+		}
+		if (SETS_FILE.equalsIgnoreCase( base)) {
+			return false;
+		}
+		if (DEATHS_FILE.equalsIgnoreCase( base)) {
+			return false;
+		}
+		return true;
 	}
 
 	static FHqm loadHqm( File file) {
@@ -46,6 +98,21 @@ public class Medium implements IMedium {
 		MediaManager.setProperty( hqm, GSON_PATH, file);
 		MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
 		MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
+		return null;
+	}
+
+	static String loadTxt( File file) throws IOException {
+		return new String( Files.readAllBytes( file.toPath()), StandardCharsets.UTF_8);
+	}
+
+	static String loadTxt( String src) {
+		try {
+			File file = getFile( src);
+			return loadTxt( file);
+		}
+		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.FINER, ex);
+		}
 		return null;
 	}
 
@@ -80,7 +147,7 @@ public class Medium implements IMedium {
 	}
 
 	static FObject redJson( String src) {
-		File file = getLocalFile( src);
+		File file = getFile( src);
 		return redJson( file);
 	}
 
