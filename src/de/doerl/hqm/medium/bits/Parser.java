@@ -2,8 +2,8 @@ package de.doerl.hqm.medium.bits;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +12,7 @@ import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.ARequirement;
 import de.doerl.hqm.base.FFluidRequirement;
+import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
@@ -53,6 +54,10 @@ import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.quest.Visibility;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.ANbt;
+import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.FLong;
+import de.doerl.hqm.utils.nbt.FString;
 
 class Parser extends AHQMWorker<Object, FileVersion> {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
@@ -101,14 +106,24 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 
 	@Override
 	public Object forFluidRequirement( FFluidRequirement fluid, FileVersion version) {
-		fluid.mStack = mSrc.readFluidStack();
+		FCompound nbt = mSrc.readFluidStack();
+		if (nbt != null) {
+			ANbt json = nbt.get( "FluidName");
+			if (json == null) {
+				fluid.setStack( new FFluidStack( FLong.toInt( nbt.get( "id"), 0)));
+			}
+			else {
+				fluid.setStack( new FFluidStack( FString.to( json, "unknown.fluid")));
+			}
+			fluid.mAmount = FLong.toInt( nbt.get( "Amount"), 1);
+		}
 		return null;
 	}
 
 	@Override
 	public Object forItemRequirement( FItemRequirement item, FileVersion version) {
-		item.mStack = mSrc.readItemStack( version);
-		item.mRequired = mSrc.readData( DataBitHelper.TASK_REQUIREMENT);
+		item.setStack( mSrc.readItemStack( version));
+		item.mAmount = mSrc.readData( DataBitHelper.TASK_REQUIREMENT);
 		if (version.contains( FileVersion.CUSTOM_PRECISION_TYPES)) {
 			item.mPrecision = ItemPrecision.parse( mSrc.readString( DataBitHelper.ITEM_PRECISION, version));
 		}

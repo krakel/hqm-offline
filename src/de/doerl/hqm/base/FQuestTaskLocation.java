@@ -52,6 +52,6 @@ public final class FQuestTaskLocation extends AQuestTask {
 
 	@Override
 	public TaskTyp getTaskTyp() {
-		return TaskTyp.TASK_LOCATION;
+		return TaskTyp.LOCATION;
 	}
 }

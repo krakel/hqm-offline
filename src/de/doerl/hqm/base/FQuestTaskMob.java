@@ -52,6 +52,6 @@ public final class FQuestTaskMob extends AQuestTask {
 
 	@Override
 	public TaskTyp getTaskTyp() {
-		return TaskTyp.TASK_MOB;
+		return TaskTyp.KILL;
 	}
 }

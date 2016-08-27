@@ -23,7 +23,10 @@ public final class FArray implements IJson, Iterable<IJson> {
 	}
 
 	public IJson get( int idx) {
-		return mList.get( idx);
+		if (idx >= 0 && idx < mList.size()) {
+			return mList.get( idx);
+		}
+		return null;
 	}
 
 	@Override

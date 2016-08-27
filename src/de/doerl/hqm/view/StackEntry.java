@@ -26,13 +26,13 @@ class StackEntry {
 		updateKey();
 	}
 
-	public StackEntry( boolean item, AStack stk, int count, ItemPrecision precition) {
+	public StackEntry( boolean item, FCompound nbt, AStack stk, int count, ItemPrecision precition) {
 		mItem = item;
 		mKey = stk.getKey();
 		mDisplay = stk.getDisplay();
 		setName( stk.getName());
 		mDmg = stk.getDamage();
-		mNbt = stk.getNBT();
+		mNbt = nbt;
 		mCount = count;
 		setPrecision( precition);
 	}

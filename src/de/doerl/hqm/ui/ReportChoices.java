@@ -80,12 +80,11 @@ class ReportChoices extends AReport {
 			for (FItemStack stack : quest.mChoices) {
 				Item key = new Item( stack.getName(), stack.getDamage(), stack.getNBT());
 				Integer old = mMap.get( key);
-				int count = stack.getCount();
 				if (old != null) {
-					mMap.put( key, old + count);
+					mMap.put( key, old + stack.getStackSize());
 				}
 				else {
-					mMap.put( key, count);
+					mMap.put( key, stack.getStackSize());
 				}
 			}
 			return null;

@@ -1,19 +1,19 @@
 package de.doerl.hqm.medium.json;
 
-interface IToken {
+public interface IToken {
 	static final String HQM_VERSION = "version";
 	static final String HQM_PASSCODE = "passcode";
 	static final String HQM_MAIN = "main";
 	static final String HQM_LANGUAGES = "languages";
 	static final String HQM_PARENT = "parent";
-	static final String HQM_DECRIPTION = "decription";
+	static final String HQM_DESCRIPTION = "description";
 	static final String HQM_QUEST_SET_CAT = "questSetCatalog";
 	static final String HQM_REPUTATION_CAT = "reputationCatalog";
 	static final String HQM_GROUP_TIER_CAT = "groupTierCatalog";
 	//
 	static final String QUEST_SET_ID = "id";
 	static final String QUEST_SET_NAME = "name";
-	static final String QUEST_SET_DECR = "decription";
+	static final String QUEST_SET_DECR = "description";
 	static final String QUEST_SET_BARS = "bars";
 	static final String QUEST_SET_QUESTS = "quests";
 	static final String QUEST_COMMANDS = "commands";
@@ -28,6 +28,7 @@ interface IToken {
 	static final String MARKER_VALUE = "value";
 	//
 	static final String QUEST_ID = "id";
+	static final String QUEST_UUID = "uuid";
 	static final String QUEST_NAME = "name";
 	static final String QUEST_DESC = "description";
 	static final String QUEST_X = "x";
@@ -39,7 +40,7 @@ interface IToken {
 	static final String QUEST_REPEAT_INFO = "repeatInfo";
 	static final String QUEST_TRIGGER_TYPE = "triggerType";
 	static final String QUEST_TRIGGER_TASKS = "triggerTasks";
-	static final String QUEST_PARENT_REQUIREMENT_COUNT = "parentRequirementCount";
+	static final String QUEST_PARENT_REQUIREMENT = "parentRequirementCount";
 	static final String QUEST_TASKS = "tasks";
 	static final String QUEST_REWARD = "reward";
 	static final String QUEST_CHOICE = "choice";

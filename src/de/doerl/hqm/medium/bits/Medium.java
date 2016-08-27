@@ -29,7 +29,7 @@ public class Medium implements IMedium {
 	static FHqm loadHqm( File file) {
 		InputStream is = null;
 		try {
-			String name = toName( file);
+			String name = MediumUtils.getModpackName( file);
 			FHqm hqm = new FHqm( name);
 			is = MediumUtils.getSource( file);
 			readHqm( hqm, is);
@@ -45,26 +45,6 @@ public class Medium implements IMedium {
 			Utils.closeIgnore( is);
 		}
 		return null;
-	}
-
-	static String nameOfOriginal( File src) {
-		String name = src.getName();
-		if (!"quests.hqm".equals( name)) {
-			return null;
-		}
-		File p1 = src.getParentFile();
-		if (p1 == null || !"hqm".equals( p1.getName())) {
-			return null;
-		}
-		File p2 = p1.getParentFile();
-		if (p2 == null || !"config".equals( p2.getName())) {
-			return null;
-		}
-		File p3 = p2.getParentFile();
-		if (p3 == null) {
-			return null;
-		}
-		return p3.getName();
 	}
 
 	static File normalize( File choose) {
@@ -124,19 +104,6 @@ public class Medium implements IMedium {
 
 	static File suggest( String name) {
 		return name != null ? new File( name + ".hqm") : null;
-	}
-
-	static String toName( File src) {
-		if (src == null) {
-			return "unknown";
-		}
-		String orig = nameOfOriginal( src);
-		if (orig != null) {
-			return orig;
-		}
-		String name = src.getName();
-		int pos = name.lastIndexOf( '.');
-		return pos < 0 ? name : name.substring( 0, pos);
 	}
 
 	private static void writeHQM( FHqm hqm, OutputStream os) throws IOException {

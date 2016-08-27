@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AQuestTaskReputation;
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
@@ -134,7 +133,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		if (Utils.validString( nbt)) {
 			mDst.print( ITEM_NBT, nbt);
 		}
-		mDst.print( REQUIREMENT_REQUIRED, item.mRequired);
+		mDst.print( REQUIREMENT_REQUIRED, item.mAmount);
 		mDst.print( REQUIREMENT_PRECISION, item.mPrecision);
 		mDst.endObject();
 		return null;
@@ -200,6 +199,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( QUEST_DESC, quest.getDescr( mLang));
 		}
 		if (mMain) {
+			mDst.print( QUEST_UUID, quest.mUUID);
 			mDst.print( QUEST_X, quest.mX);
 			mDst.print( QUEST_Y, quest.mY);
 			mDst.print( QUEST_BIG, quest.mBig);
@@ -209,7 +209,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			quest.mRepeatInfo.accept( this, null);
 			mDst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
 			mDst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
-			mDst.print( QUEST_PARENT_REQUIREMENT_COUNT, quest.mCount);
+			mDst.print( QUEST_PARENT_REQUIREMENT, quest.mCount);
 		}
 		writeTasks( quest);
 		if (mMain) {
@@ -370,7 +370,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( HQM_PARENT, hqm.getName());
 		}
 		if (mDocu) {
-			mDst.print( HQM_DECRIPTION, hqm.getDescr( mLang));
+			mDst.print( HQM_DESCRIPTION, hqm.getDescr( mLang));
 		}
 		else {
 			mDst.print( HQM_MAIN, hqm.mMain.mLocale);
@@ -466,7 +466,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	private void writeStackArr( String key, ArrayList<FItemStack> arr) {
 		if (arr != null && !arr.isEmpty()) {
 			mDst.beginArray( key);
-			for (AStack stk : arr) {
+			for (FItemStack stk : arr) {
 				String nbt = stk.getNbtStr();
 				if (Utils.validString( nbt)) {
 					mDst.beginObject();

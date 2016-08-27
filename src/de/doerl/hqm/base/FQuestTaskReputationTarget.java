@@ -15,6 +15,6 @@ public final class FQuestTaskReputationTarget extends AQuestTaskReputation {
 
 	@Override
 	public TaskTyp getTaskTyp() {
-		return TaskTyp.TASK_REPUTATION_TARGET;
+		return TaskTyp.REPUTATION;
 	}
 }

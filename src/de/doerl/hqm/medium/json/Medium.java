@@ -83,10 +83,10 @@ public class Medium implements IMedium {
 		}
 	}
 
-	private static FHqm loadHqm( FObject obj, String text, File file, boolean override) {
-		String name = toName( file);
+	private static FHqm loadHqm( FObject obj, String lang, File file, boolean override) {
+		String name = MediumUtils.getFilepackName( file);
 		FHqm hqm = new FHqm( name);
-		hqm.setMain( text);
+		hqm.setMain( lang);
 		readHqm( hqm, obj, hqm.mMain, true, false);
 		MediaManager.setProperty( hqm, JSON_PATH, file);
 		MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
@@ -99,7 +99,7 @@ public class Medium implements IMedium {
 			}
 		}
 		if (override) {
-			hqm.setMain( text);
+			hqm.setMain( lang);
 		}
 		return hqm;
 	}
@@ -205,15 +205,6 @@ public class Medium implements IMedium {
 		else {
 			return new File( file.getParent(), String.format( "%s_%s.json", name.substring( 0, pos), lang));
 		}
-	}
-
-	static String toName( File src) {
-		if (src == null) {
-			return "unknown";
-		}
-		String name = src.getName();
-		int pos = name.lastIndexOf( '.');
-		return pos < 0 ? name : name.substring( 0, pos);
 	}
 
 	private static void writeHQM( FHqm hqm, OutputStream os, FLanguage lang, boolean withMain, boolean withDocu) throws IOException {

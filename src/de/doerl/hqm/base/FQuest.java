@@ -16,6 +16,7 @@ import de.doerl.hqm.utils.Utils;
 public final class FQuest extends AIdent implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private static final String BASE = "quest";
+	public String mUUID;
 	public int mX, mY;
 	public boolean mBig;
 	public Integer mCount;
@@ -74,31 +75,31 @@ public final class FQuest extends AIdent implements IElement {
 	public AQuestTask createQuestTask( TaskTyp type) {
 		AQuestTask task = null;
 		switch (type) {
-			case TASK_ITEMS_CONSUME:
+			case CONSUME:
 				task = new FQuestTaskItemsConsume( this);
 				break;
-			case TASK_ITEMS_CRAFTING:
+			case CRAFTING:
 				task = new FQuestTaskItemsCrafting( this);
 				break;
-			case TASK_LOCATION:
+			case LOCATION:
 				task = new FQuestTaskLocation( this);
 				break;
-			case TASK_ITEMS_CONSUME_QDS:
+			case CONSUME_QDS:
 				task = new FQuestTaskItemsConsumeQDS( this);
 				break;
-			case TASK_ITEMS_DETECT:
+			case DETECT:
 				task = new FQuestTaskItemsDetect( this);
 				break;
-			case TASK_MOB:
+			case KILL:
 				task = new FQuestTaskMob( this);
 				break;
-			case TASK_DEATH:
+			case DEATH:
 				task = new FQuestTaskDeath( this);
 				break;
-			case TASK_REPUTATION_TARGET:
+			case REPUTATION:
 				task = new FQuestTaskReputationTarget( this);
 				break;
-			case TASK_REPUTATION_KILL:
+			case REPUTATION_KILL:
 				task = new FQuestTaskReputationKill( this);
 				break;
 		}

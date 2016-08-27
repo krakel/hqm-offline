@@ -58,9 +58,9 @@ public final class FHqm extends ANamed {
 		return this;
 	}
 
-	public FLanguage getLanguage( String text) {
+	public FLanguage getLanguage( String lang) {
 		for (FLanguage ll : mLanguages) {
-			if (Utils.equals( ll.mLocale, text)) {
+			if (Utils.equals( ll.mLocale, lang)) {
 				return ll;
 			}
 		}
@@ -102,10 +102,10 @@ public final class FHqm extends ANamed {
 		}
 	}
 
-	public void setMain( String text) {
-		FLanguage lang = getLanguage( text);
+	public void setMain( String language) {
+		FLanguage lang = getLanguage( language);
 		if (lang == null) {
-			lang = createLanguage( text);
+			lang = createLanguage( language);
 		}
 		mMain = lang;
 	}

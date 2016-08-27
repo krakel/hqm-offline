@@ -19,6 +19,7 @@ import de.doerl.hqm.medium.IMedium;
 import de.doerl.hqm.medium.IMediumWorker;
 import de.doerl.hqm.medium.IRefreshListener;
 import de.doerl.hqm.medium.MediaManager;
+import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.IJson;
@@ -29,7 +30,6 @@ public class Medium implements IMedium {
 	public static final FileFilter FILTER = new FileNameExtensionFilter( "JSON file", "json");
 	public static final String MEDIUM = "gson";
 	public static final String GSON_PATH = "gson_path";
-	static final String MAIN_PATH = "";
 	static final String DESCRIPTION_FILE = "description.txt";
 	static final String REPUTATION_FILE = "reputations";
 	static final String BAGS_FILE = "bags";
@@ -39,18 +39,13 @@ public class Medium implements IMedium {
 	static final String SETS_FILE = "sets";
 	static final String DEATHS_FILE = "deaths";
 
-	static File getFile( String name) {
+	static File getFile( String name, File base) {
 		if (name.endsWith( ".txt")) {
-			return new File( MAIN_PATH, name);
+			return new File( base, name);
 		}
 		else {
-			return new File( MAIN_PATH, name + ".json");
+			return new File( base, name + ".json");
 		}
-	}
-
-	static File[] getFiles( String name) {
-		File dir = new File( name);
-		return dir.listFiles();
 	}
 
 	static boolean isQuestSet( File file) {
@@ -87,27 +82,26 @@ public class Medium implements IMedium {
 	}
 
 	static FHqm loadHqm( File file) {
-		return null;
-	}
-
-	private static FHqm loadHqm( FObject obj, String text, File file, boolean override) {
-		String name = toName( file);
+		String name = MediumUtils.getModpackName( file);
 		FHqm hqm = new FHqm( name);
-		hqm.setMain( text);
-		readHqm( hqm, obj);
-		MediaManager.setProperty( hqm, GSON_PATH, file);
-		MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
-		MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
+		hqm.setMain( FHqm.LANG_EN_US);
+		File base = MediumUtils.getModpackBase( file);
+		if (base != null) {
+			readHqm( hqm, base);
+			MediaManager.setProperty( hqm, GSON_PATH, file);
+			MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
+			MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
+		}
 		return null;
 	}
 
-	static String loadTxt( File file) throws IOException {
+	private static String loadTxt( File file) throws IOException {
 		return new String( Files.readAllBytes( file.toPath()), StandardCharsets.UTF_8);
 	}
 
-	static String loadTxt( String src) {
+	static String loadTxt( File base, String src) {
 		try {
-			File file = getFile( src);
+			File file = getFile( src, base);
 			return loadTxt( file);
 		}
 		catch (Exception ex) {
@@ -116,15 +110,21 @@ public class Medium implements IMedium {
 		return null;
 	}
 
+	public static void main( String[] args) {
+		File file = new File( "D:\\Games\\Minecraft\\hqm\\hqm-Brave\\default");
+		String name = MediumUtils.getModpackName( file);
+		FHqm hqm = new FHqm( name);
+		hqm.setMain( FHqm.LANG_EN_US);
+		readHqm( hqm, file);
+	}
+
 	public static File normalize( File choose) {
 		return null;
 	}
 
-	static void readHqm( FHqm hqm, FObject obj) {
-		if (obj != null) {
-//			Parser parser = new Parser( lang, withMain, withDocu);
-//			parser.readSrc( hqm, obj);
-		}
+	static void readHqm( FHqm hqm, File base) {
+		Parser parser = new Parser( hqm.mMain, base);
+		parser.readSrc( hqm);
 	}
 
 	static FObject redJson( File file) {
@@ -146,8 +146,8 @@ public class Medium implements IMedium {
 		return FObject.to( json);
 	}
 
-	static FObject redJson( String src) {
-		File file = getFile( src);
+	static FObject redJson( File base, String src) {
+		File file = getFile( src, base);
 		return redJson( file);
 	}
 
@@ -157,15 +157,6 @@ public class Medium implements IMedium {
 
 	public static File suggest( String name) {
 		return null;
-	}
-
-	static String toName( File src) {
-		if (src == null) {
-			return "unknown";
-		}
-		String name = src.getName();
-		int pos = name.lastIndexOf( '.');
-		return pos < 0 ? name : name.substring( 0, pos);
 	}
 
 	@Override

@@ -22,7 +22,6 @@ import de.doerl.hqm.Tuple2;
 import de.doerl.hqm.base.ABase;
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.base.FQuest;
 import de.doerl.hqm.base.FQuestTaskDeath;
@@ -138,7 +137,7 @@ class EntityQuest extends AEntity<FQuest> {
 			panel.add( Box.createHorizontalStrut( 3));
 		}
 		else {
-			for (AStack stk : list) {
+			for (FItemStack stk : list) {
 				LeafIcon leaf = new LeafIcon();
 				IconUpdate.create( leaf, stk, ICON_ZOOM, stk.countOf());
 				panel.add( leaf);

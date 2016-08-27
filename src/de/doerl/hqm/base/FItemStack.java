@@ -10,6 +10,7 @@ import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.ItemNEI;
 import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.FLong;
+import de.doerl.hqm.utils.nbt.FString;
 import de.doerl.hqm.utils.nbt.NbtParser;
 
 public final class FItemStack extends AStack {
@@ -18,12 +19,13 @@ public final class FItemStack extends AStack {
 	private static final String OLD_ITEM = "id:";
 	private String mKey;
 	private ItemNEI mItem;
-	private int mSize;
+	private int mStackSize;
 	private int mDmg;
+	private FCompound mNBT;
 
 	public FItemStack( FCompound nbt) {
-		super( nbt);
-		mSize = getValueInt( "Count", 1);
+		mNBT = nbt;
+		mStackSize = getValueInt( "Count", 1);
 		mDmg = getValueInt( "Damage", 0);
 		String old = OLD_ITEM + getValueID( "id", "0");
 		mKey = old + "%" + mDmg;
@@ -31,8 +33,8 @@ public final class FItemStack extends AStack {
 	}
 
 	public FItemStack( FCompound nbt, int id, int dmg, int size) {
-		super( nbt);
-		mSize = size;
+		mNBT = nbt;
+		mStackSize = size;
 		mDmg = dmg;
 		String name = "id:" + String.valueOf( id);
 		mKey = name + "%" + mDmg;
@@ -40,24 +42,24 @@ public final class FItemStack extends AStack {
 	}
 
 	private FItemStack( FCompound nbt, Matcher mm) {
-		super( nbt);
+		mNBT = nbt;
 		mm.find();
 		String name = mm.group( 1);
-		mSize = Utils.parseInteger( mm.group( 2));
+		mStackSize = Utils.parseInteger( mm.group( 2));
 		mDmg = Utils.parseInteger( mm.group( 3));
 		mKey = name + "%" + mDmg;
 		mItem = ImageLoader.get( mKey, mNBT);
 	}
 
 	public FItemStack( FCompound nbt, String name, int dmg, int size) {
-		super( nbt);
+		mNBT = nbt;
 		if (name != null) {
-			mSize = size;
+			mStackSize = size;
 			mDmg = dmg;
 			mKey = name + "%" + mDmg;
 		}
 		else {
-			mSize = getValueInt( "Count", 1);
+			mStackSize = getValueInt( "Count", 1);
 			mDmg = getValueInt( "Damage", 0);
 			String old = OLD_ITEM + getValueID( "id", "0");
 			mKey = old + "%" + mDmg;
@@ -66,8 +68,7 @@ public final class FItemStack extends AStack {
 	}
 
 	public FItemStack( int id, int dmg, int size) {
-		super( null);
-		mSize = size;
+		mStackSize = size;
 		mDmg = dmg;
 		String old = OLD_ITEM + String.valueOf( id);
 		mKey = old + "%" + mDmg;
@@ -75,8 +76,7 @@ public final class FItemStack extends AStack {
 	}
 
 	public FItemStack( String name, int dmg, int size) {
-		super( null);
-		mSize = size;
+		mStackSize = size;
 		mDmg = dmg;
 		mKey = name + "%" + mDmg;
 		mItem = ImageLoader.get( mKey, mNBT);
@@ -104,7 +104,6 @@ public final class FItemStack extends AStack {
 			}
 			catch (RuntimeException ex) {
 				Utils.logThrows( LOGGER, Level.WARNING, ex);
-//				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", nbt);
 				return new FItemStack( "item:unknown", 0, 0);
 			}
 		}
@@ -116,9 +115,8 @@ public final class FItemStack extends AStack {
 		}
 	}
 
-	@Override
-	public int getCount() {
-		return mSize;
+	public String countOf() {
+		return mStackSize > 1 ? Integer.toString( mStackSize) : null;
 	}
 
 	@Override
@@ -145,14 +143,13 @@ public final class FItemStack extends AStack {
 		return mItem.mName;
 	}
 
-	@Override
 	public FCompound getNBT() {
 		if (mNBT != null) {
 			return mNBT;
 		}
-		else if (mKey.startsWith( OLD_ITEM)) {
+		else if (isOldItem()) {
 			int id = Utils.parseInteger( mItem.mName, 0);
-			return FCompound.create( FLong.createShort( "id", id), FLong.createShort( "Damage", mDmg), FLong.createByte( "Count", mSize));
+			return FCompound.create( FLong.createShort( "id", id), FLong.createShort( "Damage", mDmg), FLong.createByte( "Count", mStackSize));
 		}
 		else if (mItem.mName != null) {
 			return null;
@@ -162,12 +159,48 @@ public final class FItemStack extends AStack {
 		}
 	}
 
-	public void setNBT( FCompound value) {
-		mNBT = value;
+	public String getNbtStr() {
+		if (mNBT != null) {
+			return mNBT.toString();
+		}
+		else {
+			return "";
+		}
+	}
+
+	@Override
+	public int getStackSize() {
+		return mStackSize;
+	}
+
+	private String getValueID( String key, String def) {
+		if (mNBT != null) {
+			return FString.to( mNBT.get( key), def);
+		}
+		else {
+			return def;
+		}
+	}
+
+	private int getValueInt( String key, int def) {
+		if (mNBT != null) {
+			return FLong.toInt( mNBT.get( key), def);
+		}
+		else {
+			return def;
+		}
+	}
+
+	boolean isOldItem() {
+		return mKey.startsWith( OLD_ITEM);
+	}
+
+	public void setStackSize( int value) {
+		mStackSize = value;
 	}
 
 	@Override
 	public String toString() {
-		return String.format( "%s size(%d) dmg(%d)", mItem.mName, mSize, mDmg);
+		return String.format( "%s size(%d) dmg(%d)", mItem.mName, mStackSize, mDmg);
 	}
 }

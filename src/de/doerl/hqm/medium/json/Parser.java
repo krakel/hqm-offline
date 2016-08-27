@@ -9,7 +9,6 @@ import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.FFluidRequirement;
-import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
@@ -319,6 +318,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						quest.setDescr( mLang, FValue.toString( obj.get( IToken.QUEST_DESC)));
 					}
 					if (mMain) {
+						quest.mUUID = FValue.toString( obj.get( IToken.QUEST_UUID));
 						quest.mX = FValue.toInt( obj.get( IToken.QUEST_X));
 						quest.mY = FValue.toInt( obj.get( IToken.QUEST_Y));
 						quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));
@@ -333,7 +333,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 								quest.mTriggerTasks = FValue.toInt( obj.get( IToken.QUEST_TRIGGER_TASKS));
 							}
 						}
-						quest.mCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT_COUNT));
+						quest.mCount = FValue.toIntObj( obj.get( IToken.QUEST_PARENT_REQUIREMENT));
 						readStacks( quest.mRewards, FArray.to( obj.get( IToken.QUEST_REWARD)));
 						readStacks( quest.mChoices, FArray.to( obj.get( IToken.QUEST_CHOICE)));
 						readCommands( quest, FArray.to( obj.get( IToken.QUEST_COMMANDS)));
@@ -427,7 +427,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			hqm.setMain( FValue.toString( obj.get( IToken.HQM_MAIN), mLang.mLocale));
 		}
 		if (mDocu) {
-			String descr = FValue.toString( obj.get( IToken.HQM_DECRIPTION));
+			String descr = FValue.toString( obj.get( IToken.HQM_DESCRIPTION));
 			hqm.setDescr( mLang, descr != null ? descr : "No description");
 		}
 		readReputations( hqm.mReputationCat, FArray.to( obj.get( IToken.HQM_REPUTATION_CAT)));
@@ -471,13 +471,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					String sequence = FValue.toString( obj.get( IToken.ITEM_OBJECT));
 					if (sequence != null) {
 						FItemRequirement item = task.createItemRequirement();
-						item.mStack = FItemStack.parse( sequence, FValue.toString( obj.get( IToken.ITEM_NBT)));
-						item.mRequired = FValue.toInt( obj.get( IToken.REQUIREMENT_REQUIRED));
+						item.setStack( FItemStack.parse( sequence, FValue.toString( obj.get( IToken.ITEM_NBT))));
+						item.mAmount = FValue.toInt( obj.get( IToken.REQUIREMENT_REQUIRED));
 						item.mPrecision = ItemPrecision.parse( FValue.toString( obj.get( IToken.REQUIREMENT_PRECISION)));
 					}
 					else {
 						FFluidRequirement fluid = task.createFluidRequirement();
-						fluid.mStack = FFluidStack.parse( FValue.toString( obj.get( IToken.FLUID_OBJECT)));
+						fluid.parse( obj);
 					}
 				}
 			}
@@ -605,13 +605,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						if (task == null) {
 							Utils.log( LOGGER, Level.WARNING, "missing quest task for ident {0}", ident);
 							if (obj.get( IToken.TASK_LOCATIONS) != null) {
-								task = quest.createQuestTask( TaskTyp.TASK_LOCATION);
+								task = quest.createQuestTask( TaskTyp.LOCATION);
 							}
 							else if (obj.get( IToken.TASK_MOBS) != null) {
-								task = quest.createQuestTask( TaskTyp.TASK_MOB);
+								task = quest.createQuestTask( TaskTyp.KILL);
 							}
 							else {
-								task = quest.createQuestTask( TaskTyp.TASK_ITEMS_DETECT);
+								task = quest.createQuestTask( TaskTyp.DETECT);
 							}
 						}
 					}

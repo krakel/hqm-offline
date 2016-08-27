@@ -1,20 +1,22 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.quest.ItemPrecision;
+import de.doerl.hqm.utils.nbt.FCompound;
 
 public abstract class ARequirement extends ABase implements IElement {
 	public final AQuestTaskItems mParentTask;
+	public int mAmount;
 
 	ARequirement( AQuestTaskItems parent) {
 		mParentTask = parent;
 	}
 
-	public abstract int getCount();
-
 	@Override
 	public FHqm getHqm() {
 		return mParentTask.getHqm();
 	}
+
+	public abstract FCompound getNBT();
 
 	@Override
 	public AQuestTaskItems getParent() {

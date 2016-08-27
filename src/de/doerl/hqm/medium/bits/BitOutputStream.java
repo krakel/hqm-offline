@@ -3,11 +3,11 @@ package de.doerl.hqm.medium.bits;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.NbtWriter;
 
 class BitOutputStream {
@@ -62,8 +62,8 @@ class BitOutputStream {
 		mBits += count;
 	}
 
-	public void writeFluidStack( FFluidStack stk) {
-		writeNBT( NbtWriter.write( stk.getNBT()));
+	public void writeFluidNBT( FCompound nbt) {
+		writeNBT( NbtWriter.write( nbt));
 	}
 
 	public void writeIconIf( FItemStack stk, FileVersion version) {
@@ -84,7 +84,7 @@ class BitOutputStream {
 	}
 
 	public void writeItemStack( FItemStack stk, FileVersion version) {
-		writeItemStackDef( stk, version);
+		writeItemStackDef( stk, false, version);
 	}
 
 	private void writeItemStackDef( FItemStack stk, boolean withSize, FileVersion version) {
@@ -94,10 +94,6 @@ class BitOutputStream {
 		else {
 			writeItemStackID( stk, withSize);
 		}
-	}
-
-	private void writeItemStackDef( FItemStack stk, FileVersion version) {
-		writeItemStackDef( stk, false, version);
 	}
 
 	public void writeItemStackFix( FItemStack stk, FileVersion version) {
@@ -112,7 +108,7 @@ class BitOutputStream {
 	private void writeItemStackID( FItemStack stk, boolean withSize) {
 		writeData( Utils.parseInteger( stk.getName()), DataBitHelper.SHORT);
 		if (withSize) {
-			writeData( stk.getCount(), DataBitHelper.SHORT);
+			writeData( stk.getStackSize(), DataBitHelper.SHORT);
 		}
 		writeData( stk.getDamage(), DataBitHelper.SHORT);
 		writeNBT( NbtWriter.write( stk.getNBT()));
@@ -121,7 +117,7 @@ class BitOutputStream {
 	private void writeItemStackName( FItemStack stk, boolean withSize) {
 		writeString( stk.getName(), DataBitHelper.SHORT);
 		if (withSize) {
-			writeData( stk.getCount(), DataBitHelper.SHORT);
+			writeData( stk.getStackSize(), DataBitHelper.SHORT);
 		}
 		writeData( stk.getDamage(), DataBitHelper.SHORT);
 		writeNBT( NbtWriter.write( stk.getNBT()));

@@ -3,7 +3,6 @@ package de.doerl.hqm.view;
 import java.awt.Window;
 import java.util.ArrayList;
 
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.ItemPrecision;
 
@@ -30,8 +29,8 @@ class DialogListItems extends ADialogStacks {
 
 	private void updateMain( ArrayList<FItemStack> value) {
 		mModel.clear();
-		for (AStack stk : value) {
-			mModel.addElement( new StackEntry( true, stk, stk.getCount(), ItemPrecision.PRECISE));
+		for (FItemStack stk : value) {
+			mModel.addElement( new StackEntry( true, stk.getNBT(), stk, stk.getStackSize(), ItemPrecision.PRECISE));
 		}
 		updateBtn();
 	}

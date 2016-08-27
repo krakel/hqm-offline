@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.ARequirement;
-import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FFluidRequirement;
 import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FItemRequirement;
@@ -36,9 +35,8 @@ class DialogListRequirements extends ADialogStacks {
 	private void updateMain( ArrayList<ARequirement> value) {
 		mModel.clear();
 		for (ARequirement req : value) {
-			AStack stk = req.getStack();
 			boolean isItem = req.getElementTyp() == ElementTyp.ITEM_REQUIREMENT;
-			mModel.addElement( new StackEntry( isItem, stk, req.getCount(), req.getPrecision()));
+			mModel.addElement( new StackEntry( isItem, req.getNBT(), req.getStack(), req.mAmount, req.getPrecision()));
 		}
 		updateBtn();
 	}
@@ -51,13 +49,14 @@ class DialogListRequirements extends ADialogStacks {
 			StackEntry e = mModel.get( i);
 			if (e.mItem) {
 				FItemRequirement req = task.createItemRequirement();
-				req.mStack = new FItemStack( e.mNbt, e.getName(), e.mDmg, 1);
-				req.mRequired = e.mCount;
+				req.setStack( new FItemStack( e.mNbt, e.getName(), e.mDmg, 1));
+				req.mAmount = e.mCount;
 				req.mPrecision = e.getPrecision();
 			}
 			else {
 				FFluidRequirement req = task.createFluidRequirement();
-				req.mStack = new FFluidStack( e.getName(), e.mCount);
+				req.setStack( new FFluidStack( e.getName()));
+				req.mAmount = e.mCount;
 			}
 		}
 		return result;

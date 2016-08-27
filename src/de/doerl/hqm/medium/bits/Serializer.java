@@ -81,7 +81,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 	@Override
 	public Object forFluidRequirement( FFluidRequirement fluid, FileVersion version) {
 		mDst.writeBoolean( false);
-		mDst.writeFluidStack( fluid.mStack);
+		mDst.writeFluidNBT( fluid.getNBT());
 		return null;
 	}
 
@@ -99,8 +99,8 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 	@Override
 	public Object forItemRequirement( FItemRequirement item, FileVersion version) {
 		mDst.writeBoolean( true);
-		mDst.writeItemStack( item.mStack, version);
-		mDst.writeData( item.mRequired, DataBitHelper.TASK_REQUIREMENT);
+		mDst.writeItemStack( item.getStack(), version);
+		mDst.writeData( item.mAmount, DataBitHelper.TASK_REQUIREMENT);
 		if (version.contains( FileVersion.CUSTOM_PRECISION_TYPES)) {
 			mDst.writeString( item.mPrecision.name(), DataBitHelper.ITEM_PRECISION, version);
 		}

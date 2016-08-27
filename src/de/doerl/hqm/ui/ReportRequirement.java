@@ -93,30 +93,28 @@ class ReportRequirement extends AReport {
 
 		@Override
 		public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
-			FFluidStack stack = fluid.mStack;
-			Item key = new Item( stack.getName(), stack.getDamage(), stack.getNBT());
+			FFluidStack stack = fluid.getStack();
+			Item key = new Item( stack.getName(), stack.getDamage(), fluid.getNBT());
 			Integer old = mMap.get( key);
-			int count = stack.getCount();
 			if (old != null) {
-				mMap.put( key, old + count);
+				mMap.put( key, old + fluid.mAmount);
 			}
 			else {
-				mMap.put( key, count);
+				mMap.put( key, fluid.mAmount);
 			}
 			return null;
 		}
 
 		@Override
 		public Object forItemRequirement( FItemRequirement item, Object p) {
-			FItemStack stack = item.mStack;
+			FItemStack stack = item.getStack();
 			Item key = new Item( stack.getName(), stack.getDamage(), stack.getNBT());
 			Integer old = mMap.get( key);
-			int count = stack.getCount();
 			if (old != null) {
-				mMap.put( key, old + count);
+				mMap.put( key, old + stack.getStackSize());
 			}
 			else {
-				mMap.put( key, count);
+				mMap.put( key, stack.getStackSize());
 			}
 			return null;
 		}

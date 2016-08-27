@@ -15,6 +15,6 @@ public final class FQuestTaskItemsDetect extends AQuestTaskItems {
 
 	@Override
 	public TaskTyp getTaskTyp() {
-		return TaskTyp.TASK_ITEMS_DETECT;
+		return TaskTyp.DETECT;
 	}
 }

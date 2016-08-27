@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
-import de.doerl.hqm.base.AStack;
+import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
@@ -86,7 +86,7 @@ public class ImageLoader {
 		}
 	}
 
-	public static Image getImage( Runnable cb, AStack stk) {
+	public static Image getImage( Runnable cb, FItemStack stk) {
 		if (stk != null) {
 			return getImage( cb, stk.getKey(), stk.getNBT());
 		}

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
@@ -69,13 +68,11 @@ class BitInputStream {
 		return result;
 	}
 
-	public FFluidStack readFluidStack() {
+	public FCompound readFluidStack() {
 		if (readBoolean()) {
-			return new FFluidStack( readNBT());
+			return readNBT();
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 
 	public FItemStack readIconIf( FileVersion version) {

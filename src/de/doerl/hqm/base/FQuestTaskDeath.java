@@ -17,6 +17,6 @@ public final class FQuestTaskDeath extends AQuestTask {
 
 	@Override
 	public TaskTyp getTaskTyp() {
-		return TaskTyp.TASK_DEATH;
+		return TaskTyp.DEATH;
 	}
 }

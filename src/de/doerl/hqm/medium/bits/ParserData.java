@@ -63,7 +63,7 @@ class ParserData extends ADataWorker<Object, FileVersion> {
 		for (int i = 0; i < count; ++i) {
 			int progress = mSrc.readData( DataBitHelper.ITEM_PROGRESS);
 			if (i < requirements.size()) {
-				taskData.mProgress.add( Math.min( requirements.get( i).getCount(), Math.max( 0, progress)));
+				taskData.mProgress.add( Math.min( requirements.get( i).mAmount, Math.max( 0, progress)));
 			}
 		}
 		return null;

@@ -25,12 +25,12 @@ class TaskBoxItems extends ATaskBox {
 		mFloating.setPreferredSize( new Dimension( WIDTH, 4 * AEntity.ICON_SIZE));
 		add( AEntity.leafScoll( mFloating, HEIGHT));
 		switch (mTask.getTaskTyp()) {
-			case TASK_ITEMS_DETECT:
+			case DETECT:
 				add( Box.createVerticalStrut( AEntity.GAP));
 				add( AEntity.leafButtons( new LeafButton( "Manual detect")));
 				break;
-			case TASK_ITEMS_CONSUME:
-			case TASK_ITEMS_CONSUME_QDS:
+			case CONSUME:
+			case CONSUME_QDS:
 				add( Box.createVerticalStrut( AEntity.GAP));
 				add( AEntity.leafButtons( new LeafButton( "Manual submit"), new LeafButton( "Select task")));
 				break;
@@ -85,7 +85,7 @@ class TaskBoxItems extends ATaskBox {
 		@Override
 		protected Object doRequirement( ARequirement req, JPanel panel) {
 			LeafIcon leaf = new LeafIcon();
-			IconUpdate.create( leaf, req.getStack(), ICON_ZOOM, String.valueOf( req.getCount()));
+			IconUpdate.create( leaf, req.getStack(), req.getNBT(), ICON_ZOOM, String.valueOf( req.mAmount));
 			panel.add( leaf);
 			return null;
 		}

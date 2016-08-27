@@ -205,7 +205,7 @@ class EntityGroupTier extends AEntity<FGroupTier> {
 		else {
 			for (FItemStack stk : tier.mStacks) {
 				LeafIcon leaf = new LeafIcon();
-				IconUpdate.create( leaf, stk, ICON_ZOOM, String.valueOf( stk.getCount()));
+				IconUpdate.create( leaf, stk, ICON_ZOOM, String.valueOf( stk.getStackSize()));
 				mStacks.add( leaf);
 			}
 		}

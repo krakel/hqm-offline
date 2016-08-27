@@ -17,6 +17,6 @@ public final class FQuestTaskReputationKill extends AQuestTaskReputation {
 
 	@Override
 	public TaskTyp getTaskTyp() {
-		return TaskTyp.TASK_REPUTATION_KILL;
+		return TaskTyp.REPUTATION_KILL;
 	}
 }

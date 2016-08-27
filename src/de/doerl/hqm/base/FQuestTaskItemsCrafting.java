@@ -15,6 +15,6 @@ public final class FQuestTaskItemsCrafting extends AQuestTaskItems {
 
 	@Override
 	public TaskTyp getTaskTyp() {
-		return TaskTyp.TASK_ITEMS_CRAFTING;
+		return TaskTyp.CRAFTING;
 	}
 }

@@ -15,6 +15,6 @@ public final class FQuestTaskItemsConsume extends AQuestTaskItems {
 
 	@Override
 	public TaskTyp getTaskTyp() {
-		return TaskTyp.TASK_ITEMS_CONSUME;
+		return TaskTyp.CONSUME;
 	}
 }
