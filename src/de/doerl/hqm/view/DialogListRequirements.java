@@ -49,7 +49,7 @@ class DialogListRequirements extends ADialogStacks {
 			StackEntry e = mModel.get( i);
 			if (e.mItem) {
 				FItemRequirement req = task.createItemRequirement();
-				req.setStack( new FItemStack( e.mNbt, e.getName(), e.mDmg, 1));
+				req.setStack( new FItemStack( e.getName(), e.mDmg, 1, e.mNbt));
 				req.mAmount = e.mCount;
 				req.mPrecision = e.getPrecision();
 			}

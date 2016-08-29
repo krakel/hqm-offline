@@ -23,22 +23,19 @@ public final class FItemStack extends AStack {
 	private int mDmg;
 	private FCompound mNBT;
 
-	public FItemStack( FCompound nbt) {
+	private FItemStack() {
+		mStackSize = 1;
+		mDmg = 0;
+		mKey = OLD_ITEM + "0%" + mDmg;
+		mItem = ImageLoader.get( mKey, null);
+	}
+
+	private FItemStack( FCompound nbt) {
 		mNBT = nbt;
 		mStackSize = getValueInt( "Count", 1);
 		mDmg = getValueInt( "Damage", 0);
-		String old = OLD_ITEM + getValueID( "id", "0");
-		mKey = old + "%" + mDmg;
-		mItem = ImageLoader.get( mKey, mNBT);
-	}
-
-	public FItemStack( FCompound nbt, int id, int dmg, int size) {
-		mNBT = nbt;
-		mStackSize = size;
-		mDmg = dmg;
-		String name = "id:" + String.valueOf( id);
-		mKey = name + "%" + mDmg;
-		mItem = ImageLoader.get( mKey, mNBT);
+		mKey = OLD_ITEM + getValueID( "id", "0") + "%" + mDmg;
+		mItem = ImageLoader.get( mKey, nbt);
 	}
 
 	private FItemStack( FCompound nbt, Matcher mm) {
@@ -48,38 +45,63 @@ public final class FItemStack extends AStack {
 		mStackSize = Utils.parseInteger( mm.group( 2));
 		mDmg = Utils.parseInteger( mm.group( 3));
 		mKey = name + "%" + mDmg;
-		mItem = ImageLoader.get( mKey, mNBT);
+		mItem = ImageLoader.get( mKey, nbt);
 	}
 
-	public FItemStack( FCompound nbt, String name, int dmg, int size) {
+	private FItemStack( int dmg, int size, FCompound nbt) {
 		mNBT = nbt;
-		if (name != null) {
-			mStackSize = size;
-			mDmg = dmg;
-			mKey = name + "%" + mDmg;
-		}
-		else {
-			mStackSize = getValueInt( "Count", 1);
-			mDmg = getValueInt( "Damage", 0);
-			String old = OLD_ITEM + getValueID( "id", "0");
-			mKey = old + "%" + mDmg;
-		}
-		mItem = ImageLoader.get( mKey, mNBT);
+		mStackSize = getValueInt( "Count", 1);
+		mDmg = getValueInt( "Damage", 0);
+		mKey = OLD_ITEM + getValueID( "id", "0") + "%" + mDmg;
+		mItem = ImageLoader.get( mKey, nbt);
 	}
 
-	public FItemStack( int id, int dmg, int size) {
+	private FItemStack( int id, int dmg, int size) {
 		mStackSize = size;
 		mDmg = dmg;
-		String old = OLD_ITEM + String.valueOf( id);
-		mKey = old + "%" + mDmg;
-		mItem = ImageLoader.get( mKey, mNBT);
+		mKey = OLD_ITEM + String.valueOf( id) + "%" + mDmg;
+		mItem = ImageLoader.get( mKey, null);
+	}
+
+	private FItemStack( int id, int dmg, int size, FCompound nbt) {
+		this( id, dmg, size);
+		mNBT = nbt;
 	}
 
 	public FItemStack( String name, int dmg, int size) {
+		this( name, dmg, size, null);
+	}
+
+	public FItemStack( String name, int dmg, int size, FCompound nbt) {
 		mStackSize = size;
 		mDmg = dmg;
 		mKey = name + "%" + mDmg;
-		mItem = ImageLoader.get( mKey, mNBT);
+		mItem = ImageLoader.get( mKey, nbt);
+		mNBT = nbt;
+	}
+
+	public static FItemStack createOld() {
+		return new FItemStack();
+	}
+
+	public static FItemStack createOld( FCompound nbt) {
+		return new FItemStack( nbt);
+	}
+
+	public static FItemStack createOld( int dmg, int size) {
+		return new FItemStack( 0, dmg, size);
+	}
+
+	public static FItemStack createOld( int dmg, int size, FCompound nbt) {
+		return new FItemStack( dmg, size, nbt);
+	}
+
+	public static FItemStack createOld( int id, int dmg, int size) {
+		return new FItemStack( id, dmg, size);
+	}
+
+	public static FItemStack createOld( int id, int dmg, int size, FCompound nbt) {
+		return new FItemStack( id, dmg, size, nbt);
 	}
 
 	public static FItemStack parse( String sequence) {
@@ -108,7 +130,7 @@ public final class FItemStack extends AStack {
 			}
 		}
 		else if (nbt != null) {
-			return new FItemStack( NbtParser.parse( nbt));
+			return createOld( NbtParser.parse( nbt));
 		}
 		else {
 			return null;

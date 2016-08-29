@@ -235,11 +235,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		if (obj != null) {
 			return readItemStack( obj);
 		}
-		String str = FValue.toString( json);
-		if (str != null) {
-			return FItemStack.parse( str);
-		}
-		return null;
+		return FItemStack.parse( FValue.toString( json));
 	}
 
 	private FItemStack readItemStack( FObject obj) {
@@ -247,7 +243,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		String id = FValue.toString( obj.get( IToken.ITEM_ID));
 		int dmg = FValue.toInt( obj.get( IToken.ITEM_DAMAGE));
 		int size = FValue.toInt( obj.get( IToken.ITEM_SIZE));
-		return new FItemStack( nbt, id, dmg, size);
+		return new FItemStack( id, dmg, size, nbt);
 	}
 
 	private void readMarker( FReputation rep, FArray arr) {
@@ -365,12 +361,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					param.add( readItemStack( obj));
 				}
 				else {
-					String str = FValue.toString( json);
-					if (str != null) {
-						param.add( FItemStack.parse( str));
-					}
-					else {
-						param.add( new FItemStack( null));
+					FItemStack item = FItemStack.parse( FValue.toString( json));
+					if (item != null) {
+						param.add( item);
 					}
 				}
 			}

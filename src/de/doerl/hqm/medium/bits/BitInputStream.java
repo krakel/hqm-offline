@@ -102,7 +102,7 @@ class BitInputStream {
 			return readItemStackName( withSize, version);
 		}
 		else {
-			return readItemStackID( withSize);
+			return readItemStackOldID( withSize);
 		}
 	}
 
@@ -112,23 +112,11 @@ class BitInputStream {
 		}
 		else {
 			if (readBoolean()) {
-				return new FItemStack( readNBT());
+				return FItemStack.createOld( readNBT());
 			}
 			else {
-				return null;
+				return FItemStack.createOld();
 			}
-		}
-	}
-
-	private FItemStack readItemStackID( boolean withSize) {
-		int id = readData( DataBitHelper.SHORT);
-		int size = withSize ? readData( DataBitHelper.SHORT) : 1;
-		int dmg = readData( DataBitHelper.SHORT);
-		if (readBoolean()) {
-			return new FItemStack( readNBT(), id, dmg, size);
-		}
-		else {
-			return new FItemStack( id, dmg, size);
 		}
 	}
 
@@ -136,11 +124,33 @@ class BitInputStream {
 		String name = readString( DataBitHelper.SHORT);
 		int size = withSize ? readData( DataBitHelper.SHORT) : 1;
 		int dmg = readData( DataBitHelper.SHORT);
-		if (readBoolean()) {
-			return new FItemStack( readNBT(), name, dmg, size);
+		if (name != null) {
+			if (readBoolean()) {
+				return new FItemStack( name, dmg, size, readNBT());
+			}
+			else {
+				return new FItemStack( name, dmg, size);
+			}
 		}
 		else {
-			return new FItemStack( name, dmg, size);
+			if (readBoolean()) {
+				return FItemStack.createOld( dmg, size, readNBT());
+			}
+			else {
+				return FItemStack.createOld( dmg, size);
+			}
+		}
+	}
+
+	private FItemStack readItemStackOldID( boolean withSize) {
+		int id = readData( DataBitHelper.SHORT);
+		int size = withSize ? readData( DataBitHelper.SHORT) : 1;
+		int dmg = readData( DataBitHelper.SHORT);
+		if (readBoolean()) {
+			return FItemStack.createOld( id, dmg, size, readNBT());
+		}
+		else {
+			return FItemStack.createOld( id, dmg, size);
 		}
 	}
 

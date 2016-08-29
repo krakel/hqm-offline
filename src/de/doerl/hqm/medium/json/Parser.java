@@ -73,7 +73,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private void addPost( FQuest quest, Integer id) {
 		ArrayList<FQuest> p = mPosts.get( id);
 		if (p == null) {
-			p = new ArrayList<FQuest>();
+			p = new ArrayList<>();
 			mPosts.put( id, p);
 		}
 		p.add( quest);
@@ -222,11 +222,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			String nbt = FValue.toString( arr.get( IToken.ITEM_NBT));
 			return FItemStack.parse( seq, nbt);
 		}
-		String str = FValue.toString( json);
-		if (str != null) {
-			return FItemStack.parse( str);
-		}
-		return null;
+		return FItemStack.parse( FValue.toString( json));
 	}
 
 	private void readLanguages( FHqm hqm, FArray arr) {
@@ -451,12 +447,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					param.add( FItemStack.parse( seq, nbt));
 				}
 				else {
-					String str = FValue.toString( json);
-					if (str != null) {
-						param.add( FItemStack.parse( str));
-					}
-					else {
-						param.add( new FItemStack( null));
+					FItemStack item = FItemStack.parse( FValue.toString( json));
+					if (item != null) {
+						param.add( item);
 					}
 				}
 			}
