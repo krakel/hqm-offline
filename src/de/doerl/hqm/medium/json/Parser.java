@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.FFluidRequirement;
+import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
@@ -54,9 +57,12 @@ import de.doerl.hqm.utils.json.FArray;
 import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.FValue;
 import de.doerl.hqm.utils.json.IJson;
+import de.doerl.hqm.utils.nbt.NbtParser;
 
-class Parser extends AHQMWorker<Object, FObject> implements IToken {
+public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
+	private static final Pattern PATTERN_FLUID = Pattern.compile( "(.*?) amount\\((\\d*)\\)");
+	private static final Pattern PATTERN_ITEM = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)");
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, ArrayList<FQuest>> mPosts = new HashMap<>();
@@ -68,6 +74,21 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		mLang = lang;
 		mMain = withMain;
 		mDocu = withDocu;
+	}
+
+	public static FItemStack parseItemStack( String sequence, String nbt) {
+		try {
+			Matcher mm = PATTERN_ITEM.matcher( sequence);
+			mm.find();
+			String name = mm.group( 1);
+			int size = Utils.parseInteger( mm.group( 2));
+			int dmg = Utils.parseInteger( mm.group( 3));
+			return new FItemStack( name, dmg, size, NbtParser.parse( nbt));
+		}
+		catch (RuntimeException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+		return new FItemStack( "item:unknown", 0, 0, null);
 	}
 
 	private void addPost( FQuest quest, Integer id) {
@@ -215,14 +236,21 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		}
 	}
 
-	private FItemStack readIcon( IJson json) {
+	private FItemStack readItem( IJson json) {
 		FObject arr = FObject.to( json);
 		if (arr != null) {
 			String seq = FValue.toString( arr.get( IToken.ITEM_OBJECT));
-			String nbt = FValue.toString( arr.get( IToken.ITEM_NBT));
-			return FItemStack.parse( seq, nbt);
+			if (seq != null) {
+				return parseItemStack( seq, FValue.toString( arr.get( IToken.ITEM_NBT)));
+			}
 		}
-		return FItemStack.parse( FValue.toString( json));
+		else {
+			String seq = FValue.toString( json);
+			if (seq != null) {
+				return parseItemStack( seq, null);
+			}
+		}
+		return null;
 	}
 
 	private void readLanguages( FHqm hqm, FArray arr) {
@@ -318,7 +346,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						quest.mX = FValue.toInt( obj.get( IToken.QUEST_X));
 						quest.mY = FValue.toInt( obj.get( IToken.QUEST_Y));
 						quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));
-						quest.mIcon = readIcon( obj.get( IToken.QUEST_ICON));
+						quest.mIcon = readItem( obj.get( IToken.QUEST_ICON));
 						readQuestArr( quest, mRequirements, FArray.to( obj.get( IToken.QUEST_REQUIREMENTS)), true);
 						readQuestArr( quest, mOptionLinks, FArray.to( obj.get( IToken.QUEST_OPTION_LINKS)), false);
 						readQuestInfo( quest.mRepeatInfo, FObject.to( obj.get( IToken.QUEST_REPEAT_INFO)));
@@ -440,17 +468,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private void readStacks( ArrayList<FItemStack> param, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
-				FObject obj = FObject.to( json);
-				if (obj != null) {
-					String seq = FValue.toString( obj.get( IToken.ITEM_OBJECT));
-					String nbt = FValue.toString( obj.get( IToken.ITEM_NBT));
-					param.add( FItemStack.parse( seq, nbt));
-				}
-				else {
-					FItemStack item = FItemStack.parse( FValue.toString( json));
-					if (item != null) {
-						param.add( item);
-					}
+				FItemStack item = readItem( json);
+				if (item != null) {
+					param.add( item);
 				}
 			}
 		}
@@ -461,16 +481,29 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
-					String sequence = FValue.toString( obj.get( IToken.ITEM_OBJECT));
-					if (sequence != null) {
-						FItemRequirement item = task.createItemRequirement();
-						item.setStack( FItemStack.parse( sequence, FValue.toString( obj.get( IToken.ITEM_NBT))));
-						item.mAmount = FValue.toInt( obj.get( IToken.REQUIREMENT_REQUIRED));
-						item.mPrecision = ItemPrecision.parse( FValue.toString( obj.get( IToken.REQUIREMENT_PRECISION)));
+					String itemSeq = FValue.toString( obj.get( IToken.ITEM_OBJECT));
+					if (itemSeq != null) {
+						FItemRequirement itemReq = task.createItemRequirement();
+						itemReq.setStack( parseItemStack( itemSeq, FValue.toString( obj.get( IToken.ITEM_NBT))));
+						itemReq.mAmount = FValue.toInt( obj.get( IToken.REQUIREMENT_REQUIRED));
+						itemReq.mPrecision = ItemPrecision.parse( FValue.toString( obj.get( IToken.REQUIREMENT_PRECISION)));
 					}
 					else {
-						FFluidRequirement fluid = task.createFluidRequirement();
-						fluid.parse( obj);
+						String fluidSeq = FValue.toString( obj.get( IToken.FLUID_OBJECT));
+						if (fluidSeq != null) {
+							FFluidRequirement fluidReq = task.createFluidRequirement();
+							try {
+								Matcher mm = PATTERN_FLUID.matcher( fluidSeq);
+								mm.find();
+								fluidReq.setStack( new FFluidStack( mm.group( 1)));
+								fluidReq.mAmount = Utils.parseInteger( mm.group( 2));
+							}
+							catch (RuntimeException ex) {
+								Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", fluidSeq);
+								fluidReq.setStack( new FFluidStack( "item:unknown"));
+								fluidReq.mAmount = 1;
+							}
+						}
 					}
 				}
 			}
@@ -498,7 +531,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						loc.setName( mLang, FValue.toString( obj.get( IToken.LOCATION_NAME)));
 					}
 					if (mMain) {
-						loc.mIcon = readIcon( obj.get( IToken.LOCATION_ICON));
+						loc.mIcon = readItem( obj.get( IToken.LOCATION_ICON));
 						loc.mX = FValue.toInt( obj.get( IToken.LOCATION_X));
 						loc.mY = FValue.toInt( obj.get( IToken.LOCATION_Y));
 						loc.mZ = FValue.toInt( obj.get( IToken.LOCATION_Z));
@@ -532,7 +565,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						mob.setName( mLang, FValue.toString( obj.get( IToken.MOB_NAME)));
 					}
 					if (mMain) {
-						mob.mIcon = readIcon( obj.get( IToken.MOB_ICON));
+						mob.mIcon = readItem( obj.get( IToken.MOB_ICON));
 						mob.mMob = FValue.toString( obj.get( IToken.MOB_OBJECT));
 						mob.mKills = FValue.toInt( obj.get( IToken.MOB_COUNT));
 						mob.mExact = FValue.toBoolean( obj.get( IToken.MOB_EXACT));

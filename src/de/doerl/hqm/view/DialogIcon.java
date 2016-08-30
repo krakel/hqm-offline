@@ -50,7 +50,7 @@ class DialogIcon extends ADialog {
 
 	private FItemStack getResult() {
 		if (mItem != null) {
-			return new FItemStack( mItem.mName, mItem.mDamage, 1);
+			return new FItemStack( mItem.mName, mItem.mDamage, 1, null);
 		}
 		else {
 			return null;

@@ -208,7 +208,7 @@ class DialogListLocations extends ADialogList<FLocation> {
 		private void updateResult( FLocation entry) {
 			String icon = mIcon.getText();
 			if (Utils.validString( icon)) {
-				entry.mIcon = new FItemStack( icon, Utils.parseInteger( mIconDmg.getText(), 0), 1);
+				entry.mIcon = new FItemStack( icon, Utils.parseInteger( mIconDmg.getText(), 0), 1, null);
 			}
 			else {
 				entry.mIcon = null;

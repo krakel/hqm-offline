@@ -89,7 +89,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	@Override
 	public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
 		mDst.beginObject();
-		mDst.print( FLUID_OBJECT, fluid.getStack());
+		mDst.print( FLUID_OBJECT, fluid);
 		mDst.endObject();
 		return null;
 	}

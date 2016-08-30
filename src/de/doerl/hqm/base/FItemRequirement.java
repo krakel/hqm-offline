@@ -31,16 +31,14 @@ public final class FItemRequirement extends ARequirement {
 		if (mNBT != null) {
 			return mNBT;
 		}
-		else if (mStack.isOldItem()) {
+		if (mStack.isOldItem()) {
 			int id = Utils.parseInteger( mStack.getName(), 0);
 			return FCompound.create( FLong.createShort( "id", id), FLong.createShort( "Damage", mStack.getDamage()), FLong.createByte( "Amount", mAmount));
 		}
-		else if (mStack.getName() != null) {
-			return null;
-		}
-		else {
+		if (mStack.getName() == null) {
 			return FCompound.create();
 		}
+		return null;
 	}
 
 	@Override
@@ -55,5 +53,10 @@ public final class FItemRequirement extends ARequirement {
 
 	public void setStack( FItemStack stack) {
 		mStack = stack;
+	}
+
+	@Override
+	public String toString() {
+		return String.format( "%s amount(%d)", mStack, mAmount);
 	}
 }

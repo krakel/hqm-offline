@@ -79,7 +79,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	private void addPost( FQuest quest, Integer req) {
 		ArrayList<FQuest> p = mPosts.get( req);
 		if (p == null) {
-			p = new ArrayList<FQuest>();
+			p = new ArrayList<>();
 			mPosts.put( req, p);
 		}
 		p.add( quest);
@@ -106,14 +106,14 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 
 	@Override
 	public Object forFluidRequirement( FFluidRequirement fluid, FileVersion version) {
-		FCompound nbt = mSrc.readFluidStack();
+		FCompound nbt = mSrc.readNBT();
 		if (nbt != null) {
 			ANbt json = nbt.get( "FluidName");
-			if (json == null) {
-				fluid.setStack( new FFluidStack( FLong.toInt( nbt.get( "id"), 0)));
+			if (json != null) {
+				fluid.setStack( new FFluidStack( FString.to( json, "unknown.fluid")));
 			}
 			else {
-				fluid.setStack( new FFluidStack( FString.to( json, "unknown.fluid")));
+				fluid.setStack( FFluidStack.applyOld( FLong.toInt( nbt.get( "id"), 0)));
 			}
 			fluid.mAmount = FLong.toInt( nbt.get( "Amount"), 1);
 		}

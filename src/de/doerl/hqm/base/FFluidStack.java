@@ -1,19 +1,21 @@
 package de.doerl.hqm.base;
 
 public final class FFluidStack extends AStack {
-	private static final String FLUID_MOD = "fluid:";
-	private static final String OLD_FLUID = "id:";
 	private String mKey;
 	private String mName;
 
-	public FFluidStack( int id) {
-		mName = OLD_FLUID + id;
+	private FFluidStack( int id) {
+		mName = "id:" + id;
 		mKey = mName + "%0";
 	}
 
 	public FFluidStack( String name) {
-		mName = FLUID_MOD + name;
+		mName = "fluid:" + name;
 		mKey = mName + "%0";
+	}
+
+	public static FFluidStack applyOld( int id) {
+		return new FFluidStack( id);
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public final class FFluidStack extends AStack {
 	}
 
 	public boolean isOldFluid() {
-		return mKey.startsWith( OLD_FLUID);
+		return mKey.startsWith( "id:");
 	}
 
 	@Override

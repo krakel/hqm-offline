@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
@@ -54,6 +56,7 @@ import de.doerl.hqm.utils.nbt.NbtParser;
 
 class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
+	private static final Pattern PATTERN_ITEM = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)");
 	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
 	private HashMap<Integer, ArrayList<FQuest>> mPosts = new HashMap<>();
@@ -63,6 +66,21 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	public Parser( FLanguage lang, File base) {
 		mLang = lang;
 		mBase = base;
+	}
+
+	public static FItemStack parseItemStack( String sequence, String nbt) {
+		try {
+			Matcher mm = PATTERN_ITEM.matcher( sequence);
+			mm.find();
+			String name = mm.group( 1);
+			int size = Utils.parseInteger( mm.group( 2));
+			int dmg = Utils.parseInteger( mm.group( 3));
+			return new FItemStack( name, dmg, size, NbtParser.parse( nbt));
+		}
+		catch (RuntimeException ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+		return new FItemStack( "item:unknown", 0, 0, null);
 	}
 
 	private void addPost( FQuest quest, Integer id) {
@@ -235,7 +253,11 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		if (obj != null) {
 			return readItemStack( obj);
 		}
-		return FItemStack.parse( FValue.toString( json));
+		String seq = FValue.toString( json);
+		if (seq != null) {
+			return parseItemStack( seq, null);
+		}
+		return null;
 	}
 
 	private FItemStack readItemStack( FObject obj) {
@@ -361,9 +383,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					param.add( readItemStack( obj));
 				}
 				else {
-					FItemStack item = FItemStack.parse( FValue.toString( json));
-					if (item != null) {
-						param.add( item);
+					String seq = FValue.toString( json);
+					if (seq != null) {
+						param.add( parseItemStack( seq, null));
 					}
 				}
 			}
