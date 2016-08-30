@@ -1,5 +1,6 @@
 package de.doerl.hqm.base;
 
+import de.doerl.hqm.utils.ToString;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.ItemNEI;
@@ -111,6 +112,13 @@ public final class FItemStack extends AStack {
 
 	@Override
 	public String toString() {
-		return String.format( "%s size(%d) dmg(%d)", mItem.mName, mStackSize, mDmg);
+		ToString sb = new ToString( this);
+		sb.appendMsg( "key", mKey);
+		sb.appendMsg( "dmg", mDmg);
+		sb.appendMsg( "size", mStackSize);
+		if (mNBT != null) {
+			sb.appendMsg( "nbt", mNBT);
+		}
+		return sb.toString();
 	}
 }

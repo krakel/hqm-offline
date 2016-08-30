@@ -8,6 +8,7 @@ import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.FFluidRequirement;
+import de.doerl.hqm.base.FFluidStack;
 import de.doerl.hqm.base.FGroup;
 import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FGroupTierCat;
@@ -40,6 +41,10 @@ import de.doerl.hqm.base.dispatch.SizeOfGroups;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.quest.TriggerType;
+import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.FLong;
+import de.doerl.hqm.utils.nbt.FString;
 
 class Serializer extends AHQMWorker<Object, FileVersion> {
 //	private static final Logger LOGGER = Logger.getLogger( Serializer.class.getName());
@@ -81,7 +86,16 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 	@Override
 	public Object forFluidRequirement( FFluidRequirement fluid, FileVersion version) {
 		mDst.writeBoolean( false);
-		mDst.writeFluidNBT( fluid.getNBT());
+		FFluidStack stk = fluid.getStack();
+		String name = stk.getName();
+		if (stk.isOldFluid()) {
+			int id = Utils.parseInteger( name, 0);
+			mDst.writeNBT( FCompound.create( FLong.createShort( "id", id), FLong.createInt( "Amount", fluid.mAmount)));
+		}
+		else {
+			int pos = name.indexOf( ':') + 1;
+			mDst.writeNBT( FCompound.create( FString.create( "FluidName", name.substring( pos)), FLong.createInt( "Amount", fluid.mAmount)));
+		}
 		return null;
 	}
 

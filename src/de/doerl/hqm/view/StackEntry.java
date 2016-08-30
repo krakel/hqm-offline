@@ -7,7 +7,7 @@ import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.NbtParser;
 
 class StackEntry {
-	public boolean mItem;
+	public boolean mIsItem;
 	private String mKey;
 	private String mName;
 	private String mDisplay;
@@ -17,7 +17,7 @@ class StackEntry {
 	private ItemPrecision mPrecision;
 
 	public StackEntry() {
-		mItem = true;
+		mIsItem = true;
 		setName( "name");
 		mDisplay = "display";
 		mCount = 1;
@@ -26,8 +26,8 @@ class StackEntry {
 		updateKey();
 	}
 
-	public StackEntry( boolean item, FCompound nbt, AStack stk, int count, ItemPrecision precition) {
-		mItem = item;
+	public StackEntry( boolean isItem, FCompound nbt, AStack stk, int count, ItemPrecision precition) {
+		mIsItem = isItem;
 		mKey = stk.getKey();
 		mDisplay = stk.getDisplay();
 		setName( stk.getName());
@@ -37,8 +37,8 @@ class StackEntry {
 		setPrecision( precition);
 	}
 
-	public StackEntry( boolean item, String name, int dmg, String area, int count, ItemPrecision precition) {
-		mItem = item;
+	public StackEntry( boolean isItem, String name, int dmg, String area, int count, ItemPrecision precition) {
+		mIsItem = isItem;
 		setName( name);
 		mDisplay = name;
 		mDmg = dmg;

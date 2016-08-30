@@ -3,10 +3,8 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.ItemPrecision;
-import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.ToString;
 import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.FLong;
-import de.doerl.hqm.utils.nbt.FString;
 
 public final class FFluidRequirement extends ARequirement {
 //	private static final Logger LOGGER = Logger.getLogger( FFluidRequirement.class.getName());
@@ -28,15 +26,7 @@ public final class FFluidRequirement extends ARequirement {
 
 	@Override
 	public FCompound getNBT() {
-		String name = mStack.getName();
-		if (mStack.isOldFluid()) {
-			int id = Utils.parseInteger( name, 0);
-			return FCompound.create( FLong.createShort( "id", id), FLong.createInt( "Amount", mAmount));
-		}
-		else {
-			int pos = name.indexOf( ':') + 1;
-			return FCompound.create( FString.create( "FluidName", name.substring( pos)), FLong.createInt( "Amount", mAmount));
-		}
+		return null;
 	}
 
 	@Override
@@ -55,6 +45,9 @@ public final class FFluidRequirement extends ARequirement {
 
 	@Override
 	public String toString() {
-		return String.format( "%s amount(%d)", mStack.getName(), mAmount);
+		ToString sb = new ToString( this);
+		sb.appendMsg( "stack", mStack);
+		sb.appendMsg( "amount", mAmount);
+		return sb.toString();
 	}
 }

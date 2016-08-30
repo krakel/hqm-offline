@@ -3,6 +3,7 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.MaxIdOf;
 import de.doerl.hqm.quest.ElementTyp;
+import de.doerl.hqm.utils.ToString;
 
 public final class FMarker extends AIdent implements Comparable<FMarker>, IElement {
 	private static final String BASE = "mark";
@@ -28,6 +29,7 @@ public final class FMarker extends AIdent implements Comparable<FMarker>, IEleme
 		return w.forMarker( this, p);
 	}
 
+	@Override
 	public int compareTo( FMarker other) {
 		return Integer.compare( mMark, other.mMark);
 	}
@@ -74,6 +76,9 @@ public final class FMarker extends AIdent implements Comparable<FMarker>, IEleme
 
 	@Override
 	public String toString() {
-		return String.format( "%s(%d)", getName(), mMark);
+		ToString sb = new ToString( this);
+		sb.appendMsg( "name", getName());
+		sb.appendMsg( "mark", mMark);
+		return sb.toString();
 	}
 }

@@ -3,9 +3,8 @@ package de.doerl.hqm.base;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.ItemPrecision;
-import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.ToString;
 import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.FLong;
 
 public final class FItemRequirement extends ARequirement {
 	private FItemStack mStack;
@@ -27,18 +26,7 @@ public final class FItemRequirement extends ARequirement {
 
 	@Override
 	public FCompound getNBT() {
-		FCompound mNBT = mStack.getNBT();
-		if (mNBT != null) {
-			return mNBT;
-		}
-		if (mStack.isOldItem()) {
-			int id = Utils.parseInteger( mStack.getName(), 0);
-			return FCompound.create( FLong.createShort( "id", id), FLong.createShort( "Damage", mStack.getDamage()), FLong.createByte( "Amount", mAmount));
-		}
-		if (mStack.getName() == null) {
-			return FCompound.create();
-		}
-		return null;
+		return mStack.getNBT();
 	}
 
 	@Override
@@ -57,6 +45,10 @@ public final class FItemRequirement extends ARequirement {
 
 	@Override
 	public String toString() {
-		return String.format( "%s amount(%d)", mStack, mAmount);
+		ToString sb = new ToString( this);
+		sb.appendMsg( "stack", mStack);
+		sb.appendMsg( "amount", mAmount);
+		sb.appendMsg( "precision", mPrecision);
+		return sb.toString();
 	}
 }

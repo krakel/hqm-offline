@@ -96,7 +96,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 		mName.setText( entry.getName());
 		mDmg.setText( String.valueOf( entry.mDmg));
 		mCount.setText( String.valueOf( entry.mCount));
-		mItem.setSelected( entry.mItem);
+		mItem.setSelected( entry.mIsItem);
 		mPrec.setSelectedItem( entry.getPrecision());
 		mArea.setText( entry.getNbtStr());
 		return showEditor();

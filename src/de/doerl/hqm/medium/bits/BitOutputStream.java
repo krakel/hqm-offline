@@ -62,10 +62,6 @@ class BitOutputStream {
 		mBits += count;
 	}
 
-	public void writeFluidNBT( FCompound nbt) {
-		writeNBT( NbtWriter.write( nbt));
-	}
-
 	public void writeIconIf( FItemStack stk, FileVersion version) {
 		if (stk != null) {
 			writeBoolean( true);
@@ -92,7 +88,7 @@ class BitOutputStream {
 			writeItemStackName( stk, withSize);
 		}
 		else {
-			writeItemStackID( stk, withSize);
+			writeItemStackOldID( stk, withSize);
 		}
 	}
 
@@ -101,17 +97,8 @@ class BitOutputStream {
 			writeItemStackDef( stk, true, version);
 		}
 		else {
-			writeNBT( NbtWriter.write( stk.getNBT()));
+			writeNBT( stk.getNBT());
 		}
-	}
-
-	private void writeItemStackID( FItemStack stk, boolean withSize) {
-		writeData( Utils.parseInteger( stk.getName()), DataBitHelper.SHORT);
-		if (withSize) {
-			writeData( stk.getStackSize(), DataBitHelper.SHORT);
-		}
-		writeData( stk.getDamage(), DataBitHelper.SHORT);
-		writeNBT( NbtWriter.write( stk.getNBT()));
 	}
 
 	private void writeItemStackName( FItemStack stk, boolean withSize) {
@@ -120,15 +107,25 @@ class BitOutputStream {
 			writeData( stk.getStackSize(), DataBitHelper.SHORT);
 		}
 		writeData( stk.getDamage(), DataBitHelper.SHORT);
-		writeNBT( NbtWriter.write( stk.getNBT()));
+		writeNBT( stk.getNBT());
 	}
 
-	public void writeNBT( byte[] nbt) {
-		if (nbt != null) {
+	private void writeItemStackOldID( FItemStack stk, boolean withSize) {
+		writeData( Utils.parseInteger( stk.getName()), DataBitHelper.SHORT);
+		if (withSize) {
+			writeData( stk.getStackSize(), DataBitHelper.SHORT);
+		}
+		writeData( stk.getDamage(), DataBitHelper.SHORT);
+		writeNBT( stk.getNBT());
+	}
+
+	public void writeNBT( FCompound nbt) {
+		byte[] arr = NbtWriter.write( nbt);
+		if (arr != null) {
 			writeBoolean( true);
-			writeData( nbt.length, DataBitHelper.NBT_LENGTH);
-			for (int i = 0; i < nbt.length; ++i) {
-				writeByte( nbt[i]);
+			writeData( arr.length, DataBitHelper.NBT_LENGTH);
+			for (int i = 0; i < arr.length; ++i) {
+				writeByte( arr[i]);
 			}
 		}
 		else {

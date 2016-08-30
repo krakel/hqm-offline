@@ -94,7 +94,7 @@ class ReportRequirement extends AReport {
 		@Override
 		public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
 			FFluidStack stack = fluid.getStack();
-			Item key = new Item( stack.getName(), stack.getDamage(), fluid.getNBT());
+			Item key = new Item( stack.getName(), stack.getDamage(), null);
 			Integer old = mMap.get( key);
 			if (old != null) {
 				mMap.put( key, old + fluid.mAmount);

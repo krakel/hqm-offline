@@ -76,19 +76,23 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		mDocu = withDocu;
 	}
 
-	public static FItemStack parseItemStack( String sequence, String nbt) {
-		try {
-			Matcher mm = PATTERN_ITEM.matcher( sequence);
-			mm.find();
-			String name = mm.group( 1);
-			int size = Utils.parseInteger( mm.group( 2));
-			int dmg = Utils.parseInteger( mm.group( 3));
-			return new FItemStack( name, dmg, size, NbtParser.parse( nbt));
+	public static FItemStack parseItemStack( String itemSeq, String nbt) {
+		Matcher mm = PATTERN_ITEM.matcher( itemSeq);
+		if (mm.find()) {
+			try {
+				String name = mm.group( 1);
+				int size = Utils.parseInteger( mm.group( 2));
+				int dmg = Utils.parseInteger( mm.group( 3));
+				return new FItemStack( name, dmg, size, NbtParser.parse( nbt));
+			}
+			catch (RuntimeException ex) {
+				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", itemSeq);
+			}
+			return new FItemStack( "item:unknown", 0, 1, null);
 		}
-		catch (RuntimeException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		else {
+			return new FItemStack( itemSeq, 0, 1, NbtParser.parse( nbt));
 		}
-		return new FItemStack( "item:unknown", 0, 0, null);
 	}
 
 	private void addPost( FQuest quest, Integer id) {
@@ -103,7 +107,7 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	@Override
 	protected Object doTaskItems( AQuestTaskItems task, FObject obj) {
 		if (mMain) {
-			readTaskItems( task, FArray.to( obj.get( IToken.TASK_REQUIREMENTS)));
+			readTaskRequirements( task, FArray.to( obj.get( IToken.TASK_REQUIREMENTS)));
 		}
 		return null;
 	}
@@ -476,40 +480,6 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		}
 	}
 
-	private void readTaskItems( AQuestTaskItems task, FArray arr) {
-		if (arr != null) {
-			for (IJson json : arr) {
-				FObject obj = FObject.to( json);
-				if (obj != null) {
-					String itemSeq = FValue.toString( obj.get( IToken.ITEM_OBJECT));
-					if (itemSeq != null) {
-						FItemRequirement itemReq = task.createItemRequirement();
-						itemReq.setStack( parseItemStack( itemSeq, FValue.toString( obj.get( IToken.ITEM_NBT))));
-						itemReq.mAmount = FValue.toInt( obj.get( IToken.REQUIREMENT_REQUIRED));
-						itemReq.mPrecision = ItemPrecision.parse( FValue.toString( obj.get( IToken.REQUIREMENT_PRECISION)));
-					}
-					else {
-						String fluidSeq = FValue.toString( obj.get( IToken.FLUID_OBJECT));
-						if (fluidSeq != null) {
-							FFluidRequirement fluidReq = task.createFluidRequirement();
-							try {
-								Matcher mm = PATTERN_FLUID.matcher( fluidSeq);
-								mm.find();
-								fluidReq.setStack( new FFluidStack( mm.group( 1)));
-								fluidReq.mAmount = Utils.parseInteger( mm.group( 2));
-							}
-							catch (RuntimeException ex) {
-								Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", fluidSeq);
-								fluidReq.setStack( new FFluidStack( "item:unknown"));
-								fluidReq.mAmount = 1;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
 	private void readTaskLocations( FQuestTaskLocation task, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
@@ -609,6 +579,43 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						}
 					}
 					res.mInverted = FValue.toBoolean( obj.get( IToken.SETTING_INVERTED));
+				}
+			}
+		}
+	}
+
+	private void readTaskRequirements( AQuestTaskItems task, FArray arr) {
+		if (arr != null) {
+			for (IJson json : arr) {
+				FObject obj = FObject.to( json);
+				if (obj != null) {
+					String itemSeq = FValue.toString( obj.get( IToken.ITEM_OBJECT));
+					if (itemSeq != null) {
+						FItemRequirement itemReq = task.createItemRequirement();
+						itemReq.setStack( parseItemStack( itemSeq, FValue.toString( obj.get( IToken.ITEM_NBT))));
+						itemReq.mAmount = FValue.toInt( obj.get( IToken.REQUIREMENT_REQUIRED));
+						itemReq.mPrecision = ItemPrecision.parse( FValue.toString( obj.get( IToken.REQUIREMENT_PRECISION)));
+					}
+					else {
+						FFluidRequirement fluidReq = task.createFluidRequirement();
+						String fluidSeq = FValue.toString( obj.get( IToken.FLUID_OBJECT), "fluid:unknown");
+						Matcher mm = PATTERN_FLUID.matcher( fluidSeq);
+						if (mm.find()) {
+							try {
+								fluidReq.setStack( new FFluidStack( mm.group( 1)));
+								fluidReq.mAmount = Utils.parseInteger( mm.group( 2));
+							}
+							catch (RuntimeException ex) {
+								Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", fluidSeq);
+								fluidReq.setStack( new FFluidStack( "fluid:unknown"));
+								fluidReq.mAmount = 1;
+							}
+						}
+						else {
+							fluidReq.setStack( new FFluidStack( fluidSeq));
+							fluidReq.mAmount = FValue.toInt( obj.get( IToken.REQUIREMENT_REQUIRED));
+						}
+					}
 				}
 			}
 		}

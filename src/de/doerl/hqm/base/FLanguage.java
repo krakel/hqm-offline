@@ -1,5 +1,7 @@
 package de.doerl.hqm.base;
 
+import de.doerl.hqm.utils.ToString;
+
 public final class FLanguage {
 	public final FHqm mParentHQM;
 	public String mLocale;
@@ -11,6 +13,8 @@ public final class FLanguage {
 
 	@Override
 	public String toString() {
-		return mLocale;
+		ToString sb = new ToString( this);
+		sb.appendMsg( "locale", mLocale);
+		return sb.toString();
 	}
 }

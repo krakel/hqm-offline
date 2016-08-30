@@ -2,6 +2,8 @@ package de.doerl.hqm.base;
 
 import java.util.HashMap;
 
+import de.doerl.hqm.utils.ToString;
+
 public abstract class ANamed extends ABase {
 	private HashMap<FLanguage, LocaleInfo> mInfo = new HashMap<>();
 
@@ -61,8 +63,23 @@ public abstract class ANamed extends ABase {
 		addLocale( getHqm().mMain).mInfo1 = name;
 	}
 
+	@Override
+	public String toString() {
+		ToString sb = new ToString( this);
+		sb.appendMsg( "info", mInfo);
+		return sb.toString();
+	}
+
 	protected static class LocaleInfo {
 		public String mInfo1 = "unknown";
 		public String mInfo2 = "unknown";
+
+		@Override
+		public String toString() {
+			ToString sb = new ToString( this);
+			sb.appendMsg( "info1", mInfo1);
+			sb.appendMsg( "info2", mInfo2);
+			return sb.toString();
+		}
 	}
 }

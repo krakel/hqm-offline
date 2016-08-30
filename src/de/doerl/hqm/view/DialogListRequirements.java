@@ -47,7 +47,7 @@ class DialogListRequirements extends ADialogStacks {
 		ArrayList<ARequirement> result = new ArrayList<>();
 		for (int i = 0; i < mModel.size(); ++i) {
 			StackEntry e = mModel.get( i);
-			if (e.mItem) {
+			if (e.mIsItem) {
 				FItemRequirement req = task.createItemRequirement();
 				req.setStack( new FItemStack( e.getName(), e.mDmg, 1, e.mNbt));
 				req.mAmount = e.mCount;

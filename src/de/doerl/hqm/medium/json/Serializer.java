@@ -37,6 +37,7 @@ import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
 
 class Serializer extends AHQMWorker<Object, Object> implements IToken {
+	private static final String PATTERN_ITEM = "%s size(%d) dmg(%d)";
 	private JsonWriter mDst;
 	private FLanguage mLang;
 	private boolean mMain;
@@ -89,7 +90,8 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	@Override
 	public Object forFluidRequirement( FFluidRequirement fluid, Object p) {
 		mDst.beginObject();
-		mDst.print( FLUID_OBJECT, fluid);
+		mDst.print( FLUID_OBJECT, fluid.getStack().getName());
+		mDst.print( REQUIREMENT_REQUIRED, fluid.mAmount);
 		mDst.endObject();
 		return null;
 	}
@@ -128,8 +130,9 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	@Override
 	public Object forItemRequirement( FItemRequirement item, Object p) {
 		mDst.beginObject();
-		mDst.print( ITEM_OBJECT, item.getStack());
-		String nbt = item.getStack().getNbtStr();
+		FItemStack stk = item.getStack();
+		mDst.print( ITEM_OBJECT, String.format( PATTERN_ITEM, stk.getName(), stk.getStackSize(), stk.getDamage()));
+		String nbt = stk.getNbtStr();
 		if (Utils.validString( nbt)) {
 			mDst.print( ITEM_NBT, nbt);
 		}

@@ -1,5 +1,7 @@
 package de.doerl.hqm.base;
 
+import de.doerl.hqm.utils.ToString;
+
 public final class FFluidStack extends AStack {
 	private String mKey;
 	private String mName;
@@ -49,6 +51,8 @@ public final class FFluidStack extends AStack {
 
 	@Override
 	public String toString() {
-		return mName;
+		ToString sb = new ToString( this);
+		sb.appendMsg( "key", mKey);
+		return sb.toString();
 	}
 }
