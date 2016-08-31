@@ -50,6 +50,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDocu = withDocu;
 	}
 
+	private String createItem( FItemStack stk) {
+		return String.format( PATTERN_ITEM, stk.getName(), stk.getStackSize(), stk.getDamage());
+	}
+
 	private void doTask( AQuestTask task) {
 		mDst.print( TASK_ID, task.toIdent());
 		if (mMain) {
@@ -131,7 +135,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	public Object forItemRequirement( FItemRequirement item, Object p) {
 		mDst.beginObject();
 		FItemStack stk = item.getStack();
-		mDst.print( ITEM_OBJECT, String.format( PATTERN_ITEM, stk.getName(), stk.getStackSize(), stk.getDamage()));
+		mDst.print( ITEM_OBJECT, createItem( stk));
 		String nbt = stk.getNbtStr();
 		if (Utils.validString( nbt)) {
 			mDst.print( ITEM_NBT, nbt);
@@ -404,12 +408,12 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			String nbt = icon.getNbtStr();
 			if (Utils.validString( nbt)) {
 				mDst.beginObject( key);
-				mDst.print( ITEM_OBJECT, icon);
+				mDst.print( ITEM_OBJECT, createItem( icon));
 				mDst.print( ITEM_NBT, nbt);
 				mDst.endObject();
 			}
 			else {
-				mDst.print( key, icon);
+				mDst.print( key, createItem( icon));
 			}
 		}
 	}
@@ -473,12 +477,12 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 				String nbt = stk.getNbtStr();
 				if (Utils.validString( nbt)) {
 					mDst.beginObject();
-					mDst.print( ITEM_OBJECT, stk);
+					mDst.print( ITEM_OBJECT, createItem( stk));
 					mDst.printIf( ITEM_NBT, nbt.toString());
 					mDst.endObject();
 				}
 				else {
-					mDst.printValue( stk);
+					mDst.printValue( createItem( stk));
 				}
 			}
 			mDst.endArray();
