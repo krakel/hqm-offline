@@ -108,6 +108,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( GROUP_NAME, grp.getName( mLang));
 		}
 		if (mMain) {
+			mDst.print( GROUP_UUID, grp.getUUID());
 			mDst.print( GROUP_LIMIT, grp.mLimit);
 			writeStackArr( GROUP_STACKS, grp.mStacks);
 		}
@@ -262,6 +263,9 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( REPUTATION_NAME, rep.getName( mLang));
 			mDst.print( REPUTATION_NEUTRAL, rep.getDescr( mLang));
 		}
+		if (mMain) {
+			mDst.print( REPUTATION_UUID, rep.getUUID());
+		}
 		writeMarkers( rep);
 		mDst.endObject();
 		return null;
@@ -269,7 +273,9 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 
 	@Override
 	public Object forReputationBar( FReputationBar bar, Object p) {
-		mDst.printValue( bar.mValue);
+		mDst.print( REPUTATION_BAR_REP, bar.mRep.toIdent());
+		mDst.print( REPUTATION_BAR_X, bar.mX);
+		mDst.print( REPUTATION_BAR_Y, bar.mY);
 		return null;
 	}
 

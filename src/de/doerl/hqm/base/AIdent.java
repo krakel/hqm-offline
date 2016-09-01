@@ -1,5 +1,6 @@
 package de.doerl.hqm.base;
 
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,9 +10,9 @@ public abstract class AIdent extends ANamed {
 	private static final Logger LOGGER = Logger.getLogger( AIdent.class.getName());
 	private String mBase;
 	private int mID;
-	private int mUUID;
+	private String mUUID = UUID.randomUUID().toString();
 
-	public AIdent( String base, int id) {
+	AIdent( String base, int id) {
 		mBase = base;
 		mID = id;
 	}
@@ -43,7 +44,7 @@ public abstract class AIdent extends ANamed {
 		return mID;
 	}
 
-	public int getUUID() {
+	public String getUUID() {
 		return mUUID;
 	}
 
@@ -56,8 +57,8 @@ public abstract class AIdent extends ANamed {
 		}
 	}
 
-	public void setUUID( int uUID) {
-		mUUID = uUID;
+	public void setUUID( String uuid) {
+		mUUID = uuid;
 	}
 
 	public String toIdent() {

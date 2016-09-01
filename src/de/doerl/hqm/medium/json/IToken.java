@@ -19,6 +19,7 @@ public interface IToken {
 	static final String QUEST_COMMANDS = "commands";
 	//
 	static final String REPUTATION_ID = "id";
+	static final String REPUTATION_UUID = "uuid";
 	static final String REPUTATION_NAME = "name";
 	static final String REPUTATION_NEUTRAL = "neutral";
 	static final String REPUTATION_MARKERS = "markers";
@@ -99,7 +100,12 @@ public interface IToken {
 	static final String GROUP_TIER_GROUPS = "groups";
 	//
 	static final String GROUP_ID = "id";
+	static final String GROUP_UUID = "uuid";
 	static final String GROUP_NAME = "name";
 	static final String GROUP_LIMIT = "limit";
 	static final String GROUP_STACKS = "stacks";
+	//
+	static final String REPUTATION_BAR_REP = "reputationID";
+	static final String REPUTATION_BAR_X = "x";
+	static final String REPUTATION_BAR_Y = "y";
 }

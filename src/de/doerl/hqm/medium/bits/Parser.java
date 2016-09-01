@@ -97,7 +97,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		int count = mSrc.readData( DataBitHelper.REPUTATION_SETTING);
 		for (int id = 0; id < count; id++) { // TODO should also be AIdent
 			FSetting set = task.createSetting();
-			set.mRep = ReputationOfID.get( task, mSrc.readData( DataBitHelper.REPUTATION));
+			set.mRep = ReputationOfID.get( task.getHqm(), mSrc.readData( DataBitHelper.REPUTATION));
 			set.mLower = mSrc.readBoolean() ? MarkerOfID.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
 			set.mUpper = mSrc.readBoolean() ? MarkerOfID.get( set.mRep, mSrc.readData( DataBitHelper.REPUTATION_MARKER)) : null;
 			set.mInverted = mSrc.readBoolean();
@@ -357,7 +357,9 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 		int count = mSrc.readData( DataBitHelper.BYTE);
 		for (int i = 0; i < count; ++i) {
 			FReputationBar bar = set.createReputationBar();
-			bar.mValue = mSrc.readData( DataBitHelper.INT);
+			bar.mRep = ReputationOfID.get( set.getHqm(), mSrc.readData( DataBitHelper.INT));
+			bar.mX = mSrc.readData( DataBitHelper.INT);
+			bar.mY = mSrc.readData( DataBitHelper.INT);
 		}
 	}
 

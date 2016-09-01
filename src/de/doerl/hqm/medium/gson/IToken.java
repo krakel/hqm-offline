@@ -8,7 +8,7 @@ interface IToken {
 	static final String QUEST_SET_BARS = "reputationBar";
 	static final String QUEST_SET_REPUTATION_BAR_OLD = "reputation";
 	// REPUTATION_ADAPTER
-	static final String REPUTATION_ID = "id";
+	static final String REPUTATION_UUID = "id";
 	static final String REPUTATION_NAME = "name";
 	static final String REPUTATION_NEUTRAL = "neutral";
 	static final String REPUTATION_MARKERS = "markers";
@@ -76,12 +76,12 @@ interface IToken {
 	static final String REQUIREMENT_REQUIRED = "required";
 	static final String REQUIREMENT_PRECISION = "precision";
 	// FLUID, ITEM_STACK, NBT_TAG_COMPOUND
-	static final String ITEM_ID = "id";
+	static final String ITEM_NAME = "id";
 	static final String ITEM_DAMAGE = "damage";
 	static final String ITEM_SIZE = "amount";
 	static final String ITEM_NBT = "nbt";
 	// REPUTATION_BAR_ADAPTER
-	static final String REPUTATION_BAR_ID = "reputationId";
+	static final String REPUTATION_BAR_REP = "reputationId";
 	static final String REPUTATION_BAR_X = "x";
 	static final String REPUTATION_BAR_Y = "y";
 	// REPUTATION_REWARD_ADAPTER
@@ -93,7 +93,7 @@ interface IToken {
 	static final String GROUP_TIER_WEIGHTS = "weights";
 	static final String GROUP_TIER_GROUPS = "groups";
 	// GROUP_ADAPTER
-	static final String GROUP_ID = "id";
+	static final String GROUP_UUID = "id";
 	static final String GROUP_NAME = "name";
 	static final String GROUP_LIMIT = "limit";
 	static final String GROUP_STACKS = "items";

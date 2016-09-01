@@ -5,7 +5,8 @@ import de.doerl.hqm.quest.ElementTyp;
 
 public final class FReputationBar extends ABase implements IElement {
 	public final FQuestSet mParentSet;
-	public int mValue;
+	public int mX, mY;
+	public FReputation mRep; // @TODO
 
 	FReputationBar( FQuestSet parent) {
 		mParentSet = parent;
@@ -31,6 +32,10 @@ public final class FReputationBar extends ABase implements IElement {
 		return mParentSet;
 	}
 
+	public FReputation getRep() {
+		return mRep;
+	}
+
 	@Override
 	public boolean isFirst() {
 		return ABase.isFirst( mParentSet.mBars, this);
@@ -54,5 +59,9 @@ public final class FReputationBar extends ABase implements IElement {
 	@Override
 	public void remove() {
 		ABase.remove( mParentSet.mBars, this);
+	}
+
+	public void setRep( FReputation rep) {
+		mRep = rep;
 	}
 }

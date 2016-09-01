@@ -185,7 +185,9 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 
 	@Override
 	public Object forReputationBar( FReputationBar bar, FileVersion p) {
-		mDst.writeData( bar.mValue, DataBitHelper.INT);
+		mDst.writeData( bar.mRep.getID(), DataBitHelper.INT);
+		mDst.writeData( bar.mX, DataBitHelper.INT);
+		mDst.writeData( bar.mY, DataBitHelper.INT);
 		return null;
 	}
 

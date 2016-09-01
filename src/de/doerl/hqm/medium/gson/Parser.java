@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
@@ -56,7 +54,6 @@ import de.doerl.hqm.utils.nbt.NbtParser;
 
 class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
-	private static final Pattern PATTERN_ITEM = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)");
 	private HashMap<FQuest, String[]> mRequirements = new HashMap<>();
 	private HashMap<FQuest, String[]> mOptionLinks = new HashMap<>();
 	private HashMap<String, ArrayList<FQuest>> mPosts = new HashMap<>();
@@ -66,21 +63,6 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	public Parser( FLanguage lang, File base) {
 		mLang = lang;
 		mBase = base;
-	}
-
-	public static FItemStack parseItemStack( String sequence, String nbt) {
-		try {
-			Matcher mm = PATTERN_ITEM.matcher( sequence);
-			mm.find();
-			String name = mm.group( 1);
-			int size = Utils.parseInteger( mm.group( 2));
-			int dmg = Utils.parseInteger( mm.group( 3));
-			return new FItemStack( name, dmg, size, NbtParser.parse( nbt));
-		}
-		catch (RuntimeException ex) {
-			Utils.logThrows( LOGGER, Level.WARNING, ex);
-		}
-		return new FItemStack( "item:unknown", 0, 0, null);
 	}
 
 	private void addPost( FQuest quest, String uuid) {
@@ -183,11 +165,11 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 
 	private void loadReputation( FReputationCat cat, FArray arr) {
 		if (arr != null) {
-			for (IJson json : arr) {
-				FObject obj = FObject.to( json);
+			for (int id = 0, max = arr.size(); id < max; ++id) {
+				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					FReputation rep = cat.createMember();
-					rep.setID( FValue.toString( obj.get( IToken.REPUTATION_ID)));
+					FReputation rep = cat.createReputation( id);
+					rep.setUUID( FValue.toString( obj.get( IToken.REPUTATION_UUID)));
 					rep.setName( mLang, FValue.toString( obj.get( IToken.REPUTATION_NAME)));
 					rep.setDescr( mLang, FValue.toString( obj.get( IToken.REPUTATION_NEUTRAL)));
 					readMarker( rep, FArray.to( obj.get( IToken.REPUTATION_MARKERS)));
@@ -207,7 +189,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FReputationBar bar = set.createReputationBar();
-				bar.mValue = FValue.toInt( json);
+				bar.mX = FValue.toInt( json);
 			}
 		}
 	}
@@ -225,11 +207,11 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 
 	private void readGroups( FGroupTier tier, FArray arr) {
 		if (arr != null) {
-			for (IJson json : arr) {
-				FObject obj = FObject.to( json);
+			for (int id = 0, max = arr.size(); id < max; ++id) {
+				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					FGroup grp = tier.createGroup();
-					grp.setID( FValue.toString( obj.get( IToken.GROUP_ID)));
+					FGroup grp = tier.createGroup( id);
+					grp.setUUID( FValue.toString( obj.get( IToken.GROUP_UUID)));
 					grp.setName( mLang, FValue.toString( obj.get( IToken.GROUP_NAME)));
 					grp.mLimit = FValue.toIntObj( obj.get( IToken.GROUP_LIMIT));
 					readStacks( grp.mStacks, FArray.to( obj.get( IToken.GROUP_STACKS)));
@@ -247,11 +229,11 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	}
 
 	private FItemStack readItemStack( FObject obj) {
-		String id = FValue.toString( obj.get( IToken.ITEM_ID), "item:unknown");
+		String name = FValue.toString( obj.get( IToken.ITEM_NAME), "item:unknown");
 		int dmg = FValue.toInt( obj.get( IToken.ITEM_DAMAGE), 0);
 		int size = FValue.toInt( obj.get( IToken.ITEM_SIZE), 1);
 		FCompound nbt = NbtParser.parse( FValue.toString( obj.get( IToken.ITEM_NBT)));
-		return new FItemStack( id, dmg, size, nbt);
+		return new FItemStack( name, dmg, size, nbt);
 	}
 
 	private void readMarker( FReputation rep, FArray arr) {

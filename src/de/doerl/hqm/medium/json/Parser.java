@@ -158,8 +158,19 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private void readBars( FQuestSet set, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
-				FReputationBar bar = set.createReputationBar();
-				bar.mValue = FValue.toInt( json);
+				FObject obj = FObject.to( json);
+				if (obj != null) {
+					FReputationBar bar = set.createReputationBar();
+					int repID = FReputation.fromIdent( FValue.toString( obj.get( IToken.REPUTATION_BAR_REP)));
+					if (repID < 0) {
+						Utils.log( LOGGER, Level.WARNING, "missing repID");
+					}
+					else {
+						bar.mRep = ReputationOfID.get( set.getHqm(), repID);
+					}
+					bar.mX = FValue.toInt( obj.get( IToken.REPUTATION_BAR_X));
+					bar.mY = FValue.toInt( obj.get( IToken.REPUTATION_BAR_Y));
+				}
 			}
 		}
 	}
@@ -196,6 +207,7 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						grp.setName( mLang, FValue.toString( obj.get( IToken.GROUP_NAME)));
 					}
 					if (mMain) {
+						grp.setUUID( FValue.toString( obj.get( IToken.GROUP_UUID)));
 						grp.mLimit = FValue.toIntObj( obj.get( IToken.GROUP_LIMIT));
 						readStacks( grp.mStacks, FArray.to( obj.get( IToken.GROUP_STACKS)));
 					}
@@ -394,8 +406,8 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						set.setName( mLang, FValue.toString( obj.get( IToken.QUEST_SET_NAME)));
 						set.setDescr( mLang, FValue.toString( obj.get( IToken.QUEST_SET_DECR)));
 					}
-					readBars( set, FArray.to( obj.get( IToken.QUEST_SET_BARS)));
 					readQuests( set, FArray.to( obj.get( IToken.QUEST_SET_QUESTS)));
+					readBars( set, FArray.to( obj.get( IToken.QUEST_SET_BARS)));
 				}
 			}
 		}
@@ -421,6 +433,9 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					if (mDocu) {
 						rep.setName( mLang, FValue.toString( obj.get( IToken.REPUTATION_NAME)));
 						rep.setDescr( mLang, FValue.toString( obj.get( IToken.REPUTATION_NEUTRAL)));
+					}
+					if (mMain) {
+						rep.setUUID( FValue.toString( obj.get( IToken.REPUTATION_UUID)));
 					}
 					readMarker( rep, FArray.to( obj.get( IToken.REPUTATION_MARKERS)));
 				}
@@ -556,7 +571,7 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						Utils.log( LOGGER, Level.WARNING, "missing repID");
 					}
 					else {
-						res.mRep = ReputationOfID.get( task, repID);
+						res.mRep = ReputationOfID.get( task.getHqm(), repID);
 					}
 					String low = FValue.toString( obj.get( IToken.SETTING_LOWER));
 					if (low != null) {
