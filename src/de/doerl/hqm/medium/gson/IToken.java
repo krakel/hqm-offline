@@ -45,7 +45,7 @@ interface IToken {
 	static final String TASK_NAME = "description";
 	static final String TASK_DESC = "longDescription";
 	static final String TASK_REQUIREMENTS = "items";
-	static final String TASK_SETTINGS = "reputation";
+	static final String TASK_REPUTATIONS = "reputation";
 	static final String TASK_DEATHS = "deaths";
 	static final String TASK_LOCATIONS = "locations";
 	static final String TASK_MOBS = "mobs";

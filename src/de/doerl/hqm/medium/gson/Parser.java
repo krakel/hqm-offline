@@ -38,9 +38,9 @@ import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
-import de.doerl.hqm.base.dispatch.MarkerOfID;
-import de.doerl.hqm.base.dispatch.QuestOfID;
-import de.doerl.hqm.base.dispatch.ReputationOfID;
+import de.doerl.hqm.base.dispatch.MarkerOfUUID;
+import de.doerl.hqm.base.dispatch.QuestOfUUID;
+import de.doerl.hqm.base.dispatch.ReputationOfUUID;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.quest.RepeatType;
 import de.doerl.hqm.quest.TaskTyp;
@@ -57,9 +57,9 @@ import de.doerl.hqm.utils.nbt.NbtParser;
 class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
 	private static final Pattern PATTERN_ITEM = Pattern.compile( "(.*?) size\\((\\d*)\\) dmg\\((\\d*)\\)");
-	private HashMap<FQuest, int[]> mRequirements = new HashMap<>();
-	private HashMap<FQuest, int[]> mOptionLinks = new HashMap<>();
-	private HashMap<Integer, ArrayList<FQuest>> mPosts = new HashMap<>();
+	private HashMap<FQuest, String[]> mRequirements = new HashMap<>();
+	private HashMap<FQuest, String[]> mOptionLinks = new HashMap<>();
+	private HashMap<String, ArrayList<FQuest>> mPosts = new HashMap<>();
 	private FLanguage mLang;
 	private File mBase;
 
@@ -83,11 +83,11 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		return new FItemStack( "item:unknown", 0, 0, null);
 	}
 
-	private void addPost( FQuest quest, Integer id) {
-		ArrayList<FQuest> p = mPosts.get( id);
+	private void addPost( FQuest quest, String uuid) {
+		ArrayList<FQuest> p = mPosts.get( uuid);
 		if (p == null) {
 			p = new ArrayList<>();
-			mPosts.put( id, p);
+			mPosts.put( uuid, p);
 		}
 		p.add( quest);
 	}
@@ -100,7 +100,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 
 	@Override
 	protected Object doTaskReputation( AQuestTaskReputation task, FObject obj) {
-		readTaskReputations( task, FArray.to( obj.get( IToken.TASK_SETTINGS)));
+		readTaskReputations( task, FArray.to( obj.get( IToken.TASK_REPUTATIONS)));
 		return null;
 	}
 
@@ -155,16 +155,6 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						}
 					}
 					readGroups( tier, FArray.to( obj.get( IToken.GROUP_TIER_GROUPS)));
-				}
-			}
-		}
-	}
-
-	private void loadQuestingData( FHqm hqm, FArray arr) {
-		if (arr != null) {
-			for (IJson json : arr) {
-				FObject obj = FObject.to( json);
-				if (obj != null) {
 				}
 			}
 		}
@@ -253,18 +243,14 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		if (obj != null) {
 			return readItemStack( obj);
 		}
-		String seq = FValue.toString( json);
-		if (seq != null) {
-			return parseItemStack( seq, null);
-		}
 		return null;
 	}
 
 	private FItemStack readItemStack( FObject obj) {
+		String id = FValue.toString( obj.get( IToken.ITEM_ID), "item:unknown");
+		int dmg = FValue.toInt( obj.get( IToken.ITEM_DAMAGE), 0);
+		int size = FValue.toInt( obj.get( IToken.ITEM_SIZE), 1);
 		FCompound nbt = NbtParser.parse( FValue.toString( obj.get( IToken.ITEM_NBT)));
-		String id = FValue.toString( obj.get( IToken.ITEM_ID));
-		int dmg = FValue.toInt( obj.get( IToken.ITEM_DAMAGE));
-		int size = FValue.toInt( obj.get( IToken.ITEM_SIZE));
 		return new FItemStack( id, dmg, size, nbt);
 	}
 
@@ -282,15 +268,15 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		}
 	}
 
-	private void readQuestArr( FQuest quest, HashMap<FQuest, int[]> cache, FArray arr, boolean withPost) {
+	private void readQuestArr( FQuest quest, HashMap<FQuest, String[]> cache, FArray arr, boolean withPost) {
 		if (arr != null) {
 			int size = arr.size();
-			int[] result = new int[size];
+			String[] result = new String[size];
 			for (int i = 0; i < size; ++i) {
-				int id = FQuest.fromIdent( FValue.toString( arr.get( i)));
-				result[i] = id;
+				String uuid = FValue.toString( arr.get( i));
+				result[i] = uuid;
 				if (withPost) {
-					addPost( quest, id);
+					addPost( quest, uuid);
 				}
 			}
 			cache.put( quest, result);
@@ -348,13 +334,8 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FReputationReward reward = quest.createRepReward();
-					int repID = FReputation.fromIdent( FValue.toString( obj.get( IToken.REWARD_REPUTATION)));
-					if (repID < 0) {
-						Utils.log( LOGGER, Level.WARNING, "missing repID");
-					}
-					else {
-						reward.mRep = ReputationOfID.get( quest.getHqm(), repID);
-					}
+					String repUUID = FValue.toString( obj.get( IToken.REWARD_REPUTATION));
+					reward.mRep = ReputationOfUUID.get( quest.getHqm(), repUUID);
 					reward.mValue = FValue.toInt( obj.get( IToken.REWARD_VALUE));
 				}
 			}
@@ -366,8 +347,6 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		loadDescription( hqm, Medium.loadTxt( mBase, Medium.DESCRIPTION_FILE));
 		loadReputation( hqm.mReputationCat, FArray.to( Medium.redJson( mBase, Medium.REPUTATION_FILE)));
 		loadQuestSet( hqm.mQuestSetCat, mBase.listFiles());
-		//
-		loadQuestingData( hqm, FArray.to( Medium.redJson( mBase, Medium.DATA_FILE)));
 		loadGroupTier( hqm.mGroupTierCat, FArray.to( Medium.redJson( mBase, Medium.BAGS_FILE)));
 		ReindexOfQuests.get( hqm);
 		updateRequirements( hqm);
@@ -381,12 +360,6 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					param.add( readItemStack( obj));
-				}
-				else {
-					String seq = FValue.toString( json);
-					if (seq != null) {
-						param.add( parseItemStack( seq, null));
-					}
 				}
 			}
 		}
@@ -456,32 +429,26 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FSetting res = task.createSetting();
-					int repID = FReputation.fromIdent( FValue.toString( obj.get( IToken.SETTING_REPUTATION)));
-					if (repID < 0) {
-						Utils.log( LOGGER, Level.WARNING, "missing repID");
+					String repUUID = FValue.toString( obj.get( IToken.SETTING_REPUTATION));
+					if (repUUID == null) {
+						Utils.log( LOGGER, Level.WARNING, "missing repUUID");
 					}
 					else {
-						res.mRep = ReputationOfID.get( task, repID);
+						res.mRep = ReputationOfUUID.get( task, repUUID);
 					}
-					String low = FValue.toString( obj.get( IToken.SETTING_LOWER));
-					if (low != null) {
-						int lowerID = FMarker.fromIdent( low);
-						if (lowerID < 0) {
-							Utils.log( LOGGER, Level.WARNING, "missing lowerID");
-						}
-						else {
-							res.mLower = MarkerOfID.get( res.mRep, lowerID);
-						}
+					String lowUUID = FValue.toString( obj.get( IToken.SETTING_LOWER));
+					if (lowUUID == null) {
+						Utils.log( LOGGER, Level.WARNING, "missing lowerUUID");
 					}
-					String upp = FValue.toString( obj.get( IToken.SETTING_UPPER));
-					if (upp != null) {
-						int upperID = FMarker.fromIdent( upp);
-						if (upperID < 0) {
-							Utils.log( LOGGER, Level.WARNING, "missing upperID");
-						}
-						else {
-							res.mUpper = MarkerOfID.get( res.mRep, upperID);
-						}
+					else {
+						res.mLower = MarkerOfUUID.get( res.mRep, lowUUID);
+					}
+					String upperUUID = FValue.toString( obj.get( IToken.SETTING_UPPER));
+					if (upperUUID == null) {
+						Utils.log( LOGGER, Level.WARNING, "missing upperUUID");
+					}
+					else {
+						res.mUpper = MarkerOfUUID.get( res.mRep, upperUUID);
 					}
 					res.mInverted = FValue.toBoolean( obj.get( IToken.SETTING_INVERTED));
 				}
@@ -507,12 +474,12 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 
 	private void updateOptionLinks( FHqm hqm) {
 		for (FQuest quest : mOptionLinks.keySet()) {
-			int[] ids = mOptionLinks.get( quest);
-			for (int i = 0; i < ids.length; ++i) {
-				int id = ids[i];
-				FQuest other = QuestOfID.get( hqm, id);
+			String[] uuids = mOptionLinks.get( quest);
+			for (int i = 0; i < uuids.length; ++i) {
+				String uuid = uuids[i];
+				FQuest other = QuestOfUUID.get( hqm, uuid);
 				if (other == null) {
-					Utils.log( LOGGER, Level.WARNING, "missing option link [{0}] {1} for {2}", i, id, quest.getName());
+					Utils.log( LOGGER, Level.WARNING, "missing option link [{0}] {1} for {2}", i, uuid, quest.getName());
 				}
 				else {
 					quest.mOptionLinks.add( other);
@@ -522,25 +489,25 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	}
 
 	private void updatePosts( FHqm hqm) {
-		for (Integer id : mPosts.keySet()) {
-			FQuest other = QuestOfID.get( hqm, id);
+		for (String uuid : mPosts.keySet()) {
+			FQuest other = QuestOfUUID.get( hqm, uuid);
 			if (other == null) {
-				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", id);
+				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", uuid);
 			}
 			else {
-				other.mPosts.addAll( mPosts.get( id));
+				other.mPosts.addAll( mPosts.get( uuid));
 			}
 		}
 	}
 
 	private void updateRequirements( FHqm hqm) {
 		for (FQuest quest : mRequirements.keySet()) {
-			int[] ids = mRequirements.get( quest);
-			for (int i = 0; i < ids.length; ++i) {
-				int id = ids[i];
-				FQuest other = QuestOfID.get( hqm, id);
+			String[] uuids = mRequirements.get( quest);
+			for (int i = 0; i < uuids.length; ++i) {
+				String uuid = uuids[i];
+				FQuest other = QuestOfUUID.get( hqm, uuid);
 				if (other == null) {
-					Utils.log( LOGGER, Level.WARNING, "missing requirement [{0}] {1} for {2}", i, id, quest.getName());
+					Utils.log( LOGGER, Level.WARNING, "missing requirement [{0}] {1} for {2}", i, uuid, quest.getName());
 				}
 				else {
 					quest.mRequirements.add( other);

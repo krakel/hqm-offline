@@ -9,6 +9,7 @@ public abstract class AIdent extends ANamed {
 	private static final Logger LOGGER = Logger.getLogger( AIdent.class.getName());
 	private String mBase;
 	private int mID;
+	private int mUUID;
 
 	public AIdent( String base, int id) {
 		mBase = base;
@@ -42,6 +43,10 @@ public abstract class AIdent extends ANamed {
 		return mID;
 	}
 
+	public int getUUID() {
+		return mUUID;
+	}
+
 	public void setID( String ident) {
 		if (ident != null) {
 			int id = fromIdent( mBase, ident);
@@ -49,6 +54,10 @@ public abstract class AIdent extends ANamed {
 				mID = id;
 			}
 		}
+	}
+
+	public void setUUID( int uUID) {
+		mUUID = uUID;
 	}
 
 	public String toIdent() {
