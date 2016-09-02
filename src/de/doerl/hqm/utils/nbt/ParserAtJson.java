@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.utils.Utils;
 
-public class NbtParser {
-	private static final Logger LOGGER = Logger.getLogger( NbtParser.class.getName());
+public class ParserAtJson {
+	private static final Logger LOGGER = Logger.getLogger( ParserAtJson.class.getName());
 	private Tokenizer mParser;
 
-	public NbtParser( String src) {
+	public ParserAtJson( String src) {
 		mParser = new Tokenizer( src);
 	}
 
@@ -27,7 +27,7 @@ public class NbtParser {
 	}
 
 	static FCompound parse0( String src) throws IOException {
-		NbtParser wrt = new NbtParser( src);
+		ParserAtJson wrt = new ParserAtJson( src);
 		return wrt.doAll();
 	}
 
@@ -53,7 +53,7 @@ public class NbtParser {
 					arr.add( Byte.parseByte( mParser.nextValue()));
 					loop = true;
 					break;
-				case RIGHT_BRACKET:
+				case RIGHT_PARENTHESIS:
 					String val = mParser.nextValue();
 					if (!"".equals( val)) {
 						arr.add( Byte.parseByte( val));
@@ -77,7 +77,7 @@ public class NbtParser {
 					arr.add( Integer.parseInt( mParser.nextValue()));
 					loop = true;
 					break;
-				case RIGHT_BRACKET:
+				case RIGHT_PARENTHESIS:
 					loop = false;
 					String val = mParser.nextValue();
 					if (!"".equals( val)) {
@@ -101,7 +101,7 @@ public class NbtParser {
 					comp.add( doPair());
 					loop = doNext();
 					break;
-				case RIGHT_BRACKET:
+				case RIGHT_PARENTHESIS:
 					loop = false;
 					break;
 				default:
@@ -123,7 +123,7 @@ public class NbtParser {
 		boolean loop = false;
 		do {
 			switch (mParser.nextToken()) {
-				case LEFT_BRACKET:
+				case LEFT_PARENTHESIS:
 					int tag = getTag();
 					switch (tag) {
 						case 7: // Byte-Array
@@ -143,7 +143,7 @@ public class NbtParser {
 					}
 					loop = doNext(); // COMMA
 					break;
-				case RIGHT_BRACKET:
+				case RIGHT_PARENTHESIS:
 					loop = false;
 					break;
 				default:
@@ -158,7 +158,7 @@ public class NbtParser {
 		switch (mParser.nextToken()) {
 			case COMMA:
 				return true;
-			case RIGHT_BRACKET:
+			case RIGHT_PARENTHESIS:
 			case EOF:
 				return false;
 			default:
@@ -206,7 +206,7 @@ public class NbtParser {
 	}
 
 	private int doValueBegin() throws IOException {
-		if (mParser.nextToken() == Token.LEFT_BRACKET) {
+		if (mParser.nextToken() == Token.LEFT_PARENTHESIS) {
 			return getTag();
 		}
 		else {
@@ -215,7 +215,7 @@ public class NbtParser {
 	}
 
 	private ANbt doValueEnd( String name, int tag) throws IOException {
-		if (mParser.nextToken() == Token.RIGHT_BRACKET) {
+		if (mParser.nextToken() == Token.RIGHT_PARENTHESIS) {
 			return doValue( name, tag, mParser.nextValue());
 		}
 		else {
@@ -262,5 +262,67 @@ public class NbtParser {
 			return 11;
 		}
 		throw new IOException( "wrong nbt type");
+	}
+
+	private static enum Token {
+		EOF,
+		COMMA,
+		EQUAL,
+		LEFT_PARENTHESIS,
+		RIGHT_PARENTHESIS;
+	}
+
+	private static class Tokenizer {
+		private String mIn;
+		private int mStart, mPos;
+
+		public Tokenizer( String in) {
+			mIn = in;
+		}
+
+		private char getNext() {
+			if (mPos < mIn.length()) {
+				return mIn.charAt( mPos++);
+			}
+			else {
+				return 0;
+			}
+		}
+
+		public Token nextToken() {
+			mStart = mPos;
+			while (true) {
+				char c = getNext();
+				switch (c) {
+					case '\'':
+						readString();
+						break;
+					case '=':
+						return Token.EQUAL;
+					case ',':
+						return Token.COMMA;
+					case '(':
+						return Token.LEFT_PARENTHESIS;
+					case ')':
+						return Token.RIGHT_PARENTHESIS;
+					case 0:
+						return Token.EOF;
+					default:
+				}
+			}
+		}
+
+		public String nextValue() {
+			return mIn.substring( mStart, mPos - 1).trim();
+		}
+
+		private void readString() {
+			int l = 0;
+			int c = getNext();
+			while (c >= 0 && (l == '\\' || c != '\'')) {
+				l = c;
+				c = getNext();
+			}
+		}
 	}
 }

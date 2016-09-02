@@ -484,7 +484,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 				if (Utils.validString( nbt)) {
 					mDst.beginObject();
 					mDst.print( ITEM_OBJECT, createItem( stk));
-					mDst.printIf( ITEM_NBT, nbt.toString());
+					mDst.printIf( ITEM_NBT, nbt);
 					mDst.endObject();
 				}
 				else {

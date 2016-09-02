@@ -9,7 +9,7 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.NbtReader;
+import de.doerl.hqm.utils.nbt.ParserAtBits;
 
 class BitInputStream {
 	private static final Charset UTF_8 = Charset.forName( "UTF-8");
@@ -136,7 +136,7 @@ class BitInputStream {
 				bytes[i] = (byte) readByte();
 			}
 			ByteArrayInputStream in = new ByteArrayInputStream( bytes);
-			return NbtReader.readAsCompound( in);
+			return ParserAtBits.readAsCompound( in);
 		}
 		return null;
 	}

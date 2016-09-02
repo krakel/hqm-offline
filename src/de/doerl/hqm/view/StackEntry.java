@@ -4,7 +4,7 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.NbtParser;
+import de.doerl.hqm.utils.nbt.ParserAtJson;
 
 class StackEntry {
 	public boolean mIsItem;
@@ -42,7 +42,7 @@ class StackEntry {
 		setName( name);
 		mDisplay = name;
 		mDmg = dmg;
-		mNbt = Utils.validString( area) ? NbtParser.parse( area) : null;
+		mNbt = Utils.validString( area) ? ParserAtJson.parse( area) : null;
 		mCount = count;
 		setPrecision( precition);
 		updateKey();

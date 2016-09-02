@@ -27,7 +27,7 @@ public class NEIReader {
 					}
 					loop = true;
 					break;
-				case RIGHT_SQUARE:
+				case RIGHT_BRACKET:
 					arr.setByteArr( mParser.nextValue());
 					loop = false;
 					break;
@@ -43,7 +43,7 @@ public class NEIReader {
 		switch (mParser.nextToken()) {
 			case COMMA:
 				return true;
-			case RIGHT_SQUARE:
+			case RIGHT_BRACKET:
 				return false;
 			default:
 				throw new IOException( "wrong array close");
@@ -55,13 +55,13 @@ public class NEIReader {
 			case COMMA:
 				arr.add( new FValue( mParser.nextValue()));
 				return true;
-			case RIGHT_SQUARE:
+			case RIGHT_BRACKET:
 				arr.add( new FValue( mParser.nextValue()));
 				return false;
-			case LEFT_BRACE:
+			case LEFT_CURLY:
 				arr.add( doObject());
 				return doArrayNext();
-			case LEFT_SQUARE:
+			case LEFT_BRACKET:
 				arr.add( doArray());
 				return doArrayNext();
 			default:
@@ -73,9 +73,9 @@ public class NEIReader {
 		switch (mParser.nextToken()) {
 			case EOL:
 				return new FValue( mParser.nextValue());
-			case LEFT_BRACE:
+			case LEFT_CURLY:
 				return doObject();
-			case LEFT_SQUARE:
+			case LEFT_BRACKET:
 				return doArray();
 			default:
 				throw new IOException( "wrong json source");
@@ -91,7 +91,7 @@ public class NEIReader {
 					String key = mParser.nextValue();
 					loop = doObjectValue( obj, key);
 					break;
-				case RIGHT_BRACE:
+				case RIGHT_CURLY:
 					loop = false;
 					break;
 				default:
@@ -106,7 +106,7 @@ public class NEIReader {
 		switch (mParser.nextToken()) {
 			case COMMA:
 				return true;
-			case RIGHT_BRACE:
+			case RIGHT_CURLY:
 				return false;
 			default:
 				throw new IOException( "wrong object close");
@@ -117,24 +117,16 @@ public class NEIReader {
 		switch (mParser.nextToken()) {
 			case COMMA:
 				FValue vvv = new FValue( mParser.nextValue());
-//				int x = 0;
-//				if ("766s".equals( vvv.toString())) {
-//					x += 0;
-//				}
 				obj.put( key, vvv);
 				return true;
-			case RIGHT_BRACE:
+			case RIGHT_CURLY:
 				FValue www = new FValue( mParser.nextValue());
-//				int y = 0;
-//				if ("766s".equals( www.toString())) {
-//					y += 0;
-//				}
 				obj.put( key, www);
 				return false;
-			case LEFT_BRACE:
+			case LEFT_CURLY:
 				obj.put( key, doObject());
 				return doObjectNext();
-			case LEFT_SQUARE:
+			case LEFT_BRACKET:
 				obj.put( key, doArray());
 				return doObjectNext();
 			default:

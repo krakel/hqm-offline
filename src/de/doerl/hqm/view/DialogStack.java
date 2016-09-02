@@ -16,7 +16,7 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ItemNEI;
-import de.doerl.hqm.utils.nbt.NbtParser;
+import de.doerl.hqm.utils.nbt.ParserAtJson;
 import de.doerl.hqm.view.ADialogList.ICreator;
 import de.doerl.hqm.view.leafs.LeafSearch;
 import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
@@ -146,7 +146,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 	private FItemStack getResultStk() {
 		String name = mName.getText();
 		if (Utils.validString( name)) {
-			return new FItemStack( name, Utils.parseInteger( mDmg.getText(), 0), 1, NbtParser.parse( mArea.getText()));
+			return new FItemStack( name, Utils.parseInteger( mDmg.getText(), 0), 1, ParserAtJson.parse( mArea.getText()));
 		}
 		else {
 			return null;

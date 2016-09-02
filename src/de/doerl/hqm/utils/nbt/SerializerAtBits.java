@@ -11,11 +11,11 @@ import java.util.zip.GZIPOutputStream;
 
 import de.doerl.hqm.utils.Utils;
 
-public class NbtWriter {
-	private static final Logger LOGGER = Logger.getLogger( NbtWriter.class.getName());
+public class SerializerAtBits {
+	private static final Logger LOGGER = Logger.getLogger( SerializerAtBits.class.getName());
 	private ByteArrayOutputStream mOut = new ByteArrayOutputStream();
 
-	public NbtWriter() {
+	public SerializerAtBits() {
 	}
 
 	private static void compress( InputStream in, OutputStream out) {
@@ -53,7 +53,7 @@ public class NbtWriter {
 	}
 
 	static byte[] write0( FCompound main) throws IOException {
-		NbtWriter wrt = new NbtWriter();
+		SerializerAtBits wrt = new SerializerAtBits();
 		return wrt.doAll( main);
 	}
 

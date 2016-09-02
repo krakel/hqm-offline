@@ -8,7 +8,7 @@ import de.doerl.hqm.quest.DataBitHelper;
 import de.doerl.hqm.quest.FileVersion;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.NbtWriter;
+import de.doerl.hqm.utils.nbt.SerializerAtBits;
 
 class BitOutputStream {
 	private OutputStream mOutput;
@@ -120,7 +120,7 @@ class BitOutputStream {
 	}
 
 	public void writeNBT( FCompound nbt) {
-		byte[] arr = NbtWriter.write( nbt);
+		byte[] arr = SerializerAtBits.write( nbt);
 		if (arr != null) {
 			writeBoolean( true);
 			writeData( arr.length, DataBitHelper.NBT_LENGTH);

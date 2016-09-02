@@ -29,13 +29,13 @@ class Tokenizer {
 				case ',':
 					return Token.COMMA;
 				case '[':
-					return Token.LEFT_SQUARE;
+					return Token.LEFT_BRACKET;
 				case ']':
-					return Token.RIGHT_SQUARE;
+					return Token.RIGHT_BRACKET;
 				case '{':
-					return Token.LEFT_BRACE;
+					return Token.LEFT_CURLY;
 				case '}':
-					return Token.RIGHT_BRACE;
+					return Token.RIGHT_CURLY;
 				case ':':
 					return Token.COLON;
 				default:

@@ -50,7 +50,7 @@ import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.FValue;
 import de.doerl.hqm.utils.json.IJson;
 import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.NbtParser;
+import de.doerl.hqm.utils.nbt.ParserAtJson;
 
 class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
@@ -232,7 +232,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		String name = FValue.toString( obj.get( IToken.ITEM_NAME), "item:unknown");
 		int dmg = FValue.toInt( obj.get( IToken.ITEM_DAMAGE), 0);
 		int size = FValue.toInt( obj.get( IToken.ITEM_SIZE), 1);
-		FCompound nbt = NbtParser.parse( FValue.toString( obj.get( IToken.ITEM_NBT)));
+		FCompound nbt = ParserAtJson.parse( FValue.toString( obj.get( IToken.ITEM_NBT)));
 		return new FItemStack( name, dmg, size, nbt);
 	}
 

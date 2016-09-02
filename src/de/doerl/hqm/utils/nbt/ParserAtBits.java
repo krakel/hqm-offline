@@ -10,12 +10,12 @@ import java.util.zip.GZIPInputStream;
 
 import de.doerl.hqm.utils.Utils;
 
-public class NbtReader {
-	private static final Logger LOGGER = Logger.getLogger( NbtReader.class.getName());
+public class ParserAtBits {
+	private static final Logger LOGGER = Logger.getLogger( ParserAtBits.class.getName());
 	private byte[] mSrc;
 	private int mPos;
 
-	private NbtReader( byte[] src) {
+	private ParserAtBits( byte[] src) {
 		mSrc = src;
 	}
 
@@ -38,7 +38,7 @@ public class NbtReader {
 	}
 
 	static FCompound parseAsCompound( byte[] arr) {
-		NbtReader rdr = new NbtReader( arr);
+		ParserAtBits rdr = new ParserAtBits( arr);
 		return rdr.doMain();
 	}
 

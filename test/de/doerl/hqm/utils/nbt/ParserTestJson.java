@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class ParserTest {
+public class ParserTestJson {
 	private static void doTest( String test, String exp) {
-		FCompound act = NbtParser.parse( test);
+		FCompound act = ParserAtJson.parse( test);
 		assertEquals( exp, act.toString());
 	}
 

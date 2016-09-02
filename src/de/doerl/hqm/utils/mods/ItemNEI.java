@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.NbtParser;
+import de.doerl.hqm.utils.nbt.ParserAtJson;
 
 public class ItemNEI {
 	private static Logger LOGGER = Logger.getLogger( ItemNEI.class.getName());
@@ -53,7 +53,7 @@ public class ItemNEI {
 			String nbt = line.substring( p5);
 			if (Utils.validString( nbt)) {
 				if (nbt.startsWith( "=COMPOUND(")) {
-					mNbt = NbtParser.parse( nbt);
+					mNbt = ParserAtJson.parse( nbt);
 				}
 				else {
 					Utils.log( LOGGER, Level.WARNING, "wrong nbt part: {0}", line);

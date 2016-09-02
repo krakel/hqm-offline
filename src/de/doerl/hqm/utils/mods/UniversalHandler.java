@@ -15,7 +15,7 @@ import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.ANbt;
 import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.FList;
-import de.doerl.hqm.utils.nbt.NbtReader;
+import de.doerl.hqm.utils.nbt.ParserAtBits;
 
 class UniversalHandler {
 	private static Logger LOGGER = Logger.getLogger( UniversalHandler.class.getName());
@@ -74,7 +74,7 @@ class UniversalHandler {
 		try {
 			File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_NBT);
 			src = new FileInputStream( csvFile);
-			FCompound res = NbtReader.readAsCompound( src);
+			FCompound res = ParserAtBits.readAsCompound( src);
 			FList lst = (FList) res.get( "list");
 			if (lst.getElement() != FCompound.ID) {
 				Utils.log( Selector.LOGGER, Level.WARNING, "wrong nbt list type  {0}", lst.getElement());
