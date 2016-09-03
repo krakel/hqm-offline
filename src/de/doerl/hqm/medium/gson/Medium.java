@@ -21,7 +21,6 @@ import de.doerl.hqm.medium.IRefreshListener;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.IJson;
 import de.doerl.hqm.utils.json.JsonReader;
 
@@ -48,30 +47,30 @@ public class Medium implements IMedium {
 		}
 	}
 
-	private static File getModpackBase( File src) {
-		if (src != null) {
-			try {
-				String name = src.getCanonicalPath();
-				if (name.contains( "hqm")) {
-					File path = src;
-					while (path != null && !"default".equals( path.getName())) {
-						path = path.getParentFile();
-					}
-					if (path != null) {
-						path = path.getParentFile();
-					}
-					if (path != null) {
-						return path;
-					}
-				}
-			}
-			catch (IOException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, ex);
-			}
-		}
-		return null;
-	}
-
+//	private static File getModpackBase( File src) {
+//		if (src != null) {
+//			try {
+//				String name = src.getCanonicalPath();
+//				if (name.contains( "hqm")) {
+//					File path = src;
+//					while (path != null && !"default".equals( path.getName())) {
+//						path = path.getParentFile();
+//					}
+//					if (path != null) {
+//						path = path.getParentFile();
+//					}
+//					if (path != null) {
+//						return path;
+//					}
+//				}
+//			}
+//			catch (IOException ex) {
+//				Utils.logThrows( LOGGER, Level.WARNING, ex);
+//			}
+//		}
+//		return null;
+//	}
+//
 	private static String getModpackName( File src) {
 		if (src != null) {
 			try {
@@ -139,13 +138,11 @@ public class Medium implements IMedium {
 	}
 
 	static FHqm loadHqm( File file) {
-		File dir = file.isDirectory() ? file : file.getParentFile();
-		String name = getModpackName( dir);
+		File base = file.isDirectory() ? file : file.getParentFile();
+		String name = getModpackName( base);
 		FHqm hqm = new FHqm( name);
 		hqm.setMain( FHqm.LANG_EN_US);
-		File root = getModpackBase( dir);
-		if (root != null) {
-			File base = new File( root, "default");
+		if (base != null) {
 			readHqm( hqm, base);
 			MediaManager.setProperty( hqm, GSON_PATH, base);
 			MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
@@ -181,7 +178,7 @@ public class Medium implements IMedium {
 		parser.readSrc( hqm);
 	}
 
-	static FObject redJson( File file) {
+	static IJson redJson( File file) {
 		IJson json = null;
 		if (file.exists()) {
 			InputStream is = null;
@@ -197,7 +194,7 @@ public class Medium implements IMedium {
 				Utils.closeIgnore( is);
 			}
 		}
-		return FObject.to( json);
+		return json;
 	}
 
 	public static boolean saveHQM( FHqm hqm, File base) {

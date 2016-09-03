@@ -37,6 +37,7 @@ import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.MarkerOfID;
+import de.doerl.hqm.base.dispatch.QuestOfName;
 import de.doerl.hqm.base.dispatch.QuestOfUUID;
 import de.doerl.hqm.base.dispatch.ReputationOfUUID;
 import de.doerl.hqm.quest.ItemPrecision;
@@ -148,13 +149,14 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		if (files != null) {
 			for (File file : files) {
 				if (Medium.isQuestSet( file)) {
-					loadQuestSet( cat, Medium.redJson( file));
+					loadQuestSet( cat, file);
 				}
 			}
 		}
 	}
 
-	private void loadQuestSet( FQuestSetCat cat, FObject obj) {
+	private void loadQuestSet( FQuestSetCat cat, File file) {
+		FObject obj = FObject.to( Medium.redJson( file));
 		if (obj != null) {
 			FQuestSet set = cat.createMember();
 			set.setName( mLang, FValue.toString( obj.get( QUEST_SET_NAME)));
@@ -461,6 +463,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 				String uuid = uuids[i];
 				FQuest other = QuestOfUUID.get( hqm, uuid);
 				if (other == null) {
+					other = QuestOfName.get( hqm, uuid);
+				}
+				if (other == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing option link [{0}] {1} for {2}", i, uuid, quest.getName());
 				}
 				else {
@@ -473,6 +478,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private void updatePosts( FHqm hqm) {
 		for (String uuid : mPosts.keySet()) {
 			FQuest other = QuestOfUUID.get( hqm, uuid);
+			if (other == null) {
+				other = QuestOfName.get( hqm, uuid);
+			}
 			if (other == null) {
 				Utils.log( LOGGER, Level.WARNING, "missing posts {0}", uuid);
 			}
@@ -488,6 +496,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (int i = 0; i < uuids.length; ++i) {
 				String uuid = uuids[i];
 				FQuest other = QuestOfUUID.get( hqm, uuid);
+				if (other == null) {
+					other = QuestOfName.get( hqm, uuid);
+				}
 				if (other == null) {
 					Utils.log( LOGGER, Level.WARNING, "missing requirement [{0}] {1} for {2}", i, uuid, quest.getName());
 				}
