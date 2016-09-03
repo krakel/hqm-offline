@@ -3,10 +3,8 @@ package de.doerl.hqm.utils.nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FCompound extends AList {
-	public static final int ID = 10;
-
 	FCompound( String name) {
-		super( name, ID);
+		super( name, ANbt.ID_COMPOUND);
 	}
 
 	public static FCompound create() {
@@ -83,27 +81,18 @@ public final class FCompound extends AList {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append( getName());
-		sb.append( "=");
-		toString( sb);
-		return sb.toString();
-	}
-
-	@Override
 	public void toString( StringBuilder sb) {
 		boolean comma = false;
 		sb.append( "COMPOUND(");
 		for (ANbt nbt : mList) {
 			if (comma) {
-				sb.append( ",");
+				sb.append( ',');
 			}
 			sb.append( nbt.getName());
-			sb.append( "=");
+			sb.append( '=');
 			nbt.toString( sb);
 			comma = true;
 		}
-		sb.append( ")");
+		sb.append( ')');
 	}
 }

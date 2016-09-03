@@ -3,10 +3,8 @@ package de.doerl.hqm.utils.nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FList extends AList {
-	public static final int ID = 9;
-
 	FList( String name) {
-		super( name, ID);
+		super( name, ANbt.ID_LIST);
 	}
 
 	public static FList create( String name, ANbt... values) {

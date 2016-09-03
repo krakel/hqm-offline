@@ -46,8 +46,8 @@ public class ParserAtJson {
 
 	private FByteArray doArrayByte( String name) throws IOException {
 		FByteArray arr = new FByteArray( name);
-		boolean loop = false;
-		do {
+		boolean loop = true;
+		while (loop) {
 			switch (mParser.nextToken()) {
 				case COMMA:
 					arr.add( Byte.parseByte( mParser.nextValue()));
@@ -64,14 +64,13 @@ public class ParserAtJson {
 					throw new IOException( "wrong byte array");
 			}
 		}
-		while (loop);
 		return arr;
 	}
 
 	private FIntArray doArrayInt( String name) throws IOException {
 		FIntArray arr = new FIntArray( name);
-		boolean loop = false;
-		do {
+		boolean loop = true;
+		while (loop) {
 			switch (mParser.nextToken()) {
 				case COMMA:
 					arr.add( Integer.parseInt( mParser.nextValue()));
@@ -88,14 +87,13 @@ public class ParserAtJson {
 					throw new IOException( "wrong byte array");
 			}
 		}
-		while (loop);
 		return arr;
 	}
 
 	private FCompound doCompound( String name) throws IOException {
 		FCompound comp = new FCompound( name);
-		boolean loop = false;
-		do {
+		boolean loop = true;
+		while (loop) {
 			switch (mParser.nextToken()) {
 				case EQUAL:
 					comp.add( doPair());
@@ -108,7 +106,6 @@ public class ParserAtJson {
 					throw new IOException( "wrong start pair");
 			}
 		}
-		while (loop);
 		return comp;
 	}
 
@@ -120,22 +117,22 @@ public class ParserAtJson {
 
 	private FList doList( String name) throws IOException {
 		FList lst = new FList( name);
-		boolean loop = false;
-		do {
+		boolean loop = true;
+		while (loop) {
 			switch (mParser.nextToken()) {
 				case LEFT_PARENTHESIS:
 					int tag = getTag();
 					switch (tag) {
-						case 7: // Byte-Array
+						case ANbt.ID_BYTE_ARRAY:
 							lst.add( doArrayByte( ""));
 							break;
-						case 9: // List
+						case ANbt.ID_LIST:
 							lst.add( doList( ""));
 							break;
-						case 10: // Compound
+						case ANbt.ID_COMPOUND:
 							lst.add( doCompound( ""));
 							break;
-						case 11: // Int-Array
+						case ANbt.ID_INT_ARRAY:
 							lst.add( doArrayInt( ""));
 							break;
 						default:
@@ -150,7 +147,6 @@ public class ParserAtJson {
 					throw new IOException( "wrong byte array");
 			}
 		}
-		while (loop);
 		return lst;
 	}
 
@@ -170,13 +166,13 @@ public class ParserAtJson {
 		String name = mParser.nextValue();
 		int tag = doValueBegin();
 		switch (tag) {
-			case 7: // Byte-Array
+			case ANbt.ID_BYTE_ARRAY:
 				return doArrayByte( name);
-			case 9: // List
+			case ANbt.ID_LIST:
 				return doList( name);
-			case 10: // Compound
+			case ANbt.ID_COMPOUND:
 				return doCompound( name);
-			case 11: // Int-Array
+			case ANbt.ID_INT_ARRAY:
 				return doArrayInt( name);
 			default:
 				return doValueEnd( name, tag);
@@ -185,19 +181,19 @@ public class ParserAtJson {
 
 	private ANbt doValue( String name, int tag, String val) throws IOException {
 		switch (tag) {
-			case 1: // Byte
+			case ANbt.ID_BYTE:
 				return FLong.createByte( name, Byte.parseByte( val));
-			case 2: // Short
+			case ANbt.ID_SHORT:
 				return FLong.createShort( name, Short.parseShort( val));
-			case 3: // Int
+			case ANbt.ID_INT:
 				return FLong.createInt( name, Integer.parseInt( val));
-			case 4: // Long
+			case ANbt.ID_LONG:
 				return FLong.createLong( name, Long.parseLong( val));
-			case 5: // Float
+			case ANbt.ID_FLOAT:
 				return FDouble.createFloat( name, Float.parseFloat( val));
-			case 6: // Double
+			case ANbt.ID_DOUBLE:
 				return FDouble.createDouble( name, Double.parseDouble( val));
-			case 8: // String
+			case ANbt.ID_STRING:
 				int len = val.length();
 				return FString.create( name, len >= 2 ? val.substring( 1, len - 1) : "");
 			default:
@@ -226,40 +222,40 @@ public class ParserAtJson {
 	private int getTag() throws IOException {
 		String key = mParser.nextValue();
 		if ("END".equals( key)) {
-			return 0;
+			return ANbt.ID_END;
 		}
 		if ("BYTE".equals( key)) {
-			return 1;
+			return ANbt.ID_BYTE;
 		}
 		if ("SHORT".equals( key)) {
-			return 2;
+			return ANbt.ID_SHORT;
 		}
 		if ("INT".equals( key)) {
-			return 3;
+			return ANbt.ID_INT;
 		}
 		if ("LONG".equals( key)) {
-			return 4;
+			return ANbt.ID_LONG;
 		}
 		if ("FLOAT".equals( key)) {
-			return 5;
+			return ANbt.ID_FLOAT;
 		}
 		if ("DOUBLE".equals( key)) {
-			return 6;
+			return ANbt.ID_DOUBLE;
 		}
 		if ("BYTE-ARRAY".equals( key)) {
-			return 7;
+			return ANbt.ID_BYTE_ARRAY;
 		}
 		if ("STRING".equals( key)) {
-			return 8;
+			return ANbt.ID_STRING;
 		}
 		if ("LIST".equals( key)) {
-			return 9;
+			return ANbt.ID_LIST;
 		}
 		if ("COMPOUND".equals( key)) {
-			return 10;
+			return ANbt.ID_COMPOUND;
 		}
 		if ("INT-ARRAY".equals( key)) {
-			return 11;
+			return ANbt.ID_INT_ARRAY;
 		}
 		throw new IOException( "wrong nbt type");
 	}

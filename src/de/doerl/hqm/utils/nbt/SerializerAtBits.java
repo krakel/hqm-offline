@@ -15,7 +15,7 @@ public class SerializerAtBits {
 	private static final Logger LOGGER = Logger.getLogger( SerializerAtBits.class.getName());
 	private ByteArrayOutputStream mOut = new ByteArrayOutputStream();
 
-	public SerializerAtBits() {
+	private SerializerAtBits() {
 	}
 
 	private static void compress( InputStream in, OutputStream out) {

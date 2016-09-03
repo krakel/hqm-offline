@@ -4,37 +4,39 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class ParserTestNEI {
-	private static void doTest( String test, FCompound exp) {
-		FCompound act = ParserAtNEI.parse( test);
+public class WriterTestNEI {
+	private static void doTest( FCompound test, String exp) {
+		String act = SerializerAtNEI.write( test);
 		assertEquals( exp, act);
 	}
 
 	@Test
 	public void testParse1() {
-		FCompound exp = FCompound.create( //
+		String exp = "{id:1s,Damage:0s}";
+		//
+		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 1), //
 			FLong.createShort( "Damage", 0));
-		//
-		String test = "{id:1s,Damage:0s}";
 		doTest( test, exp);
 	}
 
 	@Test
 	public void testParse2() {
-		FCompound exp = FCompound.create( //
+		String exp = "{id:4806s,Damage:0s,tag:{ownerName:\"Server-wide Soul Network\"}}";
+		//
+		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 4806), //
 			FLong.createShort( "Damage", 0), //
 			FCompound.create( "tag", //
 				FString.create( "ownerName", "Server-wide Soul Network")));
-		//
-		String test = "{id:4806s,Damage:0s,tag:{ownerName:\"Server-wide Soul Network\"}}";
 		doTest( test, exp);
 	}
 
 	@Test
 	public void testParse3() {
-		FCompound exp = FCompound.create( //
+		String exp = "{id:5018s,Damage:0s,tag:{ex:[0:\"buildcraft:timer\"],mat:0b,logic:0b}}";
+		//
+		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 5018), //
 			FLong.createShort( "Damage", 0), //
 			FCompound.create( "tag", //
@@ -42,14 +44,14 @@ public class ParserTestNEI {
 					FString.create( "", "buildcraft:timer")), //
 				FLong.createByte( "mat", 0), //
 				FLong.createByte( "logic", 0)));
-		//
-		String test = "{id:5018s,Damage:0s,tag:{ex:[0:\"buildcraft:timer\"],mat:0b,logic:0b}}";
 		doTest( test, exp);
 	}
 
 	@Test
 	public void testParse4() {
-		FCompound exp = FCompound.create( //
+		String exp = "{id:766s,Damage:0s,tag:{reagentTanks:[0:{amount:16000,capacity:16000,Reagent:\"aether\"}]}}";
+		//
+		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 766), //
 			FLong.createShort( "Damage", 0), //
 			FCompound.create( "tag", //
@@ -58,14 +60,21 @@ public class ParserTestNEI {
 						FLong.createInt( "amount", 16000), //
 						FLong.createInt( "capacity", 16000), //
 						FString.create( "Reagent", "aether")))));
-		//
-		String test = "{id:766s,Damage:0s,tag:{reagentTanks:[0:{amount:16000,capacity:16000,Reagent:\"aether\"}]}}";
 		doTest( test, exp);
 	}
 
 	@Test
 	public void testParse5() {
-		FCompound exp = FCompound.create( //
+		String exp = "{id:4696s,Damage:0s,tag:" //
+			+ "{Age:0,IsAnalyzed:0b,Genome:" //
+			+ "{Chromosomes:[" //
+			+ "0:{UID0:\"botany.flowers.species.dandelion\",UID1:\"botany.flowers.species.dandelion\",Slot:0b}," //
+			+ "1:{UID0:\"botany.colorYellow\",UID1:\"botany.colorYellow\",Slot:1b}," //
+			+ "2:{UID0:\"botany.colorYellow\",UID1:\"botany.colorYellow\",Slot:2b}" //
+			+ "]}," //
+			+ "Wilt:0b,Flowered:1b}}";
+		//
+		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 4696), //
 			FLong.createShort( "Damage", 0), //
 			FCompound.create( "tag", //
@@ -78,21 +87,18 @@ public class ParserTestNEI {
 						FCompound.create( FString.create( "UID0", "botany.colorYellow"), FString.create( "UID1", "botany.colorYellow"), FLong.createByte( "Slot", 2)))), //
 				FLong.createByte( "Wilt", 0), //
 				FLong.createByte( "Flowered", 1)));
-		//
-		String test = "{id:4696s,Damage:0s,tag:" //
-			+ "{Age:0,IsAnalyzed:0b,Genome:" //
-			+ "{Chromosomes:[" //
-			+ "0:{UID0:\"botany.flowers.species.dandelion\",UID1:\"botany.flowers.species.dandelion\",Slot:0b}," //
-			+ "1:{UID0:\"botany.colorYellow\",UID1:\"botany.colorYellow\",Slot:1b}," //
-			+ "2:{UID0:\"botany.colorYellow\",UID1:\"botany.colorYellow\",Slot:2b}" //
-			+ "]}," //
-			+ "Wilt:0b,Flowered:1b}}";
 		doTest( test, exp);
 	}
 
 	@Test
 	public void testParse6() {
-		FCompound exp = FCompound.create( //
+		String exp = "{id:5718s,Damage:0s,tag:{" //
+			+ "InfiTool:{" //
+			+ "Unbreaking:2,Damage:0,Blaze:[21474836,0,0,],Shoddy:0.0f,Broken:0b,Effect1:7,TotalDurability:21474836" //
+			+ "}," //
+			+ "display:{Name:\"�fBane of Pigs\"}}}";
+		//
+		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 5718), //
 			FLong.createShort( "Damage", 0), //
 			FCompound.create( "tag", //
@@ -106,18 +112,14 @@ public class ParserTestNEI {
 					FLong.createInt( "TotalDurability", 21474836)), //
 				FCompound.create( "display", //
 					FString.create( "Name", "�fBane of Pigs"))));
-		//
-		String test = "{id:5718s,Damage:0s,tag:{" //
-			+ "InfiTool:{" //
-			+ "Unbreaking:2,Damage:0,Blaze:[21474836,0,0,],Shoddy:0.0f,Broken:0b,Effect1:7,TotalDurability:21474836" //
-			+ "}," //
-			+ "display:{Name:\"�fBane of Pigs\"}}}";
 		doTest( test, exp);
 	}
 
 	@Test
 	public void testParse7() {
-		FCompound exp = FCompound.create( //
+		String exp = "{id:2008s,Damage:0s,tag:{Facing:3b,Energy:0,SideCache:[6 bytes],Level:3b,RSControl:0b}}";
+		//
+		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 2008), //
 			FLong.createShort( "Damage", 0), //
 			FCompound.create( "tag", //
@@ -126,8 +128,6 @@ public class ParserTestNEI {
 				FByteArray.create( "SideCache", 0, 0, 0, 0, 0, 0), //
 				FLong.createByte( "Level", 3), //
 				FLong.createByte( "RSControl", 0)));
-		//
-		String test = "{id:2008s,Damage:0s,tag:{Facing:3b,Energy:0,SideCache:[6 bytes],Level:3b,RSControl:0b}}";
 		doTest( test, exp);
 	}
 }

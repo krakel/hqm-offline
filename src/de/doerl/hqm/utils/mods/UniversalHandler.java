@@ -15,6 +15,7 @@ import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.ANbt;
 import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.FList;
+import de.doerl.hqm.utils.nbt.FLong;
 import de.doerl.hqm.utils.nbt.ParserAtBits;
 
 class UniversalHandler {
@@ -76,7 +77,7 @@ class UniversalHandler {
 			src = new FileInputStream( csvFile);
 			FCompound res = ParserAtBits.readAsCompound( src);
 			FList lst = (FList) res.get( "list");
-			if (lst.getElement() != FCompound.ID) {
+			if (lst.getElement() != ANbt.ID_COMPOUND) {
 				Utils.log( Selector.LOGGER, Level.WARNING, "wrong nbt list type  {0}", lst.getElement());
 			}
 			else if (lst.size() != items.size()) {
@@ -85,18 +86,23 @@ class UniversalHandler {
 			else {
 				for (int i = 0, m = items.size(); i < m; ++i) {
 					ItemNEI item = items.get( i);
-					FCompound cmp = (FCompound) lst.get( i);
-					ANbt idNbt = cmp.get( "id");
-					if (idNbt == null) {
-						Utils.log( Selector.LOGGER, Level.WARNING, "missing id nbt for {0}", item.mID);
+					try {
+						FCompound cmp = (FCompound) lst.get( i);
+						FLong idNbt = (FLong) cmp.get( "id");
+						if (idNbt == null) {
+							Utils.log( Selector.LOGGER, Level.WARNING, "missing id nbt for {0}", item.mID);
+						}
+						else if (Integer.parseInt( item.mID) != idNbt.asInt()) {
+							Utils.log( Selector.LOGGER, Level.WARNING, "wrong ids item and nbt panel  {0} != {1}", item.mID, idNbt);
+						}
+						FCompound tag = (FCompound) cmp.get( "tag");
+						if (tag != null) {
+							tag.clearName();
+							item.setNBT( tag);
+						}
 					}
-					else if (Utils.different( item.mID, idNbt.toString())) {
-						Utils.log( Selector.LOGGER, Level.WARNING, "wrong ids item and nbt panel  {0} != {1}", item.mID, idNbt);
-					}
-					FCompound tag = (FCompound) cmp.get( "tag");
-					if (tag != null) {
-						tag.clearName();
-						item.setNBT( tag);
+					catch (Exception ex) {
+						Utils.logThrows( Selector.LOGGER, Level.WARNING, ex);
 					}
 				}
 			}

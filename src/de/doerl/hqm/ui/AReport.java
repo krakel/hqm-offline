@@ -20,6 +20,7 @@ import de.doerl.hqm.medium.RefreshEvent;
 import de.doerl.hqm.utils.Security;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
+import de.doerl.hqm.utils.nbt.SerializerAtJson;
 
 abstract class AReport extends ABundleAction implements IRefreshListener, Runnable {
 	private static final long serialVersionUID = -3001796596162739183L;
@@ -153,7 +154,7 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 				if (o1.mNBT == null || o1.mNBT.equals( o2.mNBT)) {
 					return 0;
 				}
-				return o1.mNBT.toString().compareTo( o2.mNBT.toString());
+				return SerializerAtJson.write( o1.mNBT).compareTo( SerializerAtJson.write( o2.mNBT));
 			}
 			return o1.mName.compareTo( o2.mName);
 		}

@@ -3,10 +3,6 @@ package de.doerl.hqm.utils.nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FLong extends ANbt {
-	public static final int ID_BYTE = 1;
-	public static final int ID_SHORT = 2;
-	public static final int ID_INT = 3;
-	public static final int ID_LONG = 4;
 	private long mValue;
 
 	FLong( String name, long value, int tag) {
@@ -15,35 +11,35 @@ public final class FLong extends ANbt {
 	}
 
 	public static FLong createByte( int value) {
-		return new FLong( "", value, ID_BYTE);
+		return new FLong( "", value, ANbt.ID_BYTE);
 	}
 
 	public static FLong createByte( String name, int value) {
-		return new FLong( name, value, ID_BYTE);
+		return new FLong( name, value, ANbt.ID_BYTE);
 	}
 
 	public static FLong createInt( int value) {
-		return new FLong( "", value, ID_INT);
+		return new FLong( "", value, ANbt.ID_INT);
 	}
 
 	public static FLong createInt( String name, int value) {
-		return new FLong( name, value, ID_INT);
+		return new FLong( name, value, ANbt.ID_INT);
 	}
 
 	public static FLong createLong( long value) {
-		return new FLong( "", value, ID_LONG);
+		return new FLong( "", value, ANbt.ID_LONG);
 	}
 
 	public static FLong createLong( String name, long value) {
-		return new FLong( name, value, ID_LONG);
+		return new FLong( name, value, ANbt.ID_LONG);
 	}
 
 	public static FLong createShort( int value) {
-		return new FLong( "", value, ID_SHORT);
+		return new FLong( "", value, ANbt.ID_SHORT);
 	}
 
 	public static FLong createShort( String name, int value) {
-		return new FLong( name, value, ID_SHORT);
+		return new FLong( name, value, ANbt.ID_SHORT);
 	}
 
 	public static byte toByte( ANbt nbt, byte def) {
@@ -137,29 +133,24 @@ public final class FLong extends ANbt {
 	}
 
 	@Override
-	public String toString() {
-		return Long.toString( mValue);
-	}
-
-	@Override
 	public void toString( StringBuilder sb) {
 		switch (getTag()) {
-			case ID_BYTE:
+			case ANbt.ID_BYTE:
 				sb.append( "BYTE(");
 				sb.append( (byte) mValue);
 				sb.append( ")");
 				break;
-			case ID_SHORT:
+			case ANbt.ID_SHORT:
 				sb.append( "SHORT(");
 				sb.append( (short) mValue);
 				sb.append( ")");
 				break;
-			case ID_INT:
+			case ANbt.ID_INT:
 				sb.append( "INT(");
 				sb.append( (int) mValue);
 				sb.append( ")");
 				break;
-			case ID_LONG:
+			case ANbt.ID_LONG:
 				sb.append( "LONG(");
 				sb.append( mValue);
 				sb.append( ")");

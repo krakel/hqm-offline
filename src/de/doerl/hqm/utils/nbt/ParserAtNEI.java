@@ -58,94 +58,114 @@ public class ParserAtNEI {
 			case RIGHT_BRACKET:
 				String bytes = mParser.nextValue();
 				if (bytes.endsWith( "bytes")) {
-					return new FByteArray( name);
+					FByteArray arr = new FByteArray( name);
+					int max = Integer.parseInt( bytes.substring( 0, bytes.length() - 6));
+					for (int i = 0; i < max; ++i) {
+						arr.add( 0);
+					}
+					return arr;
 				}
 				else {
 					return new FIntArray( name);
 				}
 			default:
-				throw new IOException( "wrong array pair");
+				throw new IOException( "wrong array");
 		}
 	}
 
 	private FByteArray doArrayByte( String name, String first) throws IOException {
 		FByteArray arr = new FByteArray( name);
 		arr.add( Byte.parseByte( first.substring( 0, first.length() - 1)));
-		boolean loop = false;
-		do {
+		boolean loop = true;
+		while (loop) {
 			switch (mParser.nextToken()) {
-				case COLON:
-					arr.add( Byte.parseByte( mParser.nextValue().substring( 0, first.length() - 1)));
+				case COMMA:
+					String val1 = mParser.nextValue();
+					arr.add( Byte.parseByte( val1.substring( 0, val1.length() - 1)));
 					loop = true;
 					break;
 				case RIGHT_BRACKET:
-					arr.add( Byte.parseByte( mParser.nextValue().substring( 0, first.length() - 1)));
+					String val2 = mParser.nextValue();
+					if (val2.length() > 1) {
+						arr.add( Byte.parseByte( val2.substring( 0, val2.length() - 1)));
+					}
 					loop = false;
 					break;
 				default:
-					throw new IOException( "wrong object pair");
+					throw new IOException( "wrong byte array");
 			}
 		}
-		while (loop);
 		return arr;
 	}
 
 	private FIntArray doArrayInteger( String name, String first) throws IOException {
 		FIntArray arr = new FIntArray( name);
 		arr.add( Integer.parseInt( first));
-		boolean loop = false;
-		do {
+		boolean loop = true;
+		while (loop) {
 			switch (mParser.nextToken()) {
-				case COLON:
+				case COMMA:
 					arr.add( Integer.parseInt( mParser.nextValue()));
 					loop = true;
 					break;
 				case RIGHT_BRACKET:
-					arr.add( Integer.parseInt( mParser.nextValue()));
+					String val = mParser.nextValue();
+					if (val.length() > 0) {
+						arr.add( Integer.parseInt( val));
+					}
+					loop = false;
+					break;
+				default:
+					throw new IOException( "wrong integer array");
+			}
+		}
+		return arr;
+	}
+
+	private ANbt doArrayList( String name) throws IOException {
+		FList lst = new FList( name);
+		boolean loop = doArrayListValue( lst);
+		while (loop) {
+			switch (mParser.nextToken()) {
+				case COLON:
+					loop = doArrayListValue( lst);
+					break;
+				case RIGHT_BRACKET:
 					loop = false;
 					break;
 				default:
 					throw new IOException( "wrong object pair");
 			}
 		}
-		while (loop);
-		return arr;
-	}
-
-	private ANbt doArrayList( String name) throws IOException {
-		FList lst = new FList( name);
-		boolean loop = false;
-		do {
-			switch (mParser.nextToken()) {
-				case COMMA:
-					lst.add( doValue( "", mParser.nextValue()));
-					doArrayListNext( lst);
-					loop = true;
-					break;
-				case LEFT_BRACKET:
-					lst.add( doArray( ""));
-					loop = true;
-					break;
-				case RIGHT_BRACKET:
-					lst.add( doValue( "", mParser.nextValue()));
-					loop = false;
-					break;
-				case LEFT_CURLY:
-					lst.add( doCompound( ""));
-					loop = true;
-					break;
-				default:
-					throw new IOException( "wrong array close");
-			}
-		}
-		while (loop);
 		return lst;
 	}
 
-	private void doArrayListNext( FList lst) throws IOException {
+	private boolean doArrayListValue( FList lst) throws IOException {
 		switch (mParser.nextToken()) {
-			case COLON:
+			case COMMA:
+				lst.add( doValue( "", mParser.nextValue()));
+				return true;
+			case LEFT_BRACKET:
+				lst.add( doArray( ""));
+				return doArrayNext();
+			case RIGHT_BRACKET:
+				lst.add( doValue( "", mParser.nextValue()));
+				return false;
+			case LEFT_CURLY:
+				lst.add( doCompound( ""));
+				return doArrayNext();
+			default:
+				throw new IOException( "wrong pair value");
+		}
+	}
+
+	private boolean doArrayNext() throws IOException {
+		switch (mParser.nextToken()) {
+			case COMMA:
 				mParser.nextValue(); // ignore index
+				return true;
+			case RIGHT_BRACKET:
+				return false;
 			default:
 				throw new IOException( "wrong array close");
 		}
@@ -153,8 +173,8 @@ public class ParserAtNEI {
 
 	private FCompound doCompound( String name) throws IOException {
 		FCompound obj = new FCompound( name);
-		boolean loop = false;
-		do {
+		boolean loop = true;
+		while (loop) {
 			switch (mParser.nextToken()) {
 				case COLON:
 					loop = doCompoundValue( obj, mParser.nextValue());
@@ -166,7 +186,6 @@ public class ParserAtNEI {
 					throw new IOException( "wrong object pair");
 			}
 		}
-		while (loop);
 		return obj;
 	}
 
@@ -205,7 +224,8 @@ public class ParserAtNEI {
 		char last = len < 0 ? ' ' : val.charAt( len);
 		switch (last) {
 			case '"':
-				return FString.create( name, len >= 1 ? val.substring( 1, len) : ""); // TODO remove \\\\"
+				String str = len >= 1 ? val.substring( 1, len) : "";
+				return FString.create( name, str.replace( "\\\"", "\"")); // TODO remove \\\\"
 			case 'f':
 			case 'F':
 				return FDouble.createFloat( name, Float.parseFloat( val.substring( 0, len)));

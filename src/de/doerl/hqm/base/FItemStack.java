@@ -6,6 +6,7 @@ import de.doerl.hqm.utils.mods.ImageLoader;
 import de.doerl.hqm.utils.mods.ItemNEI;
 import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.FLong;
+import de.doerl.hqm.utils.nbt.SerializerAtJson;
 
 public final class FItemStack extends AStack {
 	private String mKey;
@@ -89,12 +90,7 @@ public final class FItemStack extends AStack {
 	}
 
 	public String getNbtStr() {
-		if (mNBT != null) {
-			return mNBT.toString();
-		}
-		else {
-			return "";
-		}
+		return SerializerAtJson.write( mNBT);
 	}
 
 	@Override

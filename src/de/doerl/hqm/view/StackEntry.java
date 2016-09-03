@@ -5,6 +5,7 @@ import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.ParserAtJson;
+import de.doerl.hqm.utils.nbt.SerializerAtJson;
 
 class StackEntry {
 	public boolean mIsItem;
@@ -70,12 +71,7 @@ class StackEntry {
 	}
 
 	public String getNbtStr() {
-		if (mNbt != null) {
-			return mNbt.toString();
-		}
-		else {
-			return "";
-		}
+		return SerializerAtJson.write( mNbt);
 	}
 
 	public ItemPrecision getPrecision() {

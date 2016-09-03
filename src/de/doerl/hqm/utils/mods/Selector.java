@@ -20,6 +20,7 @@ import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.LoggingManager;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
+import de.doerl.hqm.utils.nbt.SerializerAtJson;
 
 @SuppressWarnings( "unused")
 public class Selector {
@@ -182,7 +183,7 @@ public class Selector {
 				dst.print( ',');
 				dst.print( item.getImageName());
 				dst.print( ',');
-				dst.println( item.getNBT() != null ? item.getNBT().toString() : "");
+				dst.println( SerializerAtJson.write( item.getNBT()));
 			}
 			dst.flush();
 		}

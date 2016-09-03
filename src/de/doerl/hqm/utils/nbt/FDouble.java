@@ -3,8 +3,6 @@ package de.doerl.hqm.utils.nbt;
 import de.doerl.hqm.utils.Utils;
 
 public final class FDouble extends ANbt {
-	public static final int ID_FLOAT = 5;
-	public static final int ID_DOUBLE = 6;
 	private double mValue;
 
 	FDouble( String name, double value, int tag) {
@@ -13,19 +11,19 @@ public final class FDouble extends ANbt {
 	}
 
 	public static FDouble createDouble( double value) {
-		return new FDouble( "", value, ID_DOUBLE);
+		return new FDouble( "", value, ANbt.ID_DOUBLE);
 	}
 
 	public static FDouble createDouble( String name, double value) {
-		return new FDouble( name, value, ID_DOUBLE);
+		return new FDouble( name, value, ANbt.ID_DOUBLE);
 	}
 
 	public static FDouble createFloat( float value) {
-		return new FDouble( "", value, ID_FLOAT);
+		return new FDouble( "", value, ANbt.ID_FLOAT);
 	}
 
 	public static FDouble createFloat( String name, float value) {
-		return new FDouble( name, value, ID_FLOAT);
+		return new FDouble( name, value, ANbt.ID_FLOAT);
 	}
 
 	public static double toDouble( ANbt nbt, double def) {
@@ -91,14 +89,9 @@ public final class FDouble extends ANbt {
 	}
 
 	@Override
-	public String toString() {
-		return Double.toString( mValue);
-	}
-
-	@Override
 	public void toString( StringBuilder sb) {
 		switch (getTag()) {
-			case ID_FLOAT:
+			case ANbt.ID_FLOAT:
 				sb.append( "FLOAT(");
 				sb.append( (float) mValue);
 				sb.append( ")");

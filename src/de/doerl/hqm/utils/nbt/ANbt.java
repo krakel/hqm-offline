@@ -1,6 +1,18 @@
 package de.doerl.hqm.utils.nbt;
 
 public abstract class ANbt {
+	public static final int ID_END = 0;
+	public static final int ID_BYTE = 1;
+	public static final int ID_SHORT = 2;
+	public static final int ID_INT = 3;
+	public static final int ID_LONG = 4;
+	public static final int ID_FLOAT = 5;
+	public static final int ID_DOUBLE = 6;
+	public static final int ID_BYTE_ARRAY = 7;
+	public static final int ID_STRING = 8;
+	public static final int ID_LIST = 9;
+	public static final int ID_COMPOUND = 10;
+	public static final int ID_INT_ARRAY = 11;
 	private String mName;
 	private int mTag;
 
@@ -72,6 +84,13 @@ public abstract class ANbt {
 
 	void setName( String name) {
 		mName = name;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		toString( sb);
+		return sb.toString();
 	}
 
 	abstract void toString( StringBuilder sb);
