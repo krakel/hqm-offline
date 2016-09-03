@@ -31,7 +31,7 @@ public class SaveGSON extends ASaveFile {
 				chooser.setFileFilter( Medium.FILTER);
 				File choose = selectSaveDialog( frame, chooser);
 				if (choose != null) {
-					File file = Medium.normalize( choose);
+					File file = choose.getParentFile();
 					if (!file.exists() || mCallback.askOverwrite()) {
 						setLastHQM( file);
 						MediaManager.setProperty( hqm, Medium.GSON_PATH, file);

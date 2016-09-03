@@ -3,6 +3,7 @@ package de.doerl.hqm.medium.gson;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -47,6 +48,63 @@ public class Medium implements IMedium {
 		}
 	}
 
+	private static File getModpackBase( File src) {
+		if (src != null) {
+			try {
+				String name = src.getCanonicalPath();
+				if (name.contains( "hqm")) {
+					File path = src;
+					while (path != null && !"default".equals( path.getName())) {
+						path = path.getParentFile();
+					}
+					if (path != null) {
+						path = path.getParentFile();
+					}
+					if (path != null) {
+						return path;
+					}
+				}
+			}
+			catch (IOException ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+			}
+		}
+		return null;
+	}
+
+	private static String getModpackName( File src) {
+		if (src != null) {
+			try {
+				String name = src.getCanonicalPath();
+				if (name.contains( "hqm")) {
+					File path = src;
+					while (path != null && !"default".equals( path.getName())) {
+						path = path.getParentFile();
+					}
+					if (path != null) {
+						path = path.getParentFile();
+					}
+					if (path != null && "hqm".equals( path.getName())) {
+						path = path.getParentFile();
+					}
+					if (path != null && "config".equals( path.getName())) {
+						path = path.getParentFile();
+					}
+					if (path != null && "minecraft".equals( path.getName())) {
+						path = path.getParentFile();
+					}
+					if (path != null) {
+						return path.getName();
+					}
+				}
+			}
+			catch (IOException ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+			}
+		}
+		return MediumUtils.getFilepackName( src);
+	}
+
 	static boolean isQuestSet( File file) {
 		if (!file.isFile()) {
 			return false;
@@ -81,40 +139,41 @@ public class Medium implements IMedium {
 	}
 
 	static FHqm loadHqm( File file) {
-		String name = MediumUtils.getModpackName( file);
+		File dir = file.isDirectory() ? file : file.getParentFile();
+		String name = getModpackName( dir);
 		FHqm hqm = new FHqm( name);
 		hqm.setMain( FHqm.LANG_EN_US);
-		File base = MediumUtils.getModpackBase( file);
-		if (base != null) {
+		File root = getModpackBase( dir);
+		if (root != null) {
+			File base = new File( root, "default");
 			readHqm( hqm, base);
-			MediaManager.setProperty( hqm, GSON_PATH, file);
+			MediaManager.setProperty( hqm, GSON_PATH, base);
 			MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
-			MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
+			MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, base.getParentFile());
+			return hqm;
 		}
 		return null;
 	}
 
 	static String loadTxt( File file) {
-		try {
-			byte[] src = Files.readAllBytes( file.toPath());
-			return new String( src, StandardCharsets.UTF_8);
-		}
-		catch (Exception ex) {
-			Utils.logThrows( LOGGER, Level.FINER, ex);
+		if (file.exists()) {
+			try {
+				byte[] src = Files.readAllBytes( file.toPath());
+				return new String( src, StandardCharsets.UTF_8);
+			}
+			catch (Exception ex) {
+				Utils.logThrows( LOGGER, Level.FINER, ex);
+			}
 		}
 		return null;
 	}
 
 	public static void main( String[] args) {
 		File file = new File( "D:\\Games\\Minecraft\\hqm\\hqm-Brave\\default");
-		String name = MediumUtils.getModpackName( file);
+		String name = getModpackName( file);
 		FHqm hqm = new FHqm( name);
 		hqm.setMain( FHqm.LANG_EN_US);
 		readHqm( hqm, file);
-	}
-
-	public static File normalize( File choose) {
-		return null;
 	}
 
 	static void readHqm( FHqm hqm, File base) {
@@ -210,7 +269,7 @@ public class Medium implements IMedium {
 
 	@Override
 	public IMedium parse( String val) {
-		if (val != null && val.toLowerCase().endsWith( ".json")) {
+		if (val != null && val.toLowerCase().endsWith( "default")) {
 			return this;
 		}
 		return null;

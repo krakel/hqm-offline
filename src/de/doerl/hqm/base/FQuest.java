@@ -77,7 +77,7 @@ public final class FQuest extends AUUID implements IElement {
 			case CONSUME:
 				task = new FQuestTaskItemsConsume( this);
 				break;
-			case CRAFTING:
+			case CRAFT:
 				task = new FQuestTaskItemsCrafting( this);
 				break;
 			case LOCATION:

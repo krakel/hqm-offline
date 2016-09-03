@@ -166,6 +166,7 @@ public class EditFrame extends JFrame implements IModelListener {
 		menu.setBackground( UIManager.getColor( "panel.background"));
 		menu.add( createMenuFile());
 		menu.add( createMenuJSON());
+		menu.add( createMenuGSON());
 		menu.add( createMenuReport());
 		menu.add( createMenuHelp());
 //		menu.setBorder( BorderFactory.createEtchedBorder( EtchedBorder.LOWERED));
@@ -190,6 +191,16 @@ public class EditFrame extends JFrame implements IModelListener {
 //		menu.add( new ConfigurationAction( this));
 //		menu.addSeparator();
 		menu.add( new ExitAction( this));
+		return menu;
+	}
+
+	private JMenu createMenuGSON() {
+		JMenu menu = createMenu( "hqm.gson");
+		IMedium gson = MediaManager.get( "gson");
+		menu.add( gson.getOpen( mCB));
+		menu.addSeparator();
+		menu.add( gson.getSave( mCB));
+		menu.add( gson.getSaveAs( mCB));
 		return menu;
 	}
 
@@ -338,8 +349,10 @@ public class EditFrame extends JFrame implements IModelListener {
 		mToolBar.add( mNewAction);
 		IMedium bit = MediaManager.get( "bit");
 		IMedium json = MediaManager.get( "json");
+		IMedium gson = MediaManager.get( "gson");
 		mToolBar.add( bit.getOpen( mCB));
 		mToolBar.add( json.getOpen( mCB));
+		mToolBar.add( gson.getOpen( mCB));
 		mToolBar.add( mCloseAction);
 		mToolBar.addSeparator();
 		mToolBar.add( bit.getSave( mCB));
@@ -347,6 +360,9 @@ public class EditFrame extends JFrame implements IModelListener {
 		mToolBar.addSeparator();
 		mToolBar.add( json.getSave( mCB));
 		mToolBar.add( json.getSaveAs( mCB));
+		mToolBar.addSeparator();
+		mToolBar.add( gson.getSave( mCB));
+		mToolBar.add( gson.getSaveAs( mCB));
 		mToolBar.addSeparator( new Dimension( 80, 0));
 	}
 

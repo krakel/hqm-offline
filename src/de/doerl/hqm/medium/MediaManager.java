@@ -17,6 +17,7 @@ public class MediaManager {
 		sMedia = new ArrayList<IMedium>();
 		registerMedium( new de.doerl.hqm.medium.bits.Medium());
 		registerMedium( new de.doerl.hqm.medium.json.Medium());
+		registerMedium( new de.doerl.hqm.medium.gson.Medium());
 	}
 
 	private MediaManager() {

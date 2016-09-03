@@ -57,13 +57,18 @@ class OpenLastAction extends ABundleAction implements IRefreshListener, Runnable
 	@Override
 	public void run() {
 		String file = PreferenceManager.getArrayString( BaseDefaults.LAST_OPEN, mIndex);
-		if (file != null) {
-			IMedium m = MediumOfFile.get( file);
-			putValue( SMALL_ICON, ResourceManager.getIcon( m.getIcon()));
-			putValue( NAME, file);
+		if (file == null) {
+			putValue( NAME, "");
 		}
 		else {
-			putValue( NAME, "");
+			IMedium m = MediumOfFile.get( file);
+			if (m == null) {
+				putValue( NAME, "");
+			}
+			else {
+				putValue( SMALL_ICON, ResourceManager.getIcon( m.getIcon()));
+				putValue( NAME, file);
+			}
 		}
 		if (mItem != null) {
 			mItem.setVisible( file != null);

@@ -42,12 +42,14 @@ public enum FileVersion {
 	}
 
 	public static FileVersion parse( String name) {
-		try {
-			return valueOf( name);
+		if (name != null) {
+			try {
+				return valueOf( name);
+			}
+			catch (Exception ex) {
+			}
 		}
-		catch (Exception ex) {
-			return last();
-		}
+		return last();
 	}
 
 	public boolean contains( FileVersion other) {

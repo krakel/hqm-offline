@@ -37,6 +37,10 @@ import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.base.dispatch.IndexOf;
+import de.doerl.hqm.base.dispatch.SizeOf;
+import de.doerl.hqm.quest.ItemPrecision;
+import de.doerl.hqm.quest.RepeatType;
+import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
 import de.doerl.hqm.utils.nbt.SerializerAtNEI;
@@ -54,8 +58,8 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	@Override
 	protected Object doTask( AQuestTask task, JsonWriter dst) {
 		dst.print( TASK_TYPE, task.getTaskTyp());
-		dst.print( TASK_NAME, task.getName( mLang));
-		dst.print( TASK_DESC, task.getDescr( mLang));
+		dst.printIf( TASK_NAME, task.getName( mLang));
+		dst.printIf( TASK_DESC, task.getDescr( mLang));
 		return null;
 	}
 
@@ -114,8 +118,12 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	public Object forItemRequirement( FItemRequirement item, JsonWriter dst) {
 		dst.beginObject();
 		writeItemRequirement( item.getStack(), dst);
-		dst.print( REQUIREMENT_REQUIRED, item.mAmount);
-		dst.print( REQUIREMENT_PRECISION, item.mPrecision);
+		if (item.mAmount > 1) {
+			dst.print( REQUIREMENT_REQUIRED, item.mAmount);
+		}
+		if (item.mPrecision != ItemPrecision.PRECISE) {
+			dst.print( REQUIREMENT_PRECISION, item.mPrecision);
+		}
 		dst.endObject();
 		return null;
 	}
@@ -162,16 +170,23 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		dst.print( QUEST_UUID, quest.getUUID());
 		dst.print( QUEST_NAME, quest.getName( mLang));
 		dst.print( QUEST_DESC, quest.getDescr( mLang));
-		dst.print( QUEST_UUID, quest.getUUID());
 		dst.print( QUEST_X, quest.mX);
 		dst.print( QUEST_Y, quest.mY);
-		dst.print( QUEST_BIG, quest.mBig);
+		if (quest.mBig) {
+			dst.print( QUEST_BIG, quest.mBig);
+		}
 		writeIcon( QUEST_ICON, quest.mIcon, dst);
 		writeQuestArr( QUEST_PREREQUISITES, quest.mRequirements, dst);
 		writeQuestArr( QUEST_OPTION_LINKS, quest.mOptionLinks, dst);
-		quest.mRepeatInfo.accept( this, dst);
-		dst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
-		dst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
+		if (quest.mRepeatInfo.mType != RepeatType.NONE) {
+			quest.mRepeatInfo.accept( this, dst);
+		}
+		if (quest.mTriggerType != TriggerType.NONE) {
+			dst.print( QUEST_TRIGGER_TYPE, quest.mTriggerType);
+		}
+		if (quest.mTriggerTasks > 0) {
+			dst.print( QUEST_TRIGGER_TASKS, quest.mTriggerTasks);
+		}
 		dst.print( QUEST_PARENT_REQUIREMENT, quest.mCount);
 		writeTasks( quest, dst);
 		writeStackArr( QUEST_REWARD, quest.mRewards, dst);
@@ -192,7 +207,12 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 //			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
 			JsonWriter dst = new JsonWriter( os);
-			writeQuestSet( set, dst);
+			dst.beginObject();
+			dst.print( QUEST_SET_NAME, set.getName( mLang));
+			dst.print( QUEST_SET_DECR, set.getDescr( mLang));
+			writeQuests( set, dst);
+			writeBars( set, dst);
+			dst.endObject();
 			dst.flush();
 		}
 		catch (Exception ex) {
@@ -310,19 +330,23 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	}
 
 	private void writeBars( FQuestSet set, JsonWriter dst) {
-		dst.beginArray( QUEST_SET_BARS);
-		set.forEachBar( this, dst);
-		dst.endArray();
+		if (SizeOf.getBars( set) > 0) {
+			dst.beginArray( QUEST_SET_BARS);
+			set.forEachBar( this, dst);
+			dst.endArray();
+		}
 	}
 
 	private void writeCommands( FQuest quest, JsonWriter dst) {
-		dst.beginArray( QUEST_COMMANDS);
-		for (String cmd : quest.mCommands) {
-			if (cmd != null) {
-				dst.printValue( cmd);
+		if (quest.mCommands.size() > 0) {
+			dst.beginArray( QUEST_COMMANDS);
+			for (String cmd : quest.mCommands) {
+				if (cmd != null) {
+					dst.printValue( cmd);
+				}
 			}
+			dst.endArray();
 		}
-		dst.endArray();
 	}
 
 	private void writeDescription( FHqm hqm, File file) {
@@ -416,15 +440,6 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		dst.endArray();
 	}
 
-	private void writeQuestSet( FQuestSet set, JsonWriter dst) {
-		dst.beginObject();
-		dst.print( QUEST_SET_NAME, set.getName( mLang));
-		dst.print( QUEST_SET_DECR, set.getDescr( mLang));
-		writeBars( set, dst);
-		writeQuests( set, dst);
-		dst.endObject();
-	}
-
 	private void writeQuestSetCat( FQuestSetCat cat, File file) {
 		OutputStream os = null;
 		try {
@@ -464,9 +479,11 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	}
 
 	private void writeRewards( FQuest quest, JsonWriter dst) {
-		dst.beginArray( QUEST_REP_REWRDS);
-		quest.forEachReward( this, dst);
-		dst.endArray();
+		if (SizeOf.getReward( quest) > 0) {
+			dst.beginArray( QUEST_REP_REWRDS);
+			quest.forEachReward( this, dst);
+			dst.endArray();
+		}
 	}
 
 	private void writeStackArr( String key, ArrayList<FItemStack> arr, JsonWriter dst) {
@@ -482,8 +499,10 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	}
 
 	private void writeTasks( FQuest quest, JsonWriter dst) {
-		dst.beginArray( QUEST_TASKS);
-		quest.forEachTask( this, dst);
-		dst.endArray();
+		if (SizeOf.getTasks( quest) > 0) {
+			dst.beginArray( QUEST_TASKS);
+			quest.forEachTask( this, dst);
+			dst.endArray();
+		}
 	}
 }

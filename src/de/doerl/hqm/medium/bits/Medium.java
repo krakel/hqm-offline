@@ -26,10 +26,40 @@ public class Medium implements IMedium {
 	public static final String MEDIUM = "bit";
 	public static final String HQM_PATH = "hqm_path";
 
+	private static String getModpackName( File src) {
+		if (src != null) {
+			try {
+				String name = src.getCanonicalPath();
+				if (name.contains( "hqm")) {
+					File path = src;
+					while (path != null && !"hqm".equals( path.getName())) {
+						path = path.getParentFile();
+					}
+					if (path != null) {
+						path = path.getParentFile();
+					}
+					if (path != null && "config".equals( path.getName())) {
+						path = path.getParentFile();
+					}
+					if (path != null && "minecraft".equals( path.getName())) {
+						path = path.getParentFile();
+					}
+					if (path != null) {
+						return path.getName();
+					}
+				}
+			}
+			catch (IOException ex) {
+				Utils.logThrows( LOGGER, Level.WARNING, ex);
+			}
+		}
+		return MediumUtils.getFilepackName( src);
+	}
+
 	static FHqm loadHqm( File file) {
 		InputStream is = null;
 		try {
-			String name = MediumUtils.getModpackName( file);
+			String name = getModpackName( file);
 			FHqm hqm = new FHqm( name);
 			is = MediumUtils.getSource( file);
 			readHqm( hqm, is);

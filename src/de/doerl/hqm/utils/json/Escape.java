@@ -31,9 +31,9 @@ class Escape {
 				case '\\':
 					sb.append( "\\\\");
 					break;
-				case '/':
-					sb.append( "\\/");
-					break;
+//				case '/':
+//					sb.append( "\\/");
+//					break;
 				default:
 					if (c >= '\u0000' && c <= '\u001F' || c >= '\u007F' && c <= '\u009F' || c >= '\u2000' && c <= '\u20FF') {
 						String hex = Integer.toHexString( c);

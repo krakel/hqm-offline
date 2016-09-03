@@ -128,7 +128,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (int id = 0, max = arr.size(); id < max; ++id) {
 				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					FGroupTier tier = cat.createGroupTier( id);
+					FGroupTier tier = cat.createMember();
 					tier.setName( mLang, FValue.toString( obj.get( GROUP_TIER_NAME)));
 					tier.mColorID = FValue.toInt( obj.get( GROUP_TIER_COLOR));
 					FArray ww = FArray.to( obj.get( GROUP_TIER_WEIGHTS));
@@ -146,18 +146,17 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 
 	private void loadQuestSet( FQuestSetCat cat, File[] files) {
 		if (files != null) {
-			int id = 0;
 			for (File file : files) {
 				if (Medium.isQuestSet( file)) {
-					loadQuestSet( cat, Medium.redJson( file), id++);
+					loadQuestSet( cat, Medium.redJson( file));
 				}
 			}
 		}
 	}
 
-	private void loadQuestSet( FQuestSetCat cat, FObject obj, int id) {
+	private void loadQuestSet( FQuestSetCat cat, FObject obj) {
 		if (obj != null) {
-			FQuestSet set = cat.createQuestSet( id);
+			FQuestSet set = cat.createMember();
 			set.setName( mLang, FValue.toString( obj.get( QUEST_SET_NAME)));
 			set.setDescr( mLang, FValue.toString( obj.get( QUEST_SET_DECR)));
 			readQuests( set, FArray.to( obj.get( QUEST_SET_QUESTS)));
@@ -171,7 +170,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (int id = 0, max = arr.size(); id < max; ++id) {
 				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					FReputation rep = cat.createReputation( id);
+					FReputation rep = cat.createMember();
 					rep.setUUID( FValue.toString( obj.get( REPUTATION_UUID)));
 					rep.setName( mLang, FValue.toString( obj.get( REPUTATION_NAME)));
 					rep.setDescr( mLang, FValue.toString( obj.get( REPUTATION_NEUTRAL)));
@@ -212,7 +211,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (int id = 0, max = arr.size(); id < max; ++id) {
 				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					FGroup grp = tier.createGroup( id);
+					FGroup grp = tier.createGroup();
 					grp.setUUID( FValue.toString( obj.get( GROUP_UUID)));
 					grp.setName( mLang, FValue.toString( obj.get( GROUP_NAME)));
 					grp.mLimit = FValue.toIntObj( obj.get( GROUP_LIMIT));
@@ -243,7 +242,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (int id = 0, max = arr.size(); id < max; ++id) {
 				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					FMarker marker = rep.createMarker( id);
+					FMarker marker = rep.createMarker();
 					marker.setName( mLang, FValue.toString( obj.get( MARKER_NAME)));
 					marker.mMark = FValue.toInt( obj.get( MARKER_VALUE));
 				}
@@ -283,7 +282,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (int id = 0, max = arr.size(); id < max; ++id) {
 				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					FQuest quest = set.createQuest( id);
+					FQuest quest = set.createQuest();
 					quest.setUUID( FValue.toString( obj.get( QUEST_UUID)));
 					quest.setName( mLang, FValue.toString( obj.get( QUEST_NAME)));
 					quest.setDescr( mLang, FValue.toString( obj.get( QUEST_DESC)));
@@ -358,13 +357,13 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						FItemRequirement item = task.createItemRequirement();
 						item.setStack( readItemStack( reqItem));
 						item.mPrecision = ItemPrecision.parse( FValue.toString( obj.get( REQUIREMENT_PRECISION)));
-						item.mAmount = FValue.toInt( obj.get( REQUIREMENT_REQUIRED));
+						item.mAmount = FValue.toInt( obj.get( REQUIREMENT_REQUIRED), 1);
 					}
 					IJson reqFluid = obj.get( REQUIREMENT_FLUID);
 					if (reqFluid != null) {
 						FFluidRequirement fluid = task.createFluidRequirement();
 						fluid.setStack( new FFluidStack( FValue.toString( reqFluid)));
-						fluid.mAmount = FValue.toInt( obj.get( REQUIREMENT_REQUIRED));
+						fluid.mAmount = FValue.toInt( obj.get( REQUIREMENT_REQUIRED), 1);
 					}
 				}
 			}
@@ -376,7 +375,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (int id = 0, max = arr.size(); id < max; ++id) {
 				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					FLocation loc = task.createLocation( id);
+					FLocation loc = task.createLocation();
 					loc.setName( mLang, FValue.toString( obj.get( LOCATION_NAME)));
 					loc.mIcon = readIcon( obj.get( LOCATION_ICON));
 					loc.mX = FValue.toInt( obj.get( LOCATION_X));

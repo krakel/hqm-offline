@@ -33,6 +33,7 @@ import de.doerl.hqm.base.FReputationCat;
 import de.doerl.hqm.base.FReputationReward;
 import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
+import de.doerl.hqm.base.dispatch.SizeOf;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
 import de.doerl.hqm.utils.nbt.SerializerAtJson;
@@ -357,19 +358,23 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	}
 
 	private void writeBars( FQuestSet set) {
-		mDst.beginArray( QUEST_SET_BARS);
-		set.forEachBar( this, null);
-		mDst.endArray();
+		if (SizeOf.getBars( set) > 0) {
+			mDst.beginArray( QUEST_SET_BARS);
+			set.forEachBar( this, null);
+			mDst.endArray();
+		}
 	}
 
 	private void writeCommands( FQuest quest) {
-		mDst.beginArray( QUEST_COMMANDS);
-		for (String cmd : quest.mCommands) {
-			if (cmd != null) {
-				mDst.printValue( cmd);
+		if (quest.mCommands.size() > 0) {
+			mDst.beginArray( QUEST_COMMANDS);
+			for (String cmd : quest.mCommands) {
+				if (cmd != null) {
+					mDst.printValue( cmd);
+				}
 			}
+			mDst.endArray();
 		}
-		mDst.endArray();
 	}
 
 	void writeDst( FHqm hqm) {
@@ -433,9 +438,11 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	}
 
 	private void writeMarkers( FReputation rep) {
-		mDst.beginArray( REPUTATION_MARKERS);
-		rep.forEachMarker( this, null);
-		mDst.endArray();
+		if (SizeOf.getMarker( rep) > 0) {
+			mDst.beginArray( REPUTATION_MARKERS);
+			rep.forEachMarker( this, null);
+			mDst.endArray();
+		}
 	}
 
 	private void writeQuestArr( String key, ArrayList<FQuest> arr) {
@@ -469,9 +476,11 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	}
 
 	private void writeRewards( FQuest quest) {
-		mDst.beginArray( QUEST_REP_REWRDS);
-		quest.forEachReward( this, null);
-		mDst.endArray();
+		if (SizeOf.getReward( quest) > 0) {
+			mDst.beginArray( QUEST_REP_REWRDS);
+			quest.forEachReward( this, null);
+			mDst.endArray();
+		}
 	}
 
 	private void writeStackArr( String key, ArrayList<FItemStack> arr) {
@@ -494,8 +503,10 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	}
 
 	private void writeTasks( FQuest quest) {
-		mDst.beginArray( QUEST_TASKS);
-		quest.forEachTask( this, null);
-		mDst.endArray();
+		if (SizeOf.getTasks( quest) > 0) {
+			mDst.beginArray( QUEST_TASKS);
+			quest.forEachTask( this, null);
+			mDst.endArray();
+		}
 	}
 }

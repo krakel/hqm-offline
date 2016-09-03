@@ -21,7 +21,7 @@ class OpenJSON extends AOpenFile {
 		setEnabled( true);
 	}
 
-	private static boolean verifyLastPipeDef( File file) {
+	private static boolean verifyLastHQM( File file) {
 		if (file.exists()) {
 			setLastHQM( file);
 			return true;
@@ -36,7 +36,7 @@ class OpenJSON extends AOpenFile {
 		JFileChooser chooser = createChooser( pfad);
 		chooser.setFileFilter( Medium.FILTER);
 		File file = selectOpenDialog( frame, chooser);
-		if (file != null && verifyLastPipeDef( file)) {
+		if (file != null && verifyLastHQM( file)) {
 			FHqm hqm = Medium.loadHqm( file);
 			if (hqm != null) {
 				mCallback.openHQMAction( hqm);

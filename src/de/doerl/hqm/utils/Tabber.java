@@ -40,7 +40,7 @@ public class Tabber {
 	private void space() {
 		mBuffer.setLength( 0);
 		for (int i = mTabs; i > 0; --i) {
-			mBuffer.append( "   ");
+			mBuffer.append( "  ");
 		}
 	}
 

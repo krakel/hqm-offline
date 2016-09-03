@@ -44,57 +44,6 @@ public class MediumUtils {
 		}
 	}
 
-	public static File getModpackBase( File src) {
-		if (src != null) {
-			try {
-				String name = src.getCanonicalPath();
-				if (name.contains( "hqm")) {
-					File path = src;
-					while (path != null && !"hqm".equals( path.getName())) {
-						path = src.getParentFile();
-					}
-					if (path != null && path.isDirectory()) {
-						return path;
-					}
-				}
-			}
-			catch (IOException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, ex);
-			}
-		}
-		return null;
-	}
-
-	public static String getModpackName( File src) {
-		if (src != null) {
-			try {
-				String name = src.getCanonicalPath();
-				if (name.contains( "hqm")) {
-					File path = src;
-					while (path != null && !"hqm".equals( path.getName())) {
-						path = path.getParentFile();
-					}
-					while (path != null && !"config".equals( path.getName())) {
-						path = path.getParentFile();
-					}
-					if (path != null) {
-						path = path.getParentFile();
-					}
-					if (path != null && "minecraft".equals( path.getName())) {
-						path = path.getParentFile();
-					}
-					if (path != null) {
-						return path.getName();
-					}
-				}
-			}
-			catch (IOException ex) {
-				Utils.logThrows( LOGGER, Level.WARNING, ex);
-			}
-		}
-		return getFilepackName( src);
-	}
-
 	public static InputStream getSource( File src) throws IOException {
 		if (!src.exists()) {
 			throw new IOException( "SOURCE does not exist: " + src);

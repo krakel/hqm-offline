@@ -25,12 +25,14 @@ public enum RepeatType {
 	}
 
 	public static RepeatType parse( String name) {
-		try {
-			return valueOf( name);
+		if (name != null) {
+			try {
+				return valueOf( name);
+			}
+			catch (Exception ex) {
+			}
 		}
-		catch (Exception ex) {
-			return NONE;
-		}
+		return NONE;
 	}
 
 	public String getDescription() {

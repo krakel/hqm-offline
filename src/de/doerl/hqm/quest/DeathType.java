@@ -38,12 +38,14 @@ public enum DeathType {
 	}
 
 	public static DeathType parse( String name) {
-		try {
-			return valueOf( name);
+		if (name != null) {
+			try {
+				return valueOf( name);
+			}
+			catch (Exception ex) {
+			}
 		}
-		catch (Exception ex) {
-			return LAVA;
-		}
+		return LAVA;
 	}
 
 	public String getName() {

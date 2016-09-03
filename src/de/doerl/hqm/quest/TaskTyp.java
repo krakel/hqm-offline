@@ -2,7 +2,7 @@ package de.doerl.hqm.quest;
 
 public enum TaskTyp {
 	CONSUME( "Consume Task", "taskConsume.gif", "A task where the player can hand in items or fluids. One can also use the Quest Delivery System to submit items and fluids."),
-	CRAFTING( "Crafting Task", "taskCrafting.gif", "A task where the player has to craft specific items."),
+	CRAFT( "Crafting Task", "taskCrafting.gif", "A task where the player has to craft specific items."),
 	LOCATION( "Location Task", "taskLocation.gif", "A task where the player has to reach one or more locations."),
 	CONSUME_QDS( "QDS Task", "taskQDS.gif", "A task where the player can hand in items or fluids. This is a normal consume task where manual submit has been disabled to teach the player about the QDS"),
 	DETECT( "Detection Task", "taskDetect.gif", "A task where the player needs specific items. These do not have to be handed in, having them in one's inventory is enough."),

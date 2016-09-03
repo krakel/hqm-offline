@@ -261,7 +261,7 @@ public class JsonWriter {
 		mOut.print( '"');
 		mOut.print( key);
 		mOut.print( '"');
-		mOut.print( " : ");
+		mOut.print( ": ");
 	}
 
 	private void writeNL() {

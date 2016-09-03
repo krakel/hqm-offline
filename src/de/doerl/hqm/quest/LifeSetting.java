@@ -23,12 +23,14 @@ public enum LifeSetting {
 	}
 
 	public static LifeSetting parse( String name) {
-		try {
-			return valueOf( name);
+		if (name != null) {
+			try {
+				return valueOf( name);
+			}
+			catch (Exception ex) {
+			}
 		}
-		catch (Exception ex) {
-			return SHARE;
-		}
+		return SHARE;
 	}
 
 	public String getDescr() {

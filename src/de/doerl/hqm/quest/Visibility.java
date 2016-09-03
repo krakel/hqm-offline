@@ -16,11 +16,13 @@ public enum Visibility {
 	}
 
 	public static Visibility parse( String name) {
-		try {
-			return valueOf( name);
+		if (name != null) {
+			try {
+				return valueOf( name);
+			}
+			catch (Exception ex) {
+			}
 		}
-		catch (Exception ex) {
-			return FULL;
-		}
+		return FULL;
 	}
 }

@@ -21,7 +21,7 @@ class OpenGSON extends AOpenFile {
 		setEnabled( true);
 	}
 
-	private static boolean verifyLastPipeDef( File file) {
+	private static boolean verifyLastHQM( File file) {
 		if (file.exists()) {
 			setLastHQM( file);
 			return true;
@@ -36,10 +36,13 @@ class OpenGSON extends AOpenFile {
 		JFileChooser chooser = createChooser( pfad);
 		chooser.setFileFilter( Medium.FILTER);
 		File file = selectOpenDialog( frame, chooser);
-		if (file != null && verifyLastPipeDef( file)) {
-			FHqm hqm = Medium.loadHqm( file);
-			if (hqm != null) {
-				mCallback.openHQMAction( hqm);
+		if (file != null) {
+			File base = file.getParentFile();
+			if (base != null && verifyLastHQM( base)) {
+				FHqm hqm = Medium.loadHqm( base);
+				if (hqm != null) {
+					mCallback.openHQMAction( hqm);
+				}
 			}
 		}
 	}

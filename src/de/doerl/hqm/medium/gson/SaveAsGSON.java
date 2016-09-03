@@ -15,7 +15,7 @@ public class SaveAsGSON extends ASaveAsFile {
 	private static final long serialVersionUID = -1499924448908051432L;
 
 	public SaveAsGSON( ICallback cb) {
-		super( "json.saveAs", cb);
+		super( "gson.saveAs", cb);
 	}
 
 	@Override
@@ -29,10 +29,10 @@ public class SaveAsGSON extends ASaveAsFile {
 			chooser.setSelectedFile( Medium.suggest( hqm.mName));
 			File choose = selectSaveDialog( frame, chooser);
 			if (choose != null) {
-				File file = Medium.normalize( choose);
-				if (!file.exists() || mCallback.askOverwrite()) {
-					setLastHQM( file);
-					if (Medium.saveHQM( hqm, file)) {
+				File base = choose.getParentFile();
+				if (base != null && (!base.exists() || mCallback.askOverwrite())) {
+					setLastHQM( base);
+					if (Medium.saveHQM( hqm, base)) {
 						mCallback.savedHQMAction();
 					}
 				}
