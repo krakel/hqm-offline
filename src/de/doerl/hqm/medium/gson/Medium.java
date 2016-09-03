@@ -2,9 +2,8 @@ package de.doerl.hqm.medium.gson;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileWriter;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.logging.Level;
@@ -31,13 +30,13 @@ public class Medium implements IMedium {
 	public static final String MEDIUM = "gson";
 	public static final String GSON_PATH = "gson_path";
 	static final String DESCRIPTION_FILE = "description.txt";
+	static final String BAG_FILE = "bags";
+	static final String DEATH_FILE = "deaths";
 	static final String REPUTATION_FILE = "reputations";
-	static final String BAGS_FILE = "bags";
-	static final String TEAMS_FILE = "teams";
+	static final String TEAM_FILE = "teams";
 	static final String STATE_FILE = "state";
 	static final String DATA_FILE = "data";
-	static final String SETS_FILE = "sets";
-	static final String DEATHS_FILE = "deaths";
+	static final String SET_FILE = "sets";
 
 	static File getFile( String name, File base) {
 		if (name.endsWith( ".txt")) {
@@ -56,26 +55,26 @@ public class Medium implements IMedium {
 		if (!name.endsWith( ".json")) {
 			return false;
 		}
-		String base = name.substring( 0, name.indexOf( '.'));
-		if (REPUTATION_FILE.equalsIgnoreCase( base)) {
+		String base = name.substring( 0, name.lastIndexOf( '.')).toLowerCase();
+		if (BAG_FILE.equals( base)) {
 			return false;
 		}
-		if (BAGS_FILE.equalsIgnoreCase( base)) {
+		if (DEATH_FILE.equals( base)) {
 			return false;
 		}
-		if (TEAMS_FILE.equalsIgnoreCase( base)) {
+		if (REPUTATION_FILE.equals( base)) {
 			return false;
 		}
-		if (STATE_FILE.equalsIgnoreCase( base)) {
+		if (TEAM_FILE.equals( base)) {
 			return false;
 		}
-		if (DATA_FILE.equalsIgnoreCase( base)) {
+		if (STATE_FILE.equals( base)) {
 			return false;
 		}
-		if (SETS_FILE.equalsIgnoreCase( base)) {
+		if (DATA_FILE.equals( base)) {
 			return false;
 		}
-		if (DEATHS_FILE.equalsIgnoreCase( base)) {
+		if (SET_FILE.equals( base)) {
 			return false;
 		}
 		return true;
@@ -95,14 +94,10 @@ public class Medium implements IMedium {
 		return null;
 	}
 
-	private static String loadTxt( File file) throws IOException {
-		return new String( Files.readAllBytes( file.toPath()), StandardCharsets.UTF_8);
-	}
-
-	static String loadTxt( File base, String src) {
+	static String loadTxt( File file) {
 		try {
-			File file = getFile( src, base);
-			return loadTxt( file);
+			byte[] src = Files.readAllBytes( file.toPath());
+			return new String( src, StandardCharsets.UTF_8);
 		}
 		catch (Exception ex) {
 			Utils.logThrows( LOGGER, Level.FINER, ex);
@@ -146,17 +141,36 @@ public class Medium implements IMedium {
 		return FObject.to( json);
 	}
 
-	static FObject redJson( File base, String src) {
-		File file = getFile( src, base);
-		return redJson( file);
-	}
-
-	public static boolean saveHQM( FHqm hqm, File src) {
+	public static boolean saveHQM( FHqm hqm, File base) {
+		try {
+//			MediumUtils.createBackup( base);
+			Serializer serializer = new Serializer( base, hqm.mMain);
+			serializer.writeDst( hqm);
+			MediaManager.setProperty( hqm, GSON_PATH, base);
+			return true;
+		}
+		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
 		return false;
 	}
 
+	static void saveTxt( File file, String txt) {
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter( file);
+			writer.write( txt);
+		}
+		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.FINER, ex);
+		}
+		finally {
+			Utils.closeIgnore( writer);
+		}
+	}
+
 	public static File suggest( String name) {
-		return null;
+		return name != null ? new File( name + ".json") : null;
 	}
 
 	@Override
@@ -200,13 +214,5 @@ public class Medium implements IMedium {
 			return this;
 		}
 		return null;
-	}
-
-	@Override
-	public void testLoad( FHqm hqm, InputStream is) throws IOException {
-	}
-
-	@Override
-	public void testSave( FHqm hqm, OutputStream os) throws IOException {
 	}
 }

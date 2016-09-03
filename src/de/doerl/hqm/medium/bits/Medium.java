@@ -154,14 +154,4 @@ public class Medium implements IMedium {
 		}
 		return null;
 	}
-
-	@Override
-	public void testLoad( FHqm hqm, InputStream is) throws IOException {
-		readHqm( hqm, is);
-	}
-
-	@Override
-	public void testSave( FHqm hqm, OutputStream os) throws IOException {
-		writeHQM( hqm, os);
-	}
 }

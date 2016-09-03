@@ -115,7 +115,7 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	@Override
 	protected Object doTaskReputation( AQuestTaskReputation task, FObject obj) {
 		if (mMain) {
-			readTaskReputations( task, FArray.to( obj.get( IToken.TASK_SETTINGS)));
+			readTaskReputations( task, FArray.to( obj.get( IToken.TASK_REPUTATIONS)));
 		}
 		return null;
 	}
@@ -358,7 +358,7 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						quest.setDescr( mLang, FValue.toString( obj.get( IToken.QUEST_DESC)));
 					}
 					if (mMain) {
-						quest.mUUID = FValue.toString( obj.get( IToken.QUEST_UUID));
+						quest.setUUID( FValue.toString( obj.get( IToken.QUEST_UUID)));
 						quest.mX = FValue.toInt( obj.get( IToken.QUEST_X));
 						quest.mY = FValue.toInt( obj.get( IToken.QUEST_Y));
 						quest.mBig = FValue.toBoolean( obj.get( IToken.QUEST_BIG));

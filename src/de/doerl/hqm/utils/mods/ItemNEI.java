@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.ParserAtJson;
-import de.doerl.hqm.utils.nbt.SerializerAtJson;
 
 public class ItemNEI {
 	private static Logger LOGGER = Logger.getLogger( ItemNEI.class.getName());
@@ -127,10 +126,6 @@ public class ItemNEI {
 
 	public FCompound getNBT() {
 		return mNbt;
-	}
-
-	public String getNbtStr() {
-		return SerializerAtJson.write( mNbt);
 	}
 
 	public String getPkg() {

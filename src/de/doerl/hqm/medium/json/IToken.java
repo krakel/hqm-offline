@@ -60,7 +60,7 @@ public interface IToken {
 	static final String TASK_LOCATIONS = "locations";
 	static final String TASK_MOBS = "mobs";
 	static final String TASK_KILLS = "kills";
-	static final String TASK_SETTINGS = "settings";
+	static final String TASK_REPUTATIONS = "settings";
 	//
 	static final String LOCATION_ID = "id";
 	static final String LOCATION_NAME = "name";

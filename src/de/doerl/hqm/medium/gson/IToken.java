@@ -23,9 +23,8 @@ interface IToken {
 	static final String QUEST_Y = "y";
 	static final String QUEST_ICON = "icon";
 	static final String QUEST_BIG = "bigicon";
-	static final String QUEST_REQUIREMENTS = "requirements";
+//	static final String QUEST_REQUIREMENTS = "requirements";
 	static final String QUEST_PREREQUISITES = "prerequisites";
-//	static final String QUEST_OPTIONS = "options";
 	static final String QUEST_OPTION_LINKS = "optionlinks";
 	static final String QUEST_REPEAT_INFO = "repeat";
 	static final String QUEST_TRIGGER_TYPE = "trigger";
@@ -76,7 +75,7 @@ interface IToken {
 	static final String REQUIREMENT_REQUIRED = "required";
 	static final String REQUIREMENT_PRECISION = "precision";
 	// FLUID, ITEM_STACK, NBT_TAG_COMPOUND
-	static final String ITEM_NAME = "id";
+	static final String ITEM_ID = "id";
 	static final String ITEM_DAMAGE = "damage";
 	static final String ITEM_SIZE = "amount";
 	static final String ITEM_NBT = "nbt";
@@ -98,7 +97,7 @@ interface IToken {
 	static final String GROUP_LIMIT = "limit";
 	static final String GROUP_STACKS = "items";
 	// DEATH_STATS_ADAPTER
-	//
+	// SaveHandler
 	static final String HQM_QUESTING = "questing";
 	static final String HQM_HARDCORE = "hardcore";
 	// TEAM_ADAPTER

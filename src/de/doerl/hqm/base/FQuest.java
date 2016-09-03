@@ -13,10 +13,9 @@ import de.doerl.hqm.ui.LinkType;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
-public final class FQuest extends AIdent implements IElement {
+public final class FQuest extends AUUID implements IElement {
 	private static final Logger LOGGER = Logger.getLogger( FQuest.class.getName());
 	private static final String BASE = "quest";
-	public String mUUID;
 	public int mX, mY;
 	public boolean mBig;
 	public Integer mCount;

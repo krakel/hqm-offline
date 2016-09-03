@@ -19,8 +19,6 @@ public final class FHqm extends ANamed {
 	public String mPassCode;
 	public FLanguage mMain;
 	public String mName;
-	public boolean mQuesting;
-	public boolean mHadrcore;
 	private boolean mModified;
 
 	public FHqm( String name) {

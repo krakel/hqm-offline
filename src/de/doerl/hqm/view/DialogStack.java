@@ -17,6 +17,7 @@ import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ItemNEI;
 import de.doerl.hqm.utils.nbt.ParserAtJson;
+import de.doerl.hqm.utils.nbt.SerializerAtJson;
 import de.doerl.hqm.view.ADialogList.ICreator;
 import de.doerl.hqm.view.leafs.LeafSearch;
 import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
@@ -56,7 +57,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 					mCount.setText( String.valueOf( 1));
 					mItem.setSelected( true);
 					mPrec.setSelectedItem( ItemPrecision.PRECISE);
-					mArea.setText( item.getNbtStr());
+					mArea.setText( SerializerAtJson.write( item.getNBT()));
 				}
 			}
 		});
@@ -171,7 +172,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			mCount.setEnabled( false);
 			mItem.setSelected( true);
 			mPrec.setSelectedItem( ItemPrecision.PRECISE);
-			mArea.setText( stk.getNbtStr());
+			mArea.setText( SerializerAtJson.write( stk.getNBT()));
 		}
 		else {
 			mDisplay.setText( "");

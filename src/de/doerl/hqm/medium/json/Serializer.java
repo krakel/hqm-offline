@@ -35,6 +35,7 @@ import de.doerl.hqm.base.FSetting;
 import de.doerl.hqm.base.dispatch.AHQMWorker;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.JsonWriter;
+import de.doerl.hqm.utils.nbt.SerializerAtJson;
 
 class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	private static final String PATTERN_ITEM = "%s size(%d) dmg(%d)";
@@ -81,7 +82,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	private void doTaskReputation( AQuestTaskReputation task) {
 		doTask( task);
 		if (mMain) {
-			mDst.beginArray( TASK_SETTINGS);
+			mDst.beginArray( TASK_REPUTATIONS);
 			task.forEachSetting( this, null);
 			mDst.endArray();
 		}
@@ -137,7 +138,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.beginObject();
 		FItemStack stk = item.getStack();
 		mDst.print( ITEM_OBJECT, createItem( stk));
-		String nbt = stk.getNbtStr();
+		String nbt = SerializerAtJson.write( stk.getNBT());
 		if (Utils.validString( nbt)) {
 			mDst.print( ITEM_NBT, nbt);
 		}
@@ -207,7 +208,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( QUEST_DESC, quest.getDescr( mLang));
 		}
 		if (mMain) {
-			mDst.print( QUEST_UUID, quest.mUUID);
+			mDst.print( QUEST_UUID, quest.getUUID());
 			mDst.print( QUEST_X, quest.mX);
 			mDst.print( QUEST_Y, quest.mY);
 			mDst.print( QUEST_BIG, quest.mBig);
@@ -407,11 +408,8 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	}
 
 	private void writeIcon( String key, FItemStack icon) {
-		if (icon == null) {
-			mDst.print( key, null);
-		}
-		else {
-			String nbt = icon.getNbtStr();
+		if (icon != null) {
+			String nbt = SerializerAtJson.write( icon.getNBT());
 			if (Utils.validString( nbt)) {
 				mDst.beginObject( key);
 				mDst.print( ITEM_OBJECT, createItem( icon));
@@ -458,15 +456,15 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.endArray();
 	}
 
-	private void writeQuestSetCat( FQuestSetCat set) {
+	private void writeQuestSetCat( FQuestSetCat cat) {
 		mDst.beginArray( HQM_QUEST_SET_CAT);
-		set.forEachMember( this, null);
+		cat.forEachMember( this, null);
 		mDst.endArray();
 	}
 
-	private void writeReputations( FReputationCat set) {
+	private void writeReputations( FReputationCat cat) {
 		mDst.beginArray( HQM_REPUTATION_CAT);
-		set.forEachMember( this, null);
+		cat.forEachMember( this, null);
 		mDst.endArray();
 	}
 
@@ -480,7 +478,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		if (arr != null && !arr.isEmpty()) {
 			mDst.beginArray( key);
 			for (FItemStack stk : arr) {
-				String nbt = stk.getNbtStr();
+				String nbt = SerializerAtJson.write( stk.getNBT());
 				if (Utils.validString( nbt)) {
 					mDst.beginObject();
 					mDst.print( ITEM_OBJECT, createItem( stk));

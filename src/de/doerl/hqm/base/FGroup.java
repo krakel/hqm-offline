@@ -6,7 +6,7 @@ import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.base.dispatch.MaxIdOfGroup;
 import de.doerl.hqm.quest.ElementTyp;
 
-public final class FGroup extends AIdent implements IElement {
+public final class FGroup extends AUUID implements IElement {
 	private static final String BASE = "grp";
 	public final FGroupTier mParentTier;
 	public Integer mLimit;

@@ -140,14 +140,14 @@ public class Medium implements IMedium {
 			boolean withLang = PreferenceManager.getBool( BaseDefaults.LANGUAGE);
 			if (withLang) {
 				writeHQM( hqm, os, hqm.mMain, true, false);
-				MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
+				MediaManager.setProperty( hqm, JSON_PATH, file);
 				for (FLanguage lang : hqm.mLanguages) {
 					saveLang( hqm, lang, toLangFile( file, lang.mLocale));
 				}
 			}
 			else {
 				writeHQM( hqm, os, hqm.mMain, true, true);
-				MediaManager.setProperty( hqm, Medium.JSON_PATH, file);
+				MediaManager.setProperty( hqm, JSON_PATH, file);
 			}
 			return true;
 		}
@@ -252,17 +252,5 @@ public class Medium implements IMedium {
 			return this;
 		}
 		return null;
-	}
-
-	@Override
-	public void testLoad( FHqm hqm, InputStream is) throws IOException {
-		hqm.setMain( FHqm.LANG_EN_US);
-		JsonReader src = new JsonReader( is);
-		readHqm( hqm, FObject.to( src.doAll()), hqm.mMain, true, true);
-	}
-
-	@Override
-	public void testSave( FHqm hqm, OutputStream os) throws IOException {
-		writeHQM( hqm, os, hqm.mMain, true, true);
 	}
 }
