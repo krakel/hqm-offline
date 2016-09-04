@@ -62,8 +62,8 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( TASK_TYPE, task.getTaskTyp());
 		}
 		if (mDocu) {
-			mDst.print( TASK_NAME, task.getName( mLang));
-			mDst.print( TASK_DESC, task.getDescr( mLang));
+			mDst.printIf( TASK_NAME, task.getName( mLang));
+			mDst.printIf( TASK_DESC, task.getDescr( mLang));
 		}
 	}
 
@@ -206,7 +206,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.print( QUEST_ID, quest.toIdent());
 		if (mDocu) {
 			mDst.print( QUEST_NAME, quest.getName( mLang));
-			mDst.print( QUEST_DESC, quest.getDescr( mLang));
+			mDst.printIf( QUEST_DESC, quest.getDescr( mLang));
 		}
 		if (mMain) {
 			mDst.print( QUEST_UUID, quest.getUUID());
@@ -238,7 +238,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.print( QUEST_SET_ID, set.toIdent());
 		if (mDocu) {
 			mDst.print( QUEST_SET_NAME, set.getName( mLang));
-			mDst.print( QUEST_SET_DECR, set.getDescr( mLang));
+			mDst.printIf( QUEST_SET_DECR, set.getDescr( mLang));
 		}
 		writeBars( set);
 		writeQuests( set);
@@ -263,7 +263,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.print( REPUTATION_ID, rep.toIdent());
 		if (mDocu) {
 			mDst.print( REPUTATION_NAME, rep.getName( mLang));
-			mDst.print( REPUTATION_NEUTRAL, rep.getDescr( mLang));
+			mDst.printIf( REPUTATION_NEUTRAL, rep.getDescr( mLang));
 		}
 		if (mMain) {
 			mDst.print( REPUTATION_UUID, rep.getUUID());
@@ -389,7 +389,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( HQM_PARENT, hqm.getName());
 		}
 		if (mDocu) {
-			mDst.print( HQM_DESCRIPTION, hqm.getDescr( mLang));
+			mDst.printIf( HQM_DESCRIPTION, hqm.getDescr( mLang));
 		}
 		else {
 			mDst.print( HQM_MAIN, hqm.mMain.mLocale);

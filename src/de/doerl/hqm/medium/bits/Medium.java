@@ -116,7 +116,7 @@ public class Medium implements IMedium {
 		File protect = protectOriginal( file);
 		OutputStream os = null;
 		try {
-			MediumUtils.createBackup( file);
+			MediumUtils.backupFile( file);
 			os = new FileOutputStream( file);
 			writeHQM( hqm, os);
 			MediaManager.setProperty( hqm, Medium.HQM_PATH, file);
@@ -178,8 +178,8 @@ public class Medium implements IMedium {
 	}
 
 	@Override
-	public IMedium parse( String val) {
-		if (val != null && val.toLowerCase().endsWith( ".hqm")) {
+	public IMedium parse( File val) {
+		if (val != null && val.isFile() && val.getName().toLowerCase().endsWith( ".hqm")) {
 			return this;
 		}
 		return null;

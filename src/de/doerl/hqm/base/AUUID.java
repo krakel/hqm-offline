@@ -14,6 +14,8 @@ public abstract class AUUID extends AIdent {
 	}
 
 	public void setUUID( String uuid) {
-		mUUID = uuid;
+		if (uuid != null) {
+			mUUID = uuid;
+		}
 	}
 }

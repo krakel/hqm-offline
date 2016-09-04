@@ -47,7 +47,7 @@ public class Medium implements IMedium {
 		}
 	}
 
-//	private static File getModpackBase( File src) {
+	//	private static File getModpackBase( File src) {
 //		if (src != null) {
 //			try {
 //				String name = src.getCanonicalPath();
@@ -199,7 +199,7 @@ public class Medium implements IMedium {
 
 	public static boolean saveHQM( FHqm hqm, File base) {
 		try {
-//			MediumUtils.createBackup( base);
+//			MediumUtils.backupDir( base);
 			Serializer serializer = new Serializer( base, hqm.mMain);
 			serializer.writeDst( hqm);
 			MediaManager.setProperty( hqm, GSON_PATH, base);
@@ -211,7 +211,7 @@ public class Medium implements IMedium {
 		return false;
 	}
 
-	static void saveTxt( File file, String txt) {
+	static void saveTxt( String txt, File file) {
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter( file);
@@ -226,7 +226,7 @@ public class Medium implements IMedium {
 	}
 
 	public static File suggest( String name) {
-		return name != null ? new File( name + ".json") : null;
+		return name != null ? new File( name) : null;
 	}
 
 	@Override
@@ -265,8 +265,8 @@ public class Medium implements IMedium {
 	}
 
 	@Override
-	public IMedium parse( String val) {
-		if (val != null && val.toLowerCase().endsWith( "default")) {
+	public IMedium parse( File val) {
+		if (val != null && val.isDirectory()) {
 			return this;
 		}
 		return null;

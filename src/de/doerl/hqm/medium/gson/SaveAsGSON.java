@@ -25,18 +25,31 @@ public class SaveAsGSON extends ASaveAsFile {
 			File last = (File) MediaManager.getProperty( hqm, MediaManager.ACTIV_PATH);
 			String pfad = last != null ? last.getAbsolutePath() : getLastOpenDir();
 			JFileChooser chooser = createChooser( pfad);
-			chooser.setFileFilter( Medium.FILTER);
+//			chooser.setFileFilter( Medium.FILTER);
+			chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY);
 			chooser.setSelectedFile( Medium.suggest( hqm.mName));
-			File choose = selectSaveDialog( frame, chooser);
-			if (choose != null) {
-				File base = choose.getParentFile();
-				if (base != null && (!base.exists() || mCallback.askOverwrite())) {
-					setLastHQM( base);
-					if (Medium.saveHQM( hqm, base)) {
-						mCallback.savedHQMAction();
+			File base = selectSaveDialog( frame, chooser);
+			if (base != null) {
+				if (base.exists()) {
+					if (!base.isDirectory()) {
+						base = base.getParentFile();
+					}
+					if (base.listFiles().length == 0 || mCallback.askOverwrite()) {
+						base.delete();
+						writeHQM( hqm, base);
 					}
 				}
+				else {
+					writeHQM( hqm, base);
+				}
 			}
+		}
+	}
+
+	private void writeHQM( FHqm hqm, File base) {
+		setLastHQM( base);
+		if (Medium.saveHQM( hqm, base)) {
+			mCallback.savedHQMAction();
 		}
 	}
 }

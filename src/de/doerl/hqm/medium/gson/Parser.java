@@ -52,6 +52,8 @@ import de.doerl.hqm.utils.json.FValue;
 import de.doerl.hqm.utils.json.IJson;
 import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.ParserAtNEI;
+import de.doerl.hqm.view.dispatch.MarkerOfIdx;
+import de.doerl.hqm.view.dispatch.ReputationOfIdx;
 
 class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
@@ -145,16 +147,6 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		}
 	}
 
-	private void loadQuestSet( FQuestSetCat cat, File[] files) {
-		if (files != null) {
-			for (File file : files) {
-				if (Medium.isQuestSet( file)) {
-					loadQuestSet( cat, file);
-				}
-			}
-		}
-	}
-
 	private void loadQuestSet( FQuestSetCat cat, File file) {
 		FObject obj = FObject.to( Medium.redJson( file));
 		if (obj != null) {
@@ -163,6 +155,16 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			set.setDescr( mLang, FValue.toString( obj.get( QUEST_SET_DECR)));
 			readQuests( set, FArray.to( obj.get( QUEST_SET_QUESTS)));
 			readBars( set, FArray.to( obj.get( QUEST_SET_BARS)));
+		}
+	}
+
+	private void loadQuestSets( FQuestSetCat cat, File[] files) {
+		if (files != null) {
+			for (File file : files) {
+				if (Medium.isQuestSet( file)) {
+					loadQuestSet( cat, file);
+				}
+			}
 		}
 	}
 
@@ -190,8 +192,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 					FReputationBar bar = set.createReputationBar();
 					bar.mX = FValue.toInt( obj.get( REPUTATION_BAR_X));
 					bar.mY = FValue.toInt( obj.get( REPUTATION_BAR_Y));
-					String repUUID = FValue.toString( obj.get( REPUTATION_BAR_REP));
-					bar.mRep = ReputationOfUUID.get( set.getHqm(), repUUID);
+					bar.mRep = readReputationID( set.getHqm(), obj.get( REPUTATION_BAR_REP));
 				}
 			}
 		}
@@ -250,6 +251,23 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 				}
 			}
 			rep.sort();
+		}
+	}
+
+	private FMarker readMarkerID( FReputation rep, IJson markID) {
+		Integer idx = FValue.toIntObj( markID);
+		if (idx != null) {
+			return MarkerOfIdx.get( rep, idx);
+		}
+		else {
+			String lowID = FValue.toString( markID);
+			if (lowID != null) {
+				return MarkerOfID.get( rep, lowID);
+			}
+			else {
+				Utils.log( LOGGER, Level.WARNING, "missing markID");
+				return null;
+			}
 		}
 	}
 
@@ -313,14 +331,30 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 		}
 	}
 
+	private FReputation readReputationID( FHqm hqm, IJson repID) {
+		Integer idx = FValue.toIntObj( repID);
+		if (idx != null) {
+			return ReputationOfIdx.get( hqm, idx);
+		}
+		else {
+			String uuid = FValue.toString( repID);
+			if (uuid != null) {
+				return ReputationOfUUID.get( hqm, uuid);
+			}
+			else {
+				Utils.log( LOGGER, Level.WARNING, "missing repUUID");
+				return null;
+			}
+		}
+	}
+
 	private void readRewards( FQuest quest, FArray arr) {
 		if (arr != null) {
 			for (IJson json : arr) {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FReputationReward reward = quest.createRepReward();
-					String repUUID = FValue.toString( obj.get( REWARD_REPUTATION));
-					reward.mRep = ReputationOfUUID.get( quest.getHqm(), repUUID);
+					reward.mRep = readReputationID( quest.getHqm(), obj.get( REWARD_REPUTATION));
 					reward.mValue = FValue.toInt( obj.get( REWARD_VALUE));
 				}
 			}
@@ -330,7 +364,7 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	void readSrc( FHqm hqm) {
 		loadDescription( hqm, Medium.getFile( Medium.DESCRIPTION_FILE, mBase));
 		loadReputation( hqm.mReputationCat, Medium.getFile( Medium.REPUTATION_FILE, mBase));
-		loadQuestSet( hqm.mQuestSetCat, mBase.listFiles());
+		loadQuestSets( hqm.mQuestSetCat, mBase.listFiles());
 		loadGroupTier( hqm.mGroupTierCat, Medium.getFile( Medium.BAG_FILE, mBase));
 		ReindexOfQuests.get( hqm);
 		updateRequirements( hqm);
@@ -361,11 +395,16 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 						item.mPrecision = ItemPrecision.parse( FValue.toString( obj.get( REQUIREMENT_PRECISION)));
 						item.mAmount = FValue.toInt( obj.get( REQUIREMENT_REQUIRED), 1);
 					}
-					IJson reqFluid = obj.get( REQUIREMENT_FLUID);
-					if (reqFluid != null) {
-						FFluidRequirement fluid = task.createFluidRequirement();
-						fluid.setStack( new FFluidStack( FValue.toString( reqFluid)));
-						fluid.mAmount = FValue.toInt( obj.get( REQUIREMENT_REQUIRED), 1);
+					else {
+						IJson reqFluid = obj.get( REQUIREMENT_FLUID);
+						if (reqFluid != null) {
+							FFluidRequirement fluid = task.createFluidRequirement();
+							fluid.setStack( new FFluidStack( FValue.toString( reqFluid)));
+							fluid.mAmount = FValue.toInt( obj.get( REQUIREMENT_REQUIRED), 1);
+						}
+						else {
+							Utils.log( LOGGER, Level.WARNING, "missing task item {0}", obj);
+						}
 					}
 				}
 			}
@@ -413,27 +452,9 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 				FObject obj = FObject.to( json);
 				if (obj != null) {
 					FSetting res = task.createSetting();
-					String repUUID = FValue.toString( obj.get( SETTING_REPUTATION));
-					if (repUUID == null) {
-						Utils.log( LOGGER, Level.WARNING, "missing repUUID");
-					}
-					else {
-						res.mRep = ReputationOfUUID.get( task, repUUID);
-					}
-					String lowID = FValue.toString( obj.get( SETTING_LOWER));
-					if (lowID == null) {
-						Utils.log( LOGGER, Level.WARNING, "missing lowerUUID");
-					}
-					else {
-						res.mLower = MarkerOfID.get( res.mRep, lowID);
-					}
-					String upperID = FValue.toString( obj.get( SETTING_UPPER));
-					if (upperID == null) {
-						Utils.log( LOGGER, Level.WARNING, "missing upperUUID");
-					}
-					else {
-						res.mUpper = MarkerOfID.get( res.mRep, upperID);
-					}
+					res.mRep = readReputationID( task.getHqm(), obj.get( SETTING_REPUTATION));
+					res.mLower = readMarkerID( res.mRep, obj.get( SETTING_LOWER));
+					res.mUpper = readMarkerID( res.mRep, obj.get( SETTING_UPPER));
 					res.mInverted = FValue.toBoolean( obj.get( SETTING_INVERTED));
 				}
 			}
@@ -445,9 +466,8 @@ class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			for (int id = 0, max = arr.size(); id < max; ++id) {
 				FObject obj = FObject.to( arr.get( id));
 				if (obj != null) {
-					AQuestTask task = null;
 					TaskTyp type = TaskTyp.parse( FValue.toString( obj.get( TASK_TYPE)));
-					task = quest.createQuestTask( type);
+					AQuestTask task = quest.createQuestTask( type);
 					task.setName( mLang, FValue.toString( obj.get( TASK_NAME)));
 					task.setDescr( mLang, FValue.toString( obj.get( TASK_DESC)));
 					task.accept( this, obj);

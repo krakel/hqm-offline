@@ -135,7 +135,7 @@ public class Medium implements IMedium {
 	static boolean saveHQM( FHqm hqm, File file) {
 		OutputStream os = null;
 		try {
-			MediumUtils.createBackup( file);
+			MediumUtils.backupFile( file);
 			os = new FileOutputStream( file);
 			boolean withLang = PreferenceManager.getBool( BaseDefaults.LANGUAGE);
 			if (withLang) {
@@ -163,7 +163,7 @@ public class Medium implements IMedium {
 	private static void saveLang( FHqm hqm, FLanguage lang, File file) {
 		OutputStream os = null;
 		try {
-			MediumUtils.createBackup( file);
+			MediumUtils.backupFile( file);
 			os = new FileOutputStream( file);
 			writeHQM( hqm, os, lang, false, true);
 		}
@@ -247,8 +247,8 @@ public class Medium implements IMedium {
 		return loadHqm( file);
 	}
 
-	public IMedium parse( String val) {
-		if (val != null && val.toLowerCase().endsWith( ".json")) {
+	public IMedium parse( File val) {
+		if (val != null && val.isFile() && val.getName().toLowerCase().endsWith( ".json")) {
 			return this;
 		}
 		return null;

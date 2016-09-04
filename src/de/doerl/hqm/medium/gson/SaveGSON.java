@@ -28,14 +28,25 @@ public class SaveGSON extends ASaveFile {
 				File last = (File) MediaManager.getProperty( hqm, MediaManager.ACTIV_PATH);
 				String pfad = last != null ? last.getAbsolutePath() : getLastOpenDir();
 				JFileChooser chooser = createChooser( pfad);
-				chooser.setFileFilter( Medium.FILTER);
-				File choose = selectSaveDialog( frame, chooser);
-				if (choose != null) {
-					File file = choose.getParentFile();
-					if (!file.exists() || mCallback.askOverwrite()) {
-						setLastHQM( file);
-						MediaManager.setProperty( hqm, Medium.GSON_PATH, file);
-						src = file;
+//				chooser.setFileFilter( Medium.FILTER);
+				chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY);
+				File base = selectSaveDialog( frame, chooser);
+				if (base != null) {
+					if (base.exists()) {
+						if (!base.isDirectory()) {
+							base = base.getParentFile();
+						}
+						if (base.listFiles().length == 0 || mCallback.askOverwrite()) {
+							base.delete();
+							setLastHQM( base);
+							MediaManager.setProperty( hqm, Medium.GSON_PATH, base);
+							src = base;
+						}
+					}
+					else {
+						setLastHQM( base);
+						MediaManager.setProperty( hqm, Medium.GSON_PATH, base);
+						src = base;
 					}
 				}
 			}

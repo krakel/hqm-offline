@@ -41,37 +41,48 @@ class OpenLastAction extends ABundleAction implements IRefreshListener, Runnable
 
 	@Override
 	public void actionPerformed( ActionEvent e) {
-		String path = PreferenceManager.getArrayString( BaseDefaults.LAST_OPEN, mIndex);
-		IMedium m = MediumOfFile.get( path);
-		FHqm hqm = m.openHqm( new File( path));
-		if (hqm != null) {
-			PreferenceManager.deleteArrayString( BaseDefaults.LAST_OPEN, path);
-			PreferenceManager.addArrayString( BaseDefaults.LAST_OPEN, 0, path);
-			mCallback.openHQMAction( hqm);
-		}
-		else {
-			Utils.log( LOGGER, Level.INFO, "Can not open {0}", path);
+		String name = PreferenceManager.getArrayString( BaseDefaults.LAST_OPEN, mIndex);
+		if (name != null) {
+			File file = new File( name);
+			if (file.exists()) {
+				IMedium m = MediumOfFile.get( file);
+				FHqm hqm = m.openHqm( file);
+				if (hqm != null) {
+					PreferenceManager.deleteArrayString( BaseDefaults.LAST_OPEN, name);
+					PreferenceManager.addArrayString( BaseDefaults.LAST_OPEN, 0, name);
+					mCallback.openHQMAction( hqm);
+				}
+				else {
+					Utils.log( LOGGER, Level.INFO, "Can not open {0}", name);
+				}
+			}
 		}
 	}
 
 	@Override
 	public void run() {
-		String file = PreferenceManager.getArrayString( BaseDefaults.LAST_OPEN, mIndex);
-		if (file == null) {
-			putValue( NAME, "");
-		}
-		else {
-			IMedium m = MediumOfFile.get( file);
-			if (m == null) {
-				putValue( NAME, "");
+		String name = PreferenceManager.getArrayString( BaseDefaults.LAST_OPEN, mIndex);
+		if (name != null) {
+			File file = new File( name);
+			if (file.exists()) {
+				IMedium m = MediumOfFile.get( file);
+				if (m == null) {
+					putValue( NAME, "missing medium");
+				}
+				else {
+					putValue( SMALL_ICON, ResourceManager.getIcon( m.getIcon()));
+					putValue( NAME, name);
+				}
 			}
 			else {
-				putValue( SMALL_ICON, ResourceManager.getIcon( m.getIcon()));
-				putValue( NAME, file);
+				putValue( NAME, "missing hqm source");
 			}
 		}
+		else {
+			putValue( NAME, "missing name");
+		}
 		if (mItem != null) {
-			mItem.setVisible( file != null);
+			mItem.setVisible( name != null);
 		}
 	}
 

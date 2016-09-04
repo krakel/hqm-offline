@@ -169,7 +169,7 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		dst.beginObject();
 		dst.print( QUEST_UUID, quest.getUUID());
 		dst.print( QUEST_NAME, quest.getName( mLang));
-		dst.print( QUEST_DESC, quest.getDescr( mLang));
+		dst.printIf( QUEST_DESC, quest.getDescr( mLang));
 		dst.print( QUEST_X, quest.mX);
 		dst.print( QUEST_Y, quest.mY);
 		if (quest.mBig) {
@@ -200,19 +200,12 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	@Override
 	public Object forQuestSet( FQuestSet set, JsonWriter dst2) {
 		dst2.printValue( set.getName());
-		String fileName = set.getName().replaceAll( " ", "_");
-		File file = Medium.getFile( fileName, mBase);
+		File file = Medium.getFile( set.getName().replaceAll( " ", "_"), mBase);
 		OutputStream os = null;
 		try {
-//			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
 			JsonWriter dst = new JsonWriter( os);
-			dst.beginObject();
-			dst.print( QUEST_SET_NAME, set.getName( mLang));
-			dst.print( QUEST_SET_DECR, set.getDescr( mLang));
-			writeQuests( set, dst);
-			writeBars( set, dst);
-			dst.endObject();
+			writeQuestSet( set, dst);
 			dst.flush();
 		}
 		catch (Exception ex) {
@@ -241,7 +234,7 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		dst.beginObject();
 		dst.print( REPUTATION_UUID, rep.getUUID());
 		dst.print( REPUTATION_NAME, rep.getName( mLang));
-		dst.print( REPUTATION_NEUTRAL, rep.getDescr( mLang));
+		dst.printIf( REPUTATION_NEUTRAL, rep.getDescr( mLang));
 		writeMarkers( rep, dst);
 		dst.endObject();
 		return null;
@@ -250,9 +243,9 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	@Override
 	public Object forReputationBar( FReputationBar bar, JsonWriter dst) {
 		dst.beginObject();
+		dst.print( REPUTATION_UUID, bar.mRep.getUUID());
 		dst.print( REPUTATION_BAR_X, bar.mX);
 		dst.print( REPUTATION_BAR_Y, bar.mY);
-		dst.print( REPUTATION_UUID, bar.mRep.getUUID());
 		dst.endObject();
 		return null;
 	}
@@ -349,13 +342,8 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		}
 	}
 
-	private void writeDescription( FHqm hqm, File file) {
-//		MediumUtils.createBackup( file);
-		Medium.saveTxt( file, hqm.getDescr());
-	}
-
 	void writeDst( FHqm hqm) {
-		writeDescription( hqm, Medium.getFile( Medium.DESCRIPTION_FILE, mBase));
+		Medium.saveTxt( hqm.getDescr(), Medium.getFile( Medium.DESCRIPTION_FILE, mBase));
 		writeReputationCat( hqm.mReputationCat, Medium.getFile( Medium.REPUTATION_FILE, mBase));
 		writeQuestSetCat( hqm.mQuestSetCat, Medium.getFile( Medium.SET_FILE, mBase));
 		writeGroupTierCat( hqm.mGroupTierCat, Medium.getFile( Medium.BAG_FILE, mBase));
@@ -370,12 +358,9 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	private void writeGroupTierCat( FGroupTierCat cat, File file) {
 		OutputStream os = null;
 		try {
-//			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
 			JsonWriter dst = new JsonWriter( os);
-			dst.beginArray();
-			cat.forEachMember( this, dst);
-			dst.endArray();
+			writeGroupTierCats( cat, dst);
 			dst.flush();
 		}
 		catch (Exception ex) {
@@ -384,6 +369,12 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		finally {
 			Utils.closeIgnore( os);
 		}
+	}
+
+	private void writeGroupTierCats( FGroupTierCat cat, JsonWriter dst) {
+		dst.beginArray();
+		cat.forEachMember( this, dst);
+		dst.endArray();
 	}
 
 	private void writeIcon( String key, FItemStack icon, JsonWriter dst) {
@@ -440,15 +431,21 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		dst.endArray();
 	}
 
+	private void writeQuestSet( FQuestSet set, JsonWriter dst) {
+		dst.beginObject();
+		dst.print( QUEST_SET_NAME, set.getName( mLang));
+		dst.printIf( QUEST_SET_DECR, set.getDescr( mLang));
+		writeQuests( set, dst);
+		writeBars( set, dst);
+		dst.endObject();
+	}
+
 	private void writeQuestSetCat( FQuestSetCat cat, File file) {
 		OutputStream os = null;
 		try {
-//			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
 			JsonWriter dst = new JsonWriter( os);
-			dst.beginArray();
-			cat.forEachMember( this, dst);
-			dst.endArray();
+			writeQuestSetCats( cat, dst);
 			dst.flush();
 		}
 		catch (Exception ex) {
@@ -459,15 +456,18 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		}
 	}
 
+	private void writeQuestSetCats( FQuestSetCat cat, JsonWriter dst) {
+		dst.beginArray();
+		cat.forEachMember( this, dst);
+		dst.endArray();
+	}
+
 	private void writeReputationCat( FReputationCat cat, File file) {
 		OutputStream os = null;
 		try {
-//			MediumUtils.createBackup( file);
 			os = new FileOutputStream( file);
 			JsonWriter dst = new JsonWriter( os);
-			dst.beginArray();
-			cat.forEachMember( this, dst);
-			dst.endArray();
+			writeReputationCats( cat, dst);
 			dst.flush();
 		}
 		catch (Exception ex) {
@@ -476,6 +476,12 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		finally {
 			Utils.closeIgnore( os);
 		}
+	}
+
+	private void writeReputationCats( FReputationCat cat, JsonWriter dst) {
+		dst.beginArray();
+		cat.forEachMember( this, dst);
+		dst.endArray();
 	}
 
 	private void writeRewards( FQuest quest, JsonWriter dst) {

@@ -20,5 +20,5 @@ public interface IMedium extends IDispatcher {
 
 	FHqm openHqm( File file);
 
-	IMedium parse( String file);
+	IMedium parse( File file);
 }

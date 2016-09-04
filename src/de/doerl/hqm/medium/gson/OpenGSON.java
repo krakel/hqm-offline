@@ -34,10 +34,10 @@ class OpenGSON extends AOpenFile {
 	public void action( Window frame) {
 		String pfad = getLastOpenDir();
 		JFileChooser chooser = createChooser( pfad);
-		chooser.setFileFilter( Medium.FILTER);
-		File file = selectOpenDialog( frame, chooser);
-		if (file != null) {
-			File base = file.getParentFile();
+//		chooser.setFileFilter( Medium.FILTER);
+		chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY);
+		File base = selectOpenDialog( frame, chooser);
+		if (base != null) {
 			if (base != null && verifyLastHQM( base)) {
 				FHqm hqm = Medium.loadHqm( base);
 				if (hqm != null) {
