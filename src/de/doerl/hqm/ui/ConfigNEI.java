@@ -27,6 +27,7 @@ public class ConfigNEI extends ADialog {
 		mLabel.setLineWrap( true);
 		mLabel.setWrapStyleWord( true);
 		mLabel.setBackground( getBackground());
+		mPkgDir.setEnabledText( false);
 	}
 
 	public static void update( Window owner) {

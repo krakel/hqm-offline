@@ -1,11 +1,12 @@
 package de.doerl.hqm.ui;
 
-import java.awt.Dimension;
 import java.awt.Window;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 
+import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.VersionHelper;
 
 class AboutDialog extends ADialog {
@@ -24,12 +25,26 @@ class AboutDialog extends ADialog {
 		dlg.showDialog();
 	}
 
+	private Box createDescription() {
+		Box hori = Box.createHorizontalBox();
+		hori.setAlignmentX( LEFT_ALIGNMENT);
+		JLabel logo = new JLabel( ResourceManager.getIcon( "Krakel1.png"));
+		logo.setAlignmentX( TOP_ALIGNMENT);
+		hori.add( logo);
+		hori.add( Box.createHorizontalStrut( 50));
+		JTextArea txt = new JTextArea( ResourceManager.getString( "config.about") + VersionHelper.VERSION);
+//		txt.setPreferredSize( new Dimension( 200, 100));
+		txt.setAlignmentX( TOP_ALIGNMENT);
+		txt.setEditable( false);
+		txt.setWrapStyleWord( true);
+		txt.setBackground( getBackground());
+		hori.add( txt);
+		return hori;
+	}
+
 	@Override
 	protected void createMain() {
-		JLabel lbl = new JLabel( "Krakel HQM offline editor version " + VersionHelper.VERSION);
-		lbl.setPreferredSize( new Dimension( 400, 200));
-		lbl.setAlignmentX( TOP_ALIGNMENT);
-		mMain.add( lbl);
+		mMain.add( createDescription());
 		mMain.add( Box.createVerticalGlue());
 	}
 }

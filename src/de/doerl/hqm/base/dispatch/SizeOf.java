@@ -70,7 +70,7 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 
 	public static int getReward( FQuest quest) {
 		SizeOf worker = new SizeOf();
-		quest.forEachReward( worker, null);
+		quest.forEachRepReward( worker, null);
 		return worker.mResult;
 	}
 

@@ -82,16 +82,12 @@ public class Selector {
 		}
 	}
 
-	private static void isolatePackages() {
-		File csvFile = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR), BaseDefaults.ITEMPANEL_CSV);
-		ArrayList<ItemNEI> items = new ArrayList<>();
-		UniversalHandler.parseDumpFile( items, csvFile);
-		UniversalHandler.parseNbtFile( items);
-		writeFiles( items);
-	}
-
 	public static void main( String[] args) {
-		isolatePackages();
+		File baseDir = new File( PreferenceManager.getString( BaseDefaults.DUMP_DIR));
+		ArrayList<ItemNEI> items = new ArrayList<>();
+		UniversalHandler.parseDumpFile( items, baseDir);
+		UniversalHandler.parseNbtFile( items, baseDir);
+		writeFiles( items);
 //		checkPackages();
 	}
 

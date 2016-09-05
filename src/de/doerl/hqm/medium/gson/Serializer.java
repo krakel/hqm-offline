@@ -489,7 +489,7 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	private void writeRewards( FQuest quest, JsonWriter dst) {
 		if (SizeOf.getReward( quest) > 0) {
 			dst.beginArray( QUEST_REP_REWRDS);
-			quest.forEachReward( this, dst);
+			quest.forEachRepReward( this, dst);
 			dst.endArray();
 		}
 	}

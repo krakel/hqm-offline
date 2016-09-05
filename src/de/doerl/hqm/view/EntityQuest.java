@@ -393,7 +393,7 @@ class EntityQuest extends AEntity<FQuest> {
 
 		public static Image get( FQuest quest) {
 			ReputationFactory worker = new ReputationFactory();
-			quest.forEachReward( worker, null);
+			quest.forEachRepReward( worker, null);
 			if (worker.mEmpty) {
 				return null;
 			}

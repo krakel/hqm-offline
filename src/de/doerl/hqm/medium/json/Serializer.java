@@ -480,7 +480,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 	private void writeRewards( FQuest quest) {
 		if (SizeOf.getReward( quest) > 0) {
 			mDst.beginArray( QUEST_REP_REWRDS);
-			quest.forEachReward( this, null);
+			quest.forEachRepReward( this, null);
 			mDst.endArray();
 		}
 	}

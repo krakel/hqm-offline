@@ -112,7 +112,7 @@ public final class FQuest extends AUUID implements IElement {
 		return reward;
 	}
 
-	public <T, U> T forEachReward( IHQMWorker<T, U> worker, U p) {
+	public <T, U> T forEachRepReward( IHQMWorker<T, U> worker, U p) {
 		for (FReputationReward disp : mRepRewards) {
 			try {
 				if (disp != null) {

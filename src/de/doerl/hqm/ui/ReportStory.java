@@ -78,6 +78,7 @@ public class ReportStory extends AReport {
 			mOut.write( ": ");
 			mOut.print( task.getName( mLang));
 			mOut.write( NL);
+			mOut.write( '\t');
 			mOut.print( task.getDescr( mLang));
 			mOut.write( NL);
 			return null;
@@ -102,6 +103,7 @@ public class ReportStory extends AReport {
 			mOut.write( ": ");
 			mOut.print( quest.getName( mLang));
 			mOut.write( NL);
+			mOut.write( '\t');
 			mOut.print( quest.getDescr( mLang));
 			mOut.write( NL);
 			mTask = 0;
@@ -117,6 +119,7 @@ public class ReportStory extends AReport {
 			mOut.write( ": ");
 			mOut.print( set.getName( mLang));
 			mOut.write( NL);
+			mOut.write( '\t');
 			mOut.print( set.getDescr( mLang));
 			mOut.write( NL);
 			mQuest = 0;
