@@ -62,7 +62,7 @@ class ConfigPath extends AConfigControl {
 	private void initComponent( String lbl) {
 		mLabel.setText( ResourceManager.getString( lbl));
 		mText.setAlignmentX( Component.LEFT_ALIGNMENT);
-		mText.setPreferredSize( new Dimension( 400, 2 * mText.getFont().getSize()));
+		mText.setPreferredSize( new Dimension( 500, 2 * mText.getFont().getSize()));
 		mText.setMaximumSize( new Dimension( Short.MAX_VALUE, 2 * mText.getFont().getSize()));
 //		mText.addFocusListener( this);
 //		mCheck.addActionListener( mParent);

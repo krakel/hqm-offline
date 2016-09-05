@@ -212,7 +212,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( QUEST_UUID, quest.getUUID());
 			mDst.print( QUEST_X, quest.mX);
 			mDst.print( QUEST_Y, quest.mY);
-			mDst.print( QUEST_BIG, quest.mBig);
+			mDst.printIf( QUEST_BIG, quest.mBig);
 			writeIcon( QUEST_ICON, quest.mIcon);
 			writeQuestArr( QUEST_REQUIREMENTS, quest.mRequirements);
 			writeQuestArr( QUEST_OPTION_LINKS, quest.mOptionLinks);
@@ -395,18 +395,20 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 			mDst.print( HQM_MAIN, hqm.mMain.mLocale);
 		}
 		writeQuestSetCat( hqm.mQuestSetCat);
-		writeReputations( hqm.mReputationCat);
-		writeGroupTiers( hqm.mGroupTierCat);
+		writeReputationCat( hqm.mReputationCat);
+		writeGroupTierCat( hqm.mGroupTierCat);
 		mDst.endObject();
 	}
 
 	private void writeGroups( FGroupTier tier) {
-		mDst.beginArray( GROUP_TIER_GROUPS);
-		tier.forEachGroup( this, null);
-		mDst.endArray();
+		if (SizeOf.getGroups( tier) > 0) {
+			mDst.beginArray( GROUP_TIER_GROUPS);
+			tier.forEachGroup( this, null);
+			mDst.endArray();
+		}
 	}
 
-	private void writeGroupTiers( FGroupTierCat cat) {
+	private void writeGroupTierCat( FGroupTierCat cat) {
 		mDst.beginArray( HQM_GROUP_TIER_CAT);
 		cat.forEachMember( this, null);
 		mDst.endArray();
@@ -469,7 +471,7 @@ class Serializer extends AHQMWorker<Object, Object> implements IToken {
 		mDst.endArray();
 	}
 
-	private void writeReputations( FReputationCat cat) {
+	private void writeReputationCat( FReputationCat cat) {
 		mDst.beginArray( HQM_REPUTATION_CAT);
 		cat.forEachMember( this, null);
 		mDst.endArray();

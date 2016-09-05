@@ -3,11 +3,11 @@ package de.doerl.hqm.ui;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 
-public class AboutAction extends ABundleAction {
+public class ActionAbout extends ABundleAction {
 	private static final long serialVersionUID = -7364269566865078131L;
 	private Window mParent;
 
-	public AboutAction( Window parent) {
+	public ActionAbout( Window parent) {
 		super( "hqm.help.about");
 		mParent = parent;
 	}

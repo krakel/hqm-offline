@@ -4,11 +4,11 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JFrame;
 
-class ExitAction extends ABundleAction {
+class ActionExit extends ABundleAction {
 	private static final long serialVersionUID = 6920098751121756081L;
 	private JFrame mFrame;
 
-	public ExitAction( JFrame frame) {
+	public ActionExit( JFrame frame) {
 		super( "hqm.exit");
 		mFrame = frame;
 	}

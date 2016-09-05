@@ -1,5 +1,6 @@
 package de.doerl.hqm.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,13 +31,17 @@ public class BaseDefaults {
 	public static final String ITEMPANEL_NBT = "itempanel.nbt";
 	public static final String ITEMS = "items.csv";
 	public static final String LANGUAGE = "language.enable";
-	private static final String[] KEYS = { LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, PKG_DIR, DUMP_DIR, FILE_VERSION, LANGUAGE
+	public static final String LANGUAGE_MAIN = "language.main";
+	private static final String[] KEYS = { //
+		LAST_OPEN, LAST_OPEN_DIR, FILE_OPEN_DIR, STACKTRC, PKG_DIR, DUMP_DIR, FILE_VERSION, LANGUAGE, LANGUAGE_MAIN
 	};
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
 		{ STACKTRC, Boolean.TRUE },
 		{ LANGUAGE, Boolean.TRUE },
+		{ LANGUAGE_MAIN, "enUS" },
 		{ PKG_DIR,  System.getProperty( "user.home") },
+		{ DUMP_DIR,  defaultDirectory() + File.pathSeparator + ".minecraft"+ File.pathSeparator +"dumps" },
 		{ FILE_VERSION, FileVersion.last().toString() },
 		{ FILE_OPEN_DIR, System.getProperty( "user.home") },
 		{ LAST_OPEN, new String[0] },
@@ -50,6 +55,7 @@ public class BaseDefaults {
 		synchronized (pref) {
 			checkBool( pref, STACKTRC);
 			checkBool( pref, LANGUAGE);
+			checkString( pref, LANGUAGE_MAIN);
 			checkString( pref, PKG_DIR);
 			checkString( pref, DUMP_DIR);
 			checkString( pref, FILE_VERSION);
@@ -112,6 +118,20 @@ public class BaseDefaults {
 		if (!pref.containsKey( key)) {
 			pref.setString( key, getDefaultString( key));
 		}
+	}
+
+	private static String defaultDirectory() {
+		String OS = System.getProperty( "os.name").toUpperCase();
+		if (OS.contains( "WIN")) {
+			return System.getenv( "APPDATA");
+		}
+		else if (OS.contains( "MAC")) {
+			return System.getProperty( "user.home") + "/Library/Application Support";
+		}
+		else if (OS.contains( "NUX")) {
+			return System.getProperty( "user.home");
+		}
+		return System.getProperty( "user.dir");
 	}
 
 	public static Object getDefault( String key) {

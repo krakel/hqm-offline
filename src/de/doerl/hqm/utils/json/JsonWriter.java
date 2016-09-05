@@ -200,6 +200,14 @@ public class JsonWriter {
 		endArray();
 	}
 
+	public void printIf( String key, boolean value) {
+		if (value) {
+			checkNL();
+			writeKey( key);
+			printValue( value);
+		}
+	}
+
 	public void printIf( String key, Object obj) {
 		if (obj != null) {
 			checkNL();

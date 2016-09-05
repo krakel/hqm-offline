@@ -45,8 +45,8 @@ public class EditFrame extends JFrame implements IModelListener {
 	private EditModel mModel = new EditModel();
 	private EditView mView;
 	private ElementTree mTree;
-	private NewAction mNewAction = new NewAction( this);
-	private CloseAction mCloseAction = new CloseAction( this);
+	private ActionNew mNewAction = new ActionNew( this);
+	private ActionClose mCloseAction = new ActionClose( this);
 	private JLabel mStatusBar;
 	private EditCallback mCB;
 	private Box mTop = Box.createHorizontalBox();
@@ -190,7 +190,7 @@ public class EditFrame extends JFrame implements IModelListener {
 //		menu.addSeparator();
 //		menu.add( new ConfigurationAction( this));
 //		menu.addSeparator();
-		menu.add( new ExitAction( this));
+		menu.add( new ActionExit( this));
 		return menu;
 	}
 
@@ -206,9 +206,10 @@ public class EditFrame extends JFrame implements IModelListener {
 
 	private JMenu createMenuHelp() {
 		JMenu menu = createMenu( "hqm.help");
-		menu.add( new ConfigAction( this));
+		menu.add( new ActionConfig( this));
+		menu.add( new ActionNEI( this));
 //		menu.addSeparator();
-		menu.add( new AboutAction( this));
+		menu.add( new ActionAbout( this));
 		return menu;
 	}
 
@@ -226,7 +227,7 @@ public class EditFrame extends JFrame implements IModelListener {
 		JMenu menu = createMenu( "hqm.last");
 		int max = BaseDefaults.LAST_OPEN_MAX;
 		for (int i = 0; i < max; ++i) {
-			OpenLastAction a = new OpenLastAction( i, mCB);
+			ActionOpenLast a = new ActionOpenLast( i, mCB);
 			JMenuItem mi = menu.add( a);
 			a.setItem( mi); // poor
 		}

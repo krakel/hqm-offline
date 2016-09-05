@@ -53,6 +53,8 @@ import de.doerl.hqm.quest.RepeatType;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.quest.Visibility;
+import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.ANbt;
 import de.doerl.hqm.utils.nbt.FCompound;
@@ -385,7 +387,7 @@ class Parser extends AHQMWorker<Object, FileVersion> {
 	void readSrc( FHqm hqm) {
 		FileVersion version = FileVersion.get( mSrc.readByte());
 		hqm.setVersion( version);
-		hqm.setMain( FHqm.LANG_EN_US);
+		hqm.setMain( PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN));
 		if (version.contains( FileVersion.LOCK)) {
 			hqm.mPassCode = mSrc.readString( DataBitHelper.PASS_CODE);
 		}

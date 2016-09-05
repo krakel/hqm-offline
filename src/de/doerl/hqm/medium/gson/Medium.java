@@ -20,6 +20,8 @@ import de.doerl.hqm.medium.IMediumWorker;
 import de.doerl.hqm.medium.IRefreshListener;
 import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.MediumUtils;
+import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.IJson;
 import de.doerl.hqm.utils.json.JsonReader;
@@ -47,30 +49,6 @@ public class Medium implements IMedium {
 		}
 	}
 
-	//	private static File getModpackBase( File src) {
-//		if (src != null) {
-//			try {
-//				String name = src.getCanonicalPath();
-//				if (name.contains( "hqm")) {
-//					File path = src;
-//					while (path != null && !"default".equals( path.getName())) {
-//						path = path.getParentFile();
-//					}
-//					if (path != null) {
-//						path = path.getParentFile();
-//					}
-//					if (path != null) {
-//						return path;
-//					}
-//				}
-//			}
-//			catch (IOException ex) {
-//				Utils.logThrows( LOGGER, Level.WARNING, ex);
-//			}
-//		}
-//		return null;
-//	}
-//
 	private static String getModpackName( File src) {
 		if (src != null) {
 			try {
@@ -141,7 +119,7 @@ public class Medium implements IMedium {
 		File base = file.isDirectory() ? file : file.getParentFile();
 		String name = getModpackName( base);
 		FHqm hqm = new FHqm( name);
-		hqm.setMain( FHqm.LANG_EN_US);
+		hqm.setMain( PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN));
 		if (base != null) {
 			readHqm( hqm, base);
 			MediaManager.setProperty( hqm, GSON_PATH, base);
@@ -163,14 +141,6 @@ public class Medium implements IMedium {
 			}
 		}
 		return null;
-	}
-
-	public static void main( String[] args) {
-		File file = new File( "D:\\Games\\Minecraft\\hqm\\hqm-Brave\\default");
-		String name = getModpackName( file);
-		FHqm hqm = new FHqm( name);
-		hqm.setMain( FHqm.LANG_EN_US);
-		readHqm( hqm, file);
 	}
 
 	static void readHqm( FHqm hqm, File base) {

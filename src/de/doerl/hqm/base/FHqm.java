@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import de.doerl.hqm.base.dispatch.IHQMWorker;
 import de.doerl.hqm.quest.ElementTyp;
 import de.doerl.hqm.quest.FileVersion;
+import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 
 public final class FHqm extends ANamed {
 //	private static final Logger LOGGER = Logger.getLogger( FHqm.class.getName());
-	public static final String LANG_EN_US = "enUS";
-	public static final String LANG_DE_DE = "deDE";
 	private FileVersion mVersion;
 	public final FQuestSetCat mQuestSetCat = new FQuestSetCat( this);
 	public final FReputationCat mReputationCat = new FReputationCat( this);
@@ -93,7 +93,7 @@ public final class FHqm extends ANamed {
 			mLanguages.remove( old);
 		}
 		if (mLanguages.size() == 0) {
-			createLanguage( LANG_EN_US);
+			createLanguage( PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN));
 		}
 		if (Utils.equals( mMain, old.mLocale)) {
 			mMain = mLanguages.get( 0);

@@ -52,6 +52,8 @@ import de.doerl.hqm.quest.RepeatType;
 import de.doerl.hqm.quest.TaskTyp;
 import de.doerl.hqm.quest.TriggerType;
 import de.doerl.hqm.quest.Visibility;
+import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.json.FArray;
 import de.doerl.hqm.utils.json.FObject;
@@ -279,7 +281,7 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			}
 		}
 		if (hqm.mLanguages.size() == 0) {
-			hqm.createLanguage( FHqm.LANG_EN_US);
+			hqm.createLanguage( PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN));
 		}
 	}
 

@@ -20,14 +20,14 @@ import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
-class OpenLastAction extends ABundleAction implements IRefreshListener, Runnable {
+class ActionOpenLast extends ABundleAction implements IRefreshListener, Runnable {
 	private static final long serialVersionUID = -5227055618865128699L;
-	private static final Logger LOGGER = Logger.getLogger( OpenLastAction.class.getName());
+	private static final Logger LOGGER = Logger.getLogger( ActionOpenLast.class.getName());
 	private ICallback mCallback;
 	private JMenuItem mItem;
 	private int mIndex;
 
-	public OpenLastAction( int idx, ICallback cb) {
+	public ActionOpenLast( int idx, ICallback cb) {
 		super( "hqm.open");
 		mIndex = idx;
 		mCallback = cb;

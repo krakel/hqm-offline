@@ -9,24 +9,23 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import de.doerl.hqm.quest.FileVersion;
-import de.doerl.hqm.utils.BaseDefaults;
 import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.ResourceManager;
 
 class ConfigVersion extends AConfigControl {
 	private static final long serialVersionUID = 6522254272858137830L;
-	protected JComboBox<String> mCombo = new JComboBox<String>();
-	protected JLabel mLabel = new JLabel();
+	private JLabel mLabel = new JLabel();
+	private JComboBox<String> mCombo = new JComboBox<String>();
 	private String mProperty;
 
-	public ConfigVersion() {
+	public ConfigVersion( String prop, String lbl) {
 		setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
 //	    setBorder( BorderFactory.createTitledBorder( ""));
 		setAlignmentX( LEFT_ALIGNMENT);
 		setAlignmentY( TOP_ALIGNMENT);
-		mProperty = BaseDefaults.FILE_VERSION;
+		mProperty = prop;
 		createControl();
-		initComponent( "config.version");
+		initComponent( lbl);
 	}
 
 	@Override
@@ -38,12 +37,12 @@ class ConfigVersion extends AConfigControl {
 	}
 
 	public void createControl() {
-		Box result = Box.createHorizontalBox();
-		result.setAlignmentX( Component.LEFT_ALIGNMENT);
-		result.add( mLabel);
-		result.add( Box.createHorizontalStrut( 10));
-		result.add( mCombo);
-		add( result);
+		Box hori = Box.createHorizontalBox();
+		hori.setAlignmentX( Component.LEFT_ALIGNMENT);
+		hori.add( mLabel);
+		hori.add( Box.createHorizontalStrut( 10));
+		hori.add( mCombo);
+		add( hori);
 	}
 
 	public void initComponent( String lbl) {

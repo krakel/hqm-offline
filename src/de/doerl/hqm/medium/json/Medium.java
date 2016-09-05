@@ -71,14 +71,14 @@ public class Medium implements IMedium {
 			if (obj != null && obj.get( IToken.HQM_PARENT) != null) {
 				File main = fromLangFile( file, FValue.toString( obj.get( IToken.HQM_PARENT)));
 				if (main.exists()) {
-					return loadHqm( redJson( main), FHqm.LANG_EN_US, main, false);
+					return loadHqm( redJson( main), PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN), main, false);
 				}
 				else {
 					return null;
 				}
 			}
 			else {
-				return loadHqm( obj, FHqm.LANG_EN_US, file, false);
+				return loadHqm( obj, PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN), file, false);
 			}
 		}
 	}

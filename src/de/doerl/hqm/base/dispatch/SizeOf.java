@@ -6,6 +6,8 @@ import de.doerl.hqm.base.AQuestTask;
 import de.doerl.hqm.base.AQuestTaskItems;
 import de.doerl.hqm.base.AQuestTaskReputation;
 import de.doerl.hqm.base.ARequirement;
+import de.doerl.hqm.base.FGroup;
+import de.doerl.hqm.base.FGroupTier;
 import de.doerl.hqm.base.FLocation;
 import de.doerl.hqm.base.FMarker;
 import de.doerl.hqm.base.FMob;
@@ -27,6 +29,12 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 	public static int getBars( FQuestSet set) {
 		SizeOf worker = new SizeOf();
 		set.forEachBar( worker, null);
+		return worker.mResult;
+	}
+
+	public static int getGroups( FGroupTier tier) {
+		SizeOf worker = new SizeOf();
+		tier.forEachGroup( worker, null);
 		return worker.mResult;
 	}
 
@@ -92,6 +100,12 @@ public class SizeOf extends AHQMWorker<Object, Object> {
 
 	@Override
 	protected Object doTask( AQuestTask task, Object p) {
+		++mResult;
+		return null;
+	}
+
+	@Override
+	public Object forGroup( FGroup grp, Object p) {
 		++mResult;
 		return null;
 	}

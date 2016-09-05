@@ -172,9 +172,7 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		dst.printIf( QUEST_DESC, quest.getDescr( mLang));
 		dst.print( QUEST_X, quest.mX);
 		dst.print( QUEST_Y, quest.mY);
-		if (quest.mBig) {
-			dst.print( QUEST_BIG, quest.mBig);
-		}
+		dst.printIf( QUEST_BIG, quest.mBig);
 		writeIcon( QUEST_ICON, quest.mIcon, dst);
 		writeQuestArr( QUEST_PREREQUISITES, quest.mRequirements, dst);
 		writeQuestArr( QUEST_OPTION_LINKS, quest.mOptionLinks, dst);
@@ -344,15 +342,17 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 
 	void writeDst( FHqm hqm) {
 		Medium.saveTxt( hqm.getDescr(), Medium.getFile( Medium.DESCRIPTION_FILE, mBase));
-		writeReputationCat( hqm.mReputationCat, Medium.getFile( Medium.REPUTATION_FILE, mBase));
 		writeQuestSetCat( hqm.mQuestSetCat, Medium.getFile( Medium.SET_FILE, mBase));
+		writeReputationCat( hqm.mReputationCat, Medium.getFile( Medium.REPUTATION_FILE, mBase));
 		writeGroupTierCat( hqm.mGroupTierCat, Medium.getFile( Medium.BAG_FILE, mBase));
 	}
 
 	private void writeGroups( FGroupTier tier, JsonWriter dst) {
-		dst.beginArray( GROUP_TIER_GROUPS);
-		tier.forEachGroup( this, dst);
-		dst.endArray();
+		if (SizeOf.getGroups( tier) > 0) {
+			dst.beginArray( GROUP_TIER_GROUPS);
+			tier.forEachGroup( this, dst);
+			dst.endArray();
+		}
 	}
 
 	private void writeGroupTierCat( FGroupTierCat cat, File file) {
@@ -408,9 +408,11 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 	}
 
 	private void writeMarkers( FReputation rep, JsonWriter dst) {
-		dst.beginArray( REPUTATION_MARKERS);
-		rep.forEachMarker( this, dst);
-		dst.endArray();
+		if (SizeOf.getMarker( rep) > 0) {
+			dst.beginArray( REPUTATION_MARKERS);
+			rep.forEachMarker( this, dst);
+			dst.endArray();
+		}
 	}
 
 	private void writeQuestArr( String key, ArrayList<FQuest> arr, JsonWriter dst) {

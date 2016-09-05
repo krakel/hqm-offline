@@ -24,6 +24,8 @@ import javax.swing.border.BevelBorder;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.base.FLanguage;
 import de.doerl.hqm.ui.ADialog;
+import de.doerl.hqm.utils.BaseDefaults;
+import de.doerl.hqm.utils.PreferenceManager;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.view.dispatch.LangAddWorker;
 import de.doerl.hqm.view.dispatch.LangDeleteWorker;
@@ -135,7 +137,7 @@ class DialogListLangs extends ADialog {
 			}
 		}
 		if (mHqm.mLanguages.size() == 0) {
-			LangAddWorker.get( mHqm, FHqm.LANG_EN_US);
+			LangAddWorker.get( mHqm, PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN));
 		}
 		if (mHqm.mLanguages.contains( mDefault)) {
 			mHqm.mMain = mDefault;

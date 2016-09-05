@@ -10,9 +10,8 @@ import de.doerl.hqm.utils.mods.ImageLoader;
 class ConfigDialog extends ADialog {
 	private static final long serialVersionUID = 724962696459638751L;
 	private ConfigBoolean mLanguge = new ConfigBoolean( BaseDefaults.LANGUAGE, "config.language");
-	private ConfigPath mDumpDir = new ConfigPath( BaseDefaults.DUMP_DIR, "config.dump.dir");
-	private ConfigPath mPkgDir = new ConfigPath( BaseDefaults.PKG_DIR, "config.pkg.dir");
-	private ConfigVersion mVersion = new ConfigVersion();
+	private ConfigString mLangugeMain = new ConfigString( BaseDefaults.LANGUAGE_MAIN, "config.language.main");
+	private ConfigVersion mVersion = new ConfigVersion( BaseDefaults.FILE_VERSION, "config.version");
 
 	private ConfigDialog( Window owner) {
 		super( owner);
@@ -33,14 +32,14 @@ class ConfigDialog extends ADialog {
 	@Override
 	protected void createMain() {
 		mLanguge.initControl();
-		mDumpDir.initControl();
-		mPkgDir.initControl();
+		mLangugeMain.initControl();
 		mVersion.initControl();
 		Box result = Box.createVerticalBox();
 		result.setAlignmentY( TOP_ALIGNMENT);
 		result.add( mLanguge);
-		result.add( mDumpDir);
-		result.add( mPkgDir);
+		result.add( mLangugeMain);
+		result.add( Box.createVerticalStrut( 10));
+		result.add( new SinkLine());
 		result.add( Box.createVerticalStrut( 10));
 		result.add( mVersion);
 		mMain.add( result);
@@ -48,8 +47,7 @@ class ConfigDialog extends ADialog {
 
 	private void saveResult() {
 		mLanguge.applyChange();
-		mDumpDir.applyChange();
-		mPkgDir.applyChange();
+		mLangugeMain.applyChange();
 		mVersion.applyChange();
 		ImageLoader.init();
 	}

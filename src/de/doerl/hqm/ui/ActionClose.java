@@ -9,11 +9,11 @@ import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.medium.IRefreshListener;
 import de.doerl.hqm.medium.RefreshEvent;
 
-public class CloseAction extends ABundleAction implements IRefreshListener, Runnable {
+public class ActionClose extends ABundleAction implements IRefreshListener, Runnable {
 	private static final long serialVersionUID = 3759442083520823583L;
 	private EditFrame mFrame;
 
-	public CloseAction( EditFrame frame) {
+	public ActionClose( EditFrame frame) {
 		super( "hqm.close");
 		mFrame = frame;
 		setEnabled( false);

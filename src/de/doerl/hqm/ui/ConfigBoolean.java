@@ -16,8 +16,8 @@ import de.doerl.hqm.utils.Utils;
 class ConfigBoolean extends AConfigControl implements ActionListener {
 	private static final long serialVersionUID = 3030343336685063263L;
 	private static final Logger LOGGER = Logger.getLogger( ConfigBoolean.class.getName());
-	protected JCheckBox mCheck;
-	protected String mProperty;
+	private JCheckBox mCheck;
+	private String mProperty;
 	private EventListenerList mListener = new EventListenerList();
 
 	public ConfigBoolean( String prop, String lbl) {

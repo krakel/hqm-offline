@@ -29,12 +29,12 @@ public class MediumUtils {
 			if (!backupDir.exists()) {
 				backupDir.mkdir();
 			}
-			File olderDir = new File( backupDir, src.getName() + ".old" + MAX_BACKUP);
+			File olderDir = new File( backupDir, createBackupName( src.getName(), MAX_BACKUP));
 			for (int i = MAX_BACKUP - 1; i > 0; --i) {
 				if (olderDir.exists()) {
 					deleteDir( olderDir);
 				}
-				File oldDir = new File( backupDir, src.getName() + ".old" + i);
+				File oldDir = new File( backupDir, createBackupName( src.getName(), i));
 				if (oldDir.exists() && !oldDir.renameTo( olderDir)) {
 					Utils.log( LOGGER, Level.WARNING, "cannot rename older folder {0}", oldDir);
 				}
@@ -63,12 +63,12 @@ public class MediumUtils {
 			if (!backupDir.exists()) {
 				backupDir.mkdir();
 			}
-			File olderFile = new File( backupDir, src.getName() + ".old" + MAX_BACKUP);
+			File olderFile = new File( backupDir, createBackupName( src.getName(), MAX_BACKUP));
 			for (int i = MAX_BACKUP - 1; i > 0; --i) {
 				if (olderFile.exists()) {
 					olderFile.delete();
 				}
-				File oldFile = new File( backupDir, src.getName() + ".old" + i);
+				File oldFile = new File( backupDir, createBackupName( src.getName(), i));
 				if (oldFile.exists() && !oldFile.renameTo( olderFile)) {
 					Utils.log( LOGGER, Level.WARNING, "cannot rename older file {0}", oldFile);
 				}
@@ -77,6 +77,16 @@ public class MediumUtils {
 			if (!src.renameTo( olderFile)) {
 				Utils.log( LOGGER, Level.WARNING, "cannot rename old file {0}", src);
 			}
+		}
+	}
+
+	private static String createBackupName( String name, int idx) {
+		int pos = name.lastIndexOf( '.');
+		if (pos < 0) {
+			return name + "_old" + idx;
+		}
+		else {
+			return name.substring( 0, pos) + "_old" + idx + name.substring( pos);
 		}
 	}
 
