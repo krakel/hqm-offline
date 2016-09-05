@@ -416,7 +416,7 @@ class Serializer extends AHQMWorker<Object, FileVersion> {
 
 	private void writeRewards( FQuest quest, FileVersion version) {
 		mDst.writeData( SizeOf.getReward( quest), DataBitHelper.REPUTATION_REWARD);
-		quest.forEachReward( this, version);
+		quest.forEachRepReward( this, version);
 	}
 
 	private void writeStacks( ArrayList<FItemStack> lst, DataBitHelper bits, FileVersion version) {

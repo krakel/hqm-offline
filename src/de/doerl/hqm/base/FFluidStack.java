@@ -1,6 +1,7 @@
 package de.doerl.hqm.base;
 
 import de.doerl.hqm.utils.ToString;
+import de.doerl.hqm.utils.nbt.FCompound;
 
 public final class FFluidStack extends AStack {
 	private String mKey;
@@ -38,6 +39,11 @@ public final class FFluidStack extends AStack {
 	@Override
 	public String getName() {
 		return mName;
+	}
+
+	@Override
+	public FCompound getNBT() {
+		return null;
 	}
 
 	@Override

@@ -24,14 +24,12 @@ class ConfigPath extends AConfigControl {
 	private static final long serialVersionUID = -3966232057993858800L;
 	private static final Logger LOGGER = Logger.getLogger( ConfigPath.class.getName());
 	private JButton mButton = new JButton( "...");
-//	private JCheckBox mCheck = AConfig.createCheckBox( null, mParent);
 	private JLabel mLabel = new JLabel();
 	private JTextField mText = new JTextField();
 	private String mProperty;
 
 	public ConfigPath( String prop, String lbl) {
 		setLayout( new BoxLayout( this, BoxLayout.Y_AXIS));
-//	    setBorder( BorderFactory.createTitledBorder( ""));
 		setAlignmentX( LEFT_ALIGNMENT);
 		setAlignmentY( TOP_ALIGNMENT);
 		mProperty = prop;
@@ -52,7 +50,6 @@ class ConfigPath extends AConfigControl {
 	private Box createEditPath() {
 		Box hori = Box.createHorizontalBox();
 		hori.setAlignmentX( LEFT_ALIGNMENT);
-//		hori.add( mCheck);
 		hori.add( mText);
 		hori.add( Box.createHorizontalStrut( 10));
 		hori.add( mButton);
@@ -64,20 +61,16 @@ class ConfigPath extends AConfigControl {
 		mText.setAlignmentX( Component.LEFT_ALIGNMENT);
 		mText.setPreferredSize( new Dimension( 500, 2 * mText.getFont().getSize()));
 		mText.setMaximumSize( new Dimension( Short.MAX_VALUE, 2 * mText.getFont().getSize()));
-//		mText.addFocusListener( this);
-//		mCheck.addActionListener( mParent);
-//		mCheck.addActionListener( new ActionListener() {
-//			public void actionPerformed( ActionEvent e) {
-//				enableText();
-//			}
-//		});
 		mButton.addActionListener( new PathSelectAction( mText));
 	}
 
 	@Override
 	public void initControl() {
 		mText.setText( PreferenceManager.getString( mProperty));
-//		mCheck.setSelected( PreferenceManager.getString( mProperty) != null);
+	}
+
+	void setEnabledText( boolean value) {
+		mText.setEnabled( value);
 	}
 
 	private static class PathSelectAction implements ActionListener {

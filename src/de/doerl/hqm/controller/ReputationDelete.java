@@ -24,7 +24,7 @@ class ReputationDelete extends AHQMWorker<Object, Object> {
 
 	@Override
 	public Object forQuest( FQuest quest, Object p) {
-		quest.forEachReward( this, p);
+		quest.forEachRepReward( this, p);
 		mCtrl.fireChanged( quest);
 		return null;
 	}

@@ -4,13 +4,20 @@ import java.awt.Container;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.base.FHqm;
 import de.doerl.hqm.medium.ADialogFile;
 import de.doerl.hqm.medium.ICallback;
@@ -19,13 +26,14 @@ import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.RefreshEvent;
 import de.doerl.hqm.utils.Security;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.SerializerAtJson;
 
 abstract class AReport extends ABundleAction implements IRefreshListener, Runnable {
 	private static final long serialVersionUID = -3001796596162739183L;
+	private static final Logger LOGGER = Logger.getLogger( AReport.class.getName());
 	public static final FileFilter FILTER = new FileNameExtensionFilter( "txt file", "txt");
 	protected static final String NL = Security.getProperty( "line.separator", "\n");
+	private static final Comparator<String> STING_COMPERATOR = Comparator.nullsFirst( Comparator.naturalOrder());
 	protected ICallback mCallback;
 
 	public AReport( String name, ICallback cb) {
@@ -33,6 +41,31 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 		mCallback = cb;
 		cb.addRefreshListener( this);
 		setEnabled( false);
+	}
+
+	static void saveStacks( Map<AStack, Integer> map, File file) {
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter( new OutputStreamWriter( new FileOutputStream( file), "UTF-8"));
+			for (AStack key : map.keySet()) {
+				out.print( String.format( "%3d x %s", map.get( key), key.getDisplay()));
+//				out.print( String.format( ", name='%s'", key.getName()));
+				if (key.getDamage() > 0) {
+					out.print( String.format( ", dmg=%d", key.getDamage()));
+				}
+				if (key.getNBT() != null) {
+					out.print( String.format( ", nbt%s", SerializerAtJson.write( key.getNBT())));
+				}
+				out.write( NL);
+			}
+			out.flush();
+		}
+		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+		finally {
+			Utils.closeIgnore( out);
+		}
 	}
 
 	protected static String truncName( String name, String suffix) {
@@ -84,79 +117,24 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 		SwingUtilities.invokeLater( this);
 	}
 
-	protected static final class Item {
-		public String mName;
-		public FCompound mNBT;
-		public int mDmg;
-
-		public Item( String name, int dmg, FCompound nbt) {
-			mName = name;
-			mDmg = dmg;
-			mNBT = nbt;
-		}
-
+	protected static final class ItemCompare implements Comparator<AStack> {
 		@Override
-		public boolean equals( Object obj) {
-			if (obj == null) {
-				return false;
+		public int compare( AStack o1, AStack o2) {
+//			Comparator<AStack> cc1 = Comparator.nullsFirst( Comparator.comparing( stk -> stk.getDisplay()));
+//			Comparator<AStack> cc2 = cc1.thenComparing( null);
+			int diff = STING_COMPERATOR.compare( o1.getDisplay(), o2.getDisplay());
+			if (diff != 0) {
+				return diff;
 			}
-			if (this == obj) {
-				return true;
+			diff = STING_COMPERATOR.compare( o1.getName(), o2.getName());
+			if (diff != 0) {
+				return diff;
 			}
-			try {
-				Item other = (Item) obj;
-				if (mDmg != other.mDmg) {
-					return false;
-				}
-				if (Utils.different( mName, other.mName)) {
-					return false;
-				}
-				if (Utils.different( mNBT, other.mNBT)) {
-					return false;
-				}
+			diff = Integer.compare( o1.getDamage(), o2.getDamage());
+			if (diff != 0) {
+				return diff;
 			}
-			catch (ClassCastException ex) {
-				return false;
-			}
-			return true;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + mDmg;
-			result = prime * result + (mNBT == null ? 0 : mNBT.hashCode());
-			result = prime * result + (mName == null ? 0 : mName.hashCode());
-			return result;
-		}
-	}
-
-	protected static final class ItemCompare implements Comparator<Item> {
-		@Override
-		public int compare( Item o1, Item o2) {
-			if (o1.mName == null && o2.mName != null) {
-				return -1;
-			}
-			if (o1.mName != null && o2.mName == null) {
-				return 1;
-			}
-			if (o1.mName == null || o1.mName.equals( o2.mName)) {
-				if (o1.mDmg != o2.mDmg) {
-					return o1.mDmg < o2.mDmg ? -1 : 1;
-				}
-				if (o1.mNBT == null && o2.mNBT != null) {
-					return -1;
-				}
-				if (o1.mNBT != null && o2.mNBT == null) {
-					return 1;
-				}
-				if (o1.mNBT == null || o1.mNBT.equals( o2.mNBT)) {
-					return 0;
-				}
-				return SerializerAtJson.write( o1.mNBT).compareTo( SerializerAtJson.write( o2.mNBT));
-			}
-			return o1.mName.compareTo( o2.mName);
+			return STING_COMPERATOR.compare( SerializerAtJson.write( o1.getNBT()), SerializerAtJson.write( o2.getNBT()));
 		}
 	}
 }

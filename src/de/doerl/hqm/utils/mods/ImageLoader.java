@@ -118,19 +118,15 @@ public class ImageLoader {
 
 	private static void initDirectories() {
 		String name = PreferenceManager.getString( BaseDefaults.DUMP_DIR);
-		File path = null;
-		if (name != null) {
-			path = new File( name);
-		}
-		if (path != null && path.isDirectory()) {
+		File path = new File( name != null ? name : ".");
+		if (path.isDirectory()) {
 			sBaseDir = path;
 		}
-		else {
-			sBaseDir = new File( "."); // only one try
-		}
-		File imageDir = new File( sBaseDir, BaseDefaults.ITEMPANEL_ICONS);
-		if (imageDir.exists() && imageDir.isDirectory()) {
-			sImageDir = imageDir;
+		if (sBaseDir != null) {
+			File imageDir = new File( sBaseDir, BaseDefaults.ITEMPANEL_ICONS);
+			if (imageDir.isDirectory()) {
+				sImageDir = imageDir;
+			}
 		}
 	}
 
