@@ -1,7 +1,3 @@
-/*******************************************************************************
- * (c) Copyright IBM Corporation 2016. All Rights Reserved.
- *
- *******************************************************************************/
 package de.doerl.hqm.base.dispatch;
 
 import de.doerl.hqm.base.FHqm;
