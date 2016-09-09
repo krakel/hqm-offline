@@ -84,6 +84,10 @@ public class ResourceManager {
 		return null;
 	}
 
+	public static javafx.scene.image.Image getImageFx( String name) {
+		return new javafx.scene.image.Image( ResourceManager.class.getResourceAsStream( "Krakel1.png"));
+	}
+
 	public static Image getImageUI( String key) {
 		try {
 			Object obj = UIManager.get( key);
@@ -237,14 +241,17 @@ public class ResourceManager {
 			mBounds = mFont.getStringBounds( mText, fc);
 		}
 
+		@Override
 		public int getIconHeight() {
 			return (int) mBounds.getHeight() + 4;
 		}
 
+		@Override
 		public int getIconWidth() {
 			return (int) mBounds.getWidth() + 4;
 		}
 
+		@Override
 		public synchronized void paintIcon( Component c, Graphics g, int x, int y) {
 			Font oldFont = g.getFont();
 			g.setFont( mFont);
