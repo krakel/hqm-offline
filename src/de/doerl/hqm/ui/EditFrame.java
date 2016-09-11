@@ -84,6 +84,7 @@ public class EditFrame extends JFrame implements IModelListener {
 	static EditFrame createNew() {
 		EditManager.init();
 		ResourceManager.init();
+		JFXHiddenApplication.launchApplication();
 		EditFrame frame = new EditFrame();
 		frame.init();
 		Utils.centerFrame( frame);
@@ -283,6 +284,7 @@ public class EditFrame extends JFrame implements IModelListener {
 	public void dispose() {
 		if (CloseWorker.get( this)) {
 			super.dispose();
+			JFXHiddenApplication.closeApplication();
 		}
 	}
 

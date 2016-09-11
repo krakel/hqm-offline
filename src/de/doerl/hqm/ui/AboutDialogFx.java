@@ -1,78 +1,51 @@
 package de.doerl.hqm.ui;
 
+import java.awt.Window;
+
 import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.VersionHelper;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-class AboutDialogFx extends Stage {
-	protected HBox mSelect = new HBox();
-
+class AboutDialogFx extends ADialogFx {
 	private AboutDialogFx( Stage owner) {
-		initOwner( owner);
+		super( owner);
 		setTheme( "about.theme");
-		initStyle( StageStyle.UTILITY);
-		initModality( Modality.APPLICATION_MODAL);
-		setResizable( false);
+//		setResizable( false);
+		addAction( BTN_OK);
+		addEscapeAction();
 	}
 
 	public static void update( Stage owner) {
-		final AboutDialogFx dlg = new AboutDialogFx( owner);
+		AboutDialogFx dlg = new AboutDialogFx( owner);
 		dlg.createMain();
 		dlg.showDialog();
 	}
 
-	private void addEscapeAction() {
-		getScene().setOnKeyPressed( key -> {
-			if (key.getCode() == KeyCode.ESCAPE) {
-				close();
-			}
+	public static void update( Window parent) {
+		Platform.runLater( () -> {
+			AboutDialogFx dlg = new AboutDialogFx( JFXHiddenApplication.getPrimaryStage());
+			dlg.createMain();
+			dlg.showDialog();
+			JFXHiddenApplication.showJavaFXDialog( dlg, parent);
 		});
 	}
 
-	public void createMain() {
-		HBox hori = new HBox();
-		hori.setSpacing( 5);
-		ImageView logo = new ImageView( ResourceManager.getImageFx( "Krakel1.png"));
+	private Node createContent() {
+		HBox hori = new HBox( GAP);
+		hori.getChildren().add( new ImageView( ResourceManager.getImageFx( "Krakel1.png")));
 		Text msg = new Text( ResourceManager.getString( "config.about") + VersionHelper.VERSION);
-		msg.setWrappingWidth( 250);
-		hori.getChildren().addAll( logo, msg);
-		//
-		Button btnOk = new Button( "OK");
-		btnOk.setAlignment( Pos.CENTER);
-		btnOk.setOnAction( event -> close());
-		BorderPane pane = new BorderPane();
-		pane.setCenter( btnOk);
-		//
-		VBox vert = new VBox();
-		vert.setPadding( new Insets( 10, 10, 10, 10));
-		vert.setSpacing( 10);
-		vert.getChildren().addAll( hori, pane);
-		Scene scene = new Scene( vert);
-		setScene( scene);
-		addEscapeAction();
+//		msg.setWrappingWidth( 250);
+		hori.getChildren().add( msg);
+		return msg;
 	}
 
-	private void setTheme( String theme) {
-		if (theme != null) {
-			setTitle( ResourceManager.getString( theme));
-		}
-	}
-
-	private void showDialog() {
-		sizeToScene();
-		centerOnScreen();
-		showAndWait();
+	@Override
+	protected void createMain() {
+		mMain.getChildren().add( createContent());
 	}
 }

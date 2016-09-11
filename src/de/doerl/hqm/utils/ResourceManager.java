@@ -7,7 +7,6 @@ import java.awt.Image;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -78,14 +77,23 @@ public class ResourceManager {
 				return ImageIO.read( url);
 			}
 		}
-		catch (IOException ex) {
+		catch (Exception ex) {
 			Utils.logThrows( LOGGER, Level.WARNING, ex);
 		}
 		return null;
 	}
 
 	public static javafx.scene.image.Image getImageFx( String name) {
-		return new javafx.scene.image.Image( ResourceManager.class.getResourceAsStream( "Krakel1.png"));
+		try {
+			URL url = ResourceManager.class.getResource( ICON_DIR + name);
+			if (url != null) {
+				return new javafx.scene.image.Image( url.toString());
+			}
+		}
+		catch (Exception ex) {
+			Utils.logThrows( LOGGER, Level.WARNING, ex);
+		}
+		return null;
 	}
 
 	public static Image getImageUI( String key) {

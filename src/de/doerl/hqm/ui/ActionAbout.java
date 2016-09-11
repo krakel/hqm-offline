@@ -13,6 +13,11 @@ public class ActionAbout extends ABundleAction {
 	}
 
 	public void actionPerformed( ActionEvent event) {
-		AboutDialog.update( mParent);
+		if (JFXHiddenApplication.isIsEnabled()) {
+			AboutDialogFx.update( mParent);
+		}
+		else {
+			AboutDialog.update( mParent);
+		}
 	}
 }
