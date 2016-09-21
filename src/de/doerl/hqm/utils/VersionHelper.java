@@ -14,7 +14,7 @@ public class VersionHelper implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger( VersionHelper.class.getName());
 	public static final String VERSION = ResourceManager.getVersion( RESOURCE);
 	private static final String MOD_NAME = ResourceManager.getBundleString( "build.title", RESOURCE);
-	private static final String REMOTE_VERSION = "http://doerl.de/zip/version.xml";
+	private static final String REMOTE_VERSION = "https://github.com/krakel/krakel.github.io/blob/master/hqm-offline/bin/version.xml";
 	private static final String VERSION_INIT = "Initializing version check against remote authority file, located at {0}";
 	private static final String VERSION_CURRENT = "Currently using the most up to date version ({2}) of {0} for {1}";
 	private static final String VERSION_FINAL = "Version check stopping after three unsuccessful connection attempts";
