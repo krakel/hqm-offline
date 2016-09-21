@@ -38,7 +38,7 @@ public class BaseDefaults {
 	// @formatter:off
 	private static final Object[][] DEFAULTS = {
 		{ STACKTRC, Boolean.TRUE },
-		{ LANGUAGE, Boolean.TRUE },
+		{ LANGUAGE, Boolean.FALSE },
 		{ LANGUAGE_MAIN, "enUS" },
 		{ PKG_DIR,  System.getProperty( "user.home") },
 		{ DUMP_DIR,  defaultDirectory() + File.pathSeparator + ".minecraft"+ File.pathSeparator +"dumps" },
