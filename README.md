@@ -2,7 +2,7 @@
 **for private use**
 
 ## Information
-TODO
+![base image](https://github.com/krakel/krakel.github.io/blob/master/hqm-offline/image/hqmOffline.jpg)
 
 ## Licences & Permissions
 Licence: https://github.com/krakel/hqm-offline/blob/master/LICENSE.txt
