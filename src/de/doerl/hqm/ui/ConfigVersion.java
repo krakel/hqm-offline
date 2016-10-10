@@ -51,8 +51,8 @@ class ConfigVersion extends AConfigControl {
 		mCombo.setMaximumSize( new Dimension( mCombo.getMaximumSize().width, mCombo.getPreferredSize().height));
 		mCombo.setEditable( false);
 		FileVersion[] arr = FileVersion.values();
-		for (FileVersion name : arr) {
-			mCombo.addItem( name.toString());
+		for (FileVersion vers : arr) {
+			mCombo.addItem( vers.toString());
 		}
 	}
 

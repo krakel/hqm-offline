@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class WriterTestNEI {
-	private static void doTest( FCompound test, String exp) {
-		String act = SerializerAtNEI.write( test);
+	private static void doTest( FCompound test, String exp, boolean correct) {
+		String act = SerializerAtNEI.write( test, correct);
 		assertEquals( exp, act);
 	}
 
@@ -17,7 +17,7 @@ public class WriterTestNEI {
 		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 1), //
 			FLong.createShort( "Damage", 0));
-		doTest( test, exp);
+		doTest( test, exp, false);
 	}
 
 	@Test
@@ -29,7 +29,7 @@ public class WriterTestNEI {
 			FLong.createShort( "Damage", 0), //
 			FCompound.create( "tag", //
 				FString.create( "ownerName", "Server-wide Soul Network")));
-		doTest( test, exp);
+		doTest( test, exp, false);
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class WriterTestNEI {
 					FString.create( "", "buildcraft:timer")), //
 				FLong.createByte( "mat", 0), //
 				FLong.createByte( "logic", 0)));
-		doTest( test, exp);
+		doTest( test, exp, false);
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class WriterTestNEI {
 						FLong.createInt( "amount", 16000), //
 						FLong.createInt( "capacity", 16000), //
 						FString.create( "Reagent", "aether")))));
-		doTest( test, exp);
+		doTest( test, exp, false);
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class WriterTestNEI {
 						FCompound.create( FString.create( "UID0", "botany.colorYellow"), FString.create( "UID1", "botany.colorYellow"), FLong.createByte( "Slot", 2)))), //
 				FLong.createByte( "Wilt", 0), //
 				FLong.createByte( "Flowered", 1)));
-		doTest( test, exp);
+		doTest( test, exp, false);
 	}
 
 	@Test
@@ -112,7 +112,7 @@ public class WriterTestNEI {
 					FLong.createInt( "TotalDurability", 21474836)), //
 				FCompound.create( "display", //
 					FString.create( "Name", "�fBane of Pigs"))));
-		doTest( test, exp);
+		doTest( test, exp, false);
 	}
 
 	@Test
@@ -128,6 +128,22 @@ public class WriterTestNEI {
 				FByteArray.create( "SideCache", 0, 0, 0, 0, 0, 0), //
 				FLong.createByte( "Level", 3), //
 				FLong.createByte( "RSControl", 0)));
-		doTest( test, exp);
+		doTest( test, exp, false);
+	}
+
+	@Test
+	public void testParse8() {
+		String exp = "{id:2008s,Damage:0s,tag:{Facing:3b,Energy:0,SideCache:[1b,2b,3b,4b,5b,6b],Level:3b,RSControl:0b}}";
+		//
+		FCompound test = FCompound.create( //
+			FLong.createShort( "id", 2008), //
+			FLong.createShort( "Damage", 0), //
+			FCompound.create( "tag", //
+				FLong.createByte( "Facing", 3), //
+				FLong.createInt( "Energy", 0), //
+				FByteArray.create( "SideCache", 1, 2, 3, 4, 5, 6), //
+				FLong.createByte( "Level", 3), //
+				FLong.createByte( "RSControl", 0)));
+		doTest( test, exp, true);
 	}
 }

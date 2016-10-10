@@ -8,15 +8,17 @@ import de.doerl.hqm.utils.Utils;
 
 public class SerializerAtNEI {
 	private static final Logger LOGGER = Logger.getLogger( SerializerAtNEI.class.getName());
+	private boolean mCorrect;
 
-	private SerializerAtNEI() {
+	private SerializerAtNEI( boolean correct) {
+		mCorrect = correct;
 	}
 
-	public static String write( FCompound main) {
+	public static String write( FCompound main, boolean correct) {
 		StringBuilder sb = new StringBuilder();
 		if (main != null) {
 			try {
-				write0( main, sb);
+				write0( main, sb, correct);
 			}
 			catch (Exception ex) {
 				Utils.logThrows( LOGGER, Level.WARNING, ex);
@@ -25,8 +27,8 @@ public class SerializerAtNEI {
 		return sb.toString();
 	}
 
-	private static void write0( FCompound main, StringBuilder sb) throws Exception {
-		SerializerAtNEI wrt = new SerializerAtNEI();
+	private static void write0( FCompound main, StringBuilder sb, boolean correct) throws Exception {
+		SerializerAtNEI wrt = new SerializerAtNEI( correct);
 		wrt.doCompound( main, sb);
 	}
 
@@ -37,13 +39,21 @@ public class SerializerAtNEI {
 
 	private void doByteArray( FByteArray arr, StringBuilder sb) {
 		sb.append( '[');
-//		for (byte i : arr) {
-//			sb.append( i);
-//			sb.append( 'b');
-//			sb.append( ',');
-//		}
-		sb.append( arr.size());
-		sb.append( " bytes");
+		if (mCorrect) {
+			int index = 0;
+			for (byte i : arr) {
+				if (index > 0) {
+					sb.append( ',');
+				}
+				sb.append( i);
+				sb.append( 'b');
+				++index;
+			}
+		}
+		else {
+			sb.append( arr.size());
+			sb.append( " bytes");
+		}
 		sb.append( ']');
 	}
 
@@ -78,9 +88,21 @@ public class SerializerAtNEI {
 
 	private void doIntArray( FIntArray arr, StringBuilder sb) {
 		sb.append( '[');
-		for (int i : arr) {
-			sb.append( i);
-			sb.append( ',');
+		if (mCorrect) {
+			int index = 0;
+			for (int i : arr) {
+				if (index > 0) {
+					sb.append( ',');
+				}
+				sb.append( i);
+				++index;
+			}
+		}
+		else {
+			for (int i : arr) {
+				sb.append( i);
+				sb.append( ',');
+			}
 		}
 		sb.append( ']');
 	}

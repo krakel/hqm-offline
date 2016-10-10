@@ -92,14 +92,12 @@ public final class FDouble extends ANbt {
 	public void toString( StringBuilder sb) {
 		switch (getTag()) {
 			case ANbt.ID_FLOAT:
-				sb.append( "FLOAT(");
 				sb.append( (float) mValue);
-				sb.append( ")");
+				sb.append( "f");
 				break;
 			case 6:
-				sb.append( "DOUBLE(");
 				sb.append( mValue);
-				sb.append( ")");
+				sb.append( "d");
 				break;
 			default:
 				break;

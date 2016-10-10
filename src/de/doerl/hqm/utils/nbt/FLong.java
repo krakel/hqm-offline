@@ -136,24 +136,19 @@ public final class FLong extends ANbt {
 	public void toString( StringBuilder sb) {
 		switch (getTag()) {
 			case ANbt.ID_BYTE:
-				sb.append( "BYTE(");
 				sb.append( (byte) mValue);
-				sb.append( ")");
+				sb.append( "b");
 				break;
 			case ANbt.ID_SHORT:
-				sb.append( "SHORT(");
 				sb.append( (short) mValue);
-				sb.append( ")");
+				sb.append( "s");
 				break;
 			case ANbt.ID_INT:
-				sb.append( "INT(");
 				sb.append( (int) mValue);
-				sb.append( ")");
 				break;
 			case ANbt.ID_LONG:
-				sb.append( "LONG(");
 				sb.append( mValue);
-				sb.append( ")");
+				sb.append( "l");
 				break;
 			default:
 				break;

@@ -14,6 +14,8 @@ import de.doerl.hqm.utils.ResourceManager;
 import de.doerl.hqm.utils.Utils;
 
 class ConfigBoolean extends AConfigControl implements ActionListener {
+	static final String UNSELECT = "unselect";
+	static final String SELECT = "select";
 	private static final long serialVersionUID = 3030343336685063263L;
 	private static final Logger LOGGER = Logger.getLogger( ConfigBoolean.class.getName());
 	private JCheckBox mCheck;
@@ -46,7 +48,7 @@ class ConfigBoolean extends AConfigControl implements ActionListener {
 	}
 
 	protected void fireAction() {
-		String cmd = mCheck.isSelected() ? "select" : "unselect";
+		String cmd = mCheck.isSelected() ? SELECT : UNSELECT;
 		Object[] listeners = mListener.getListenerList();
 		ActionEvent event = new ActionEvent( this, 0, cmd);
 		for (int i = 0; i < listeners.length; i += 2) {

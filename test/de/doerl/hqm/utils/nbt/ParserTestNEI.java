@@ -130,4 +130,20 @@ public class ParserTestNEI {
 		String test = "{id:2008s,Damage:0s,tag:{Facing:3b,Energy:0,SideCache:[6 bytes],Level:3b,RSControl:0b}}";
 		doTest( test, exp);
 	}
+
+	@Test
+	public void testParse8() {
+		FCompound exp = FCompound.create( //
+			FLong.createShort( "id", 2008), //
+			FLong.createShort( "Damage", 0), //
+			FCompound.create( "tag", //
+				FLong.createByte( "Facing", 3), //
+				FLong.createInt( "Energy", 0), //
+				FByteArray.create( "SideCache", 1, 2, 3, 4, 5, 6), //
+				FLong.createByte( "Level", 3), //
+				FLong.createByte( "RSControl", 0)));
+		//
+		String test = "{id:2008s,Damage:0s,tag:{Facing:3b,Energy:0,SideCache:[1b,2b,3b,4b,5b,6b],Level:3b,RSControl:0b}}";
+		doTest( test, exp);
+	}
 }

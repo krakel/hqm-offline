@@ -19,6 +19,7 @@ class ConfigDialog extends ADialog {
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
+		mLanguge.registerChangeListener( mLangugeMain);
 	}
 
 	public static void update( Window owner) {

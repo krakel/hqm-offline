@@ -74,14 +74,14 @@ public final class FIntArray extends ANbt implements Iterable<Integer> {
 	@Override
 	public void toString( StringBuilder sb) {
 		boolean comma = false;
-		sb.append( "INT-ARRAY(");
-		for (Integer i : mList) {
+		sb.append( '[');
+		for (int i : mList) {
 			if (comma) {
-				sb.append( ",");
+				sb.append( ',');
 			}
 			sb.append( i);
 			comma = true;
 		}
-		sb.append( ")");
+		sb.append( ']');
 	}
 }

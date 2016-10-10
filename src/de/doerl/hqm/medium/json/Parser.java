@@ -59,7 +59,9 @@ import de.doerl.hqm.utils.json.FArray;
 import de.doerl.hqm.utils.json.FObject;
 import de.doerl.hqm.utils.json.FValue;
 import de.doerl.hqm.utils.json.IJson;
+import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.ParserAtJson;
+import de.doerl.hqm.utils.nbt.ParserAtNEI;
 
 public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 	private static final Logger LOGGER = Logger.getLogger( Parser.class.getName());
@@ -85,7 +87,7 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 				String name = mm.group( 1);
 				int size = Utils.parseInteger( mm.group( 2));
 				int dmg = Utils.parseInteger( mm.group( 3));
-				return new FItemStack( name, dmg, size, ParserAtJson.parse( nbt));
+				return new FItemStack( name, dmg, size, parseNBT( nbt));
 			}
 			catch (RuntimeException ex) {
 				Utils.log( LOGGER, Level.WARNING, "illagle pattern: {0}", itemSeq);
@@ -93,7 +95,19 @@ public class Parser extends AHQMWorker<Object, FObject> implements IToken {
 			return new FItemStack( "item:unknown", 0, 1, null);
 		}
 		else {
-			return new FItemStack( itemSeq, 0, 1, ParserAtJson.parse( nbt));
+			return new FItemStack( itemSeq, 0, 1, parseNBT( nbt));
+		}
+	}
+
+	private static FCompound parseNBT( String nbt) {
+		if (nbt == null) {
+			return null;
+		}
+		else if (nbt.startsWith( "=")) {
+			return ParserAtJson.parse( nbt);
+		}
+		else {
+			return ParserAtNEI.parse( nbt);
 		}
 	}
 

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
 import de.doerl.hqm.utils.nbt.ParserAtJson;
+import de.doerl.hqm.utils.nbt.ParserAtNEI;
 
 public class ItemNEI {
 	private static Logger LOGGER = Logger.getLogger( ItemNEI.class.getName());
@@ -52,8 +53,11 @@ public class ItemNEI {
 			mBase = toWindowsName( line.substring( p4 + 1, p5));
 			String nbt = line.substring( p5);
 			if (Utils.validString( nbt)) {
-				if (nbt.startsWith( "=COMPOUND(")) {
+				if (nbt.startsWith( "=")) {
 					mNbt = ParserAtJson.parse( nbt);
+				}
+				else if (nbt.startsWith( "{")) {
+					mNbt = ParserAtNEI.parse( nbt);
 				}
 				else {
 					Utils.log( LOGGER, Level.WARNING, "wrong nbt part: {0}", line);

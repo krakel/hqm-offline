@@ -26,7 +26,7 @@ import de.doerl.hqm.medium.MediaManager;
 import de.doerl.hqm.medium.RefreshEvent;
 import de.doerl.hqm.utils.Security;
 import de.doerl.hqm.utils.Utils;
-import de.doerl.hqm.utils.nbt.SerializerAtJson;
+import de.doerl.hqm.utils.nbt.SerializerAtNEI;
 
 abstract class AReport extends ABundleAction implements IRefreshListener, Runnable {
 	private static final long serialVersionUID = -3001796596162739183L;
@@ -54,7 +54,7 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 					out.print( String.format( ", dmg=%d", key.getDamage()));
 				}
 				if (key.getNBT() != null) {
-					out.print( String.format( ", nbt%s", SerializerAtJson.write( key.getNBT())));
+					out.print( String.format( ", nbt%s", SerializerAtNEI.write( key.getNBT(), true)));
 				}
 				out.write( NL);
 			}
@@ -134,7 +134,7 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 			if (diff != 0) {
 				return diff;
 			}
-			return STING_COMPERATOR.compare( SerializerAtJson.write( o1.getNBT()), SerializerAtJson.write( o2.getNBT()));
+			return STING_COMPERATOR.compare( SerializerAtNEI.write( o1.getNBT(), true), SerializerAtNEI.write( o2.getNBT(), true));
 		}
 	}
 }

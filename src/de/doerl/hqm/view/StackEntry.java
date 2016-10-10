@@ -4,8 +4,8 @@ import de.doerl.hqm.base.AStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.nbt.FCompound;
-import de.doerl.hqm.utils.nbt.ParserAtJson;
-import de.doerl.hqm.utils.nbt.SerializerAtJson;
+import de.doerl.hqm.utils.nbt.ParserAtNEI;
+import de.doerl.hqm.utils.nbt.SerializerAtNEI;
 
 class StackEntry {
 	public boolean mIsItem;
@@ -43,7 +43,7 @@ class StackEntry {
 		setName( name);
 		mDisplay = name;
 		mDmg = dmg;
-		mNbt = Utils.validString( area) ? ParserAtJson.parse( area) : null;
+		mNbt = Utils.validString( area) ? ParserAtNEI.parse( area) : null;
 		mCount = count;
 		setPrecision( precition);
 		updateKey();
@@ -71,7 +71,7 @@ class StackEntry {
 	}
 
 	public String getNbtStr() {
-		return SerializerAtJson.write( mNbt);
+		return SerializerAtNEI.write( mNbt, true);
 	}
 
 	public ItemPrecision getPrecision() {

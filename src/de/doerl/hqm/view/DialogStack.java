@@ -16,8 +16,8 @@ import de.doerl.hqm.base.FItemStack;
 import de.doerl.hqm.quest.ItemPrecision;
 import de.doerl.hqm.utils.Utils;
 import de.doerl.hqm.utils.mods.ItemNEI;
-import de.doerl.hqm.utils.nbt.ParserAtJson;
-import de.doerl.hqm.utils.nbt.SerializerAtJson;
+import de.doerl.hqm.utils.nbt.ParserAtNEI;
+import de.doerl.hqm.utils.nbt.SerializerAtNEI;
 import de.doerl.hqm.view.ADialogList.ICreator;
 import de.doerl.hqm.view.leafs.LeafSearch;
 import de.doerl.hqm.view.leafs.LeafSearch.ISearchListener;
@@ -57,7 +57,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 					mCount.setText( String.valueOf( 1));
 					mItem.setSelected( true);
 					mPrec.setSelectedItem( ItemPrecision.PRECISE);
-					mArea.setText( SerializerAtJson.write( item.getNBT()));
+					mArea.setText( SerializerAtNEI.write( item.getNBT(), true));
 				}
 			}
 		});
@@ -147,7 +147,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 	private FItemStack getResultStk() {
 		String name = mName.getText();
 		if (Utils.validString( name)) {
-			return new FItemStack( name, Utils.parseInteger( mDmg.getText(), 0), 1, ParserAtJson.parse( mArea.getText()));
+			return new FItemStack( name, Utils.parseInteger( mDmg.getText(), 0), 1, ParserAtNEI.parse( mArea.getText()));
 		}
 		else {
 			return null;
@@ -172,7 +172,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			mCount.setEnabled( false);
 			mItem.setSelected( true);
 			mPrec.setSelectedItem( ItemPrecision.PRECISE);
-			mArea.setText( SerializerAtJson.write( stk.getNBT()));
+			mArea.setText( SerializerAtNEI.write( stk.getNBT(), true));
 		}
 		else {
 			mDisplay.setText( "");

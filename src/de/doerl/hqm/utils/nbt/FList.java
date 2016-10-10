@@ -57,15 +57,17 @@ public final class FList extends AList {
 
 	@Override
 	public void toString( StringBuilder sb) {
-		boolean comma = false;
-		sb.append( "LIST(");
+		int index = 0;
+		sb.append( '[');
 		for (ANbt nbt : mList) {
-			if (comma) {
-				sb.append( ",");
+			if (index > 0) {
+				sb.append( ',');
 			}
+			sb.append( index);
+			sb.append( ':');
 			nbt.toString( sb);
-			comma = true;
+			++index;
 		}
-		sb.append( ")");
+		sb.append( ']');
 	}
 }

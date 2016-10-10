@@ -68,8 +68,8 @@ public final class FString extends ANbt {
 
 	@Override
 	public void toString( StringBuilder sb) {
-		sb.append( "STRING('");
-		sb.append( mValue.replace( "'", "\\'"));
-		sb.append( "')");
+		sb.append( '"');
+		sb.append( mValue.replace( "\"", "\\\""));
+		sb.append( '"');
 	}
 }

@@ -83,16 +83,16 @@ public final class FCompound extends AList {
 	@Override
 	public void toString( StringBuilder sb) {
 		boolean comma = false;
-		sb.append( "COMPOUND(");
+		sb.append( "{");
 		for (ANbt nbt : mList) {
 			if (comma) {
 				sb.append( ',');
 			}
 			sb.append( nbt.getName());
-			sb.append( '=');
+			sb.append( ':');
 			nbt.toString( sb);
 			comma = true;
 		}
-		sb.append( ')');
+		sb.append( '}');
 	}
 }
