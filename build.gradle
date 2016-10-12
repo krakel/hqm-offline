@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-	testCompile group: 'junit', name: 'junit', version:'4.+'
+	testCompile group: 'junit', name: 'junit', version: '4.+'
 }
 
 sourceSets {
@@ -43,7 +43,7 @@ file('src/de/doerl/hqm/hqm.properties').withReader  { reader ->
 	project.ext.myProps = props
 }
 
-group = "de.doerl.hqm"
+group   = "de.doerl.hqm"
 archivesBaseName = "hqm_offline"
 version = ${ext.myProps['build.number']}
 title   = ${ext.myProps['build.title']}
@@ -76,4 +76,3 @@ task distZip(type: Zip, dependsOn: 'srcZip') {
 }
 
 build.dependsOn distZip
-
