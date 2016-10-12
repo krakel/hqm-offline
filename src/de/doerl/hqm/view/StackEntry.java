@@ -71,7 +71,7 @@ class StackEntry {
 	}
 
 	public String getNbtStr() {
-		return SerializerAtNEI.write( mNbt, true);
+		return SerializerAtNEI.writeDbl( mNbt);
 	}
 
 	public ItemPrecision getPrecision() {

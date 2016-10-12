@@ -179,7 +179,7 @@ public class Selector {
 				dst.print( ',');
 				dst.print( item.getImageName());
 				dst.print( ',');
-				dst.println( SerializerAtNEI.write( item.getNBT(), true));
+				dst.println( SerializerAtNEI.writeDbl( item.getNBT()));
 			}
 			dst.flush();
 		}
