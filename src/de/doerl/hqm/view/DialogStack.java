@@ -57,7 +57,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 					mCount.setText( String.valueOf( 1));
 					mItem.setSelected( true);
 					mPrec.setSelectedItem( ItemPrecision.PRECISE);
-					mArea.setText( SerializerAtNEI.write( item.getNBT(), true));
+					mArea.setText( SerializerAtNEI.writeDbl( item.getNBT()));
 				}
 			}
 		});
@@ -172,7 +172,7 @@ class DialogStack extends ADialogEdit<StackEntry> {
 			mCount.setEnabled( false);
 			mItem.setSelected( true);
 			mPrec.setSelectedItem( ItemPrecision.PRECISE);
-			mArea.setText( SerializerAtNEI.write( stk.getNBT(), true));
+			mArea.setText( SerializerAtNEI.writeDbl( stk.getNBT()));
 		}
 		else {
 			mDisplay.setText( "");

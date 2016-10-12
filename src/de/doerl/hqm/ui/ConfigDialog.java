@@ -9,8 +9,8 @@ import de.doerl.hqm.utils.mods.ImageLoader;
 
 class ConfigDialog extends ADialog {
 	private static final long serialVersionUID = 724962696459638751L;
-	private ConfigBoolean mLanguge = new ConfigBoolean( BaseDefaults.LANGUAGE, "config.language");
-	private ConfigString mLangugeMain = new ConfigString( BaseDefaults.LANGUAGE_MAIN, "config.language.main");
+	private ConfigBoolean mLanguage = new ConfigBoolean( BaseDefaults.LANGUAGE, "config.language");
+	private ConfigString mLanguageMain = new ConfigString( BaseDefaults.LANGUAGE_MAIN, "config.language.main");
 	private ConfigVersion mVersion = new ConfigVersion( BaseDefaults.FILE_VERSION, "config.version");
 
 	private ConfigDialog( Window owner) {
@@ -19,7 +19,7 @@ class ConfigDialog extends ADialog {
 		addAction( BTN_CANCEL, DialogResult.CANCEL);
 		addAction( BTN_OK, DialogResult.APPROVE);
 		addEscapeAction();
-		mLanguge.registerChangeListener( mLangugeMain);
+		mLanguage.registerChangeListener( mLanguageMain);
 	}
 
 	public static void update( Window owner) {
@@ -32,23 +32,24 @@ class ConfigDialog extends ADialog {
 
 	@Override
 	protected void createMain() {
-		mLanguge.initControl();
-		mLangugeMain.initControl();
+		mLanguage.initControl();
+		mLanguageMain.initControl();
 		mVersion.initControl();
 		Box result = Box.createVerticalBox();
 		result.setAlignmentY( TOP_ALIGNMENT);
-		result.add( mLanguge);
-		result.add( mLangugeMain);
+		result.add( mLanguage);
+		result.add( mLanguageMain);
 		result.add( Box.createVerticalStrut( 10));
 		result.add( new SinkLine());
 		result.add( Box.createVerticalStrut( 10));
 		result.add( mVersion);
 		mMain.add( result);
+		mLanguage.fireAction();
 	}
 
 	private void saveResult() {
-		mLanguge.applyChange();
-		mLangugeMain.applyChange();
+		mLanguage.applyChange();
+		mLanguageMain.applyChange();
 		mVersion.applyChange();
 		ImageLoader.init();
 	}

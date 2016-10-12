@@ -5,8 +5,13 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class WriterTestNEI {
-	private static void doTest( FCompound test, String exp, boolean correct) {
-		String act = SerializerAtNEI.write( test, correct);
+	private static void doTestDbl( FCompound test, String exp) {
+		String act = SerializerAtNEI.writeDbl( test);
+		assertEquals( exp, act);
+	}
+
+	private static void doTestWrong( FCompound test, String exp) {
+		String act = SerializerAtNEI.writeWrong( test);
 		assertEquals( exp, act);
 	}
 
@@ -17,7 +22,7 @@ public class WriterTestNEI {
 		FCompound test = FCompound.create( //
 			FLong.createShort( "id", 1), //
 			FLong.createShort( "Damage", 0));
-		doTest( test, exp, false);
+		doTestWrong( test, exp);
 	}
 
 	@Test
@@ -29,7 +34,7 @@ public class WriterTestNEI {
 			FLong.createShort( "Damage", 0), //
 			FCompound.create( "tag", //
 				FString.create( "ownerName", "Server-wide Soul Network")));
-		doTest( test, exp, false);
+		doTestWrong( test, exp);
 	}
 
 	@Test
@@ -44,7 +49,7 @@ public class WriterTestNEI {
 					FString.create( "", "buildcraft:timer")), //
 				FLong.createByte( "mat", 0), //
 				FLong.createByte( "logic", 0)));
-		doTest( test, exp, false);
+		doTestWrong( test, exp);
 	}
 
 	@Test
@@ -60,7 +65,7 @@ public class WriterTestNEI {
 						FLong.createInt( "amount", 16000), //
 						FLong.createInt( "capacity", 16000), //
 						FString.create( "Reagent", "aether")))));
-		doTest( test, exp, false);
+		doTestWrong( test, exp);
 	}
 
 	@Test
@@ -87,7 +92,7 @@ public class WriterTestNEI {
 						FCompound.create( FString.create( "UID0", "botany.colorYellow"), FString.create( "UID1", "botany.colorYellow"), FLong.createByte( "Slot", 2)))), //
 				FLong.createByte( "Wilt", 0), //
 				FLong.createByte( "Flowered", 1)));
-		doTest( test, exp, false);
+		doTestWrong( test, exp);
 	}
 
 	@Test
@@ -112,7 +117,7 @@ public class WriterTestNEI {
 					FLong.createInt( "TotalDurability", 21474836)), //
 				FCompound.create( "display", //
 					FString.create( "Name", "�fBane of Pigs"))));
-		doTest( test, exp, false);
+		doTestWrong( test, exp);
 	}
 
 	@Test
@@ -128,7 +133,7 @@ public class WriterTestNEI {
 				FByteArray.create( "SideCache", 0, 0, 0, 0, 0, 0), //
 				FLong.createByte( "Level", 3), //
 				FLong.createByte( "RSControl", 0)));
-		doTest( test, exp, false);
+		doTestWrong( test, exp);
 	}
 
 	@Test
@@ -144,6 +149,6 @@ public class WriterTestNEI {
 				FByteArray.create( "SideCache", 1, 2, 3, 4, 5, 6), //
 				FLong.createByte( "Level", 3), //
 				FLong.createByte( "RSControl", 0)));
-		doTest( test, exp, true);
+		doTestDbl( test, exp);
 	}
 }

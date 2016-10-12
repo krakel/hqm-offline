@@ -401,7 +401,7 @@ class Serializer extends AHQMWorker<Object, JsonWriter> implements IToken {
 		if (size > 1) {
 			dst.print( ITEM_SIZE, size);
 		}
-		String nbt = SerializerAtNEI.write( stk.getNBT(), false);
+		String nbt = SerializerAtNEI.writeWrong( stk.getNBT());
 		if (Utils.validString( nbt)) {
 			dst.print( ITEM_NBT, nbt);
 		}

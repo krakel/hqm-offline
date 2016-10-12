@@ -60,7 +60,9 @@ public class Medium implements IMedium {
 		if (lang != null) {
 			File main = fromLangFile( file);
 			if (main.exists()) {
-				return loadHqm( redJson( main), lang, main, true);
+				FHqm hqm = loadHqm( redJson( main), lang, main, false);
+				hqm.setMain( lang);
+				return hqm;
 			}
 			else {
 				return null;
@@ -68,39 +70,38 @@ public class Medium implements IMedium {
 		}
 		else {
 			FObject obj = redJson( file);
-			if (obj != null && obj.get( IToken.HQM_PARENT) != null) {
-				File main = fromLangFile( file, FValue.toString( obj.get( IToken.HQM_PARENT)));
-				if (main.exists()) {
-					return loadHqm( redJson( main), PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN), main, false);
+			if (obj == null) {
+				return null;
+			}
+			if (obj.get( IToken.HQM_PARENT) == null) {
+				return loadHqm( obj, PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN), file, true);
+			}
+			File main = fromLangFile( file, FValue.toString( obj.get( IToken.HQM_PARENT)));
+			if (main.exists()) {
+				FHqm hqm = loadHqm( redJson( main), PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN), main, false);
+				for (FLanguage ll : hqm.mLanguages) {
+					File src = toLangFile( file, ll.mLocale);
+					if (src.exists()) {
+						FObject docu = redJson( src);
+						readHqm( hqm, docu, ll, false, true);
+					}
 				}
-				else {
-					return null;
-				}
+				return hqm;
 			}
 			else {
-				return loadHqm( obj, PreferenceManager.getString( BaseDefaults.LANGUAGE_MAIN), file, false);
+				return null;
 			}
 		}
 	}
 
-	private static FHqm loadHqm( FObject obj, String lang, File file, boolean override) {
+	private static FHqm loadHqm( FObject obj, String lang, File file, boolean withDocu) {
 		String name = MediumUtils.getFilepackName( file);
 		FHqm hqm = new FHqm( name);
 		hqm.setMain( lang);
-		readHqm( hqm, obj, hqm.mMain, true, false);
+		readHqm( hqm, obj, hqm.mMain, true, withDocu);
 		MediaManager.setProperty( hqm, JSON_PATH, file);
 		MediaManager.setProperty( hqm, MediaManager.ACTIV_MEDIUM, MEDIUM);
 		MediaManager.setProperty( hqm, MediaManager.ACTIV_PATH, file.getParentFile());
-		for (FLanguage ll : hqm.mLanguages) {
-			File src = toLangFile( file, ll.mLocale);
-			if (src.exists()) {
-				FObject docu = redJson( src);
-				readHqm( hqm, docu, ll, false, true);
-			}
-		}
-		if (override) {
-			hqm.setMain( lang);
-		}
 		return hqm;
 	}
 

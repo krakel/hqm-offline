@@ -224,8 +224,9 @@ public class ParserAtNEI {
 		char last = len < 0 ? ' ' : val.charAt( len);
 		switch (last) {
 			case '"':
+			case '\'':
 				String str = len >= 1 ? val.substring( 1, len) : "";
-				return FString.create( name, str.replace( "\\\"", "\"")); // TODO remove \\\\"
+				return FString.create( name, str.replace( "\\\"", "\"").replace( "\\'", "'")); // TODO remove \\\\"
 			case 'f':
 			case 'F':
 				return FDouble.createFloat( name, Float.parseFloat( val.substring( 0, len)));
@@ -284,7 +285,8 @@ public class ParserAtNEI {
 				char c = getNext();
 				switch (c) {
 					case '"':
-						readString();
+					case '\'':
+						readString( c);
 						break;
 					case ':':
 						return Token.COLON;
@@ -309,10 +311,10 @@ public class ParserAtNEI {
 			return mIn.substring( mStart, mPos - 1).trim();
 		}
 
-		private void readString() {
+		private void readString( char last) {
 			int l = 0;
 			int c = getNext();
-			while (c >= 0 && (l == '\\' || c != '"')) {
+			while (c >= 0 && (l == '\\' || c != last)) {
 				l = c;
 				c = getNext();
 			}

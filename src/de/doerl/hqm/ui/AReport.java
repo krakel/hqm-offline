@@ -54,7 +54,7 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 					out.print( String.format( ", dmg=%d", key.getDamage()));
 				}
 				if (key.getNBT() != null) {
-					out.print( String.format( ", nbt%s", SerializerAtNEI.write( key.getNBT(), true)));
+					out.print( String.format( ", nbt%s", SerializerAtNEI.writeDbl( key.getNBT())));
 				}
 				out.write( NL);
 			}
@@ -134,7 +134,7 @@ abstract class AReport extends ABundleAction implements IRefreshListener, Runnab
 			if (diff != 0) {
 				return diff;
 			}
-			return STING_COMPERATOR.compare( SerializerAtNEI.write( o1.getNBT(), true), SerializerAtNEI.write( o2.getNBT(), true));
+			return STING_COMPERATOR.compare( SerializerAtNEI.writeDbl( o1.getNBT()), SerializerAtNEI.writeDbl( o2.getNBT()));
 		}
 	}
 }
